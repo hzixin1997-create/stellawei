@@ -1,0 +1,131 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    --background: 40 33% 97%;
+    --foreground: 260 25% 20%;
+    --card: 40 33% 97%;
+    --card-foreground: 260 25% 20%;
+    --popover: 40 33% 97%;
+    --popover-foreground: 260 25% 20%;
+    --primary: 263 50% 52%;
+    --primary-foreground: 40 33% 97%;
+    --secondary: 45 65% 52%;
+    --secondary-foreground: 260 25% 20%;
+    --muted: 40 20% 90%;
+    --muted-foreground: 260 10% 40%;
+    --accent: 263 50% 52%;
+    --accent-foreground: 40 33% 97%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 40 20% 85%;
+    --input: 40 20% 85%;
+    --ring: 263 50% 52%;
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 260 25% 12%;
+    --foreground: 40 33% 97%;
+    --card: 260 25% 15%;
+    --card-foreground: 40 33% 97%;
+    --popover: 260 25% 15%;
+    --popover-foreground: 40 33% 97%;
+    --primary: 263 50% 62%;
+    --primary-foreground: 260 25% 12%;
+    --secondary: 45 65% 52%;
+    --secondary-foreground: 260 25% 12%;
+    --muted: 260 20% 20%;
+    --muted-foreground: 40 20% 70%;
+    --accent: 263 50% 62%;
+    --accent-foreground: 260 25% 12%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 260 20% 25%;
+    --input: 260 20% 25%;
+    --ring: 263 50% 62%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F0E6D3;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(107, 70, 193, 0.3);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(107, 70, 193, 0.5);
+}
+
+/* Selection */
+::selection {
+  background: rgba(107, 70, 193, 0.3);
+  color: #553C9A;
+}
+
+/* Glass effect */
+.glass {
+  @apply bg-white/10 backdrop-blur-md border border-white/20;
+}
+
+.glass-dark {
+  @apply bg-black/20 backdrop-blur-md border border-white/10;
+}
+
+/* Gradient text */
+.gradient-text {
+  @apply bg-gradient-to-r from-stellawei-purple via-stellawei-purple-light to-stellawei-gold bg-clip-text text-transparent;
+  display: inline-block;
+  padding-bottom: 0.15em;
+}
+
+/* Shimmer effect */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(212, 175, 55, 0.3) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+/* Safe gradient text - 解决文字裁切问题 */
+.safe-gradient-text {
+  background: linear-gradient(90deg, #6B46C1 0%, #9F7AEA 50%, #D4AF37 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  padding: 0.3em 0 0.5em 0;
+  line-height: 1.8;
+  display: inline-block;
+  overflow: visible;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}

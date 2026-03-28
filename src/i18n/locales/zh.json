@@ -1,0 +1,107 @@
+{
+  "brand": "星位",
+  "nav": {
+    "services": "服务",
+    "masters": "师傅",
+    "trust": "信任",
+    "signIn": "登录",
+    "getStarted": "开始"
+  },
+  "hero": {
+    "title": "用古老智慧",
+    "titleHighlight": "探索您的人生道路",
+    "subtitle": "AI驱动的洞察与真实大师指导相结合。固定价格，认证资质，7天退款保证。",
+    "ctaPrimary": "开启您的旅程 - 首次占卜$9.9",
+    "ctaSecondary": "认识我们的师傅",
+    "rating": "4.9/5 平均评分",
+    "readings": "10,000+ 次占卜",
+    "secure": "100% 安全"
+  },
+  "services": {
+    "title": "我们的服务",
+    "subtitle": "从我们的灵性指导服务中选择，全部采用透明的固定价格",
+    "tarot": {
+      "name": "塔罗占卜",
+      "description": "通过塔罗牌的古老智慧，获得关于爱情、事业和人生问题的清晰指引。"
+    },
+    "astrology": {
+      "name": "灵性探索",
+      "description": "探索您的内在旅程，通过灵性指引发现灵魂的召唤。"
+    },
+    "bazi": {
+      "name": "八字（四柱）",
+      "description": "通过正宗的中国命理分析，解锁您命运的秘密。"
+    },
+    "fengshui": {
+      "name": "风水",
+      "description": "运用古老的中国堪舆学，协调您的居住空间，改善能量流动。"
+    },
+    "spiritual": {
+      "name": "灵性探索",
+      "description": "探索您的内在旅程，通过灵性指引发现灵魂的召唤。"
+    },
+    "popular": "热门推荐",
+    "learnMore": "了解更多",
+    "bookNow": "立即预约"
+  },
+  "trust": {
+    "title": "为什么信任Stellawei？",
+    "subtitle": "我们创建Stellawei是为了解决在线算命的最大问题。没有骗局。没有隐藏费用。只有真诚的指导。",
+    "antiFraud": {
+      "title": "防诈骗保证",
+      "description": "我们从不声称诅咒或出售仪式"
+    },
+    "pricing": {
+      "title": "固定价格",
+      "description": "无隐藏费用，按问题付费而非按分钟付费"
+    },
+    "refund": {
+      "title": "7天退款",
+      "description": "不满意？全额现金退款，无需提问"
+    },
+    "verified": {
+      "title": "认证师傅",
+      "description": "所有师傅均持有5年以上经验的认证"
+    }
+  },
+  "masters": {
+    "title": "认识我们的师傅",
+    "subtitle": "所有师傅都经过严格审核，拥有认证资质和多年经验",
+    "specialty": "专业领域",
+    "experience": "从业经验",
+    "reviews": "条评价",
+    "bookSession": "预约咨询",
+    "viewAll": "查看所有师傅",
+    "verified": "已认证",
+    "viewProfile": "查看资料"
+  },
+  "cta": {
+    "title": "准备好开始您的旅程了吗？",
+    "subtitle": "首次塔罗占卜仅需$9.9（原价$25）。无需订阅。不满意全额退款。",
+    "claim": "领取您的$9.9占卜",
+    "browse": "浏览服务"
+  },
+  "footer": {
+    "tagline": "您值得信赖的灵性指导和自我发现伙伴。",
+    "services": "服务",
+    "company": "公司",
+    "support": "支持",
+    "aboutUs": "关于我们",
+    "trustSafety": "信任与安全",
+    "careers": "加入我们",
+    "contact": "联系我们",
+    "helpCenter": "帮助中心",
+    "refundPolicy": "退款政策",
+    "privacyPolicy": "隐私政策",
+    "termsOfService": "服务条款",
+    "copyright": "© 2026 Stellawei。保留所有权利。仅供娱乐用途。"
+  },
+  "circleHub": {
+    "title": "探索您的灵性之路",
+    "subtitle": "选择适合您的服务，开启心灵之旅"
+  },
+  "language": {
+    "en": "EN",
+    "zh": "中"
+  }
+}

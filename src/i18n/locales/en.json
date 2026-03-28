@@ -1,0 +1,107 @@
+{
+  "brand": "Stellawei",
+  "nav": {
+    "services": "Services",
+    "masters": "Masters",
+    "trust": "Trust",
+    "signIn": "Sign In",
+    "getStarted": "Get Started"
+  },
+  "hero": {
+    "title": "Discover Your Path with",
+    "titleHighlight": "Ancient Wisdom",
+    "subtitle": "AI-powered insights meet real master guidance. Fixed pricing, verified credentials, and a 7-day money-back guarantee.",
+    "ctaPrimary": "Start Your Journey - $9.9 First Reading",
+    "ctaSecondary": "Meet Our Masters",
+    "rating": "4.9/5 Average Rating",
+    "readings": "10,000+ Readings",
+    "secure": "100% Secure"
+  },
+  "services": {
+    "title": "Our Services",
+    "subtitle": "Choose from our range of spiritual guidance services, all with transparent fixed pricing",
+    "tarot": {
+      "name": "Tarot Reading",
+      "description": "Gain clarity on love, career, and life's questions through the ancient wisdom of tarot cards."
+    },
+    "astrology": {
+      "name": "Spiritual Awakening",
+      "description": "Explore your inner journey and discover your soul's calling through spiritual guidance."
+    },
+    "bazi": {
+      "name": "Bazi (Four Pillars)",
+      "description": "Unlock the secrets of your destiny with authentic Chinese astrological analysis."
+    },
+    "fengshui": {
+      "name": "Feng Shui",
+      "description": "Harmonize your living space with ancient Chinese geomancy for better energy flow."
+    },
+    "spiritual": {
+      "name": "Spiritual Awakening",
+      "description": "Explore your inner journey and discover your soul's calling through spiritual guidance."
+    },
+    "popular": "Most Popular",
+    "learnMore": "Learn More",
+    "bookNow": "Book Now"
+  },
+  "trust": {
+    "title": "Why Trust Stellawei?",
+    "subtitle": "We built Stellawei to solve the biggest problems in online fortune telling. No scams. No hidden fees. Just genuine guidance.",
+    "antiFraud": {
+      "title": "Anti-Fraud Guarantee",
+      "description": "We never claim curses or sell rituals"
+    },
+    "pricing": {
+      "title": "Fixed Pricing",
+      "description": "No hidden fees, pay per question not per minute"
+    },
+    "refund": {
+      "title": "7-Day Refund",
+      "description": "Not satisfied? Full cash refund, no questions"
+    },
+    "verified": {
+      "title": "Verified Masters",
+      "description": "All masters certified with 5+ years experience"
+    }
+  },
+  "masters": {
+    "title": "Meet Our Masters",
+    "subtitle": "All our masters are carefully vetted with verified credentials and years of experience",
+    "specialty": "Specialty",
+    "experience": "Experience",
+    "reviews": "reviews",
+    "bookSession": "Book a Session",
+    "viewAll": "View All Masters",
+    "verified": "Verified",
+    "viewProfile": "View Profile"
+  },
+  "cta": {
+    "title": "Ready to Start Your Journey?",
+    "subtitle": "Get your first tarot reading for just $9.9 (regular $25). No subscription required. Full refund if not satisfied.",
+    "claim": "Claim Your $9.9 Reading",
+    "browse": "Browse Services"
+  },
+  "footer": {
+    "tagline": "Your trusted companion for spiritual guidance and self-discovery.",
+    "services": "Services",
+    "company": "Company",
+    "support": "Support",
+    "aboutUs": "About Us",
+    "trustSafety": "Trust & Safety",
+    "careers": "Careers",
+    "contact": "Contact",
+    "helpCenter": "Help Center",
+    "refundPolicy": "Refund Policy",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "copyright": "© 2026 Stellawei. All rights reserved. For entertainment purposes only."
+  },
+  "circleHub": {
+    "title": "Discover Your Spiritual Path",
+    "subtitle": "Choose the service that resonates with your soul"
+  },
+  "language": {
+    "en": "EN",
+    "zh": "中"
+  }
+}

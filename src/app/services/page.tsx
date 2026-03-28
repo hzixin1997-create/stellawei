@@ -1,0 +1,150 @@
+'use client';
+
+import { services } from "@/lib/data"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Clock, CheckCircle, ArrowRight, Sparkles, Star, Shield } from "lucide-react"
+import Link from "next/link"
+import { useTranslation } from 'react-i18next';
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+
+export default function ServicesPage() {
+  const { t } = useTranslation();
+
+  return (
+    <div className="min-h-screen bg-cream">
+      {/* Header */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-cream/80 backdrop-blur-md border-b border-stellawei-purple/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <Link href="/" className="flex items-center space-x-2">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-stellawei-purple to-stellawei-gold"></div>
+              <span className="text-xl font-serif font-bold text-stellawei-purple">{t('brand')}</span>
+            </Link>
+            <div className="flex items-center space-x-4">
+              <LanguageSwitcher />
+              <Link href="/">
+                <Button variant="outline" size="sm">Back to Home</Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero */}
+      <section className="pt-32 pb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto">
+            <div className="inline-flex items-center space-x-2 bg-stellawei-purple/10 text-stellawei-purple px-4 py-2 rounded-full text-sm font-medium mb-6">
+              <Shield className="w-4 h-4" />
+              <span>Fixed Pricing - No Hidden Fees - 7-Day Refund</span>
+            </div>
+            
+            <h1 className="text-4xl md:text-5xl font-serif font-bold mb-6">{t('services.title')}</h1>
+            <p className="text-lg text-muted-foreground">
+              {t('services.subtitle')}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Services List */}
+      <section className="pb-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="space-y-8">
+            {services.map((service) => (
+              <Card key={service.id} className="overflow-hidden border-stellawei-purple/10">
+                <div className="grid md:grid-cols-3">
+                  <div className={`bg-gradient-to-br ${
+                    service.type === 'tarot' ? 'from-purple-500 to-pink-500' :
+                    service.type === 'astrology' ? 'from-amber-500 to-orange-500' :
+                    service.type === 'bazi' ? 'from-indigo-500 to-purple-600' :
+                    'from-emerald-500 to-teal-500'
+                  } p-8 text-white flex flex-col justify-center`}>
+                    <div className="flex items-center space-x-2 mb-4">
+                      <Sparkles className="w-5 h-5" />
+                      <span className="text-sm font-medium capitalize">{service.type}</span>
+                    </div>
+                    
+                    <h3 className="text-2xl font-serif font-bold mb-2">{service.name_en}</h3>
+                    <p className="text-white/80 text-sm mb-6">{service.short_description}</p>
+                    
+                    <div className="flex items-baseline space-x-1">
+                      <span className="text-4xl font-bold">${service.price_min}</span>
+                      {service.price_max > service.price_min && (
+                        <span className="text-xl">-${service.price_max}</span>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="md:col-span-2 p-8">
+                    <p className="text-muted-foreground mb-6">{service.description}</p>
+                    
+                    <div className="grid sm:grid-cols-2 gap-4 mb-6">
+                      <div className="flex items-start space-x-3">
+                        <Clock className="w-5 h-5 text-stellawei-purple mt-0.5" />
+                        <div>
+                          <p className="font-medium">Duration</p>
+                          <p className="text-sm text-muted-foreground">{service.duration_minutes} minutes</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-start space-x-3">
+                        <Star className="w-5 h-5 text-stellawei-gold mt-0.5" />
+                        <div>
+                          <p className="font-medium">Rating</p>
+                          <p className="text-sm text-muted-foreground">4.8/5 average</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2 mb-6">
+                      <p className="font-medium text-sm">What&apos;s included:</p>
+                      <div className="grid sm:grid-cols-2 gap-2">
+                        {service.features.map((feature, i) => (
+                          <div key={i} className="flex items-center space-x-2 text-sm">
+                            <CheckCircle className="w-4 h-4 text-green-500" />
+                            <span>{feature.title}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <Link href={`/masters`}>
+                      <Button className="w-full sm:w-auto">
+                        {t('services.bookNow')}
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Trust Section */}
+      <section className="py-16 bg-white/50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-2xl font-serif font-bold mb-8">Why Our Clients Trust Us</h2>
+          
+          <div className="grid sm:grid-cols-3 gap-8">
+            <div>
+              <p className="text-4xl font-bold text-stellawei-purple mb-2">10K+</p>
+              <p className="text-muted-foreground">Readings Completed</p>
+            </div>
+            <div>
+              <p className="text-4xl font-bold text-stellawei-purple mb-2">4.9/5</p>
+              <p className="text-muted-foreground">Average Rating</p>
+            </div>
+            <div>
+              <p className="text-4xl font-bold text-stellawei-purple mb-2">&lt;5%</p>
+              <p className="text-muted-foreground">Refund Rate</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  )
+}

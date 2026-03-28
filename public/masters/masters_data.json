@@ -1,0 +1,26 @@
+{
+  "masters": [
+    {
+      "id": "zhang-yihua",
+      "name": "Master Zhang Yihua",
+      "nameCn": "张易桦",
+      "photo": "/masters/master_zhang_yihua.jpg",
+      "experience": "8 years",
+      "specialties": ["Qi Men Dun Jia", "Liu Yao Divination"],
+      "specialtiesCn": ["奇门遁甲", "六爻占卜"],
+      "description": "Master Zhang Yihua has 8 years of professional experience in Chinese metaphysics and traditional divination. He specializes in Qi Men Dun Jia and Liu Yao divination, two ancient systems used to analyze timing, opportunities, and hidden influences in life events. Through his readings, Master Zhang helps clients gain clarity in areas such as career decisions, relationships, and personal life direction. His consultations combine traditional wisdom with practical insights, offering thoughtful and grounded guidance.",
+      "services": ["Career Guidance", "Relationship Advice", "Life Direction"]
+    },
+    {
+      "id": "wu-yang",
+      "name": "Master Wu Yang",
+      "nameCn": "戊阳",
+      "photo": "/masters/master_wu_yang.jpg",
+      "experience": "12+ years",
+      "specialties": ["BaZi Analysis", "Feng Shui Consultation"],
+      "specialtiesCn": ["八字命理", "风水咨询"],
+      "description": "Master Wu Yang has over 12 years of experience practicing Chinese metaphysics. He focuses on BaZi (Four Pillars of Destiny) analysis and Feng Shui consultation, helping clients understand their life patterns and environmental energy. By analyzing a person's birth chart and surroundings, Master Wu provides guidance on career development, financial opportunities, and personal balance. His goal is to help clients align their actions with favorable timing and energy.",
+      "services": ["Career Development", "Financial Opportunities", "Personal Balance"]
+    }
+  ]
+}
