@@ -237,9 +237,11 @@ export default function Home() {
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button size="lg" className="text-lg px-8">
-                {t('hero.ctaPrimary')}
-              </Button>
+              <Link href="/booking">
+                <Button size="lg" className="text-lg px-8">
+                  {t('hero.ctaPrimary')}
+                </Button>
+              </Link>
               <Button 
                 variant="outline" 
                 size="lg" 
@@ -369,7 +371,9 @@ export default function Home() {
                     <span className="font-medium">{master.reviews}</span>
                   </div>
                   
-                  <Button className="w-full mt-4">{t('masters.bookSession')}</Button>
+                  <Link href={`/booking`}>
+                    <Button className="w-full mt-4">{t('masters.bookSession')}</Button>
+                  </Link>
                 </CardContent>
               </Card>
             ))}

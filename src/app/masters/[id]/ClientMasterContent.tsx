@@ -160,10 +160,12 @@ export function ClientMasterContent({ master }: Props) {
                   </div>
                   
                   <div className="pt-4 border-t">
-                    <Button className="w-full">
-                      <Calendar className="w-4 h-4 mr-2" />
-                      {labels.bookSession}
-                    </Button>
+                    <Link href="/booking">
+                      <Button className="w-full">
+                        <Calendar className="w-4 h-4 mr-2" />
+                        {labels.bookSession}
+                      </Button>
+                    </Link>
                   </div>
                 </CardContent>
               </Card>
@@ -248,7 +250,9 @@ export function ClientMasterContent({ master }: Props) {
                             ${service.price_min}
                             {service.price_max > service.price_min && `-${service.price_max}`}
                           </p>
-                          <Button size="sm">{labels.bookNow}</Button>
+                          <Link href="/booking">
+                            <Button size="sm">{labels.bookNow}</Button>
+                          </Link>
                         </div>
                       </div>
                     ))}

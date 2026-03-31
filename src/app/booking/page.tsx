@@ -1,15 +1,17 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
 import { useTranslation } from 'react-i18next'
-import { ArrowLeft, ArrowRight, Calendar as CalendarIcon, Clock, User, Sparkles } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Calendar as CalendarIcon, Clock, User, Sparkles, Tag } from 'lucide-react'
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase/client'
 
 // 师傅数据
 const masters = [
@@ -18,12 +20,15 @@ const masters = [
   { id: 'wu-yang', name: 'Master Wu Yang', nameCn: '戊阳', specialty: 'BaZi & Feng Shui', price: '$45' },
 ]
 
-// 服务数据
-const services = [
+// 服务数据（原价）
+const servicesOriginal = [
   { id: 'tarot', name: 'Tarot Reading', nameCn: '塔罗占卜', duration: '20 min', price: '$25', description: 'Get guidance through tarot cards' },
   { id: 'bazi', name: 'BaZi Analysis', nameCn: '八字分析', duration: '40 min', price: '$45', description: 'Understand your destiny through Chinese astrology' },
   { id: 'spiritual', name: 'Spiritual Guidance', nameCn: '灵性指引', duration: '30 min', price: '$35', description: 'Connect with your inner wisdom' },
 ]
+
+// 首次用户优惠价格
+const FIRST_TIME_PRICE = '$9.9'
 
 // 时间段
 const timeSlots = [
@@ -38,8 +43,40 @@ export default function BookingPage() {
   const [selectedService, setSelectedService] = useState('')
   const [selectedDate, setSelectedDate] = useState<Date>()
   const [selectedTime, setSelectedTime] = useState('')
+  const [isFirstTime, setIsFirstTime] = useState(true) // 默认为是首次用户
+  const [isLoading, setIsLoading] = useState(true)
 
   const isZh = i18n.language === 'zh'
+
+  // 检测用户是否是首次用户
+  useEffect(() => {
+    const checkFirstTimeUser = async () => {
+      const supabase = createClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      if (session?.user) {
+        // 查询用户是否有已完成的历史预约
+        const { data: bookings, error } = await supabase
+          .from('bookings')
+          .select('id')
+          .eq('user_id', session.user.id)
+          .limit(1)
+        
+        if (!error && bookings && bookings.length > 0) {
+          setIsFirstTime(false) // 有历史预约，不是首次用户
+        }
+      }
+      
+      setIsLoading(false)
+    }
+
+    checkFirstTimeUser()
+  }, [])
+
+  // 获取显示价格（首次用户显示折扣价）
+  const getDisplayPrice = (originalPrice: string) => {
+    return isFirstTime ? FIRST_TIME_PRICE : originalPrice
+  }
 
   const handleNext = () => {
     if (step < 4) setStep(step + 1)
@@ -64,6 +101,10 @@ export default function BookingPage() {
     }
   }
 
+  // 获取当前选中的服务价格
+  const selectedServicePrice = servicesOriginal.find(s => s.id === selectedService)?.price || '$0'
+  const finalPrice = getDisplayPrice(selectedServicePrice)
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-50 to-stone-100 py-8 px-4">
       <div className="max-w-4xl mx-auto">
@@ -79,6 +120,21 @@ export default function BookingPage() {
           <p className="text-stone-600 mt-2">
             {isZh ? '选择师傅、服务和时间，开启您的命理之旅' : 'Choose your master, service, and time to begin your journey'}
           </p>
+          
+          {/* 首次用户优惠提示 */}
+          {isFirstTime && !isLoading && (
+            <div className="mt-4 bg-gradient-to-r from-violet-100 to-purple-100 border border-violet-300 rounded-lg p-4 flex items-center gap-3">
+              <Tag className="w-5 h-5 text-violet-600" />
+              <div>
+                <span className="font-semibold text-violet-800">
+                  {isZh ? '🎉 首次用户专享优惠！' : '🎉 First-time user special offer!'}
+                </span>
+                <span className="text-violet-700 ml-2">
+                  {isZh ? '任意服务仅需 $9.9' : 'Any service for just $9.9'}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Progress Steps */}
@@ -127,7 +183,16 @@ export default function BookingPage() {
                         <h3 className="font-semibold text-lg">{isZh ? master.nameCn : master.name}</h3>
                         <p className="text-stone-600">{master.specialty}</p>
                       </div>
-                      <div className="text-violet-600 font-bold">{master.price}</div>
+                      <div className="text-right">
+                        {isFirstTime ? (
+                          <div className="flex flex-col items-end">
+                            <span className="text-stone-400 line-through text-sm">{master.price}</span>
+                            <span className="text-violet-600 font-bold">{FIRST_TIME_PRICE}</span>
+                          </div>
+                        ) : (
+                          <div className="text-violet-600 font-bold">{master.price}</div>
+                        )}
+                      </div>
                     </Label>
                   </div>
                 ))}
@@ -137,7 +202,7 @@ export default function BookingPage() {
             {/* Step 2: Select Service */}
             {step === 2 && (
               <RadioGroup value={selectedService} onValueChange={setSelectedService} className="space-y-4">
-                {services.map((service) => (
+                {servicesOriginal.map((service) => (
                   <div key={service.id}>
                     <RadioGroupItem value={service.id} id={service.id} className="peer sr-only" />
                     <Label
@@ -151,7 +216,17 @@ export default function BookingPage() {
                           <span>{service.duration}</span>
                         </div>
                       </div>
-                      <div className="text-violet-600 font-bold text-lg">{service.price}</div>
+                      <div className="text-right">
+                        {isFirstTime ? (
+                          <div className="flex flex-col items-end">
+                            <span className="text-stone-400 line-through text-sm">{service.price}</span>
+                            <span className="text-violet-600 font-bold text-lg">{FIRST_TIME_PRICE}</span>
+                            <Badge className="mt-1 bg-violet-100 text-violet-700 text-xs">{isZh ? '首单优惠' : 'First Order'}</Badge>
+                          </div>
+                        ) : (
+                          <div className="text-violet-600 font-bold text-lg">{service.price}</div>
+                        )}
+                      </div>
                     </Label>
                   </div>
                 ))}
@@ -160,34 +235,44 @@ export default function BookingPage() {
 
             {/* Step 3: Select Date & Time */}
             {step === 3 && (
-              <div className="space-y-6">
-                <div>
-                  <Label className="mb-3 block">{isZh ? '选择日期' : 'Select Date'}</Label>
-                  <Calendar
-                    mode="single"
-                    selected={selectedDate}
-                    onSelect={setSelectedDate}
-                    disabled={(date) => date < new Date() || date.getDay() === 0}
-                    className="rounded-md border"
-                  />
-                </div>
-                {selectedDate && (
-                  <div>
+              <div>
+                {/* 左右并排布局：日历 + 时间 */}
+                <div className="flex flex-col lg:flex-row gap-8">
+                  {/* 左侧：日历 */}
+                  <div className="w-fit">
+                    <Label className="mb-3 block">{isZh ? '选择日期' : 'Select Date'}</Label>
+                    <Calendar
+                      mode="single"
+                      selected={selectedDate}
+                      onSelect={setSelectedDate}
+                      disabled={(date) => date < new Date() || date.getDay() === 0}
+                      className="rounded-md border"
+                    />
+                  </div>
+                  
+                  {/* 右侧：时间选择 */}
+                  <div className="lg:w-[240px] flex-shrink-0">
                     <Label className="mb-3 block">{isZh ? '选择时间' : 'Select Time'}</Label>
-                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                    <div className="grid grid-cols-2 gap-3">
                       {timeSlots.map((time) => (
                         <Button
                           key={time}
                           variant={selectedTime === time ? 'default' : 'outline'}
                           onClick={() => setSelectedTime(time)}
-                          className={selectedTime === time ? 'bg-violet-600' : ''}
+                          disabled={!selectedDate}
+                          className={`h-11 ${selectedTime === time ? 'bg-violet-600' : selectedDate ? '' : 'opacity-50 cursor-not-allowed'}`}
                         >
                           {time}
                         </Button>
                       ))}
                     </div>
+                    {!selectedDate && (
+                      <p className="text-sm text-stone-400 mt-3 text-center">
+                        {isZh ? '请先选择日期' : 'Please select a date first'}
+                      </p>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
             )}
 
@@ -206,7 +291,7 @@ export default function BookingPage() {
                     <div className="flex justify-between">
                       <span className="text-stone-600">{isZh ? '服务' : 'Service'}</span>
                       <span className="font-medium">
-                        {services.find(s => s.id === selectedService)?.[isZh ? 'nameCn' : 'name']}
+                        {servicesOriginal.find(s => s.id === selectedService)?.[isZh ? 'nameCn' : 'name']}
                       </span>
                     </div>
                     <div className="flex justify-between">
@@ -220,10 +305,22 @@ export default function BookingPage() {
                     <div className="border-t pt-3 mt-3">
                       <div className="flex justify-between text-lg font-bold">
                         <span>{isZh ? '总计' : 'Total'}</span>
-                        <span className="text-violet-600">
-                          {services.find(s => s.id === selectedService)?.price}
-                        </span>
+                        <div className="text-right">
+                          {isFirstTime && (
+                            <span className="text-stone-400 line-through text-sm mr-2">
+                              {selectedServicePrice}
+                            </span>
+                          )}
+                          <span className="text-violet-600">
+                            {finalPrice}
+                          </span>
+                        </div>
                       </div>
+                      {isFirstTime && (
+                        <p className="text-xs text-violet-600 mt-1 text-right">
+                          {isZh ? '✨ 已应用首次用户优惠' : '✨ First-time user discount applied'}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
