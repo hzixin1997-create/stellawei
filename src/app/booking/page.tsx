@@ -9,26 +9,26 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { useTranslation } from 'react-i18next'
-import { ArrowLeft, ArrowRight, Calendar as CalendarIcon, Clock, User, Sparkles, Tag } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Calendar as CalendarIcon, Clock, User, Sparkles, Tag, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
 // 师傅数据
 const masters = [
-  { id: 'master-luna', name: 'Master Luna', nameCn: '卢娜师傅', specialty: 'Tarot', price: '$25' },
-  { id: 'zhang-yihua', name: 'Master Zhang Yihua', nameCn: '张易桦', specialty: 'Qi Men Dun Jia', price: '$35' },
-  { id: 'wu-yang', name: 'Master Wu Yang', nameCn: '戊阳', specialty: 'BaZi & Feng Shui', price: '$45' },
+  { id: 'master-luna', name: 'Master Luna', nameCn: '卢娜师傅', specialty: 'Tarot', price: 25 },
+  { id: 'zhang-yihua', name: 'Master Zhang Yihua', nameCn: '张易桦', specialty: 'Qi Men Dun Jia', price: 35 },
+  { id: 'wu-yang', name: 'Master Wu Yang', nameCn: '戊阳', specialty: 'BaZi & Feng Shui', price: 45 },
 ]
 
 // 服务数据（原价）
 const servicesOriginal = [
-  { id: 'tarot', name: 'Tarot Reading', nameCn: '塔罗占卜', duration: '20 min', price: '$25', description: 'Get guidance through tarot cards' },
-  { id: 'bazi', name: 'BaZi Analysis', nameCn: '八字分析', duration: '40 min', price: '$45', description: 'Understand your destiny through Chinese astrology' },
-  { id: 'spiritual', name: 'Spiritual Guidance', nameCn: '灵性指引', duration: '30 min', price: '$35', description: 'Connect with your inner wisdom' },
+  { id: 'tarot', name: 'Tarot Reading', nameCn: '塔罗占卜', duration: 20, price: 25, description: 'Get guidance through tarot cards' },
+  { id: 'bazi', name: 'BaZi Analysis', nameCn: '八字分析', duration: 40, price: 45, description: 'Understand your destiny through Chinese astrology' },
+  { id: 'spiritual', name: 'Spiritual Guidance', nameCn: '灵性指引', duration: 30, price: 35, description: 'Connect with your inner wisdom' },
 ]
 
 // 首次用户优惠价格
-const FIRST_TIME_PRICE = '$9.9'
+const FIRST_TIME_PRICE = 9.9
 
 // 时间段
 const timeSlots = [
@@ -43,38 +43,48 @@ export default function BookingPage() {
   const [selectedService, setSelectedService] = useState('')
   const [selectedDate, setSelectedDate] = useState<Date>()
   const [selectedTime, setSelectedTime] = useState('')
-  const [isFirstTime, setIsFirstTime] = useState(true) // 默认为是首次用户
+  const [isFirstTime, setIsFirstTime] = useState(true)
   const [isLoading, setIsLoading] = useState(true)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [user, setUser] = useState<any>(null)
+  const [error, setError] = useState('')
 
   const isZh = i18n.language === 'zh'
 
-  // 检测用户是否是首次用户
+  // 检测用户是否是首次用户并获取用户信息
   useEffect(() => {
-    const checkFirstTimeUser = async () => {
+    const checkUserAndFirstTime = async () => {
       const supabase = createClient()
       const { data: { session } } = await supabase.auth.getSession()
       
-      if (session?.user) {
-        // 查询用户是否有已完成的历史预约
-        const { data: bookings, error } = await supabase
-          .from('bookings')
-          .select('id')
-          .eq('user_id', session.user.id)
-          .limit(1)
-        
-        if (!error && bookings && bookings.length > 0) {
-          setIsFirstTime(false) // 有历史预约，不是首次用户
-        }
+      if (!session?.user) {
+        // 未登录用户重定向到登录页
+        router.push('/auth/login?redirect=/booking')
+        return
+      }
+
+      setUser(session.user)
+      
+      // 查询用户是否有已完成的历史预约
+      const { data: bookings, error } = await supabase
+        .from('bookings')
+        .select('id')
+        .eq('user_id', session.user.id)
+        .eq('payment_status', 'paid')
+        .limit(1)
+      
+      if (!error && bookings && bookings.length > 0) {
+        setIsFirstTime(false)
       }
       
       setIsLoading(false)
     }
 
-    checkFirstTimeUser()
-  }, [])
+    checkUserAndFirstTime()
+  }, [router])
 
   // 获取显示价格（首次用户显示折扣价）
-  const getDisplayPrice = (originalPrice: string) => {
+  const getDisplayPrice = (originalPrice: number) => {
     return isFirstTime ? FIRST_TIME_PRICE : originalPrice
   }
 
@@ -86,10 +96,100 @@ export default function BookingPage() {
     if (step > 1) setStep(step - 1)
   }
 
-  const handleConfirm = () => {
-    // TODO: 提交预约到 Supabase
-    alert('Booking confirmed! (Demo)')
-    router.push('/dashboard')
+  const handleConfirm = async () => {
+    if (!user) {
+      router.push('/auth/login?redirect=/booking')
+      return
+    }
+
+    setIsSubmitting(true)
+    setError('')
+
+    try {
+      const master = masters.find(m => m.id === selectedMaster)
+      const service = servicesOriginal.find(s => s.id === selectedService)
+      
+      if (!master || !service || !selectedDate || !selectedTime) {
+        throw new Error('Missing required booking information')
+      }
+
+      // 计算最终价格
+      const finalPrice = isFirstTime ? FIRST_TIME_PRICE : service.price
+
+      // 构建预约时间字符串
+      const scheduledDateTime = new Date(selectedDate)
+      const [hours, minutes] = selectedTime.split(':')
+      scheduledDateTime.setHours(parseInt(hours), parseInt(minutes))
+
+      // 1. 创建 booking 记录
+      const supabase = createClient()
+      const { data: booking, error: bookingError } = await supabase
+        .from('bookings')
+        .insert({
+          user_id: user.id,
+          master_id: selectedMaster,
+          service_id: selectedService,
+          scheduled_at: scheduledDateTime.toISOString(),
+          scheduled_date: selectedDate.toISOString().split('T')[0],
+          scheduled_time: selectedTime,
+          duration_minutes: service.duration,
+          status: 'pending',
+          payment_status: 'pending',
+          subtotal: service.price,
+          discount_amount: isFirstTime ? service.price - FIRST_TIME_PRICE : 0,
+          total_amount: finalPrice,
+          currency: 'usd',
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          is_first_time: isFirstTime,
+        })
+        .select()
+        .single()
+
+      if (bookingError) {
+        throw new Error(`Failed to create booking: ${bookingError.message}`)
+      }
+
+      // 2. 调用支付 API 创建 Checkout Session
+      const response = await fetch('/api/payment/create-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          bookingId: booking.id,
+          masterId: selectedMaster,
+          serviceId: selectedService,
+          amount: finalPrice,
+          currency: 'usd',
+          userId: user.id,
+          userEmail: user.email,
+          userName: user.user_metadata?.full_name || user.email,
+          masterName: isZh ? master.nameCn : master.name,
+          serviceName: isZh ? service.nameCn : service.name,
+          scheduledDate: selectedDate.toLocaleDateString(),
+          scheduledTime: selectedTime,
+          isFirstTime,
+        }),
+      })
+
+      const paymentData = await response.json()
+
+      if (!response.ok) {
+        throw new Error(paymentData.error || 'Failed to create payment session')
+      }
+
+      // 3. 跳转到 Stripe Checkout
+      if (paymentData.url) {
+        window.location.href = paymentData.url
+      } else {
+        throw new Error('No checkout URL returned')
+      }
+
+    } catch (err: any) {
+      console.error('Booking error:', err)
+      setError(err.message || 'An error occurred during booking')
+      setIsSubmitting(false)
+    }
   }
 
   const canProceed = () => {
@@ -102,8 +202,21 @@ export default function BookingPage() {
   }
 
   // 获取当前选中的服务价格
-  const selectedServicePrice = servicesOriginal.find(s => s.id === selectedService)?.price || '$0'
+  const selectedServiceData = servicesOriginal.find(s => s.id === selectedService)
+  const selectedServicePrice = selectedServiceData?.price || 0
   const finalPrice = getDisplayPrice(selectedServicePrice)
+
+  // 加载中状态
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-stone-50 to-stone-100 flex items-center justify-center">
+        <div className="flex items-center gap-2 text-stone-600">
+          <Loader2 className="w-5 h-5 animate-spin" />
+          {isZh ? '加载中...' : 'Loading...'}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-50 to-stone-100 py-8 px-4">
@@ -136,6 +249,13 @@ export default function BookingPage() {
             </div>
           )}
         </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
+            {error}
+          </div>
+        )}
 
         {/* Progress Steps */}
         <div className="flex items-center justify-between mb-8">
@@ -186,11 +306,11 @@ export default function BookingPage() {
                       <div className="text-right">
                         {isFirstTime ? (
                           <div className="flex flex-col items-end">
-                            <span className="text-stone-400 line-through text-sm">{master.price}</span>
-                            <span className="text-violet-600 font-bold">{FIRST_TIME_PRICE}</span>
+                            <span className="text-stone-400 line-through text-sm">${master.price}</span>
+                            <span className="text-violet-600 font-bold">${FIRST_TIME_PRICE}</span>
                           </div>
                         ) : (
-                          <div className="text-violet-600 font-bold">{master.price}</div>
+                          <div className="text-violet-600 font-bold">${master.price}</div>
                         )}
                       </div>
                     </Label>
@@ -213,18 +333,18 @@ export default function BookingPage() {
                         <h3 className="font-semibold text-lg">{isZh ? service.nameCn : service.name}</h3>
                         <p className="text-stone-600">{isZh ? '通过命理获得指引' : service.description}</p>
                         <div className="flex gap-4 mt-2 text-sm text-stone-500">
-                          <span>{service.duration}</span>
+                          <span>{service.duration} min</span>
                         </div>
                       </div>
                       <div className="text-right">
                         {isFirstTime ? (
                           <div className="flex flex-col items-end">
-                            <span className="text-stone-400 line-through text-sm">{service.price}</span>
-                            <span className="text-violet-600 font-bold text-lg">{FIRST_TIME_PRICE}</span>
+                            <span className="text-stone-400 line-through text-sm">${service.price}</span>
+                            <span className="text-violet-600 font-bold text-lg">${FIRST_TIME_PRICE}</span>
                             <Badge className="mt-1 bg-violet-100 text-violet-700 text-xs">{isZh ? '首单优惠' : 'First Order'}</Badge>
                           </div>
                         ) : (
-                          <div className="text-violet-600 font-bold text-lg">{service.price}</div>
+                          <div className="text-violet-600 font-bold text-lg">${service.price}</div>
                         )}
                       </div>
                     </Label>
@@ -308,11 +428,11 @@ export default function BookingPage() {
                         <div className="text-right">
                           {isFirstTime && (
                             <span className="text-stone-400 line-through text-sm mr-2">
-                              {selectedServicePrice}
+                              ${selectedServicePrice}
                             </span>
                           )}
                           <span className="text-violet-600">
-                            {finalPrice}
+                            ${finalPrice}
                           </span>
                         </div>
                       </div>
@@ -325,7 +445,7 @@ export default function BookingPage() {
                   </div>
                 </div>
                 <p className="text-sm text-stone-500 text-center">
-                  {isZh ? '点击确认后将跳转到支付页面' : 'Click confirm to proceed to payment'}
+                  {isZh ? '点击确认后将跳转到 Stripe 支付页面完成付款' : 'Click confirm to proceed to Stripe Checkout to complete payment'}
                 </p>
               </div>
             )}
@@ -334,7 +454,7 @@ export default function BookingPage() {
 
         {/* Navigation Buttons */}
         <div className="flex justify-between">
-          <Button variant="outline" onClick={handleBack} disabled={step === 1}>
+          <Button variant="outline" onClick={handleBack} disabled={step === 1 || isSubmitting}>
             <ArrowLeft className="w-4 h-4 mr-2" />
             {isZh ? '上一步' : 'Back'}
           </Button>
@@ -344,8 +464,21 @@ export default function BookingPage() {
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           ) : (
-            <Button onClick={handleConfirm} className="bg-violet-600 hover:bg-violet-700">
-              {isZh ? '确认预约' : 'Confirm Booking'}
+            <Button 
+              onClick={handleConfirm} 
+              disabled={isSubmitting}
+              className="bg-violet-600 hover:bg-violet-700"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  {isZh ? '处理中...' : 'Processing...'}
+                </>
+              ) : (
+                <>
+                  {isZh ? '确认预约' : 'Confirm Booking'}
+                </>
+              )}
             </Button>
           )}
         </div>

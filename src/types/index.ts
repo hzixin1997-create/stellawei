@@ -234,3 +234,79 @@ export interface RefundRequest {
   internal_notes?: string
   created_at: string
 }
+
+// Booking Types
+export type BookingStatus = 
+  | 'pending'
+  | 'confirmed'
+  | 'in_progress'
+  | 'completed'
+  | 'cancelled'
+  | 'refunded'
+
+export type PaymentStatus = 
+  | 'pending'
+  | 'paid'
+  | 'failed'
+  | 'cancelled'
+  | 'expired'
+  | 'refunded'
+
+export interface Booking {
+  id: string
+  user_id: string
+  master_id: string
+  service_id: string
+  scheduled_at: string
+  scheduled_date?: string
+  scheduled_time?: string
+  timezone: string
+  duration_minutes: number
+  status: BookingStatus
+  payment_status: PaymentStatus
+  question_text?: string
+  question_category?: 'love' | 'career' | 'health' | 'wealth' | 'other'
+  user_birth_date?: string
+  user_birth_time?: string
+  user_birth_location?: string
+  subtotal: number
+  discount_amount: number
+  total_amount: number
+  currency: string
+  payment_intent_id?: string
+  payment_method?: string
+  paid_at?: string
+  stripe_customer_id?: string
+  stripe_refund_id?: string
+  refunded_at?: string
+  refund_amount?: number
+  refund_reason?: string
+  is_first_time: boolean
+  notes?: string
+  created_at: string
+  updated_at: string
+  master?: Master
+  service?: Service
+}
+
+// Payment Types
+export type PaymentStatusType = 'pending' | 'completed' | 'failed' | 'refunded'
+
+export interface Payment {
+  id: string
+  booking_id: string
+  user_id: string
+  stripe_session_id?: string
+  stripe_payment_intent_id?: string
+  stripe_charge_id?: string
+  amount: number
+  currency: string
+  status: PaymentStatusType
+  payment_method?: string
+  metadata?: Record<string, any>
+  stripe_refund_id?: string
+  refund_amount?: number
+  refund_reason?: string
+  created_at: string
+  updated_at: string
+}

@@ -5,7 +5,6 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import { DayPicker, getDefaultClassNames } from "react-day-picker"
 
 import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>
 
@@ -31,33 +30,41 @@ function Calendar({
         // 导航按钮容器
         nav: cn(defaultClassNames.nav, "flex items-center gap-1"),
         button_previous: cn(
-          buttonVariants({ variant: "ghost" }),
           defaultClassNames.button_previous,
-          "h-7 w-7 p-0 hover:bg-accent"
+          "h-7 w-7 p-0 flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
         ),
         button_next: cn(
-          buttonVariants({ variant: "ghost" }),
           defaultClassNames.button_next,
-          "h-7 w-7 p-0 hover:bg-accent"
+          "h-7 w-7 p-0 flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
         ),
-        month_grid: cn(defaultClassNames.month_grid, "w-full border-collapse table-fixed"),
+        month_grid: cn(defaultClassNames.month_grid, "w-full border-collapse"),
         weekdays: cn(defaultClassNames.weekdays, "flex justify-between mb-1"),
         weekday: cn(defaultClassNames.weekday, "text-muted-foreground w-9 font-normal text-[0.8rem] text-center"),
-        week: cn(defaultClassNames.week, "flex w-full justify-between gap-0.5"),
+        week: cn(defaultClassNames.week, "flex w-full justify-between"),
         day: cn(
           defaultClassNames.day,
-          "h-9 w-9 text-center text-sm p-0 relative overflow-hidden"
+          "h-9 w-9 text-center text-sm p-0 relative"
         ),
         day_button: cn(
-          buttonVariants({ variant: "ghost" }),
           defaultClassNames.day_button,
-          "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-accent hover:text-accent-foreground rounded-md overflow-hidden"
+          "h-9 w-9 p-0 font-normal rounded-md transition-all",
+          "hover:bg-accent hover:text-accent-foreground",
+          "focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-1",
+          // 默认状态
+          "bg-transparent text-stone-700",
+          // 选中状态 - 使用更明确的选择器
+          "data-[selected=true]:bg-violet-600 data-[selected=true]:text-white",
+          "data-[selected=true]:hover:bg-violet-700 data-[selected=true]:hover:text-white",
+          "data-[selected=true]:focus:bg-violet-600 data-[selected=true]:focus:text-white",
+          // 今天状态
+          "data-[today=true]:bg-accent data-[today=true]:border data-[today=true]:border-violet-300"
         ),
+        // 选中日期的父元素样式
         selected: cn(
           defaultClassNames.selected,
-          "bg-violet-600 text-white hover:bg-violet-700 hover:text-white focus:bg-violet-600 focus:text-white rounded-md overflow-hidden"
+          "" // 不需要额外样式，按钮本身已经处理
         ),
-        today: cn(defaultClassNames.today, "bg-accent text-accent-foreground rounded-md border border-violet-300"),
+        today: cn(defaultClassNames.today, ""),
         outside: cn(
           defaultClassNames.outside,
           "text-muted-foreground opacity-40"
