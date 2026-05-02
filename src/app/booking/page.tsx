@@ -149,25 +149,22 @@ export default function BookingPage() {
         throw new Error(`Failed to create booking: ${bookingError.message}`)
       }
 
-      // 2. 调用支付 API 创建 Checkout Session
-      const response = await fetch('/api/payment/create-session', {
+      // 2. 调用手动支付 API（过渡方案：创建 booking + 通知管理员）
+      const response = await fetch('/api/payment/manual', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           bookingId: booking.id,
-          masterId: selectedMaster,
-          serviceId: selectedService,
-          amount: finalPrice,
-          currency: 'usd',
-          userId: user.id,
           userEmail: user.email,
           userName: user.user_metadata?.full_name || user.email,
           masterName: isZh ? master.nameCn : master.name,
           serviceName: isZh ? service.nameCn : service.name,
           scheduledDate: selectedDate.toLocaleDateString(),
           scheduledTime: selectedTime,
+          amount: finalPrice,
+          currency: 'usd',
           isFirstTime,
         }),
       })
@@ -175,15 +172,11 @@ export default function BookingPage() {
       const paymentData = await response.json()
 
       if (!response.ok) {
-        throw new Error(paymentData.error || 'Failed to create payment session')
+        throw new Error(paymentData.error || 'Failed to process booking')
       }
 
-      // 3. 跳转到 Stripe Checkout
-      if (paymentData.url) {
-        window.location.href = paymentData.url
-      } else {
-        throw new Error('No checkout URL returned')
-      }
+      // 3. 跳转到预约成功/待支付页面
+      router.push(`/booking/success?booking_id=${booking.id}`)
 
     } catch (err: any) {
       console.error('Booking error:', err)
@@ -445,7 +438,7 @@ export default function BookingPage() {
                   </div>
                 </div>
                 <p className="text-sm text-stone-500 text-center">
-                  {isZh ? '点击确认后将跳转到 Stripe 支付页面完成付款' : 'Click confirm to proceed to Stripe Checkout to complete payment'}
+                  {isZh ? '点击确认后将创建预约，您可以在下一页选择支付方式完成付款' : 'Click confirm to create your booking. You will be able to choose a payment method on the next page.'}
                 </p>
               </div>
             )}
