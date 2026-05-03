@@ -1,13 +1,26 @@
 'use client';
 
-import { reviews, services } from "@/lib/data"
+import { useEffect, useState } from "react"
+import { reviews } from "@/lib/data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Star, Clock, Award, CheckCircle, Calendar } from "lucide-react"
+import { Star, Clock, Award, CheckCircle, MessageSquare, Video } from "lucide-react"
 import Link from "next/link"
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { createClient } from "@/lib/supabase/client";
+
+interface MasterService {
+  id: string;
+  name: string;
+  type: 'booking' | 'message';
+  price: number;
+  currency: string;
+  duration_minutes?: number;
+  response_hours: number;
+  description?: string;
+}
 
 interface Master {
   id: string;
@@ -37,9 +50,76 @@ interface Props {
 export function ClientMasterContent({ master }: Props) {
   const { i18n, t } = useTranslation();
   const currentLang = i18n.language || 'en';
+  const supabase = createClient();
   
+  const [services, setServices] = useState<MasterService[]>([]);
+  const [loadingServices, setLoadingServices] = useState(true);
+  const [creatingOrder, setCreatingOrder] = useState<string | null>(null);
+  const [authError, setAuthError] = useState(false);
+
+  useEffect(() => {
+    loadServices();
+  }, [master.id]);
+
+  async function loadServices() {
+    try {
+      const res = await fetch(`/api/masters/${master.id}/services`);
+      const data = await res.json();
+      if (data.services) {
+        setServices(data.services);
+      }
+    } catch (err) {
+      console.error("Failed to load services:", err);
+    } finally {
+      setLoadingServices(false);
+    }
+  }
+
+  async function createOrder(serviceId: string) {
+    setCreatingOrder(serviceId);
+    setAuthError(false);
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        setAuthError(true);
+        setCreatingOrder(null);
+        return;
+      }
+
+      const service = services.find(s => s.id === serviceId);
+      if (!service) return;
+
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          master_id: master.id,
+          master_service_id: serviceId,
+          type: service.type,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.success && data.checkoutUrl) {
+        // 跳转到 Stripe Checkout
+        window.location.href = data.checkoutUrl;
+      } else if (data.error) {
+        alert(data.error);
+        setCreatingOrder(null);
+      }
+    } catch (err) {
+      console.error("Create order error:", err);
+      alert("创建订单失败，请重试");
+      setCreatingOrder(null);
+    }
+  }
+
   const masterReviews = reviews.filter(r => r.master_id === master.id)
-  const masterServices = services.filter(s => master.specialties.includes(s.type))
   
   const specialtyLabels: Record<string, string> = {
     tarot: "Tarot Reading",
@@ -75,13 +155,16 @@ export function ClientMasterContent({ master }: Props) {
     about: currentLang === 'zh' ? '关于' : 'About',
     specialties: currentLang === 'zh' ? '专长' : 'Specialties',
     certifications: currentLang === 'zh' ? '认证' : 'Certifications',
-    services: currentLang === 'zh' ? '可预约服务' : 'Available Services',
-    bookSession: currentLang === 'zh' ? '预约咨询' : 'Book Session',
+    services: currentLang === 'zh' ? '服务' : 'Services',
     bookNow: currentLang === 'zh' ? '立即预约' : 'Book Now',
+    leaveMessage: currentLang === 'zh' ? '留言咨询' : 'Leave Message',
     reviews: currentLang === 'zh' ? '评价' : 'Reviews',
     verified: currentLang === 'zh' ? '已认证' : 'Verified',
     viewServices: currentLang === 'zh' ? '查看服务' : 'View Services',
     years: currentLang === 'zh' ? '年' : 'years',
+    min: currentLang === 'zh' ? '分钟' : 'min',
+    hours: currentLang === 'zh' ? '小时回复' : 'h response',
+    loginRequired: currentLang === 'zh' ? '请先登录' : 'Please sign in first',
   }
 
   return (
@@ -96,8 +179,8 @@ export function ClientMasterContent({ master }: Props) {
             </Link>
             <div className="flex items-center space-x-4">
               <LanguageSwitcher />
-              <Link href="/services">
-                <Button variant="outline" size="sm">{labels.viewServices}</Button>
+              <Link href="/orders">
+                <Button variant="outline" size="sm">{currentLang === 'zh' ? '我的订单' : 'My Orders'}</Button>
               </Link>
             </div>
           </div>
@@ -157,15 +240,6 @@ export function ClientMasterContent({ master }: Props) {
                         </Badge>
                       ))}
                     </div>
-                  </div>
-                  
-                  <div className="pt-4 border-t">
-                    <Link href="/booking">
-                      <Button className="w-full">
-                        <Calendar className="w-4 h-4 mr-2" />
-                        {labels.bookSession}
-                      </Button>
-                    </Link>
                   </div>
                 </CardContent>
               </Card>
@@ -227,36 +301,85 @@ export function ClientMasterContent({ master }: Props) {
                 </Card>
               )}
 
-              {/* Services */}
+              {/* Services — 改造：从API加载，支持直接下单 */}
               <Card>
                 <CardHeader>
                   <CardTitle className="font-serif">{labels.services}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    {masterServices.map(service => (
-                      <div key={service.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
-                        <div>
-                          <p className="font-medium">{currentLang === 'zh' && service.name_zh ? service.name_zh : service.name_en}</p>
-                          <div className="flex items-center space-x-3 text-sm text-muted-foreground">
-                            <span className="flex items-center">
-                              <Clock className="w-3 h-3 mr-1" />
-                              {service.duration_minutes} {currentLang === 'zh' ? '分钟' : 'min'}
-                            </span>
+                  {authError && (
+                    <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
+                      <p className="font-medium mb-2">{labels.loginRequired}</p>
+                      <Link href={`/auth/login?redirect=/masters/${master.id}`}>
+                        <Button size="sm" variant="outline">{currentLang === 'zh' ? '去登录' : 'Sign In'}</Button>
+                      </Link>
+                    </div>
+                  )}
+
+                  {loadingServices ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      {currentLang === 'zh' ? '加载服务中...' : 'Loading services...'}
+                    </div>
+                  ) : services.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      {currentLang === 'zh' ? '暂无可用服务' : 'No services available'}
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {services.map(service => (
+                        <div key={service.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <p className="font-medium">{service.name}</p>
+                              {service.type === 'message' ? (
+                                <Badge variant="secondary" className="text-xs flex items-center gap-1">
+                                  <MessageSquare className="w-3 h-3" />
+                                  {currentLang === 'zh' ? '留言' : 'Message'}
+                                </Badge>
+                              ) : (
+                                <Badge variant="secondary" className="text-xs flex items-center gap-1">
+                                  <Video className="w-3 h-3" />
+                                  {currentLang === 'zh' ? '预约' : 'Booking'}
+                                </Badge>
+                              )}
+                            </div>
+                            <div className="flex items-center space-x-3 text-sm text-muted-foreground mt-1">
+                              {service.duration_minutes ? (
+                                <span className="flex items-center">
+                                  <Clock className="w-3 h-3 mr-1" />
+                                  {service.duration_minutes} {labels.min}
+                                </span>
+                              ) : (
+                                <span className="flex items-center">
+                                  <Clock className="w-3 h-3 mr-1" />
+                                  {service.response_hours} {labels.hours}
+                                </span>
+                              )}
+                              {service.description && (
+                                <span className="truncate">{service.description}</span>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-4 flex-shrink-0 ml-4">
+                            <p className="font-bold text-stellawei-purple">
+                              {service.currency} {service.price}
+                            </p>
+                            <Button
+                              size="sm"
+                              onClick={() => createOrder(service.id)}
+                              disabled={creatingOrder === service.id}
+                              className={service.type === 'message' ? 'bg-amber-700 hover:bg-amber-800' : ''}
+                            >
+                              {creatingOrder === service.id 
+                                ? (currentLang === 'zh' ? '处理中...' : 'Processing...')
+                                : service.type === 'message' ? labels.leaveMessage : labels.bookNow
+                              }
+                            </Button>
                           </div>
                         </div>
-                        <div className="flex items-center space-x-4">
-                          <p className="font-bold text-stellawei-purple">
-                            ${service.price_min}
-                            {service.price_max > service.price_min && `-${service.price_max}`}
-                          </p>
-                          <Link href="/booking">
-                            <Button size="sm">{labels.bookNow}</Button>
-                          </Link>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 

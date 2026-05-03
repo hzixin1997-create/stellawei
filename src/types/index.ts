@@ -1,4 +1,7 @@
-// Types for Chuhai Platform
+// Types for Chuhai Platform v2.0
+// 新增：留言制订单、师傅服务定价、简化订单结构
+
+// ==================== 基础类型 ====================
 
 export interface User {
   id: string
@@ -22,11 +25,15 @@ export interface Master {
   id: string
   user_id: string
   display_name: string
+  display_nameCn?: string
   tagline?: string
+  taglineCn?: string
   bio?: string
+  bioCn?: string
   avatar_url?: string
   video_intro_url?: string
   specialties: string[]
+  specialtiesCn?: string[]
   languages: string[]
   experience_years: number
   certifications: Certification[]
@@ -49,9 +56,11 @@ export interface Certification {
   image_url?: string
 }
 
+// ==================== 服务类型 ====================
+
 export interface Service {
   id: string
-  type: 'tarot' | 'astrology' | 'bazi' | 'fengshui'
+  type: 'tarot' | 'astrology' | 'bazi' | 'fengshui' | 'qimen' | 'liuyao'
   name_en: string
   name_zh?: string
   slug: string
@@ -75,70 +84,105 @@ export interface ServiceFeature {
   description: string
 }
 
-export interface ServiceTier {
+// ==================== 师傅服务定价（v2.0 新增）====================
+
+export type ServiceOrderType = 'booking' | 'message'
+
+export interface MasterService {
   id: string
-  service_id: string
-  tier_name: string
-  tier_label?: string
+  master_id: string
+  service_id?: string
+  name: string
+  type: ServiceOrderType
   price: number
-  duration_minutes: number
+  currency: string
+  duration_minutes?: number
+  response_hours: number
   description?: string
   is_active: boolean
+  sort_order: number
   created_at: string
+  updated_at: string
 }
+
+// ==================== 订单类型（v2.0 核心）====================
 
 export type OrderStatus = 
   | 'pending'
   | 'paid'
-  | 'confirmed'
-  | 'ready'
+  | 'assigned'
   | 'in_progress'
   | 'completed'
   | 'cancelled'
   | 'refunded'
-  | 'disputed'
 
 export interface Order {
   id: string
-  order_number: string
   user_id: string
   master_id: string
-  service_id: string
-  tier_id?: string
-  scheduled_at: string
-  timezone: string
-  duration_minutes: number
+  service_id?: string
+  type: ServiceOrderType
+  service_name: string
   status: OrderStatus
-  question_text?: string
-  question_category?: 'love' | 'career' | 'health' | 'wealth' | 'other'
-  user_birth_date?: string
-  user_birth_time?: string
-  user_birth_location?: string
-  subtotal: number
-  discount_amount: number
-  total_amount: number
+  amount: number
   currency: string
-  payment_intent_id?: string
-  payment_method?: string
-  paid_at?: string
-  daily_room_url?: string
-  daily_room_name?: string
-  confirmed_at?: string
-  started_at?: string
+  stripe_payment_intent_id?: string
+  
+  // 留言制专用
+  user_question?: string
+  user_question_submitted_at?: string
+  master_response?: string
+  master_response_at?: string
+  response_deadline?: string
+  
+  // 预约制专用
+  scheduled_at?: string
+  timezone?: string
+  duration_minutes?: number
+  
+  // 通用
   completed_at?: string
   cancelled_at?: string
   cancel_reason?: string
-  is_refundable: boolean
-  refund_deadline?: string
-  refunded_at?: string
-  refund_amount?: number
-  refund_reason?: string
-  stripe_refund_id?: string
+  master_read: boolean
+  master_read_at?: string
   created_at: string
   updated_at: string
+  
+  // 关联
   master?: Master
-  service?: Service
+  user?: User
 }
+
+// 创建订单请求参数
+export interface CreateOrderRequest {
+  master_id: string
+  master_service_id: string
+  type: ServiceOrderType
+}
+
+// 提交问题请求
+export interface SubmitQuestionRequest {
+  question: string
+  birth_date?: string
+  birth_time?: string
+  birth_location?: string
+}
+
+// 师傅回复请求
+export interface SubmitResponseRequest {
+  response: string
+}
+
+// 更新状态请求
+export interface UpdateOrderStatusRequest {
+  status: OrderStatus
+  notes?: string
+}
+
+// ==================== 评价类型 ====================
+
+export type ReviewStatus = 'pending' | 'approved' | 'rejected'
 
 export interface Review {
   id: string
@@ -154,11 +198,34 @@ export interface Review {
   is_anonymous: boolean
   master_reply?: string
   master_reply_at?: string
-  status: 'pending' | 'approved' | 'rejected'
+  status: ReviewStatus
   created_at: string
   updated_at: string
   user?: User
 }
+
+// ==================== 支付类型 ====================
+
+export interface Payment {
+  id: string
+  order_id: string
+  user_id: string
+  stripe_session_id?: string
+  stripe_payment_intent_id?: string
+  stripe_charge_id?: string
+  amount: number
+  currency: string
+  status: 'pending' | 'completed' | 'failed' | 'refunded'
+  payment_method?: string
+  metadata?: Record<string, any>
+  stripe_refund_id?: string
+  refund_amount?: number
+  refund_reason?: string
+  created_at: string
+  updated_at: string
+}
+
+// ==================== 塔罗牌类型 ====================
 
 export interface TarotCard {
   id: number
@@ -189,6 +256,20 @@ export interface TarotPosition {
   meaning: string
 }
 
+// ==================== 通知类型 ====================
+
+export type NotificationType =
+  | 'order_confirmed'
+  | 'payment_received'
+  | 'question_submitted'
+  | 'master_responded'
+  | 'reminder_24h'
+  | 'reminder_1h'
+  | 'session_starting'
+  | 'order_completed'
+  | 'refund_processed'
+  | 'review_request'
+
 export interface Notification {
   id: string
   user_id: string
@@ -206,16 +287,7 @@ export interface Notification {
   created_at: string
 }
 
-export type NotificationType =
-  | 'order_confirmed'
-  | 'payment_received'
-  | 'reminder_24h'
-  | 'reminder_1h'
-  | 'session_starting'
-  | 'report_ready'
-  | 'refund_processed'
-  | 'review_request'
-  | 'master_message'
+// ==================== 退款类型 ====================
 
 export interface RefundRequest {
   id: string
@@ -235,78 +307,22 @@ export interface RefundRequest {
   created_at: string
 }
 
-// Booking Types
-export type BookingStatus = 
-  | 'pending'
-  | 'confirmed'
-  | 'in_progress'
-  | 'completed'
-  | 'cancelled'
-  | 'refunded'
+// ==================== 师傅后台类型 ====================
 
-export type PaymentStatus = 
-  | 'pending'
-  | 'paid'
-  | 'failed'
-  | 'cancelled'
-  | 'expired'
-  | 'refunded'
-
-export interface Booking {
-  id: string
-  user_id: string
-  master_id: string
-  service_id: string
-  scheduled_at: string
-  scheduled_date?: string
-  scheduled_time?: string
-  timezone: string
-  duration_minutes: number
-  status: BookingStatus
-  payment_status: PaymentStatus
-  question_text?: string
-  question_category?: 'love' | 'career' | 'health' | 'wealth' | 'other'
-  user_birth_date?: string
-  user_birth_time?: string
-  user_birth_location?: string
-  subtotal: number
-  discount_amount: number
-  total_amount: number
-  currency: string
-  payment_intent_id?: string
-  payment_method?: string
-  paid_at?: string
-  stripe_customer_id?: string
-  stripe_refund_id?: string
-  refunded_at?: string
-  refund_amount?: number
-  refund_reason?: string
-  is_first_time: boolean
-  notes?: string
-  created_at: string
-  updated_at: string
-  master?: Master
-  service?: Service
+export interface MasterDashboardStats {
+  total_orders: number
+  pending_orders: number
+  completed_orders: number
+  today_orders: number
+  unread_questions: number
+  average_response_hours?: number
 }
 
-// Payment Types
-export type PaymentStatusType = 'pending' | 'completed' | 'failed' | 'refunded'
-
-export interface Payment {
-  id: string
-  booking_id: string
-  user_id: string
-  stripe_session_id?: string
-  stripe_payment_intent_id?: string
-  stripe_charge_id?: string
-  amount: number
-  currency: string
-  status: PaymentStatusType
-  payment_method?: string
-  metadata?: Record<string, any>
-  stripe_refund_id?: string
-  refund_amount?: number
-  refund_reason?: string
-  created_at: string
-  updated_at: string
+export interface MasterOrderFilter {
+  status?: OrderStatus | OrderStatus[]
+  type?: ServiceOrderType
+  date_from?: string
+  date_to?: string
+  search?: string
 }
+
