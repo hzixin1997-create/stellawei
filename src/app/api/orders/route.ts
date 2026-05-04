@@ -195,64 +195,89 @@ export async function POST(request: Request) {
 export async function GET(request: Request) {
   try {
     const supabase = createServiceClient()
-    
-    // 获取当前用户
-    const authHeader = request.headers.get('authorization')
-    if (!authHeader) {
-      return NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      )
-    }
-
-    const token = authHeader.replace('Bearer ', '')
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
-    
-    if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Invalid authentication' },
-        { status: 401 }
-      )
-    }
-
-    // 查询参数
     const { searchParams } = new URL(request.url)
     const status = searchParams.get('status')
     const type = searchParams.get('type')
     const limit = parseInt(searchParams.get('limit') || '20')
     const offset = parseInt(searchParams.get('offset') || '0')
 
-    // 构建查询
+    // ===== P1: 按 master_slug 查询（无需认证）=====
+    const masterSlug = searchParams.get('master_slug')
+    if (masterSlug) {
+      let query = supabase
+        .from('orders')
+        .select(`
+          *,
+          messages(*)
+        `)
+        .eq('master_slug', masterSlug)
+        .order('created_at', { ascending: false })
+        .range(offset, offset + limit - 1)
+
+      if (status) query = query.eq('status', status)
+      if (type) query = query.eq('type', type)
+
+      const { data: orders, error } = await query
+      if (error) {
+        console.error('Error fetching master orders:', error)
+        return NextResponse.json({ error: 'Failed to fetch orders' }, { status: 500 })
+      }
+      return NextResponse.json({ orders: orders || [], limit, offset })
+    }
+
+    // ===== P1: 按 user_email 查询（无需认证）=====
+    const userEmailParam = searchParams.get('user_email')
+    if (userEmailParam) {
+      let query = supabase
+        .from('orders')
+        .select(`
+          *,
+          messages(*)
+        `)
+        .eq('user_email', userEmailParam)
+        .order('created_at', { ascending: false })
+        .range(offset, offset + limit - 1)
+
+      if (status) query = query.eq('status', status)
+      if (type) query = query.eq('type', type)
+
+      const { data: orders, error } = await query
+      if (error) {
+        console.error('Error fetching user orders:', error)
+        return NextResponse.json({ error: 'Failed to fetch orders' }, { status: 500 })
+      }
+      return NextResponse.json({ orders: orders || [], limit, offset })
+    }
+
+    // ===== 原有模式：通过 Supabase Auth 获取用户 =====
+    const authHeader = request.headers.get('authorization')
+    if (!authHeader) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
+    }
+
+    const token = authHeader.replace('Bearer ', '')
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Invalid authentication' }, { status: 401 })
+    }
+
     let query = supabase
       .from('orders')
-      .select(`
-        *,
-        master:masters(id, display_name, avatar_url),
-        user:profiles(id, email, full_name)
-      `)
+      .select(`*, master:masters(id, display_name, avatar_url), user:profiles(id, email, full_name)`)
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1)
 
-    if (status) {
-      query = query.eq('status', status)
-    }
-    if (type) {
-      query = query.eq('type', type)
-    }
+    if (status) query = query.eq('status', status)
+    if (type) query = query.eq('type', type)
 
     const { data: orders, error } = await query
-
     if (error) {
       console.error('Error fetching orders:', error)
-      return NextResponse.json(
-        { error: 'Failed to fetch orders' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Failed to fetch orders' }, { status: 500 })
     }
 
-    // 获取总数
-    const { count, error: countError } = await supabase
+    const { count } = await supabase
       .from('orders')
       .select('*', { count: 'exact', head: true })
       .eq('user_id', user.id)
@@ -265,9 +290,6 @@ export async function GET(request: Request) {
     })
   } catch (error: any) {
     console.error('Error fetching orders:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch orders', message: error.message },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch orders', message: error.message }, { status: 500 })
   }
 }

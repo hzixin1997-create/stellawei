@@ -371,7 +371,7 @@ export default function Home() {
                     <span className="font-medium">{master.reviews}</span>
                   </div>
                   
-                  <Link href={`/booking`}>
+                  <Link href={`/masters/${master.id}`}>
                     <Button className="w-full mt-4">{t('masters.bookSession')}</Button>
                   </Link>
                 </CardContent>
