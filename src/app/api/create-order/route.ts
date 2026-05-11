@@ -29,17 +29,17 @@ const SERVICE_LABELS: Record<string, string> = {
  * POST /api/create-order
  * 一期简化订单创建（无需用户登录）
  *
- * Body: { master_id: 'zhang-yihua' | 'wu-yang', service_type: 'message' | 'realtime', user_email: string }
+ * Body: { master_id: 'zhang-yihua' | 'wu-yang', consultation_type: 'message' | 'realtime', user_email: string, user_question?: string }
  */
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { master_id, service_type, user_email } = body
+    const { master_id, consultation_type, user_email, user_question } = body
 
     // === 参数校验 ===
-    if (!master_id || !service_type || !user_email) {
+    if (!master_id || !consultation_type || !user_email) {
       return NextResponse.json(
-        { error: 'Missing required fields: master_id, service_type, user_email' },
+        { error: 'Missing required fields: master_id, consultation_type, user_email' },
         { status: 400 }
       )
     }
@@ -47,8 +47,16 @@ export async function POST(request: Request) {
     if (!PRICING[master_id]) {
       return NextResponse.json({ error: 'Invalid master_id' }, { status: 400 })
     }
-    if (!PRICING[master_id][service_type]) {
-      return NextResponse.json({ error: 'Invalid service_type' }, { status: 400 })
+    if (!PRICING[master_id][consultation_type]) {
+      return NextResponse.json({ error: 'Invalid consultation_type' }, { status: 400 })
+    }
+
+    // 留言咨询必须有问题内容
+    if (consultation_type === 'message' && (!user_question || user_question.trim().length < 10)) {
+      return NextResponse.json(
+        { error: 'Message consultation requires a question (min 10 characters)' },
+        { status: 400 }
+      )
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -56,9 +64,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid email format' }, { status: 400 })
     }
 
-    const { amount, currency } = PRICING[master_id][service_type]
+    const { amount, currency } = PRICING[master_id][consultation_type]
     const masterName = MASTER_SLUGS[master_id]
-    const serviceLabel = SERVICE_LABELS[service_type]
+    const serviceLabel = SERVICE_LABELS[consultation_type]
     const supabase = createServiceClient()
     const now = new Date().toISOString()
 
@@ -126,8 +134,8 @@ export async function POST(request: Request) {
       master_id: master.id,
       master_slug: master_id,
       service_id: service?.id || '00000000-0000-0000-0000-000000000000',
-      type: service_type === 'message' ? 'message' : 'booking',
-      service_type: service_type,
+      type: consultation_type === 'message' ? 'message' : 'booking',
+      consultation_type: consultation_type,
       service_name: `${masterName} — ${serviceLabel}`,
       status: 'pending',
       user_email: user_email,
@@ -137,8 +145,9 @@ export async function POST(request: Request) {
       currency: currency,
       scheduled_at: now,
       timezone: 'Asia/Shanghai',
-      duration_minutes: service_type === 'message' ? 0 : 30,
-      response_deadline: service_type === 'message'
+      user_question: consultation_type === 'message' ? user_question : null,
+      duration_minutes: consultation_type === 'message' ? 0 : 30,
+      response_deadline: consultation_type === 'message'
         ? new Date(Date.now() + 48 * 3600000).toISOString()
         : null,
       created_at: now,
@@ -184,7 +193,7 @@ export async function POST(request: Request) {
       metadata: {
         order_id: order.id,
         master_id: master_id,
-        service_type: service_type,
+        service_type: consultation_type,
         user_email: user_email,
         is_p1: 'true',
       },

@@ -4,6 +4,17 @@ import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
+const ROUTE_MAP: Record<string, string> = {
+  'qimenyihua@gmail.com': '/master/dashboard',
+  'mshoucangjia@gmail.com': '/master/dashboard',
+  'lunalintarot@163.com': '/master/dashboard',
+  'hzixin1997@gmail.com': '/admin/dashboard',
+}
+
+function getRedirectByEmail(email: string): string {
+  return ROUTE_MAP[email.trim().toLowerCase()] || '/user/dashboard'
+}
+
 export default function CallbackClient() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -27,14 +38,16 @@ export default function CallbackClient() {
             router.push('/auth/login')
           }, 3000)
         } else {
-          router.push(next)
+          // 获取用户邮箱，决定跳转路由
+          const { data: { session } } = await supabase.auth.getSession()
+          const email = session?.user?.email || ''
+          const target = email ? getRedirectByEmail(email) : next
+          router.push(target)
         }
         return
       }
       
       // Handle email confirmation or magic link
-      // Supabase handles the session automatically via hash fragment
-      // We just need to check if user is now authenticated
       const { data: { session }, error: sessionError } = await supabase.auth.getSession()
       
       if (sessionError) {
@@ -46,15 +59,16 @@ export default function CallbackClient() {
       }
       
       if (session) {
-        // User is authenticated, redirect to dashboard
-        router.push(next)
+        const email = session.user?.email || ''
+        const target = email ? getRedirectByEmail(email) : next
+        router.push(target)
       } else {
-        // No session yet, wait a moment and check again
-        // This handles the race condition where hash fragment is still being processed
         setTimeout(async () => {
           const { data: { session: retrySession } } = await supabase.auth.getSession()
           if (retrySession) {
-            router.push(next)
+            const email = retrySession.user?.email || ''
+            const target = email ? getRedirectByEmail(email) : next
+            router.push(target)
           } else {
             router.push('/auth/login')
           }

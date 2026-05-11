@@ -117,12 +117,12 @@ export async function POST(request: Request) {
       .eq('id', order_id)
 
     // 异步通知师傅
-    const masterEmail = order.master?.email || getMasterEmail(order.master_slug)
+    const masterEmail = order.master?.[0]?.email || getMasterEmail(order.master_slug)
     if (masterEmail) {
       sendEmail(
         masterEmail,
         userQuestionSubmittedEmail(
-          order.master?.display_name || order.master_slug || 'Master',
+          order.master?.[0]?.display_name || order.master_slug || 'Master',
           order_id,
           order.service_name || 'Consultation'
         )
@@ -224,7 +224,7 @@ export async function PATCH(request: Request) {
           '',
           order_id,
           order.service_name || 'Consultation',
-          order.master?.display_name || order.master_slug || 'Master'
+          order.master?.[0]?.display_name || order.master_slug || 'Master'
         )
       ).catch(err => console.error('Failed to notify user:', err))
     }

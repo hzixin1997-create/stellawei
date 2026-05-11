@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -9,7 +9,19 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Sparkles, Mail, Lock, User, ArrowRight, Chrome } from 'lucide-react'
+import { Sparkles, Mail, Lock, User, ArrowRight, Chrome, Eye, EyeOff } from 'lucide-react'
+
+// 路由映射：根据邮箱决定登录后跳到哪里
+const ROUTE_MAP: Record<string, string> = {
+  'qimenyihua@gmail.com': '/master/dashboard',
+  'mshoucangjia@gmail.com': '/master/dashboard',
+  'lunalintarot@163.com': '/master/dashboard',
+  'hzixin1997@gmail.com': '/admin/dashboard',
+}
+
+function getRedirectByEmail(email: string): string {
+  return ROUTE_MAP[email.trim().toLowerCase()] || '/user/dashboard'
+}
 
 export function AuthCard() {
   const [activeTab, setActiveTab] = useState('login')
@@ -19,6 +31,8 @@ export function AuthCard() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false)
   
   const { signIn, signUp, signInWithGoogle } = useAuth()
   const router = useRouter()
@@ -38,7 +52,8 @@ export function AuthCard() {
       setError(error.message)
       setIsLoading(false)
     } else {
-      router.push(redirect)
+      const target = getRedirectByEmail(email)
+      router.push(target)
       router.refresh()
     }
   }
@@ -144,13 +159,25 @@ export function AuthCard() {
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
                   <Input
                     id="password"
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 h-12 bg-stone-50 border-stone-200 focus:border-violet-500 focus:ring-violet-500/20"
+                    className="pl-10 pr-10 h-12 bg-stone-50 border-stone-200 focus:border-violet-500 focus:ring-violet-500/20"
                     required
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 focus:outline-none"
+                    tabIndex={-1}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5" />
+                    ) : (
+                      <Eye className="w-5 h-5" />
+                    )}
+                  </button>
                 </div>
               </div>
 
@@ -217,14 +244,26 @@ export function AuthCard() {
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
                   <Input
                     id="registerPassword"
-                    type="password"
+                    type={showRegisterPassword ? 'text' : 'password'}
                     placeholder={isZh ? '至少8位字符' : 'At least 8 characters'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 h-12 bg-stone-50 border-stone-200 focus:border-violet-500 focus:ring-violet-500/20"
+                    className="pl-10 pr-10 h-12 bg-stone-50 border-stone-200 focus:border-violet-500 focus:ring-violet-500/20"
                     required
                     minLength={8}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowRegisterPassword(!showRegisterPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 focus:outline-none"
+                    tabIndex={-1}
+                  >
+                    {showRegisterPassword ? (
+                      <EyeOff className="w-5 h-5" />
+                    ) : (
+                      <Eye className="w-5 h-5" />
+                    )}
+                  </button>
                 </div>
               </div>
 

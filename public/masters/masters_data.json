@@ -21,6 +21,28 @@
       "specialtiesCn": ["八字命理", "风水咨询"],
       "description": "Master Wu Yang has over 12 years of experience practicing Chinese metaphysics. He focuses on BaZi (Four Pillars of Destiny) analysis and Feng Shui consultation, helping clients understand their life patterns and environmental energy. By analyzing a person's birth chart and surroundings, Master Wu provides guidance on career development, financial opportunities, and personal balance. His goal is to help clients align their actions with favorable timing and energy.",
       "services": ["Career Development", "Financial Opportunities", "Personal Balance"]
+    },
+    {
+      "id": "master-luna",
+      "name": "Master Luna",
+      "nameCn": "卢娜师傅",
+      "photo": "/masters/master_luna.jpg",
+      "experience": "10+ years",
+      "specialties": ["Tarot Reading"],
+      "specialtiesCn": ["塔罗占卜"],
+      "description": "I use tarot as a mirror to reveal what is hidden beneath the surface — your emotions, your patterns, and the energy surrounding your path. Whether you're facing uncertainty in love, career decisions, or life direction, my readings are designed to bring clarity, not confusion. My approach is intuitive, honest, and deeply personal — helping you reconnect with your inner truth and move forward with confidence.",
+      "services": ["Love & Relationships", "Career Decisions", "Life Direction"],
+      "tagline": "Seeing what your heart already knows, and what lies ahead",
+      "taglineCn": "看见您内心已知的一切，以及前方的道路",
+      "bioCn": "我将塔罗视为一面镜子，揭示隐藏在表面之下的一切——您的情感、您的模式，以及围绕您道路的能量。无论您面临爱情、职业决策还是人生方向的不确定性，我的解读旨在带来清晰而非困惑。我的方法是直观的、诚实的、且非常个人化的——帮助您重新与内在真理连接，并自信地前行。",
+      "certifications": [{"name": "Certified Tarot Reader", "issuer": "Tarot Certification Board", "year": 2022}],
+      "languages": ["en"],
+      "rating": 4.9,
+      "ratingCount": 312,
+      "completedSessions": 850,
+      "timezone": "America/Los_Angeles",
+      "isVerified": true,
+      "isActive": true
     }
   ]
 }

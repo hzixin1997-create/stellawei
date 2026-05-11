@@ -1,240 +1,190 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 import {
-  Users,
-  ShoppingBag,
-  Clock,
-  DollarSign,
-  Star,
-  ToggleLeft,
-  ToggleRight,
-  Crown,
-  Sparkles,
-} from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Users, ShoppingBag, Clock, Star, CheckCircle, Home } from 'lucide-react';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
-/* ── Mock Data ─────────────────────────────── */
-
-interface MasterData {
-  id: string;
-  name: string;
-  slug: string;
-  avatar: string;
-  specialties: string[];
-  totalOrders: number;
-  monthOrders: number;
-  avgReplyHours: number;
-  totalIncome: number;
-  monthIncome: number;
-  rating: number;
-  online: boolean;
-}
-
-const masters: MasterData[] = [
+// 师傅数据
+const masters = [
   {
-    id: 'm1',
+    id: 'zhang-yihua',
     name: '张易桦',
-    slug: 'zhang-yihua',
-    avatar: '/avatars/zhang-yihua.jpg',
-    specialties: ['奇门遁甲', '六爻占卜', '塔罗'],
-    totalOrders: 128,
-    monthOrders: 12,
-    avgReplyHours: 2.3,
-    totalIncome: 38400,
-    monthIncome: 3600,
-    rating: 4.8,
-    online: true,
+    nameEn: 'Master Zhang Yihua',
+    email: 'qimenyihua@gmail.com',
+    specialty: '奇门遁甲',
+    specialtyEn: 'Qi Men Dun Jia',
+    totalOrders: 0,
+    monthOrders: 0,
+    avgReplyTime: '-',
+    revenue: 0,
+    rating: '-',
+    isOnline: true,
   },
   {
-    id: 'm2',
+    id: 'wu-yang',
     name: '戊阳',
-    slug: 'wu-yang',
-    avatar: '/avatars/wu-yang.jpg',
-    specialties: ['八字命盘', '风水调理', '紫微斗数'],
-    totalOrders: 96,
-    monthOrders: 8,
-    avgReplyHours: 3.1,
-    totalIncome: 48000,
-    monthIncome: 3200,
-    rating: 4.6,
-    online: true,
+    nameEn: 'Master Wu Yang',
+    email: 'mshoucangjia@gmail.com',
+    specialty: '八字命理 · 风水',
+    specialtyEn: 'BaZi & Feng Shui',
+    totalOrders: 0,
+    monthOrders: 0,
+    avgReplyTime: '-',
+    revenue: 0,
+    rating: '-',
+    isOnline: true,
   },
 ];
 
-/* ── Page ──────────────────────────────────── */
-
-export default function AdminMasters() {
+export default function MastersManagement() {
+  const { t, i18n } = useTranslation();
+  const isZh = i18n.language === 'zh';
   const [masterList, setMasterList] = useState(masters);
 
-  const toggleOnline = (id: string) => {
+  const toggleStatus = (id: string) => {
     setMasterList((prev) =>
-      prev.map((m) => (m.id === id ? { ...m, online: !m.online } : m))
+      prev.map((m) => (m.id === id ? { ...m, isOnline: !m.isOnline } : m))
     );
   };
 
-  const totalOrdersAll = masterList.reduce((s, m) => s + m.totalOrders, 0);
-  const totalIncomeAll = masterList.reduce((s, m) => s + m.totalIncome, 0);
-  const onlineCount = masterList.filter((m) => m.online).length;
-
   return (
-    <div className="space-y-8">
-      {/* 统计卡片 */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          title="师傅总数"
-          value={masterList.length}
-          icon={Users}
-          accent="text-stellawei-purple"
-          bg="bg-stellawei-purple/10"
-        />
-        <StatCard
-          title="在线师傅"
-          value={onlineCount}
-          icon={Sparkles}
-          accent="text-green-600"
-          bg="bg-green-100"
-        />
-        <StatCard
-          title="累计订单"
-          value={totalOrdersAll}
-          icon={ShoppingBag}
-          accent="text-blue-600"
-          bg="bg-blue-100"
-        />
-        <StatCard
-          title="累计收入"
-          value={`$${totalIncomeAll.toLocaleString()}`}
-          icon={DollarSign}
-          accent="text-amber-600"
-          bg="bg-amber-100"
-        />
+    <div className="min-h-screen bg-gradient-to-br from-stone-50 to-stone-100">
+      {/* 顶部导航 */}
+      <div className="bg-white border-b border-stone-200 px-4 py-3">
+        <div className="max-w-4xl mx-auto flex items-center justify-between">
+          <Link
+            href="/"
+            className="flex items-center text-stone-600 hover:text-stone-900 gap-2"
+          >
+            <Home className="w-5 h-5" />
+            <span className="font-medium">
+              {isZh ? '返回首页' : 'Back to Home'}
+            </span>
+          </Link>
+          <h1 className="text-lg font-bold text-stone-900">
+            {isZh ? '师傅管理' : 'Master Management'}
+          </h1>
+          <LanguageSwitcher />
+        </div>
       </div>
 
-      {/* 师傅列表 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {masterList.map((master) => (
-          <Card key={master.id} className="overflow-hidden">
-            <CardContent className="p-0">
-              {/* 顶部信息 */}
-              <div className="p-6 flex items-start gap-4">
-                <div className="w-16 h-16 rounded-full bg-stone-200 flex items-center justify-center flex-shrink-0">
-                  <Crown size={28} className="text-stone-400" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-lg font-semibold text-stone-800">
-                        {master.name}
-                      </h3>
-                      <Badge
-                        className={
-                          master.online
-                            ? 'bg-green-100 text-green-700 border-green-200'
-                            : 'bg-gray-100 text-gray-600 border-gray-200'
-                        }
-                      >
-                        {master.online ? '在线' : '离线'}
-                      </Badge>
+      <div className="max-w-4xl mx-auto py-8 px-4">
+        {/* 师傅卡片 */}
+        <div className="space-y-6">
+          {masterList.map((master) => (
+            <Card key={master.id} className="overflow-hidden">
+              <CardHeader className="pb-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl">
+                      {master.name.charAt(0)}
                     </div>
-                    <button
-                      onClick={() => toggleOnline(master.id)}
-                      className="text-stone-400 hover:text-stellawei-purple transition-colors"
-                      title={master.online ? '点击下线' : '点击上线'}
-                    >
-                      {master.online ? (
-                        <ToggleRight size={28} className="text-green-600" />
-                      ) : (
-                        <ToggleLeft size={28} />
-                      )}
-                    </button>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <CardTitle>
+                          {isZh ? master.name : master.nameEn}
+                        </CardTitle>
+                        <Badge
+                          variant={master.isOnline ? 'default' : 'secondary'}
+                        >
+                          {master.isOnline
+                            ? isZh
+                              ? '🟢 在线'
+                              : '🟢 Online'
+                            : isZh
+                              ? '⚪ 离线'
+                              : '⚪ Offline'}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-stone-500">
+                        {isZh ? master.specialty : master.specialtyEn}
+                      </p>
+                      <p className="text-xs text-stone-400">{master.email}</p>
+                    </div>
                   </div>
-                  <div className="flex flex-wrap gap-1.5 mt-2">
-                    {master.specialties.map((s) => (
-                      <span
-                        key={s}
-                        className="px-2 py-0.5 text-xs rounded-md bg-stone-100 text-stone-600"
-                      >
-                        {s}
+                  <Button
+                    variant={master.isOnline ? 'outline' : 'default'}
+                    onClick={() => toggleStatus(master.id)}
+                  >
+                    {master.isOnline
+                      ? isZh
+                        ? '下线'
+                        : 'Go Offline'
+                      : isZh
+                        ? '上线'
+                        : 'Go Online'}
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-stone-50 p-4 rounded-lg">
+                    <div className="flex items-center gap-2 text-stone-500 mb-1">
+                      <ShoppingBag className="w-4 h-4" />
+                      <span className="text-sm">
+                        {isZh ? '总订单' : 'Total Orders'}
                       </span>
-                    ))}
+                    </div>
+                    <p className="text-2xl font-bold">{master.totalOrders}</p>
                   </div>
-                  <div className="flex items-center gap-1 mt-1.5 text-sm text-stone-500">
-                    <Star size={14} className="text-amber-500 fill-amber-500" />
-                    <span>{master.rating} / 5.0</span>
-                  </div>
-                </div>
-              </div>
 
-              {/* 数据网格 */}
-              <div className="grid grid-cols-2 border-t border-stone-100">
-                <div className="p-4 border-r border-stone-100">
-                  <div className="text-xs text-stone-500 mb-1">订单总量</div>
-                  <div className="text-xl font-bold text-stone-800">
-                    {master.totalOrders}
+                  <div className="bg-stone-50 p-4 rounded-lg">
+                    <div className="flex items-center gap-2 text-stone-500 mb-1">
+                      <Users className="w-4 h-4" />
+                      <span className="text-sm">
+                        {isZh ? '本月订单' : 'This Month'}
+                      </span>
+                    </div>
+                    <p className="text-2xl font-bold">{master.monthOrders}</p>
                   </div>
-                  <div className="text-xs text-stone-400 mt-1">
-                    本月 +{master.monthOrders}
+
+                  <div className="bg-stone-50 p-4 rounded-lg">
+                    <div className="flex items-center gap-2 text-stone-500 mb-1">
+                      <Clock className="w-4 h-4" />
+                      <span className="text-sm">
+                        {isZh ? '平均回复' : 'Avg Reply'}
+                      </span>
+                    </div>
+                    <p className="text-2xl font-bold">{master.avgReplyTime}</p>
+                  </div>
+
+                  <div className="bg-stone-50 p-4 rounded-lg">
+                    <div className="flex items-center gap-2 text-stone-500 mb-1">
+                      <Star className="w-4 h-4" />
+                      <span className="text-sm">
+                        {isZh ? '评分' : 'Rating'}
+                      </span>
+                    </div>
+                    <p className="text-2xl font-bold">{master.rating}</p>
                   </div>
                 </div>
-                <div className="p-4">
-                  <div className="text-xs text-stone-500 mb-1">平均回复</div>
-                  <div className="text-xl font-bold text-stone-800 flex items-center gap-1">
-                    <Clock size={18} className="text-stone-400" />
-                    {master.avgReplyHours}h
+
+                <div className="mt-4 pt-4 border-t flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    <span className="text-sm text-stone-600">
+                      {isZh ? '累计收入' : 'Total Revenue'}
+                    </span>
                   </div>
-                  <div className="text-xs text-stone-400 mt-1">24h 内优先</div>
+                  <span className="text-xl font-bold text-violet-600">
+                    ${master.revenue}
+                  </span>
                 </div>
-                <div className="p-4 border-t border-r border-stone-100">
-                  <div className="text-xs text-stone-500 mb-1">总收入</div>
-                  <div className="text-xl font-bold text-stone-800">
-                    ${master.totalIncome.toLocaleString()}
-                  </div>
-                  <div className="text-xs text-stone-400 mt-1">
-                    本月 +${master.monthIncome.toLocaleString()}
-                  </div>
-                </div>
-                <div className="p-4 border-t border-stone-100">
-                  <div className="text-xs text-stone-500 mb-1">转化率</div>
-                  <div className="text-xl font-bold text-stone-800">
-                    {((master.totalOrders / 200) * 100).toFixed(1)}%
-                  </div>
-                  <div className="text-xs text-stone-400 mt-1">目标 200 单</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     </div>
-  );
-}
-
-function StatCard({
-  title,
-  value,
-  icon: Icon,
-  accent,
-  bg,
-}: {
-  title: string;
-  value: string | number;
-  icon: React.ElementType;
-  accent: string;
-  bg: string;
-}) {
-  return (
-    <Card>
-      <CardContent className="p-5">
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-sm text-stone-500">{title}</span>
-          <div className={`w-9 h-9 rounded-lg ${bg} flex items-center justify-center`}>
-            <Icon size={18} className={accent} />
-          </div>
-        </div>
-        <div className="text-2xl font-bold text-stone-800">{value}</div>
-      </CardContent>
-    </Card>
   );
 }

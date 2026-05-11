@@ -23,9 +23,19 @@ const masters = [
 // 服务数据（原价）
 const servicesOriginal = [
   { id: 'tarot', name: 'Tarot Reading', nameCn: '塔罗占卜', duration: 20, price: 25, description: 'Get guidance through tarot cards' },
-  { id: 'bazi', name: 'BaZi Analysis', nameCn: '八字分析', duration: 40, price: 45, description: 'Understand your destiny through Chinese astrology' },
   { id: 'spiritual', name: 'Spiritual Guidance', nameCn: '灵性指引', duration: 30, price: 35, description: 'Connect with your inner wisdom' },
+  { id: 'qimen', name: 'Qi Men Dun Jia', nameCn: '奇门遁甲', duration: 40, price: 55, description: 'Strategic timing and decision making analysis' },
+  { id: 'liuyao', name: 'Liu Yao Divination', nameCn: '六爻占卜', duration: 30, price: 45, description: 'Hexagram divination for specific questions' },
+  { id: 'bazi', name: 'BaZi Analysis', nameCn: '八字分析', duration: 40, price: 45, description: 'Understand your destiny through Chinese astrology' },
+  { id: 'fengshui', name: 'Feng Shui Consultation', nameCn: '风水咨询', duration: 50, price: 60, description: 'Optimize your living and working space energy' },
 ]
+
+// 师傅支持的服务映射
+const MASTER_SERVICES: Record<string, string[]> = {
+  'master-luna': ['tarot', 'spiritual'],
+  'zhang-yihua': ['qimen', 'liuyao', 'bazi'],
+  'wu-yang': ['bazi', 'fengshui'],
+}
 
 // 首次用户优惠价格
 const FIRST_TIME_PRICE = 9.9
@@ -221,10 +231,10 @@ export default function BookingPage() {
             {isZh ? '返回首页' : 'Back to Home'}
           </Link>
           <h1 className="text-3xl font-serif font-bold text-stone-900">
-            {isZh ? '预约咨询' : 'Book a Consultation'}
+            {isZh ? '实时咨询预约' : 'Real-time Consultation Booking'}
           </h1>
           <p className="text-stone-600 mt-2">
-            {isZh ? '选择师傅、服务和时间，开启您的命理之旅' : 'Choose your master, service, and time to begin your journey'}
+            {isZh ? '选择师傅并预约时间，进行30分钟在线聊天实时对话' : 'Select a master and schedule a 30-minute real-time chat consultation'}
           </p>
           
           {/* 首次用户优惠提示 */}
@@ -315,7 +325,9 @@ export default function BookingPage() {
             {/* Step 2: Select Service */}
             {step === 2 && (
               <RadioGroup value={selectedService} onValueChange={setSelectedService} className="space-y-4">
-                {servicesOriginal.map((service) => (
+                {servicesOriginal
+                  .filter((service) => MASTER_SERVICES[selectedMaster]?.includes(service.id))
+                  .map((service) => (
                   <div key={service.id}>
                     <RadioGroupItem value={service.id} id={service.id} className="peer sr-only" />
                     <Label

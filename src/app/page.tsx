@@ -2,12 +2,25 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Star, Shield, Clock, Sparkles, Moon, Sun, Users, Heart, Briefcase, Coins, Sparkles as SparklesIcon, User } from "lucide-react"
+import { Star, Shield, Clock, Sparkles, Moon, Sun, Users, Heart, Briefcase, Coins, Sparkles as SparklesIcon, User, X, MessageCircle, Video } from "lucide-react"
 import Link from "next/link"
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { useRouter } from 'next/navigation';
+
+// 角色路由映射
+const ROUTE_MAP: Record<string, string> = {
+  'qimenyihua@gmail.com': '/master/dashboard',
+  'mshoucangjia@gmail.com': '/master/dashboard',
+  'lunalintarot@163.com': '/master/dashboard',
+  'hzixin1997@gmail.com': '/admin/dashboard',
+};
+
+function getDashboardRoute(email: string): string {
+  return ROUTE_MAP[email.trim().toLowerCase()] || '/user/dashboard';
+}
 
 // 涛涛调研的热点问题 - 轮播文案
 const carouselQuestions = [
@@ -195,7 +208,7 @@ export default function Home() {
             <div className="flex items-center space-x-4">
               <LanguageSwitcher />
               {user ? (
-                <Link href="/dashboard" className="flex items-center space-x-2 text-sm text-foreground/70 hover:text-stellawei-purple transition-colors">
+                <Link href={user?.email ? getDashboardRoute(user.email) : '/auth/login'} className="flex items-center space-x-2 text-sm text-foreground/70 hover:text-stellawei-purple transition-colors">
                   <User className="w-4 h-4" />
                   <span className="hidden sm:inline">{user.email}</span>
                 </Link>
@@ -237,7 +250,7 @@ export default function Home() {
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/booking">
+              <Link href="/consultation-type">
                 <Button size="lg" className="text-lg px-8">
                   {t('hero.ctaPrimary')}
                 </Button>
