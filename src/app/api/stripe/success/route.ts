@@ -20,7 +20,7 @@ export async function GET(request: Request) {
       return NextResponse.redirect("/booking?error=invalid_session");
     }
 
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // 更新订单状态为已支付
     const { data: consultation, error } = await supabase

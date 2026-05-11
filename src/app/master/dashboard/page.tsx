@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MASTER_WHITELIST } from "@/lib/master-auth";
 
 export default async function MasterDashboardPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // 获取当前用户
   const {

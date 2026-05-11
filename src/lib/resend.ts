@@ -1,27 +1,56 @@
 import { Resend } from 'resend';
 
-// Resend 配置
-export const resend = new Resend(process.env.RESEND_API_KEY!);
+// Resend 配置（延迟初始化，避免构建时报错）
+let resendInstance: Resend | null = null;
 
-// 发送邮件通用方法
-export async function sendEmail({
-  to,
-  subject,
-  html,
-  from = 'Stellawei <noreply@stellawei.org>',
-}: {
-  to: string;
-  subject: string;
-  html: string;
-  from?: string;
-}) {
+function getResend() {
+  if (!resendInstance) {
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      console.warn('RESEND_API_KEY not set, email sending disabled');
+      // 返回一个 mock 对象避免构建失败
+      return {
+        emails: {
+          send: async () => {
+            console.warn('Mock email send (no RESEND_API_KEY)');
+            return { id: 'mock-id' };
+          },
+        },
+      } as unknown as Resend;
+    }
+    resendInstance = new Resend(apiKey);
+  }
+  return resendInstance;
+}
+
+// 邮件模板类型
+interface EmailTemplate { subject: string; html: string; }
+
+// 发送邮件通用方法（支持新旧两种签名）
+export async function sendEmail(
+  toOrParams: string | { to: string; subject: string; html: string; from?: string },
+  template?: EmailTemplate
+) {
   try {
-    const { data, error } = await resend.emails.send({
-      from,
-      to,
-      subject,
-      html,
-    });
+    let to: string, subject: string, html: string, from: string;
+
+    if (typeof toOrParams === 'string' && template) {
+      // 旧签名：sendEmail(to, template)
+      to = toOrParams;
+      subject = template.subject;
+      html = template.html;
+      from = 'Stellawei <noreply@stellawei.org>';
+    } else if (typeof toOrParams === 'object') {
+      // 新签名：sendEmail({to, subject, html, from})
+      to = toOrParams.to;
+      subject = toOrParams.subject;
+      html = toOrParams.html;
+      from = toOrParams.from || 'Stellawei <noreply@stellawei.org>';
+    } else {
+      throw new Error('Invalid sendEmail arguments');
+    }
+
+    const { data, error } = await getResend().emails.send({ from, to, subject, html });
 
     if (error) {
       console.error('Resend error:', error);
@@ -101,6 +130,67 @@ export async function sendNewBookingToMaster({
       <p>Best,<br/>Stellawei Team</p>
     `,
   });
+}
+
+// ===== 兼容旧路由的模板函数 =====
+
+export function userQuestionSubmittedEmail(
+  masterName: string,
+  orderId: string,
+  serviceName: string
+): EmailTemplate {
+  return {
+    subject: `[Stellawei] New Question Submitted — Order #${orderId.slice(0, 8)}`,
+    html: `
+      <h2>Hello ${masterName},</h2>
+      <p>A client has submitted a question for your consultation.</p>
+      <ul>
+        <li><strong>Order:</strong> #${orderId.slice(0, 8)}</li>
+        <li><strong>Service:</strong> ${serviceName}</li>
+      </ul>
+      <p>Please log in to reply.</p>
+    `,
+  };
+}
+
+export function masterResponseNotificationEmail(
+  _userName: string,
+  orderId: string,
+  serviceName: string,
+  masterName: string
+): EmailTemplate {
+  return {
+    subject: `[Stellawei] Your Consultation Reply — Order #${orderId.slice(0, 8)}`,
+    html: `
+      <h2>Hello,</h2>
+      <p>Your consultant ${masterName} has replied to your question.</p>
+      <ul>
+        <li><strong>Order:</strong> #${orderId.slice(0, 8)}</li>
+        <li><strong>Service:</strong> ${serviceName}</li>
+      </ul>
+      <p>Log in to view the full reply.</p>
+    `,
+  };
+}
+
+export function orderCompletedEmail(
+  userName: string,
+  orderId: string,
+  serviceName: string,
+  masterName: string
+): EmailTemplate {
+  return {
+    subject: `[Stellawei] Consultation Completed — Order #${orderId.slice(0, 8)}`,
+    html: `
+      <h2>Hello ${userName || ''},</h2>
+      <p>Your consultation with ${masterName} has been completed.</p>
+      <ul>
+        <li><strong>Order:</strong> #${orderId.slice(0, 8)}</li>
+        <li><strong>Service:</strong> ${serviceName}</li>
+      </ul>
+      <p>Thank you for using Stellawei!</p>
+    `,
+  };
 }
 
 // 新订单通知（发给黄总管理员）
