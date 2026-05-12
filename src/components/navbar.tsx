@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Globe, LogOut, Home } from "lucide-react";
+import { LogOut, Home } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "./language-switcher";
 
 interface NavbarProps {
   userEmail?: string;
@@ -12,11 +13,6 @@ export default function Navbar({ userEmail, onLogout }: NavbarProps) {
   const { i18n } = useTranslation();
   const router = useRouter();
   const isZh = i18n.language === "zh";
-
-  const toggleLanguage = () => {
-    const newLang = isZh ? "en" : "zh";
-    i18n.changeLanguage(newLang);
-  };
 
   return (
     <nav className="w-full bg-white/80 backdrop-blur-md border-b border-stone-200/50 sticky top-0 z-50">
@@ -43,14 +39,8 @@ export default function Navbar({ userEmail, onLogout }: NavbarProps) {
               <span className="hidden sm:inline">{isZh ? "返回首页" : "Home"}</span>
             </Link>
 
-            {/* 语言切换 */}
-            <button
-              onClick={toggleLanguage}
-              className="flex items-center gap-1.5 text-stone-600 hover:text-stone-900 transition-colors text-sm"
-            >
-              <Globe className="w-4 h-4" />
-              <span>EN / 中</span>
-            </button>
+            {/* 语言切换 - 精致 DropdownMenu 版 */}
+            <LanguageSwitcher />
 
             {/* 用户邮箱 */}
             {userEmail && (

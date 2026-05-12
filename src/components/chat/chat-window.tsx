@@ -105,43 +105,43 @@ export function ChatWindow() {
   };
 
   return (
-    <Card className="flex flex-col h-[600px] w-full max-w-md mx-auto bg-slate-900 border-slate-800 overflow-hidden">
+    <Card className="flex flex-col h-[600px] w-full max-w-md mx-auto bg-white border-stone-200 overflow-hidden shadow-lg">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-slate-900/95 backdrop-blur">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-stone-200 bg-white/95 backdrop-blur">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <SimpleAvatar initials="LN" color="bg-amber-900 text-amber-200" />
-            <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-slate-900 rounded-full" />
+            <SimpleAvatar initials="LN" color="bg-amber-100 text-amber-700" />
+            <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
           </div>
           <div>
-            <p className="font-medium text-slate-100 text-sm">Luna · Tarot Master</p>
-            <p className="text-xs text-green-400 flex items-center gap-1">
+            <p className="font-medium text-stone-800 text-sm">Luna · Tarot Master</p>
+            <p className="text-xs text-green-600 flex items-center gap-1">
               <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
               Online
             </p>
           </div>
         </div>
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" className="text-slate-400 hover:text-amber-400 hover:bg-slate-800 h-8 w-8">
+          <Button variant="ghost" size="icon" className="text-stone-500 hover:text-amber-600 hover:bg-stone-100 h-8 w-8">
             <Phone className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="text-slate-400 hover:text-amber-400 hover:bg-slate-800 h-8 w-8">
+          <Button variant="ghost" size="icon" className="text-stone-500 hover:text-amber-600 hover:bg-stone-100 h-8 w-8">
             <Video className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="text-slate-400 hover:text-amber-400 hover:bg-slate-800 h-8 w-8">
+          <Button variant="ghost" size="icon" className="text-stone-500 hover:text-amber-600 hover:bg-stone-100 h-8 w-8">
             <MoreVertical className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="text-slate-400 hover:text-amber-400 hover:bg-slate-800 h-8 w-8">
+          <Button variant="ghost" size="icon" className="text-stone-500 hover:text-amber-600 hover:bg-stone-100 h-8 w-8">
             <ChevronDown className="w-4 h-4" />
           </Button>
         </div>
       </div>
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 bg-stone-50">
         {/* Date separator */}
         <div className="flex justify-center">
-          <span className="text-xs text-slate-500 bg-slate-800/50 px-3 py-1 rounded-full">
+          <span className="text-xs text-stone-500 bg-stone-200/50 px-3 py-1 rounded-full">
             Today
           </span>
         </div>
@@ -156,19 +156,19 @@ export function ChatWindow() {
                 className={`px-3 py-2 rounded-2xl text-sm leading-relaxed ${
                   msg.sender === "user"
                     ? "bg-amber-600 text-white rounded-br-md"
-                    : "bg-slate-800 text-slate-200 rounded-bl-md border border-slate-700"
+                    : "bg-white text-stone-700 rounded-bl-md border border-stone-200 shadow-sm"
                 }`}
               >
                 {msg.content}
               </div>
               <div
                 className={`flex items-center gap-1 mt-1 text-[10px] ${
-                  msg.sender === "user" ? "justify-end text-slate-500" : "justify-start text-slate-500"
+                  msg.sender === "user" ? "justify-end text-stone-400" : "justify-start text-stone-400"
                 }`}
               >
                 <span>{msg.timestamp}</span>
                 {msg.sender === "user" && (
-                  <span className="text-slate-500">
+                  <span className="text-stone-400">
                     {msg.status === "read" ? "✓✓" : "✓"}
                   </span>
                 )}
@@ -180,11 +180,11 @@ export function ChatWindow() {
         {/* Typing indicator */}
         {isTyping && (
           <div className="flex justify-start">
-            <div className="bg-slate-800 border border-slate-700 rounded-2xl rounded-bl-md px-4 py-3">
+            <div className="bg-white border border-stone-200 rounded-2xl rounded-bl-md px-4 py-3 shadow-sm">
               <div className="flex gap-1">
-                <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                <span className="w-2 h-2 bg-stone-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                <span className="w-2 h-2 bg-stone-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                <span className="w-2 h-2 bg-stone-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
               </div>
             </div>
           </div>
@@ -194,14 +194,14 @@ export function ChatWindow() {
       </div>
 
       {/* Input Area */}
-      <div className="px-4 py-3 border-t border-slate-800 bg-slate-900/95">
+      <div className="px-4 py-3 border-t border-stone-200 bg-white/95">
         <div className="flex items-end gap-2">
           <Input
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Type your message..."
-            className="flex-1 bg-slate-800 border-slate-700 text-slate-100 placeholder:text-slate-500 focus-visible:ring-amber-500/50 rounded-xl min-h-[40px]"
+            className="flex-1 bg-stone-100 border-stone-300 text-stone-800 placeholder:text-stone-400 focus-visible:ring-amber-500/50 rounded-xl min-h-[40px]"
           />
           <Button
             onClick={handleSend}
@@ -211,7 +211,7 @@ export function ChatWindow() {
             <Send className="w-4 h-4" />
           </Button>
         </div>
-        <p className="text-[10px] text-slate-600 mt-1.5 text-center">
+        <p className="text-[10px] text-stone-400 mt-1.5 text-center">
           Messages are encrypted and confidential. Consultation time: 28 minutes remaining.
         </p>
       </div>

@@ -31,7 +31,7 @@ export function LanguageSwitcher() {
         <Button
           variant="ghost"
           size="sm"
-          className="text-slate-300 hover:text-amber-400 hover:bg-slate-800"
+          className="text-stone-600 hover:text-amber-600 hover:bg-stone-100"
         >
           <Globe className="w-4 h-4 mr-1.5" />
           <span className="mr-1">{current.flag}</span>
@@ -40,14 +40,14 @@ export function LanguageSwitcher() {
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="bg-slate-900 border-slate-700"
+        className="bg-white border-stone-200"
       >
         {languages.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
             onClick={() => handleChange(lang.code)}
-            className={`cursor-pointer text-slate-300 hover:text-amber-400 hover:bg-slate-800 ${
-              currentLang === lang.code ? "bg-slate-800 text-amber-400" : ""
+            className={`cursor-pointer text-stone-600 hover:text-amber-600 hover:bg-stone-50 ${
+              currentLang === lang.code ? "bg-stone-100 text-amber-700" : ""
             }`}
           >
             <span className="mr-2">{lang.flag}</span>
