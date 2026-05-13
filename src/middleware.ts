@@ -3,7 +3,6 @@ import { createClient } from '@/lib/supabase/middleware'
 
 // Define protected routes that require authentication
 const protectedRoutes = [
-  '/dashboard',
   '/profile',
   '/bookings',
   '/settings',
@@ -11,7 +10,7 @@ const protectedRoutes = [
   '/appointments',
 ]
 
-// Define auth routes (redirect to dashboard if already logged in)
+// Define auth routes (redirect to user dashboard if already logged in)
 const authRoutes = [
   '/auth/login',
   '/auth/register',
@@ -50,9 +49,9 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl)
   }
 
-  // Redirect authenticated users from auth routes to dashboard
+  // Redirect authenticated users from auth routes to user dashboard
   if (isAuthRoute && session) {
-    const redirectTo = request.nextUrl.searchParams.get('redirect') || '/dashboard'
+    const redirectTo = request.nextUrl.searchParams.get('redirect') || '/user/dashboard'
     return NextResponse.redirect(new URL(redirectTo, request.url))
   }
 
@@ -61,6 +60,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|.*\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }

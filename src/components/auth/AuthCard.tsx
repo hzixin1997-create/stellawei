@@ -38,7 +38,7 @@ export function AuthCard() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { t, i18n } = useTranslation()
-  const redirect = searchParams.get('redirect') || '/dashboard'
+  const redirect = searchParams.get('redirect') || '/user/dashboard'
   const isZh = i18n.language === 'zh'
 
   const handleLogin = async (e: React.FormEvent) => {

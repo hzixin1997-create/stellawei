@@ -24,7 +24,7 @@ export default function CallbackClient() {
     const handleCallback = async () => {
       const code = searchParams.get('code')
       const type = searchParams.get('type')
-      const next = searchParams.get('next') ?? '/dashboard'
+      const next = searchParams.get('next') ?? '/user/dashboard'
       
       const supabase = createClient()
       

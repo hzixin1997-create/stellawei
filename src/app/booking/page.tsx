@@ -53,6 +53,8 @@ export default function BookingPage() {
   const [selectedService, setSelectedService] = useState('')
   const [selectedDate, setSelectedDate] = useState<Date>()
   const [selectedTime, setSelectedTime] = useState('')
+  const [bookedSlots, setBookedSlots] = useState<string[]>([])
+  const [checkingSlots, setCheckingSlots] = useState(false)
   const [isFirstTime, setIsFirstTime] = useState(true)
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -93,6 +95,44 @@ export default function BookingPage() {
     checkUserAndFirstTime()
   }, [router])
 
+  // 查询已占用的时间槽
+  useEffect(() => {
+    const fetchBookedSlots = async () => {
+      if (!selectedMaster || !selectedDate) {
+        setBookedSlots([])
+        return
+      }
+      setCheckingSlots(true)
+      try {
+        const supabase = createClient()
+        const dateStr = selectedDate.toISOString().split('T')[0]
+        const { data, error } = await supabase
+          .from('bookings')
+          .select('scheduled_time')
+          .eq('master_id', selectedMaster)
+          .eq('scheduled_date', dateStr)
+          .in('payment_status', ['paid', 'pending'])
+        
+        if (!error && data) {
+          const occupied = data.map((b: any) => b.scheduled_time)
+          setBookedSlots(occupied)
+          // 如果当前选中的时间在新日期已被占用，清空选择
+          if (selectedTime && occupied.includes(selectedTime)) {
+            setSelectedTime('')
+          }
+        } else {
+          setBookedSlots([])
+        }
+      } catch {
+        setBookedSlots([])
+      } finally {
+        setCheckingSlots(false)
+      }
+    }
+
+    fetchBookedSlots()
+  }, [selectedMaster, selectedDate])
+
   // 获取显示价格（首次用户显示折扣价）
   const getDisplayPrice = (originalPrice: number) => {
     return isFirstTime ? FIRST_TIME_PRICE : originalPrice
@@ -131,8 +171,32 @@ export default function BookingPage() {
       const [hours, minutes] = selectedTime.split(':')
       scheduledDateTime.setHours(parseInt(hours), parseInt(minutes))
 
-      // 1. 创建 booking 记录
       const supabase = createClient()
+
+      // 🔒 最终时间槽占用检查（防止并发冲突）
+      const dateStr = selectedDate.toISOString().split('T')[0]
+      const { data: existingBookings, error: checkError } = await supabase
+        .from('bookings')
+        .select('id')
+        .eq('master_id', selectedMaster)
+        .eq('scheduled_date', dateStr)
+        .eq('scheduled_time', selectedTime)
+        .in('payment_status', ['paid', 'pending'])
+        .limit(1)
+
+      if (checkError) {
+        throw new Error('Failed to check slot availability')
+      }
+
+      if (existingBookings && existingBookings.length > 0) {
+        throw new Error(
+          isZh
+            ? '该时间段已被预约，请选择其他时间'
+            : 'This time slot is already booked. Please select another time.'
+        )
+      }
+
+      // 1. 创建 booking 记录
       const { data: booking, error: bookingError } = await supabase
         .from('bookings')
         .insert({
@@ -378,18 +442,38 @@ export default function BookingPage() {
                   {/* 右侧：时间选择 */}
                   <div className="lg:w-[240px] flex-shrink-0">
                     <Label className="mb-3 block">{isZh ? '选择时间' : 'Select Time'}</Label>
+                    {checkingSlots && (
+                      <div className="flex items-center gap-2 text-sm text-stone-400 mb-3">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        {isZh ? '检查可用时间...' : 'Checking availability...'}
+                      </div>
+                    )}
                     <div className="grid grid-cols-2 gap-3">
-                      {timeSlots.map((time) => (
-                        <Button
-                          key={time}
-                          variant={selectedTime === time ? 'default' : 'outline'}
-                          onClick={() => setSelectedTime(time)}
-                          disabled={!selectedDate}
-                          className={`h-11 ${selectedTime === time ? 'bg-violet-600' : selectedDate ? '' : 'opacity-50 cursor-not-allowed'}`}
-                        >
-                          {time}
-                        </Button>
-                      ))}
+                      {timeSlots.map((time) => {
+                        const isBooked = bookedSlots.includes(time)
+                        return (
+                          <Button
+                            key={time}
+                            variant={selectedTime === time ? 'default' : 'outline'}
+                            onClick={() => !isBooked && setSelectedTime(time)}
+                            disabled={!selectedDate || isBooked || checkingSlots}
+                            className={`h-11 ${
+                              selectedTime === time
+                                ? 'bg-violet-600'
+                                : isBooked
+                                ? 'bg-stone-100 text-stone-400 border-stone-200 cursor-not-allowed'
+                                : selectedDate
+                                ? ''
+                                : 'opacity-50 cursor-not-allowed'
+                            }`}
+                          >
+                            {time}
+                            {isBooked && (
+                              <span className="ml-1 text-[10px]">{isZh ? '已约' : 'Booked'}</span>
+                            )}
+                          </Button>
+                        )
+                      })}
                     </div>
                     {!selectedDate && (
                       <p className="text-sm text-stone-400 mt-3 text-center">
