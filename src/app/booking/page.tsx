@@ -15,10 +15,16 @@ import { createClient } from '@/lib/supabase/client'
 
 // 师傅数据
 const masters = [
-  { id: 'master-luna', name: 'Master Luna', nameCn: '卢娜师傅', specialty: 'Tarot', price: 25 },
-  { id: 'zhang-yihua', name: 'Master Zhang Yihua', nameCn: '张易桦', specialty: 'Qi Men Dun Jia', price: 35 },
-  { id: 'wu-yang', name: 'Master Wu Yang', nameCn: '戊阳', specialty: 'BaZi & Feng Shui', price: 45 },
+  { id: 'master-luna', name: 'Master Luna', nameCn: '卢娜师傅', specialty: 'Tarot', price: 25, timezone: 'America/Los_Angeles' },
+  { id: 'zhang-yihua', name: 'Master Zhang Yihua', nameCn: '张易桦', specialty: 'Qi Men Dun Jia', price: 35, timezone: 'Asia/Shanghai' },
+  { id: 'wu-yang', name: 'Master Wu Yang', nameCn: '戊阳', specialty: 'BaZi & Feng Shui', price: 45, timezone: 'Asia/Shanghai' },
 ]
+
+// 时区显示标签
+const TIMEZONE_LABELS: Record<string, { en: string; zh: string }> = {
+  'America/Los_Angeles': { en: 'Pacific Time (PT)', zh: '太平洋时间 (PT)' },
+  'Asia/Shanghai': { en: 'China Standard Time (CST)', zh: '北京时间 (CST)' },
+}
 
 // 服务数据（原价）
 const servicesOriginal = [
@@ -434,14 +440,28 @@ export default function BookingPage() {
                       mode="single"
                       selected={selectedDate}
                       onSelect={setSelectedDate}
-                      disabled={(date) => date < new Date() || date.getDay() === 0}
+                      disabled={(date) => {
+                        // 修复：按日期级别比较，忽略时分秒
+                        const today = new Date()
+                        today.setHours(0, 0, 0, 0)
+                        const d = new Date(date)
+                        d.setHours(0, 0, 0, 0)
+                        return d.getTime() < today.getTime() || date.getDay() === 0
+                      }}
                       className="rounded-md border"
                     />
                   </div>
                   
                   {/* 右侧：时间选择 */}
                   <div className="lg:w-[240px] flex-shrink-0">
-                    <Label className="mb-3 block">{isZh ? '选择时间' : 'Select Time'}</Label>
+                    <div className="flex items-center justify-between mb-3">
+                      <Label>{isZh ? '选择时间' : 'Select Time'}</Label>
+                      {selectedMaster && (
+                        <span className="text-xs text-stone-400">
+                          {TIMEZONE_LABELS[masters.find(m => m.id === selectedMaster)?.timezone || '']?.[isZh ? 'zh' : 'en']}
+                        </span>
+                      )}
+                    </div>
                     {checkingSlots && (
                       <div className="flex items-center gap-2 text-sm text-stone-400 mb-3">
                         <Loader2 className="w-4 h-4 animate-spin" />
@@ -451,16 +471,27 @@ export default function BookingPage() {
                     <div className="grid grid-cols-2 gap-3">
                       {timeSlots.map((time) => {
                         const isBooked = bookedSlots.includes(time)
+                        // 判断时间槽是否已经过去（仅今天）
+                        const isPast = (() => {
+                          if (!selectedDate) return false
+                          const now = new Date()
+                          const isToday = selectedDate.toDateString() === now.toDateString()
+                          if (!isToday) return false
+                          const [hours, minutes] = time.split(':').map(Number)
+                          const slotTime = new Date(now)
+                          slotTime.setHours(hours, minutes, 0, 0)
+                          return slotTime.getTime() <= now.getTime()
+                        })()
                         return (
                           <Button
                             key={time}
                             variant={selectedTime === time ? 'default' : 'outline'}
-                            onClick={() => !isBooked && setSelectedTime(time)}
-                            disabled={!selectedDate || isBooked || checkingSlots}
+                            onClick={() => !isBooked && !isPast && setSelectedTime(time)}
+                            disabled={!selectedDate || isBooked || isPast || checkingSlots}
                             className={`h-11 ${
                               selectedTime === time
                                 ? 'bg-violet-600'
-                                : isBooked
+                                : isBooked || isPast
                                 ? 'bg-stone-100 text-stone-400 border-stone-200 cursor-not-allowed'
                                 : selectedDate
                                 ? ''
@@ -470,6 +501,9 @@ export default function BookingPage() {
                             {time}
                             {isBooked && (
                               <span className="ml-1 text-[10px]">{isZh ? '已约' : 'Booked'}</span>
+                            )}
+                            {isPast && !isBooked && (
+                              <span className="ml-1 text-[10px]">{isZh ? '已结束' : 'Ended'}</span>
                             )}
                           </Button>
                         )
@@ -509,7 +543,14 @@ export default function BookingPage() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-stone-600">{isZh ? '时间' : 'Time'}</span>
-                      <span className="font-medium">{selectedTime}</span>
+                      <span className="font-medium">
+                        {selectedTime}
+                        {selectedMaster && (
+                          <span className="text-xs text-stone-400 ml-1">
+                            ({TIMEZONE_LABELS[masters.find(m => m.id === selectedMaster)?.timezone || '']?.[isZh ? 'zh' : 'en']})
+                          </span>
+                        )}
+                      </span>
                     </div>
                     <div className="border-t pt-3 mt-3">
                       <div className="flex justify-between text-lg font-bold">
