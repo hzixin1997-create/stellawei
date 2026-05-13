@@ -158,7 +158,7 @@ export default function PaymentSuccessContent() {
             )}
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-              <Link href="/dashboard">
+              <Link href="/user/dashboard">
                 <Button className="bg-violet-600 hover:bg-violet-700 w-full sm:w-auto">
                   {isZh ? '查看我的预约' : 'View My Bookings'}
                   <ArrowRight className="w-4 h-4 ml-2" />

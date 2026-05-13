@@ -6,13 +6,47 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/client'
-import { ShoppingBag, MessageSquare, ArrowRight, Clock, User, Home, LogOut } from 'lucide-react'
+import { ShoppingBag, MessageSquare, ArrowRight, Clock, User, Home, LogOut, Video, MessageCircle } from 'lucide-react'
 import Link from 'next/link'
+
+// 师傅数据（用于展示）
+const masters: Record<string, { name: string; nameCn: string; specialty: string }> = {
+  'master-luna': { name: 'Master Luna', nameCn: '卢娜师傅', specialty: 'Tarot' },
+  'zhang-yihua': { name: 'Master Zhang Yihua', nameCn: '张易桦', specialty: 'Qi Men Dun Jia' },
+  'wu-yang': { name: 'Master Wu Yang', nameCn: '戊阳', specialty: 'BaZi & Feng Shui' },
+}
+
+// 服务数据
+const services: Record<string, { name: string; nameCn: string }> = {
+  tarot: { name: 'Tarot Reading', nameCn: '塔罗占卜' },
+  spiritual: { name: 'Spiritual Guidance', nameCn: '灵性指引' },
+  qimen: { name: 'Qi Men Dun Jia', nameCn: '奇门遁甲' },
+  liuyao: { name: 'Liu Yao Divination', nameCn: '六爻占卜' },
+  bazi: { name: 'BaZi Analysis', nameCn: '八字分析' },
+  fengshui: { name: 'Feng Shui Consultation', nameCn: '风水咨询' },
+}
+
+interface Booking {
+  id: string
+  master_id: string
+  service_id: string
+  scheduled_date: string
+  scheduled_time: string
+  duration_minutes: number
+  status: string
+  payment_status: string
+  total_amount: number
+  currency: string
+  is_first_time: boolean
+  created_at: string
+}
 
 export default function UserDashboard() {
   const router = useRouter()
   const [user, setUser] = useState<any>(null)
+  const [bookings, setBookings] = useState<Booking[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isZh, setIsZh] = useState(true)
 
   const handleLogout = async () => {
     const supabase = createClient()
@@ -21,18 +55,59 @@ export default function UserDashboard() {
   }
 
   useEffect(() => {
-    const getUser = async () => {
+    const getUserAndBookings = async () => {
       const supabase = createClient()
+      
+      // 1. 获取用户
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
         router.push('/auth/login')
         return
       }
       setUser(user)
+
+      // 2. 查询用户的 bookings（实时咨询订单）
+      const { data: bookingsData, error: bookingsError } = await supabase
+        .from('bookings')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+
+      if (!bookingsError && bookingsData) {
+        setBookings(bookingsData)
+      }
+
       setIsLoading(false)
     }
-    getUser()
+
+    getUserAndBookings()
   }, [router])
+
+  // 状态标签样式
+  const getStatusBadge = (status: string, paymentStatus: string) => {
+    if (paymentStatus === 'pending') {
+      return <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">{isZh ? '待支付' : 'Pending Payment'}</Badge>
+    }
+    if (paymentStatus === 'paid') {
+      if (status === 'confirmed' || status === 'in_progress') {
+        return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">{isZh ? '已确认' : 'Confirmed'}</Badge>
+      }
+      if (status === 'completed') {
+        return <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">{isZh ? '已完成' : 'Completed'}</Badge>
+      }
+      return <Badge variant="outline" className="bg-violet-50 text-violet-700 border-violet-200">{isZh ? '已支付' : 'Paid'}</Badge>
+    }
+    if (paymentStatus === 'failed') {
+      return <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">{isZh ? '支付失败' : 'Failed'}</Badge>
+    }
+    return <Badge variant="outline">{status}</Badge>
+  }
+
+  // 判断订单是否可以进入聊天
+  const canEnterChat = (booking: Booking) => {
+    return booking.payment_status === 'paid' && 
+      (booking.status === 'confirmed' || booking.status === 'in_progress')
+  }
 
   if (isLoading) {
     return (
@@ -49,7 +124,7 @@ export default function UserDashboard() {
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center text-stone-600 hover:text-stone-900">
             <Home className="w-5 h-5 mr-2" />
-            <span className="font-medium">返回首页</span>
+            <span className="font-medium">{isZh ? '返回首页' : 'Back to Home'}</span>
           </Link>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 text-sm text-stone-500">
@@ -61,7 +136,7 @@ export default function UserDashboard() {
               className="flex items-center gap-1 text-sm text-stone-500 hover:text-red-600 transition-colors"
             >
               <LogOut className="w-4 h-4" />
-              退出登录
+              {isZh ? '退出登录' : 'Logout'}
             </button>
           </div>
         </div>
@@ -72,10 +147,10 @@ export default function UserDashboard() {
           {/* 欢迎语 */}
           <div className="mb-8">
             <h1 className="text-3xl font-serif font-bold text-stone-900">
-              欢迎回来
+              {isZh ? '欢迎回来' : 'Welcome Back'}
             </h1>
             <p className="text-stone-600 mt-2">
-              这里您可以查看所有订单和留言记录
+              {isZh ? '这里您可以查看所有订单和留言记录' : 'View all your orders and messages here'}
             </p>
           </div>
 
@@ -88,8 +163,8 @@ export default function UserDashboard() {
                     <ShoppingBag className="w-5 h-5 text-violet-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-stone-500">我的订单</p>
-                    <p className="text-2xl font-bold">0</p>
+                    <p className="text-sm text-stone-500">{isZh ? '我的订单' : 'My Orders'}</p>
+                    <p className="text-2xl font-bold">{bookings.length}</p>
                   </div>
                 </div>
               </CardContent>
@@ -98,11 +173,13 @@ export default function UserDashboard() {
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
-                    <MessageSquare className="w-5 h-5 text-amber-600" />
+                    <Video className="w-5 h-5 text-amber-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-stone-500">待回复留言</p>
-                    <p className="text-2xl font-bold">0</p>
+                    <p className="text-sm text-stone-500">{isZh ? '实时咨询' : 'Live Consults'}</p>
+                    <p className="text-2xl font-bold">
+                      {bookings.filter(b => b.payment_status === 'paid').length}
+                    </p>
                   </div>
                 </div>
               </CardContent>
@@ -111,9 +188,9 @@ export default function UserDashboard() {
 
           {/* 快速操作 */}
           <div className="mb-6">
-            <Link href="/consultation-type">
+            <Link href="/booking">
               <Button className="w-full bg-violet-600 hover:bg-violet-700 h-12">
-                发起新的咨询
+                {isZh ? '发起新的咨询' : 'Start New Consultation'}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </Link>
@@ -124,11 +201,71 @@ export default function UserDashboard() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <ShoppingBag className="w-5 h-5" />
-                我的订单
+                {isZh ? '我的订单' : 'My Orders'}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-stone-500 text-center py-8">暂无订单</p>
+              {bookings.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-stone-500 mb-4">{isZh ? '暂无订单' : 'No orders yet'}</p>
+                  <Link href="/booking">
+                    <Button variant="outline" size="sm">
+                      {isZh ? '去预约' : 'Book Now'}
+                    </Button>
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {bookings.map((booking) => {
+                    const master = masters[booking.master_id] || { name: booking.master_id, nameCn: booking.master_id, specialty: '' }
+                    const service = services[booking.service_id] || { name: booking.service_id, nameCn: booking.service_id }
+                    return (
+                      <div key={booking.id} className="border rounded-lg p-4 hover:bg-stone-50 transition-colors">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="font-semibold">{isZh ? master.nameCn : master.name}</span>
+                              {getStatusBadge(booking.status, booking.payment_status)}
+                            </div>
+                            <p className="text-sm text-stone-600 mb-1">
+                              {isZh ? service.nameCn : service.name}
+                            </p>
+                            <div className="flex items-center gap-4 text-sm text-stone-500">
+                              <span className="flex items-center gap-1">
+                                <Clock className="w-3.5 h-3.5" />
+                                {booking.scheduled_date} {booking.scheduled_time}
+                              </span>
+                              <span>{booking.duration_minutes} min</span>
+                            </div>
+                            <p className="text-sm font-medium text-violet-600 mt-2">
+                              ${booking.total_amount}
+                              {booking.is_first_time && (
+                                <span className="text-xs text-stone-400 ml-2">({isZh ? '首单优惠' : 'First-time'})</span>
+                              )}
+                            </p>
+                          </div>
+                          <div className="flex flex-col gap-2 ml-4">
+                            {canEnterChat(booking) ? (
+                              <Link href={`/chat-demo`}>
+                                <Button size="sm" className="bg-violet-600 hover:bg-violet-700">
+                                  <Video className="w-4 h-4 mr-1" />
+                                  {isZh ? '进入聊天' : 'Enter Chat'}
+                                </Button>
+                              </Link>
+                            ) : booking.payment_status === 'pending' ? (
+                              <Link href={`/order/${booking.id}`}>
+                                <Button size="sm" variant="outline">
+                                  {isZh ? '去支付' : 'Pay'}
+                                </Button>
+                              </Link>
+                            ) : null}
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -137,11 +274,18 @@ export default function UserDashboard() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <MessageSquare className="w-5 h-5" />
-                我的留言
+                {isZh ? '我的留言' : 'My Messages'}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-stone-500 text-center py-8">暂无留言</p>
+              <div className="text-center py-8">
+                <p className="text-stone-500 mb-4">{isZh ? '暂无留言' : 'No messages yet'}</p>
+                <Link href="/consultation-type">
+                  <Button variant="outline" size="sm">
+                    {isZh ? '去留言' : 'Leave Message'}
+                  </Button>
+                </Link>
+              </div>
             </CardContent>
           </Card>
         </div>
