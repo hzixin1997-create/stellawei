@@ -83,7 +83,7 @@ export default function BookingPage() {
 
       setUser(session.user)
       
-      // 查询用户是否有已完成的历史预约
+      // 查询用户是否有过已支付的历史预约（已完成的订单才算非首单）
       const { data: bookings, error } = await supabase
         .from('bookings')
         .select('id')

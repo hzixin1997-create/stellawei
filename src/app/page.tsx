@@ -385,7 +385,7 @@ export default function Home() {
                   </div>
                   
                   <Link href={`/masters/${master.id}`}>
-                    <Button className="w-full mt-4">{t('masters.bookSession')}</Button>
+                    <Button className="w-full mt-4">{currentLang === 'zh' ? '点击了解' : 'Learn More'}</Button>
                   </Link>
                 </CardContent>
               </Card>

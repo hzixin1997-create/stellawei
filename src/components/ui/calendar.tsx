@@ -52,17 +52,13 @@ function Calendar({
           "focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-1",
           // 默认状态
           "bg-transparent text-stone-700",
-          // 选中状态 - 使用更明确的选择器
-          "data-[selected=true]:bg-violet-600 data-[selected=true]:text-white",
-          "data-[selected=true]:hover:bg-violet-700 data-[selected=true]:hover:text-white",
-          "data-[selected=true]:focus:bg-violet-600 data-[selected=true]:focus:text-white",
           // 今天状态
           "data-[today=true]:bg-accent data-[today=true]:border data-[today=true]:border-violet-300"
         ),
         // 选中日期的父元素样式
         selected: cn(
           defaultClassNames.selected,
-          "" // 不需要额外样式，按钮本身已经处理
+          "[&_button]:bg-violet-600 [&_button]:text-white [&_button]:hover:bg-violet-700 [&_button]:hover:text-white"
         ),
         today: cn(defaultClassNames.today, ""),
         outside: cn(

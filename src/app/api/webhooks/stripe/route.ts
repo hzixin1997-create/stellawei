@@ -60,9 +60,36 @@ async function handleCheckoutCompleted(
   session: Stripe.Checkout.Session,
   supabase: any
 ) {
-  const consultationId = session.metadata?.consultationId;
+  const metadata = session.metadata || {};
+  const consultationId = metadata.consultationId;
+  const bookingId = metadata.booking_id;
+
+  // 1. 优先处理 bookings 表（实时咨询）
+  if (bookingId) {
+    const { data: booking, error } = await supabase
+      .from("bookings")
+      .update({
+        payment_status: "paid",
+        status: "confirmed",
+        stripe_payment_intent_id: session.payment_intent as string,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", bookingId)
+      .in("payment_status", ["pending", "pending_payment"]) // 幂等
+      .select("*")
+      .single();
+
+    if (error) {
+      console.error("Webhook update booking failed:", error);
+    } else if (booking) {
+      console.log(`✅ Webhook: Booking ${bookingId} marked as paid`);
+    }
+    return;
+  }
+
+  // 2. 处理 consultations 表（留言咨询）
   if (!consultationId) {
-    console.error("No consultationId in session metadata");
+    console.error("No consultationId or booking_id in session metadata");
     return;
   }
 
@@ -123,7 +150,30 @@ async function handleCheckoutExpired(
   session: Stripe.Checkout.Session,
   supabase: any
 ) {
-  const consultationId = session.metadata?.consultationId;
+  const metadata = session.metadata || {};
+  const consultationId = metadata.consultationId;
+  const bookingId = metadata.booking_id;
+
+  // 处理 bookings 表
+  if (bookingId) {
+    const { error } = await supabase
+      .from("bookings")
+      .update({
+        payment_status: "failed",
+        status: "cancelled",
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", bookingId);
+
+    if (error) {
+      console.error("Webhook expired booking update failed:", error);
+    } else {
+      console.log(`⏰ Booking ${bookingId} cancelled (expired)`);
+    }
+    return;
+  }
+
+  // 处理 consultations 表
   if (!consultationId) return;
 
   const { error } = await supabase

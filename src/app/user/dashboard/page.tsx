@@ -47,6 +47,9 @@ export default function UserDashboard() {
   const [bookings, setBookings] = useState<Booking[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isZh, setIsZh] = useState(true)
+  const [cancellingId, setCancellingId] = useState<string | null>(null)
+  const [payingId, setPayingId] = useState<string | null>(null)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   const handleLogout = async () => {
     const supabase = createClient()
@@ -85,7 +88,7 @@ export default function UserDashboard() {
 
   // 状态标签样式
   const getStatusBadge = (status: string, paymentStatus: string) => {
-    if (paymentStatus === 'pending') {
+    if (paymentStatus === 'pending' || paymentStatus === 'pending_payment') {
       return <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">{isZh ? '待支付' : 'Pending Payment'}</Badge>
     }
     if (paymentStatus === 'paid') {
@@ -100,6 +103,9 @@ export default function UserDashboard() {
     if (paymentStatus === 'failed') {
       return <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">{isZh ? '支付失败' : 'Failed'}</Badge>
     }
+    if (status === 'cancelled' || paymentStatus === 'cancelled') {
+      return <Badge variant="outline" className="bg-stone-100 text-stone-500 border-stone-200">{isZh ? '已取消' : 'Cancelled'}</Badge>
+    }
     return <Badge variant="outline">{status}</Badge>
   }
 
@@ -107,6 +113,112 @@ export default function UserDashboard() {
   const canEnterChat = (booking: Booking) => {
     return booking.payment_status === 'paid' && 
       (booking.status === 'confirmed' || booking.status === 'in_progress')
+  }
+
+  // 取消订单
+  const handleCancel = async (bookingId: string) => {
+    if (!confirm(isZh ? '确定要取消这个预约吗？' : 'Are you sure you want to cancel this booking?')) {
+      return
+    }
+    setCancellingId(bookingId)
+    try {
+      const supabase = createClient()
+      const { error } = await supabase
+        .from('bookings')
+        .update({
+          status: 'cancelled',
+          payment_status: 'cancelled',
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', bookingId)
+        .eq('user_id', user.id)
+
+      if (error) {
+        alert(isZh ? '取消失败，请重试' : 'Cancel failed, please try again')
+        console.error('Cancel error:', error)
+      } else {
+        // 本地更新状态为已取消
+        setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status: 'cancelled', payment_status: 'cancelled' } : b))
+      }
+    } catch (err) {
+      console.error('Cancel error:', err)
+      alert(isZh ? '取消失败' : 'Cancel failed')
+    } finally {
+      setCancellingId(null)
+    }
+  }
+
+  // 删除订单（仅限已取消的订单）
+  const handleDelete = async (bookingId: string) => {
+    if (!confirm(isZh ? '确定要永久删除这条订单记录吗？删除后不可恢复。' : 'Are you sure you want to permanently delete this order? This action cannot be undone.')) {
+      return
+    }
+    setDeletingId(bookingId)
+    try {
+      const supabase = createClient()
+      const { error } = await supabase
+        .from('bookings')
+        .delete()
+        .eq('id', bookingId)
+        .eq('user_id', user.id)
+
+      if (error) {
+        alert(isZh ? '删除失败，请重试' : 'Delete failed, please try again')
+        console.error('Delete error:', error)
+      } else {
+        // 本地移除
+        setBookings(prev => prev.filter(b => b.id !== bookingId))
+      }
+    } catch (err) {
+      console.error('Delete error:', err)
+      alert(isZh ? '删除失败' : 'Delete failed')
+    } finally {
+      setDeletingId(null)
+    }
+  }
+  const handlePay = async (booking: Booking) => {
+    setPayingId(booking.id)
+    try {
+      const master = masters[booking.master_id]
+      const service = services[booking.service_id]
+
+      const res = await fetch('/api/payment/create-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          bookingId: booking.id,
+          masterId: booking.master_id,
+          serviceId: booking.service_id,
+          amount: booking.total_amount,
+          currency: booking.currency,
+          userId: user.id,
+          userEmail: user.email,
+          userName: user.user_metadata?.full_name || user.email,
+          masterName: isZh ? master?.nameCn : master?.name,
+          serviceName: isZh ? service?.nameCn : service?.name,
+          scheduledDate: booking.scheduled_date,
+          scheduledTime: booking.scheduled_time,
+          isFirstTime: booking.is_first_time,
+        }),
+      })
+
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data.error || 'Payment failed')
+      }
+
+      // 跳转到 Stripe Checkout
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        throw new Error('No checkout URL')
+      }
+    } catch (err: any) {
+      console.error('Pay error:', err)
+      alert(isZh ? `支付跳转失败: ${err.message}` : `Payment failed: ${err.message}`)
+    } finally {
+      setPayingId(null)
+    }
   }
 
   if (isLoading) {
@@ -244,21 +356,55 @@ export default function UserDashboard() {
                               )}
                             </p>
                           </div>
-                          <div className="flex flex-col gap-2 ml-4">
-                            {canEnterChat(booking) ? (
-                              <Link href={`/chat-demo`}>
-                                <Button size="sm" className="bg-violet-600 hover:bg-violet-700">
+                          <div className="flex flex-col gap-2 ml-4 min-w-[80px]">
+                            {canEnterChat(booking) && (
+                              <Link href={`/chat-demo`} className="inline-flex">
+                                <Button size="sm" className="bg-violet-600 hover:bg-violet-700 w-full">
                                   <Video className="w-4 h-4 mr-1" />
-                                  {isZh ? '进入聊天' : 'Enter Chat'}
+                                  {isZh ? '进入聊天' : 'Chat'}
                                 </Button>
                               </Link>
-                            ) : booking.payment_status === 'pending' ? (
-                              <Link href={`/order/${booking.id}`}>
-                                <Button size="sm" variant="outline">
-                                  {isZh ? '去支付' : 'Pay'}
+                            )}
+                            {(booking.payment_status === 'pending' || booking.payment_status === 'pending_payment') && (
+                              <>
+                                <Button
+                                  size="sm"
+                                  variant="default"
+                                  className="bg-amber-500 hover:bg-amber-600 text-white w-full"
+                                  onClick={() => handlePay(booking)}
+                                  disabled={payingId === booking.id}
+                                >
+                                  {payingId === booking.id ? (isZh ? '跳转中...' : 'Redirecting...') : (isZh ? '支付' : 'Pay')}
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600 w-full"
+                                  onClick={() => handleCancel(booking.id)}
+                                  disabled={cancellingId === booking.id}
+                                >
+                                  {cancellingId === booking.id ? (isZh ? '取消中...' : 'Cancelling...') : (isZh ? '取消' : 'Cancel')}
+                                </Button>
+                              </>
+                            )}
+                            {booking.payment_status === 'failed' && (
+                              <Link href={`/order/${booking.id}`} className="inline-flex">
+                                <Button size="sm" variant="outline" className="w-full">
+                                  {isZh ? '重试' : 'Retry'}
                                 </Button>
                               </Link>
-                            ) : null}
+                            )}
+                            {(booking.status === 'cancelled' || booking.payment_status === 'cancelled') && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-stone-500 border-stone-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200 w-full"
+                                onClick={() => handleDelete(booking.id)}
+                                disabled={deletingId === booking.id}
+                              >
+                                {deletingId === booking.id ? (isZh ? '删除中...' : 'Deleting...') : (isZh ? '删除' : 'Delete')}
+                              </Button>
+                            )}
                           </div>
                         </div>
                       </div>

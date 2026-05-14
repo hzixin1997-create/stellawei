@@ -111,7 +111,7 @@ const resources = {
       'masters.title': '我们的大师',
       'masters.subtitle': '经验丰富的修行者，致力于指引您的人生道路',
       'masters.experience': '{{years}}年经验',
-      'masters.book': '预约咨询',
+      'masters.book': '点击了解',
       'masters.learn_more': '了解更多',
       
       // Services
