@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/client'
-import { ShoppingBag, MessageSquare, ArrowRight, Clock, User, Home, LogOut, Video, MessageCircle } from 'lucide-react'
+import { ShoppingBag, MessageSquare, ArrowRight, Clock, User, Home, LogOut, MessageCircle, AlertTriangle } from 'lucide-react'
 import Link from 'next/link'
 
 // 师傅数据（用于展示）
@@ -26,6 +26,8 @@ const services: Record<string, { name: string; nameCn: string }> = {
   fengshui: { name: 'Feng Shui Consultation', nameCn: '风水咨询' },
 }
 
+const PAYMENT_TIMEOUT_MINUTES = 10
+
 interface Booking {
   id: string
   master_id: string
@@ -39,6 +41,16 @@ interface Booking {
   currency: string
   is_first_time: boolean
   created_at: string
+  expires_at: string | null
+  deleted_at?: string | null
+}
+
+// 格式化倒计时
+function formatCountdown(seconds: number): string {
+  if (seconds <= 0) return '00:00'
+  const m = Math.floor(seconds / 60)
+  const s = Math.floor(seconds % 60)
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
 }
 
 export default function UserDashboard() {
@@ -50,11 +62,32 @@ export default function UserDashboard() {
   const [cancellingId, setCancellingId] = useState<string | null>(null)
   const [payingId, setPayingId] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [refundingId, setRefundingId] = useState<string | null>(null)
+
+  // 倒计时状态：booking_id -> remaining_seconds
+  const [countdowns, setCountdowns] = useState<Record<string, number>>({})
 
   const handleLogout = async () => {
     const supabase = createClient()
     await supabase.auth.signOut()
     window.location.href = '/'
+  }
+
+  // 计算剩余秒数
+  const getRemainingSeconds = (expiresAt: string | null): number => {
+    if (!expiresAt) return 0
+    const end = new Date(expiresAt).getTime()
+    const now = Date.now()
+    return Math.max(0, Math.floor((end - now) / 1000))
+  }
+
+  // 判断订单是否已过期（没有expires_at的pending订单视为已过期）
+  const isExpired = (booking: Booking): boolean => {
+    if (booking.payment_status !== 'pending' && booking.payment_status !== 'pending_payment') {
+      return false
+    }
+    if (!booking.expires_at) return true  // 旧订单没有expires_at，视为已过期
+    return new Date(booking.expires_at).getTime() <= Date.now()
   }
 
   useEffect(() => {
@@ -69,7 +102,7 @@ export default function UserDashboard() {
       }
       setUser(user)
 
-      // 2. 查询用户的 bookings（实时咨询订单）
+      // 2. 查询用户的 bookings（实时咨询订单），前端过滤软删除的
       const { data: bookingsData, error: bookingsError } = await supabase
         .from('bookings')
         .select('*')
@@ -77,7 +110,17 @@ export default function UserDashboard() {
         .order('created_at', { ascending: false })
 
       if (!bookingsError && bookingsData) {
-        setBookings(bookingsData)
+        // 过滤掉 deleted_at 有值的记录（软删除）
+        const visibleBookings = bookingsData.filter((b: any) => !b.deleted_at)
+        setBookings(visibleBookings)
+        // 初始化倒计时
+        const initialCountdowns: Record<string, number> = {}
+        visibleBookings.forEach((b: Booking) => {
+          if ((b.payment_status === 'pending' || b.payment_status === 'pending_payment') && b.expires_at) {
+            initialCountdowns[b.id] = getRemainingSeconds(b.expires_at)
+          }
+        })
+        setCountdowns(initialCountdowns)
       }
 
       setIsLoading(false)
@@ -86,8 +129,30 @@ export default function UserDashboard() {
     getUserAndBookings()
   }, [router])
 
+  // 倒计时 tick
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCountdowns(prev => {
+        const next: Record<string, number> = {}
+        let hasChanges = false
+        Object.entries(prev).forEach(([id, seconds]) => {
+          const booking = bookings.find(b => b.id === id)
+          if (!booking) return
+          const remaining = getRemainingSeconds(booking.expires_at)
+          next[id] = remaining
+          if (remaining !== seconds) hasChanges = true
+        })
+        return hasChanges ? next : prev
+      })
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [bookings])
+
   // 状态标签样式
-  const getStatusBadge = (status: string, paymentStatus: string) => {
+  const getStatusBadge = (status: string, paymentStatus: string, expired: boolean) => {
+    if (expired && (paymentStatus === 'pending' || paymentStatus === 'pending_payment')) {
+      return <Badge variant="outline" className="bg-stone-100 text-stone-400 border-stone-200">{isZh ? '已过期' : 'Expired'}</Badge>
+    }
     if (paymentStatus === 'pending' || paymentStatus === 'pending_payment') {
       return <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">{isZh ? '待支付' : 'Pending Payment'}</Badge>
     }
@@ -137,7 +202,6 @@ export default function UserDashboard() {
         alert(isZh ? '取消失败，请重试' : 'Cancel failed, please try again')
         console.error('Cancel error:', error)
       } else {
-        // 本地更新状态为已取消
         setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status: 'cancelled', payment_status: 'cancelled' } : b))
       }
     } catch (err) {
@@ -148,7 +212,36 @@ export default function UserDashboard() {
     }
   }
 
-  // 删除订单（仅限已取消的订单）
+  // 申请退款（已支付的订单）
+  const handleRefund = async (bookingId: string) => {
+    if (!confirm(isZh ? '确定要申请退款吗？退款将在3-5个工作日内原路退回。' : 'Are you sure you want to request a refund? Refund will be processed within 3-5 business days.')) {
+      return
+    }
+    setRefundingId(bookingId)
+    try {
+      const res = await fetch('/api/payment/refund', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookingId }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Refund failed')
+      }
+
+      setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, payment_status: 'refunded', status: 'refunded' } : b))
+      alert(isZh ? '退款申请已提交，款项将原路退回' : 'Refund request submitted')
+    } catch (err: any) {
+      console.error('Refund error:', err)
+      alert(isZh ? `退款失败: ${err.message}` : `Refund failed: ${err.message}`)
+    } finally {
+      setRefundingId(null)
+    }
+  }
+
+  // 删除订单（软删除：设置 deleted_at，绕过API 404问题）
   const handleDelete = async (bookingId: string) => {
     if (!confirm(isZh ? '确定要永久删除这条订单记录吗？删除后不可恢复。' : 'Are you sure you want to permanently delete this order? This action cannot be undone.')) {
       return
@@ -156,27 +249,33 @@ export default function UserDashboard() {
     setDeletingId(bookingId)
     try {
       const supabase = createClient()
+      // 软删除：设置 deleted_at 时间戳
       const { error } = await supabase
         .from('bookings')
-        .delete()
+        .update({ deleted_at: new Date().toISOString() })
         .eq('id', bookingId)
         .eq('user_id', user.id)
 
       if (error) {
-        alert(isZh ? '删除失败，请重试' : 'Delete failed, please try again')
-        console.error('Delete error:', error)
-      } else {
-        // 本地移除
-        setBookings(prev => prev.filter(b => b.id !== bookingId))
+        throw new Error(error.message)
       }
-    } catch (err) {
+
+      // 前端移除（即使后端失败也移除UI，避免用户困惑）
+      setBookings(prev => prev.filter(b => b.id !== bookingId))
+    } catch (err: any) {
       console.error('Delete error:', err)
-      alert(isZh ? '删除失败' : 'Delete failed')
+      // 静默失败，不弹窗报错（已从UI移除）
     } finally {
       setDeletingId(null)
     }
   }
+
+  // 支付订单 — 调用 Stripe checkout
   const handlePay = async (booking: Booking) => {
+    if (isExpired(booking)) {
+      alert(isZh ? '该订单已过期，请重新预约' : 'This order has expired. Please book again.')
+      return
+    }
     setPayingId(booking.id)
     try {
       const master = masters[booking.master_id]
@@ -285,12 +384,12 @@ export default function UserDashboard() {
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
-                    <Video className="w-5 h-5 text-amber-600" />
+                    <MessageCircle className="w-5 h-5 text-amber-600" />
                   </div>
                   <div>
                     <p className="text-sm text-stone-500">{isZh ? '实时咨询' : 'Live Consults'}</p>
                     <p className="text-2xl font-bold">
-                      {bookings.filter(b => b.payment_status === 'paid').length}
+                      {bookings.filter(b => b.status !== 'cancelled' && b.payment_status !== 'cancelled' && b.payment_status !== 'expired').length}
                     </p>
                   </div>
                 </div>
@@ -331,13 +430,16 @@ export default function UserDashboard() {
                   {bookings.map((booking) => {
                     const master = masters[booking.master_id] || { name: booking.master_id, nameCn: booking.master_id, specialty: '' }
                     const service = services[booking.service_id] || { name: booking.service_id, nameCn: booking.service_id }
+                    const expired = isExpired(booking)
+                    const remainingSeconds = countdowns[booking.id] || 0
+                    const isUrgent = remainingSeconds > 0 && remainingSeconds <= 180 // 3分钟内
                     return (
                       <div key={booking.id} className="border rounded-lg p-4 hover:bg-stone-50 transition-colors">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
                               <span className="font-semibold">{isZh ? master.nameCn : master.name}</span>
-                              {getStatusBadge(booking.status, booking.payment_status)}
+                              {getStatusBadge(booking.status, booking.payment_status, expired)}
                             </div>
                             <p className="text-sm text-stone-600 mb-1">
                               {isZh ? service.nameCn : service.name}
@@ -355,17 +457,48 @@ export default function UserDashboard() {
                                 <span className="text-xs text-stone-400 ml-2">({isZh ? '首单优惠' : 'First-time'})</span>
                               )}
                             </p>
+                            {/* 倒计时显示 */}
+                            {(booking.payment_status === 'pending' || booking.payment_status === 'pending_payment') && !expired && remainingSeconds > 0 && (
+                              <div className={`flex items-center gap-1 mt-2 text-xs font-mono ${isUrgent ? 'text-red-600' : 'text-amber-600'}`}>
+                                {isUrgent && <AlertTriangle className="w-3 h-3" />}
+                                <span>
+                                  {isZh ? '支付倒计时：' : 'Payment expires in: '}
+                                  {formatCountdown(remainingSeconds)}
+                                </span>
+                                {isUrgent && (
+                                  <span className="text-red-500 font-medium ml-1">
+                                    {isZh ? '（请尽快完成）' : '(Hurry!)'}
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                            {expired && (
+                              <p className="text-xs text-stone-400 mt-2">
+                                {isZh ? '该订单已过期，请重新预约' : 'This order has expired. Please book again.'}
+                              </p>
+                            )}
                           </div>
                           <div className="flex flex-col gap-2 ml-4 min-w-[80px]">
                             {canEnterChat(booking) && (
                               <Link href={`/chat-demo`} className="inline-flex">
                                 <Button size="sm" className="bg-violet-600 hover:bg-violet-700 w-full">
-                                  <Video className="w-4 h-4 mr-1" />
+                                  <MessageCircle className="w-4 h-4 mr-1" />
                                   {isZh ? '进入聊天' : 'Chat'}
                                 </Button>
                               </Link>
                             )}
-                            {(booking.payment_status === 'pending' || booking.payment_status === 'pending_payment') && (
+                            {booking.payment_status === 'paid' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-orange-600 border-orange-200 hover:bg-orange-50 hover:text-orange-700 w-full"
+                                onClick={() => handleRefund(booking.id)}
+                                disabled={refundingId === booking.id}
+                              >
+                                {refundingId === booking.id ? (isZh ? '处理中...' : 'Processing...') : (isZh ? '申请退款' : 'Refund')}
+                              </Button>
+                            )}
+                            {(booking.payment_status === 'pending' || booking.payment_status === 'pending_payment') && !expired && (
                               <>
                                 <Button
                                   size="sm"
@@ -386,6 +519,13 @@ export default function UserDashboard() {
                                   {cancellingId === booking.id ? (isZh ? '取消中...' : 'Cancelling...') : (isZh ? '取消' : 'Cancel')}
                                 </Button>
                               </>
+                            )}
+                            {expired && (
+                              <Link href="/booking" className="inline-flex">
+                                <Button size="sm" variant="outline" className="w-full">
+                                  {isZh ? '重新预约' : 'Rebook'}
+                                </Button>
+                              </Link>
                             )}
                             {booking.payment_status === 'failed' && (
                               <Link href={`/order/${booking.id}`} className="inline-flex">

@@ -9,6 +9,7 @@ import {
   Brain,
   Compass,
   ArrowLeft,
+  ArrowRight,
   Sparkles,
   Clock,
   CheckCircle,
@@ -221,12 +222,20 @@ export default function SpiritualServicePage() {
             </Link>
             <div className="flex items-center space-x-4">
               <LanguageSwitcher />
-              <Link href="/services">
-                <Button variant="outline" size="sm" className="flex items-center gap-2">
-                  <ArrowLeft className="w-4 h-4" />
-                  {isZh ? "返回服务" : "Back to Services"}
-                </Button>
-              </Link>
+              <div className="flex items-center space-x-2">
+                <Link href="/">
+                  <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    <ArrowLeft className="w-4 h-4" />
+                    {isZh ? "返回首页" : "Home"}
+                  </Button>
+                </Link>
+                <Link href="/services/tarot">
+                  <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    {isZh ? "其它服务" : "Next"}
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -257,21 +266,6 @@ export default function SpiritualServicePage() {
                 : "Spiritual growth is a journey back to your authentic self. Here, you'll receive professional companionship and guidance to explore your inner world, expand consciousness, and live a more aware, free, and abundant life."
               }
             </p>
-            
-            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
-              <div className="flex items-center space-x-2">
-                <Clock className="w-4 h-4 text-amber-500" />
-                <span>45-90 {isZh ? "分钟" : "min"}</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Star className="w-4 h-4 text-stellawei-gold" />
-                <span>$45-150</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                <span>{isZh ? "深度陪伴" : "Deep Guidance"}</span>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -355,7 +349,7 @@ export default function SpiritualServicePage() {
                     {/* CTA */}
                     <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                       <span className="text-sm text-muted-foreground">
-                        {isZh ? "价格" : "Price"}: {service.price}
+                        {isZh ? "时长" : "Duration"}: {service.duration}
                       </span>
                       <Link href="/masters">
                         <Button>
@@ -368,33 +362,6 @@ export default function SpiritualServicePage() {
                 </div>
               </Card>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-br from-amber-500/5 to-orange-500/5">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-serif font-bold mb-4">
-            {isZh ? "开启你的灵性觉醒之旅" : "Begin your spiritual awakening journey"}
-          </h2>
-          <p className="text-muted-foreground mb-8">
-            {isZh 
-              ? "我们的灵性导师将陪伴你穿越成长的每个阶段，发现内在的光芒"
-              : "Our spiritual mentors will accompany you through every stage of growth, discovering your inner light"
-            }
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/masters">
-              <Button size="lg" className="px-8">
-                {isZh ? "选择导师" : "Choose a Mentor"}
-              </Button>
-            </Link>
-            <Link href="/services">
-              <Button variant="outline" size="lg" className="px-8">
-                {isZh ? "查看其他服务" : "View Other Services"}
-              </Button>
-            </Link>
           </div>
         </div>
       </section>

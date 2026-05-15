@@ -9,6 +9,7 @@ import {
   Compass,
   SparklesIcon,
   ArrowLeft,
+  ArrowRight,
   Sparkles,
   Clock,
   CheckCircle,
@@ -43,13 +44,13 @@ const tarotServices = [
       "凯尔特十字爱情牌阵解读",
       "关系能量流动分析",
       "具体行动建议",
-      "30分钟视频解读 + 牌面照片与文字说明"
+      "30分钟解读 + 牌面照片与文字说明"
     ],
     deliverablesEn: [
       "Celtic Cross love spread interpretation",
       "Relationship energy flow analysis",
       "Specific action recommendations",
-      "30-min video session + card photos and notes"
+      "30-min session + card photos and notes"
     ],
     duration: "30 min",
     price: "$25",
@@ -80,13 +81,13 @@ const tarotServices = [
       "事业决策牌阵解读",
       "环境能量与机会分析",
       "行动步骤与时机建议",
-      "30分钟视频解读 + 职业发展指引"
+      "30分钟解读 + 职业发展指引"
     ],
     deliverablesEn: [
       "Career decision spread interpretation",
       "Environment energy and opportunity analysis",
       "Action steps and timing guidance",
-      "30-min video session + career development guide"
+      "30-min session + career development guide"
     ],
     duration: "30 min",
     price: "$25",
@@ -117,13 +118,13 @@ const tarotServices = [
       "7张或12张月度牌阵",
       "各领域（爱情/事业/健康/人际）能量评级",
       "每日能量提示与建议",
-      "20分钟语音解读 + 周/月运势卡片"
+      "20分钟解读 + 周/月运势卡片"
     ],
     deliverablesEn: [
       "7 or 12-card monthly spread",
       "Energy ratings for all areas (love/career/health/relationships)",
       "Daily energy tips and advice",
-      "20-min audio session + weekly/monthly fortune cards"
+      "20-min session + weekly/monthly fortune cards"
     ],
     duration: "20 min",
     price: "$15",
@@ -154,13 +155,13 @@ const tarotServices = [
       "对比选择牌阵或路径分析牌阵",
       "各选项深度能量扫描",
       "直觉引导与理性分析结合",
-      "25分钟视频解读 + 决策参考文档"
+      "25分钟解读 + 决策参考文档"
     ],
     deliverablesEn: [
       "Comparison spread or path analysis spread",
       "Deep energy scan of each option",
       "Combination of intuitive guidance and rational analysis",
-      "25-min video session + decision reference document"
+      "25-min session + decision reference document"
     ],
     duration: "25 min",
     price: "$20",
@@ -191,13 +192,13 @@ const tarotServices = [
       "灵性旅程牌阵解读",
       "灵魂课题与礼物识别",
       "个人化灵性练习建议",
-      "35分钟深度视频解读 + 灵性成长计划"
+      "35分钟深度解读 + 灵性成长计划"
     ],
     deliverablesEn: [
       "Spiritual journey spread interpretation",
       "Soul lesson and gift identification",
       "Personalized spiritual practice recommendations",
-      "35-min deep video session + spiritual growth plan"
+      "35-min deep session + spiritual growth plan"
     ],
     duration: "35 min",
     price: "$30",
@@ -225,12 +226,20 @@ export default function TarotServicePage() {
             </Link>
             <div className="flex items-center space-x-4">
               <LanguageSwitcher />
-              <Link href="/services">
-                <Button variant="outline" size="sm" className="flex items-center gap-2">
-                  <ArrowLeft className="w-4 h-4" />
-                  {isZh ? "返回服务" : "Back to Services"}
-                </Button>
-              </Link>
+              <div className="flex items-center space-x-2">
+                <Link href="/">
+                  <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    <ArrowLeft className="w-4 h-4" />
+                    {isZh ? "返回首页" : "Home"}
+                  </Button>
+                </Link>
+                <Link href="/services/bazi">
+                  <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    {isZh ? "其它服务" : "Next"}
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -260,21 +269,6 @@ export default function TarotServicePage() {
                 : "Tarot doesn't predict a fixed fate, but mirrors your current energy state. It helps you connect with intuitive wisdom and see your true desires when feeling lost."
               }
             </p>
-            
-            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
-              <div className="flex items-center space-x-2">
-                <Clock className="w-4 h-4 text-purple-500" />
-                <span>20-35 {isZh ? "分钟" : "min"}</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Star className="w-4 h-4 text-stellawei-gold" />
-                <span>$15-30</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                <span>{isZh ? "即时洞察" : "Instant Insights"}</span>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -358,7 +352,7 @@ export default function TarotServicePage() {
                     {/* CTA */}
                     <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                       <span className="text-sm text-muted-foreground">
-                        {isZh ? "价格" : "Price"}: {service.price}
+                        {isZh ? "时长" : "Duration"}: {service.duration}
                       </span>
                       <Link href="/masters">
                         <Button>
@@ -375,32 +369,7 @@ export default function TarotServicePage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-br from-purple-500/5 to-pink-500/5">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-serif font-bold mb-4">
-            {isZh ? "让直觉之光照亮前路" : "Let intuitive light illuminate your path"}
-          </h2>
-          <p className="text-muted-foreground mb-8">
-            {isZh 
-              ? "我们的塔罗师将帮助你连接内在智慧，找到属于你的答案"
-              : "Our tarot readers will help you connect with inner wisdom and find your answers"
-            }
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/masters">
-              <Button size="lg" className="px-8">
-                {isZh ? "选择塔罗师" : "Choose a Reader"}
-              </Button>
-            </Link>
-            <Link href="/services">
-              <Button variant="outline" size="lg" className="px-8">
-                {isZh ? "查看其他服务" : "View Other Services"}
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
+
     </div>
   );
 }

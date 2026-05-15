@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { getStripe, convertToStripeAmount } from '@/lib/stripe'
 import { createServiceClient } from '@/lib/supabase'
 
+const PAYMENT_TIMEOUT_MINUTES = 10
+
 export async function POST(request: Request) {
   try {
     const stripe = getStripe()
@@ -31,10 +33,56 @@ export async function POST(request: Request) {
     }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    const supabase = createServiceClient()
+
+    // ─── 检查订单是否已过期 ───
+    const { data: booking, error: bookingError } = await supabase
+      .from('bookings')
+      .select('expires_at, payment_status')
+      .eq('id', bookingId)
+      .eq('user_id', userId)
+      .single()
+
+    if (bookingError || !booking) {
+      return NextResponse.json(
+        { error: 'Booking not found' },
+        { status: 404 }
+      )
+    }
+
+    // 如果已经过期
+    if (booking.expires_at && new Date(booking.expires_at).getTime() <= Date.now()) {
+      return NextResponse.json(
+        { error: 'Booking has expired. Please book again.' },
+        { status: 410 }
+      )
+    }
+
+    // 如果已经支付过了
+    if (booking.payment_status === 'paid') {
+      return NextResponse.json(
+        { error: 'Booking already paid' },
+        { status: 409 }
+      )
+    }
+
+    // 计算 Stripe 过期时间（Unix 时间戳，秒）
+    const stripeExpiresAt = Math.floor(Date.now() / 1000) + PAYMENT_TIMEOUT_MINUTES * 60
+
+    // 更新 booking 的 expires_at（如果不存在的话）
+    const bookingExpiresAt = booking.expires_at
+      ? new Date(booking.expires_at).toISOString()
+      : new Date(Date.now() + PAYMENT_TIMEOUT_MINUTES * 60 * 1000).toISOString()
+
+    if (!booking.expires_at) {
+      await supabase
+        .from('bookings')
+        .update({ expires_at: bookingExpiresAt })
+        .eq('id', bookingId)
+    }
     
     // 创建或获取 Stripe Customer
     let customerId: string
-    const supabase = createServiceClient()
     
     // 查询用户是否已有 stripe_customer_id
     const { data: userData, error: userError } = await supabase
@@ -93,6 +141,7 @@ export async function POST(request: Request) {
         },
       ],
       mode: 'payment',
+      expires_at: stripeExpiresAt,
       success_url: `${appUrl}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}/payment/cancel?booking_id=${bookingId}`,
       metadata: {
@@ -112,6 +161,7 @@ export async function POST(request: Request) {
       .update({
         payment_intent_id: session.id,
         payment_status: 'pending',
+        expires_at: bookingExpiresAt,
         updated_at: new Date().toISOString(),
       })
       .eq('id', bookingId)

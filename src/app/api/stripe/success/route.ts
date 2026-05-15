@@ -1,87 +1,76 @@
-import { stripe } from "@/lib/stripe";
-import { createClient } from "@/lib/supabase/server";
-import { sendBookingConfirmationToUser, sendNewBookingToMaster, sendAdminNotification } from "@/lib/resend";
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server'
+import { stripe } from '@/lib/stripe'
+import { createServiceClient } from '@/lib/supabase'
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const sessionId = searchParams.get("session_id");
-
-  if (!sessionId) {
-    return NextResponse.redirect("/booking?error=no_session");
-  }
-
+/**
+ * POST /api/stripe/success
+ * 验证Stripe支付状态并更新booking（webhook的fallback）
+ */
+export async function POST(request: Request) {
   try {
-    // 获取 Stripe Session 详情
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
-    const consultationId = session.metadata?.consultationId;
+    const body = await request.json()
+    const { session_id } = body
 
-    if (!consultationId) {
-      return NextResponse.redirect("/booking?error=invalid_session");
+    if (!session_id) {
+      return NextResponse.json(
+        { error: 'Missing session_id' },
+        { status: 400 }
+      )
     }
 
-    const supabase = await createClient();
+    // 1. 从Stripe查询session状态
+    const session = await stripe.checkout.sessions.retrieve(session_id)
 
-    // 更新订单状态为已支付
-    const { data: consultation, error } = await supabase
-      .from("consultations")
+    if (session.payment_status !== 'paid') {
+      return NextResponse.json(
+        { error: 'Payment not completed', status: session.payment_status },
+        { status: 400 }
+      )
+    }
+
+    // 2. 获取booking_id
+    const bookingId = session.metadata?.booking_id
+    if (!bookingId) {
+      return NextResponse.json(
+        { error: 'No booking_id in session metadata' },
+        { status: 400 }
+      )
+    }
+
+    // 3. 更新booking状态（幂等）
+    const supabase = createServiceClient()
+    const { data: booking, error: updateError } = await supabase
+      .from('bookings')
       .update({
-        status: "paid",
+        payment_status: 'paid',
+        status: 'confirmed',
         stripe_payment_intent_id: session.payment_intent as string,
         updated_at: new Date().toISOString(),
       })
-      .eq("id", consultationId)
-      .select("*, profiles(*), masters(*, profiles(*))")
-      .single();
+      .eq('id', bookingId)
+      .in('payment_status', ['pending', 'pending_payment']) // 幂等：只有未支付的才更新
+      .select('*')
+      .single()
 
-    if (error || !consultation) {
-      console.error("Update consultation error:", error);
-      return NextResponse.redirect("/booking?error=update_failed");
+    if (updateError) {
+      console.error('Error updating booking:', updateError)
+      return NextResponse.json(
+        { error: 'Failed to update booking status' },
+        { status: 500 }
+      )
     }
 
-    // 发送邮件通知
-    try {
-      // 给用户发确认邮件
-      await sendBookingConfirmationToUser({
-        userEmail: consultation.profiles.email,
-        userName: consultation.profiles.full_name || "Client",
-        masterName: consultation.masters.name,
-        serviceType: consultation.service_type,
-        scheduledAt: consultation.scheduled_at,
-        price: consultation.price_usd / 100,
-      });
-
-      // 给师傅发新订单通知
-      if (consultation.masters.profiles?.email) {
-        await sendNewBookingToMaster({
-          masterEmail: consultation.masters.profiles.email,
-          masterName: consultation.masters.name,
-          userName: consultation.profiles.full_name || "Client",
-          serviceType: consultation.service_type,
-          scheduledAt: consultation.scheduled_at,
-          price: consultation.price_usd / 100,
-        });
-      }
-
-      // 给管理员（黄总）发通知
-      await sendAdminNotification({
-        consultationId: consultation.id,
-        userEmail: consultation.profiles.email,
-        masterName: consultation.masters.name,
-        serviceType: consultation.service_type,
-        price: consultation.price_usd / 100,
-      });
-    } catch (emailError) {
-      // 邮件发送失败不影响主流程，只记录日志
-      console.error("Email notification error:", emailError);
-    }
-
-    // 重定向到成功页面
-    return NextResponse.redirect(
-      `/booking/success?consultation=${consultationId}`
-    );
+    return NextResponse.json({
+      success: true,
+      bookingId: booking?.id,
+      paymentStatus: 'paid',
+      message: 'Payment verified and booking confirmed',
+    })
   } catch (error: any) {
-    console.error("Payment success handler error:", error);
-    return NextResponse.redirect("/booking?error=payment_failed");
+    console.error('Stripe success API error:', error)
+    return NextResponse.json(
+      { error: 'Failed to verify payment', message: error.message },
+      { status: 500 }
+    )
   }
 }

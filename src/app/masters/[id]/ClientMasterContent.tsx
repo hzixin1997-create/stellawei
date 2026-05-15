@@ -5,7 +5,7 @@ import { reviews } from "@/lib/data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Star, Clock, Award, CheckCircle, MessageSquare, Video } from "lucide-react"
+import { Star, Clock, Award, CheckCircle, MessageSquare, MessageCircle } from "lucide-react"
 import Link from "next/link"
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -221,6 +221,13 @@ export function ClientMasterContent({ master }: Props) {
                 </CardHeader>
                 
                 <CardContent className="space-y-4">
+                  {/* 预约咨询按钮 */}
+                  <Link href="/booking">
+                    <Button className="w-full" size="lg">
+                      {currentLang === 'zh' ? '预约咨询' : 'Book Consultation'}
+                    </Button>
+                  </Link>
+                  
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">{labels.experience}</span>
                     <span className="font-medium">{master.experience_years}+ {labels.years}</span>
@@ -338,7 +345,7 @@ export function ClientMasterContent({ master }: Props) {
                                 </Badge>
                               ) : (
                                 <Badge variant="secondary" className="text-xs flex items-center gap-1">
-                                  <Video className="w-3 h-3" />
+                                  <MessageCircle className="w-3 h-3" />
                                   {currentLang === 'zh' ? '预约' : 'Booking'}
                                 </Badge>
                               )}

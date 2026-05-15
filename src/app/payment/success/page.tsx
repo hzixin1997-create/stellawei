@@ -1,29 +1,54 @@
-"use client";
+'use client'
 
-import { Suspense } from "react"
-import { useEffect, useState } from "react"
-import { useSearchParams } from "next/navigation"
-import Link from "next/link"
-import { CheckCircle, Loader2 } from "lucide-react"
+import { Suspense } from 'react'
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
+import Link from 'next/link'
+import { CheckCircle, Loader2, AlertTriangle } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 function PaymentSuccessContent() {
   const searchParams = useSearchParams()
-  const sessionId = searchParams.get("session_id")
-  const orderId = searchParams.get("order_id")
+  const sessionId = searchParams.get('session_id')
   const [verifying, setVerifying] = useState(true)
   const [verified, setVerified] = useState(false)
+  const [error, setError] = useState('')
+  const [bookingId, setBookingId] = useState('')
 
   useEffect(() => {
-    if (sessionId && orderId) {
-      // 给 Webhook 一点时间处理
-      setTimeout(() => {
+    const verifyPayment = async () => {
+      if (!sessionId) {
         setVerifying(false)
+        setError('缺少支付会话ID')
+        return
+      }
+
+      try {
+        // 1. 调用后端API验证Stripe支付状态并更新booking
+        const res = await fetch('/api/stripe/success', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ session_id: sessionId }),
+        })
+
+        const data = await res.json()
+
+        if (!res.ok) {
+          throw new Error(data.error || '支付验证失败')
+        }
+
+        setBookingId(data.bookingId || '')
         setVerified(true)
-      }, 1500)
-    } else {
-      setVerifying(false)
+      } catch (err: any) {
+        console.error('Payment verification error:', err)
+        setError(err.message || '支付验证失败，请稍后查看订单状态')
+      } finally {
+        setVerifying(false)
+      }
     }
-  }, [sessionId, orderId])
+
+    verifyPayment()
+  }, [sessionId])
 
   if (verifying) {
     return (
@@ -36,6 +61,26 @@ function PaymentSuccessContent() {
     )
   }
 
+  if (error) {
+    return (
+      <div className="min-h-screen bg-stone-50 flex items-center justify-center px-4">
+        <div className="w-full max-w-md text-center">
+          <div className="bg-white rounded-xl border border-stone-200 p-8">
+            <AlertTriangle size={48} className="text-amber-600 mx-auto mb-4" />
+            <h1 className="text-2xl font-bold text-stone-800 mb-2">需要确认</h1>
+            <p className="text-stone-500 mb-6">{error}</p>
+            <Link
+              href="/user/dashboard"
+              className="block w-full py-3 bg-amber-700 text-white rounded-lg font-medium hover:bg-amber-800 transition-colors"
+            >
+              前往我的订单
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-stone-50 flex items-center justify-center px-4">
       <div className="w-full max-w-md text-center">
@@ -43,23 +88,15 @@ function PaymentSuccessContent() {
           <CheckCircle size={48} className="text-green-600 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-stone-800 mb-2">付款成功！</h1>
           <p className="text-stone-500 mb-6">
-            您的订单已确认。点击下面按钮查看订单详情。
+            您的预约已确认。点击下面按钮查看订单详情。
           </p>
 
           <div className="space-y-3">
-            {orderId && (
-              <Link
-                href={`/order/${orderId}`}
-                className="block w-full py-3 bg-amber-700 text-white rounded-lg font-medium hover:bg-amber-800 transition-colors"
-              >
-                查看订单详情
-              </Link>
-            )}
             <Link
-              href="/orders"
-              className="block w-full py-3 bg-stone-100 text-stone-700 rounded-lg font-medium hover:bg-stone-200 transition-colors"
+              href="/user/dashboard"
+              className="block w-full py-3 bg-amber-700 text-white rounded-lg font-medium hover:bg-amber-800 transition-colors"
             >
-              查看全部订单
+              查看我的订单
             </Link>
             <Link
               href="/"

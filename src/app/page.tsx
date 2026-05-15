@@ -250,7 +250,7 @@ export default function Home() {
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/consultation-type">
+              <Link href="/booking">
                 <Button size="lg" className="text-lg px-8">
                   {t('hero.ctaPrimary')}
                 </Button>
@@ -260,9 +260,9 @@ export default function Home() {
                 size="lg" 
                 className="text-lg px-8"
                 onClick={() => {
-                  const mastersSection = document.getElementById('masters');
-                  if (mastersSection) {
-                    mastersSection.scrollIntoView({ behavior: 'smooth' });
+                  const servicesSection = document.getElementById('services');
+                  if (servicesSection) {
+                    servicesSection.scrollIntoView({ behavior: 'smooth' });
                   }
                 }}
               >
@@ -309,11 +309,7 @@ export default function Home() {
                   <CardDescription>{t(service.descriptionKey)}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-2xl font-bold text-stellawei-purple">{service.price}</p>
-                      <p className="text-sm text-muted-foreground">{service.duration}</p>
-                    </div>
+                  <div className="flex items-center justify-end">
                     <Link href={service.id === 'astrology' ? '/services/spiritual' : `/services/${service.id}`}>
                       <Button variant="outline" size="sm">{t('services.learnMore')}</Button>
                     </Link>
@@ -444,15 +440,24 @@ export default function Home() {
       <section className="py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl font-serif font-bold mb-6">{t('cta.title')}</h2>
-          <p className="text-lg text-muted-foreground mb-8">
-            {t('cta.subtitle')}
-          </p>
-          
+          {/* subtitle 已移除 */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button size="lg" className="text-lg px-8">
-              {t('cta.claim')}
-            </Button>
-            <Button variant="outline" size="lg" className="text-lg px-8">
+            <Link href="/booking">
+              <Button size="lg" className="text-lg px-8">
+                {t('cta.claim')}
+              </Button>
+            </Link>
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="text-lg px-8"
+              onClick={() => {
+                const servicesSection = document.getElementById('services');
+                if (servicesSection) {
+                  servicesSection.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+            >
               {t('cta.browse')}
             </Button>
           </div>

@@ -2,15 +2,16 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { 
-  Heart, 
-  Coins, 
-  Briefcase, 
-  HeartPulse, 
-  GraduationCap, 
-  Scale, 
+import {
+  Heart,
+  Coins,
+  Briefcase,
+  HeartPulse,
+  GraduationCap,
+  Scale,
   Home,
   ArrowLeft,
+  ArrowRight,
   Sparkles,
   Clock,
   CheckCircle,
@@ -46,13 +47,13 @@ const baziServices = [
       "个人命盘情感格局深度解析",
       "未来3年感情运势时间线",
       "关系相处建议与能量调和方案",
-      "45分钟一对一视频解读 + 书面报告"
+      "45分钟一对一解读 + 书面报告"
     ],
     deliverablesEn: [
       "In-depth analysis of emotional patterns in your birth chart",
       "3-year relationship fortune timeline",
       "Relationship advice and energy harmonization plan",
-      "45-min one-on-one video session + written report"
+      "45-min one-on-one session + written report"
     ],
     duration: "45 min",
     color: "from-pink-500 to-rose-500",
@@ -82,13 +83,13 @@ const baziServices = [
       "财星格局与流年财运分析",
       "未来5年财富趋势预测",
       "适合的投资类型与行业方向",
-      "40分钟视频解读 + 财运时间轴图表"
+      "40分钟解读 + 财运时间轴图表"
     ],
     deliverablesEn: [
       "Wealth star pattern and annual fortune analysis",
       "5-year wealth trend forecast",
       "Suitable investment types and industry directions",
-      "40-min video session + wealth timeline chart"
+      "40-min session + wealth timeline chart"
     ],
     duration: "40 min",
     color: "from-amber-500 to-yellow-500",
@@ -118,13 +119,13 @@ const baziServices = [
       "事业宫位与官禄格局分析",
       "适合的职业方向与发展阶段建议",
       "未来3年事业转折点预测",
-      "50分钟视频解读 + 职业规划建议书"
+      "50分钟解读 + 职业规划建议书"
     ],
     deliverablesEn: [
       "Career palace and official prosperity pattern analysis",
       "Recommended career directions and development stages",
       "3-year career turning point forecast",
-      "50-min video session + career planning guide"
+      "50-min session + career planning guide"
     ],
     duration: "50 min",
     color: "from-blue-500 to-indigo-500",
@@ -137,7 +138,7 @@ const baziServices = [
     titleZh: "健康",
     titleEn: "Health & Vitality",
     subtitleZh: "了解身体与能量的深层连接，预防胜于治疗。",
-    subtitleEn: "Understand the deep connection between body and energy—prevention is better than cure.",
+    subtitleEn: "Understand the deep connection between body and energy-prevention is better than cure.",
     questions: [
       "容易疲劳或亚健康状态的根本原因",
       "需要特别关注的身体部位与时期",
@@ -154,13 +155,13 @@ const baziServices = [
       "日主强弱与五行平衡分析",
       "健康隐患时期预警",
       "个性化养生与能量调理建议",
-      "35分钟视频解读 + 健康养护指南"
+      "35分钟解读 + 健康养护指南"
     ],
     deliverablesEn: [
       "Day master strength and Five Elements balance analysis",
       "Health risk period alerts",
       "Personalized wellness and energy regulation advice",
-      "35-min video session + health maintenance guide"
+      "35-min session + health maintenance guide"
     ],
     duration: "35 min",
     color: "from-green-500 to-emerald-500",
@@ -190,13 +191,13 @@ const baziServices = [
       "印星与食伤格局分析",
       "学习运势时间线",
       "考试/升学最佳时机建议",
-      "30分钟视频解读 + 学习发展报告"
+      "30分钟解读 + 学习发展报告"
     ],
     deliverablesEn: [
       "Seal star and Output star pattern analysis",
       "Academic fortune timeline",
       "Optimal timing advice for exams/advancement",
-      "30-min video session + learning development report"
+      "30-min session + learning development report"
     ],
     duration: "30 min",
     color: "from-purple-500 to-violet-500",
@@ -226,13 +227,13 @@ const baziServices = [
       "官非星与流年运势交叉分析",
       "诉讼时间线能量走向预测",
       "策略性建议与时机把握",
-      "40分钟视频解读 + 案件能量评估报告"
+      "40分钟解读 + 案件能量评估报告"
     ],
     deliverablesEn: [
       "Official conflict star and annual fortune cross-analysis",
       "Litigation timeline energy flow forecast",
       "Strategic advice and timing guidance",
-      "40-min video session + case energy assessment report"
+      "40-min session + case energy assessment report"
     ],
     duration: "40 min",
     color: "from-slate-500 to-gray-500",
@@ -262,13 +263,13 @@ const baziServices = [
       "结合八字的个性化风水建议",
       "房屋平面图能量分析",
       "家具摆放与色彩能量调和方案",
-      "60分钟视频解读（含空间 walkthrough）+ 调理清单"
+      "60分钟解读（含空间 walkthrough）+ 调理清单"
     ],
     deliverablesEn: [
       "Personalized Feng Shui advice based on your Bazi",
       "Floor plan energy analysis",
       "Furniture placement and color energy harmonization plan",
-      "60-min video session (with space walkthrough) + adjustment checklist"
+      "60-min session (with space walkthrough) + adjustment checklist"
     ],
     duration: "60 min",
     color: "from-orange-500 to-red-500",
@@ -295,12 +296,20 @@ export default function BaziServicePage() {
             </Link>
             <div className="flex items-center space-x-4">
               <LanguageSwitcher />
-              <Link href="/services">
-                <Button variant="outline" size="sm" className="flex items-center gap-2">
-                  <ArrowLeft className="w-4 h-4" />
-                  {isZh ? "返回服务" : "Back to Services"}
-                </Button>
-              </Link>
+              <div className="flex items-center space-x-2">
+                <Link href="/">
+                  <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    <ArrowLeft className="w-4 h-4" />
+                    {isZh ? "返回首页" : "Home"}
+                  </Button>
+                </Link>
+                <Link href="/services/spiritual">
+                  <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    {isZh ? "其它服务" : "Next"}
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -311,40 +320,25 @@ export default function BaziServicePage() {
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/5 via-transparent to-purple-900/5"></div>
         <div className="absolute top-20 left-10 w-72 h-72 bg-indigo-500/10 rounded-full blur-3xl"></div>
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"></div>
-        
+
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto">
             <div className="inline-flex items-center space-x-2 bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
               <Moon className="w-4 h-4" />
               <span>{isZh ? "中华传统命理" : "Chinese Metaphysics"}</span>
             </div>
-            
+
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold mb-6">
               {isZh ? "八字命理" : "Bazi Four Pillars"}
               <span className="gradient-text block mt-2">{isZh ? "能量趋势分析" : "Energy Analysis"}</span>
             </h1>
-            
+
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
               {isZh 
                 ? "八字不是预测命运，而是解读你出生时刻的能量印记。了解这些能量趋势，帮助你在对的时间做出对的选择，活出更觉知的人生。"
                 : "Bazi is not about predicting fate, but reading the energy imprint of your birth moment. Understanding these energy trends helps you make the right choices at the right time."
               }
             </p>
-            
-            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
-              <div className="flex items-center space-x-2">
-                <Clock className="w-4 h-4 text-indigo-500" />
-                <span>30-60 {isZh ? "分钟" : "min"}</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Star className="w-4 h-4 text-stellawei-gold" />
-                <span>$60-80</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                <span>{isZh ? "专业报告" : "Professional Report"}</span>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -357,13 +351,13 @@ export default function BaziServicePage() {
               {isZh ? "服务项目" : "Our Services"}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              {isZh 
+              {isZh
                 ? "根据你当下的需求，选择最适合的解读方向"
                 : "Choose the direction that best fits your current needs"
               }
             </p>
           </div>
-          
+
           <div className="space-y-6">
             {baziServices.map((service) => (
               <Card key={service.id} className="overflow-hidden border-stellawei-purple/10 hover:shadow-lg transition-shadow">
@@ -376,20 +370,20 @@ export default function BaziServicePage() {
                         {isZh ? service.titleZh : service.titleEn}
                       </span>
                     </div>
-                    
+
                     <h3 className="text-2xl font-serif font-bold mb-3">
                       {isZh ? service.titleZh : service.titleEn}
                     </h3>
                     <p className="text-white/80 text-sm mb-4 leading-relaxed">
                       {isZh ? service.subtitleZh : service.subtitleEn}
                     </p>
-                    
+
                     <div className="flex items-center space-x-2 text-sm opacity-90">
                       <Clock className="w-4 h-4" />
                       <span>{service.duration}</span>
                     </div>
                   </div>
-                  
+
                   {/* Right: Details */}
                   <div className="md:col-span-8 p-6 md:p-8">
                     {/* Questions */}
@@ -407,7 +401,7 @@ export default function BaziServicePage() {
                         ))}
                       </ul>
                     </div>
-                    
+
                     {/* Deliverables */}
                     <div className="mb-6">
                       <h4 className="font-semibold text-sm text-stellawei-purple mb-3 flex items-center">
@@ -423,11 +417,11 @@ export default function BaziServicePage() {
                         ))}
                       </div>
                     </div>
-                    
+
                     {/* CTA */}
                     <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                       <span className="text-sm text-muted-foreground">
-                        {isZh ? "价格区间" : "Price"}: $60-80
+                        {isZh ? "时长" : "Duration"}: {service.duration}
                       </span>
                       <Link href="/masters">
                         <Button>
@@ -451,7 +445,7 @@ export default function BaziServicePage() {
             {isZh ? "准备好探索你的能量地图了吗？" : "Ready to explore your energy map?"}
           </h2>
           <p className="text-muted-foreground mb-8">
-            {isZh 
+            {isZh
               ? "我们的八字大师将帮助你解码命盘，发现人生机遇"
               : "Our Bazi masters will help you decode your chart and discover life opportunities"
             }
@@ -459,12 +453,8 @@ export default function BaziServicePage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/masters">
               <Button size="lg" className="px-8">
-                {isZh ? "选择大师" : "Choose a Master"}
-              </Button>
-            </Link>
-            <Link href="/services">
-              <Button variant="outline" size="lg" className="px-8">
-                {isZh ? "查看其他服务" : "View Other Services"}
+                {isZh ? "选择师傅" : "Choose a Master"}
+                <Sparkles className="w-4 h-4 ml-2" />
               </Button>
             </Link>
           </div>

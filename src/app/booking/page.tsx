@@ -83,12 +83,12 @@ export default function BookingPage() {
 
       setUser(session.user)
       
-      // 查询用户是否有过已支付的历史预约（已完成的订单才算非首单）
+      // 查询用户是否有过任何非取消状态的订单（pending/paid都算，取消的不算）
       const { data: bookings, error } = await supabase
         .from('bookings')
         .select('id')
         .eq('user_id', session.user.id)
-        .eq('payment_status', 'paid')
+        .not('status', 'eq', 'cancelled')
         .limit(1)
       
       if (!error && bookings && bookings.length > 0) {
@@ -203,6 +203,7 @@ export default function BookingPage() {
       }
 
       // 1. 创建 booking 记录
+      const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString()
       const { data: booking, error: bookingError } = await supabase
         .from('bookings')
         .insert({
@@ -221,6 +222,7 @@ export default function BookingPage() {
           currency: 'usd',
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
           is_first_time: isFirstTime,
+          expires_at: expiresAt,
         })
         .select()
         .single()
@@ -229,34 +231,39 @@ export default function BookingPage() {
         throw new Error(`Failed to create booking: ${bookingError.message}`)
       }
 
-      // 2. 调用手动支付 API（过渡方案：创建 booking + 通知管理员）
-      const response = await fetch('/api/payment/manual', {
+      // 2. 直接调 Stripe Checkout，不走人工确认
+      const checkoutRes = await fetch('/api/payment/create-session', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           bookingId: booking.id,
+          masterId: selectedMaster,
+          serviceId: selectedService,
+          amount: finalPrice,
+          currency: 'usd',
+          userId: user.id,
           userEmail: user.email,
           userName: user.user_metadata?.full_name || user.email,
           masterName: isZh ? master.nameCn : master.name,
           serviceName: isZh ? service.nameCn : service.name,
-          scheduledDate: selectedDate.toLocaleDateString(),
+          scheduledDate: selectedDate.toISOString().split('T')[0],
           scheduledTime: selectedTime,
-          amount: finalPrice,
-          currency: 'usd',
           isFirstTime,
         }),
       })
 
-      const paymentData = await response.json()
+      const checkoutData = await checkoutRes.json()
 
-      if (!response.ok) {
-        throw new Error(paymentData.error || 'Failed to process booking')
+      if (!checkoutRes.ok) {
+        throw new Error(checkoutData.error || 'Failed to create checkout session')
       }
 
-      // 3. 跳转到预约成功/待支付页面
-      router.push(`/booking/success?booking_id=${booking.id}`)
+      // 3. 跳转到 Stripe Checkout
+      if (checkoutData.url) {
+        window.location.href = checkoutData.url
+      } else {
+        throw new Error('No checkout URL returned')
+      }
 
     } catch (err: any) {
       console.error('Booking error:', err)

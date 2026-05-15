@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Sparkles, Mail, MessageSquare, Video, ChevronRight, Loader2 } from 'lucide-react'
+import { Sparkles, Mail, MessageSquare, MessageCircle, ChevronRight, Loader2 } from 'lucide-react'
 
 const MASTERS = [
   {
@@ -36,9 +36,9 @@ const SERVICE_TYPES = [
     key: 'realtime',
     label: '实时咨询',
     labelEn: 'Live Consultation',
-    desc: '预约时间与师傅进行一对一视频/语音咨询',
+    desc: '预约时间与师傅进行一对一实时咨询',
     price: '$59.9',
-    icon: Video,
+    icon: MessageCircle,
   },
 ]
 
