@@ -57,6 +57,9 @@ export async function GET() {
     const refundOrders = bookings.filter(b => b.payment_status === 'refunded');
     const refundCount = refundOrders.length;
     const refundAmount = refundOrders.reduce((sum, b) => sum + (b.total_amount || 0), 0);
+    // 估算 Stripe 手续费损失（香港账户：约 3.5% + $0.30）
+    const estimateStripeFee = (amount: number) => amount * 0.035 + 0.30;
+    const refundFee = refundOrders.reduce((sum, b) => sum + estimateStripeFee(b.total_amount || 0), 0);
 
     const monthRevenue = bookings
       .filter(b => b.payment_status === 'paid' && new Date(b.created_at) >= monthStart)
@@ -136,6 +139,7 @@ export async function GET() {
         totalRevenue,
         refundCount,
         refundAmount,
+        refundFee,
         refundRate,
         activeMasters: activeMasters || MASTER_WHITELIST.length,
       },
