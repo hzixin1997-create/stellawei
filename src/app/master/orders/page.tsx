@@ -267,7 +267,7 @@ export default function MasterOrdersPage() {
                 const status = statusMap[displayStatus] || statusMap.pending;
                 const Icon = status.icon;
                 const canAccept = order.payment_status === 'paid' && order.status === 'pending';
-                const isConfirmed = order.status === 'confirmed' || order.status === 'in_progress';
+                const isConfirmed = displayStatus === 'confirmed' || displayStatus === 'in_progress';
 
                 return (
                   <div
@@ -303,8 +303,7 @@ export default function MasterOrdersPage() {
                         </p>
                       </div>
                       <div className="flex flex-col gap-2 flex-shrink-0">
-                        {/* 已完成订单 - 查看历史对话 */}
-                        {order.status === 'completed' && (
+                        {displayStatus === 'completed' && (
                           <Link href={`/chat/${order.id}`}>
                             <button className="px-4 py-2 text-sm bg-stone-100 text-stone-600 rounded-lg hover:bg-stone-200 transition-colors text-center w-full">
                               查看历史对话
@@ -321,7 +320,7 @@ export default function MasterOrdersPage() {
                             {acceptingId === order.id ? '处理中...' : '接单'}
                           </button>
                         )}
-                        {isConfirmed && order.status !== 'completed' && (
+                        {isConfirmed && displayStatus !== 'completed' && (
                           <Link href={`/chat/${order.id}`}>
                             <button className="px-4 py-2 text-sm bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors text-center w-full">
                               进入咨询
