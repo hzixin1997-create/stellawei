@@ -262,28 +262,15 @@ export default function BookingPage() {
 
         const dateStr = selectedDate.toISOString().split('T')[0]
         
-        // 时间槽占用检查
-        const { data: allBookings, error: checkError } = await supabase
-          .from('bookings')
-          .select('id, status, expires_at')
-          .eq('master_id', selectedMaster)
-          .eq('scheduled_date', dateStr)
-          .eq('scheduled_time', selectedTime)
-          .not('status', 'in', '(cancelled,refunded)')
+        // 时间槽占用检查（通过 API 绕过 RLS）
+        const checkRes = await fetch(`/api/bookings/check-slot?master_id=${selectedMaster}&date=${dateStr}&time=${selectedTime}`)
+        const checkData = await checkRes.json()
 
-        if (checkError) throw new Error('Failed to check slot availability')
+        if (!checkRes.ok) {
+          throw new Error(checkData.error || 'Failed to check slot availability')
+        }
 
-        const now = Date.now()
-        const occupied = allBookings?.filter((b: any) => {
-          if (['paid', 'confirmed', 'in_progress'].includes(b.status)) return true
-          if (b.status === 'pending') {
-            if (!b.expires_at) return true
-            return new Date(b.expires_at).getTime() > now
-          }
-          return false
-        })
-
-        if (occupied && occupied.length > 0) {
+        if (!checkData.available) {
           throw new Error(isZh ? '该时间段已被预约，请选择其他时间' : 'This time slot is already booked')
         }
 
