@@ -115,11 +115,15 @@ export default function MasterDashboard() {
   // 统计（使用 displayStatus 统一判断超时）
   const getDisplayStatus = (b: Booking) => {
     const scheduledAt = b.scheduled_at
-      ? new Date(b.scheduled_at)
+      ? b.scheduled_at
       : b.scheduled_date && b.scheduled_time
-        ? new Date(`${b.scheduled_date}T${b.scheduled_time}`)
+        ? `${b.scheduled_date}T${b.scheduled_time}`
         : null
-    return getConsultationDisplayStatus(b.status, scheduledAt, b.duration_minutes || 30)
+    return getConsultationDisplayStatus({
+      status: b.status,
+      scheduled_at: scheduledAt,
+      duration_minutes: b.duration_minutes || 30,
+    })
   }
 
   const visibleBookings = bookings.filter((b) => !b.deleted_at)
