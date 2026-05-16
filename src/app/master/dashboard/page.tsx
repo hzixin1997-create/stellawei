@@ -482,10 +482,16 @@ export default function MasterDashboard() {
                               </Link>
                             )}
                             {isCompleted && (
-                              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                                <CheckCircle className="w-3 h-3 mr-1" />
-                                {isZh ? '已完成' : 'Completed'}
-                              </Badge>
+                              <Link href={`/chat/${booking.id}`} className="inline-flex">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-stone-600 border-stone-300 hover:bg-stone-100 w-full"
+                                >
+                                  <CheckCircle className="w-4 h-4 mr-1" />
+                                  {isZh ? '查看历史对话' : 'View History'}
+                                </Button>
+                              </Link>
                             )}
                             {(booking.status === 'cancelled' ||
                               booking.payment_status === 'cancelled') && (
