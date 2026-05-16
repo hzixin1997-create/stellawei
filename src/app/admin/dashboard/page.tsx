@@ -178,7 +178,6 @@ export default function AdminDashboard() {
                   <p className="text-sm text-stone-500">{isZh ? '退款订单' : 'Refunded Orders'}</p>
                   <p className="text-2xl font-bold">{ov?.refundCount || 0}</p>
                   <p className="text-xs text-red-500">{isZh ? '退款' : 'Refund'} ${(ov?.refundAmount || 0).toFixed(2)}</p>
-                  <p className="text-xs text-stone-400">{isZh ? '手续费损失' : 'Fee loss'} ${(ov?.refundFee || 0).toFixed(2)}</p>
                 </div>
               </div>
             </CardContent>
@@ -192,6 +191,7 @@ export default function AdminDashboard() {
                 <div>
                   <p className="text-sm text-stone-500">{isZh ? '退款率' : 'Refund Rate'}</p>
                   <p className="text-2xl font-bold">{ov?.refundRate || '0.0'}%</p>
+                  <p className="text-xs text-stone-400">{isZh ? '手续费损失' : 'Fee loss'} ${(ov?.refundFee || 0).toFixed(2)}</p>
                 </div>
               </div>
             </CardContent>

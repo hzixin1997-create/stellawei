@@ -49,7 +49,7 @@ export async function POST(request: Request) {
       );
     }
 
-    console.log('Batch delete success:', data);
+    // Batch delete success
 
     return NextResponse.json({
       success: true,

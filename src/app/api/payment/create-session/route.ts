@@ -132,7 +132,7 @@ export async function POST(request: Request) {
     })
 
     // 调试：记录参数
-    console.log('Stripe session created:', {
+    // Stripe session created successfully
       sessionId: session.id,
       successUrl,
       cancelUrl,

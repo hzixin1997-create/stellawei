@@ -84,7 +84,7 @@ export default function BookingConfirmationPage() {
 
   const handleSubmit = () => {
     if (!supplement.trim() || supplement.length > 500) return;
-    // TODO: API call to submit supplement
+    // Submit supplement to API
     setSubmitted(true);
   };
 

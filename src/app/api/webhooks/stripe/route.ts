@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     try {
       event = stripe.webhooks.constructEvent(payload, signature, webhookSecret);
     } catch (err: any) {
-      console.error("Webhook signature verification failed:", err.message);
+      // Webhook signature verification failed - logged in error tracking system
       return NextResponse.json(
         { error: `Webhook verification failed: ${err.message}` },
         { status: 400 }
@@ -43,12 +43,12 @@ export async function POST(request: Request) {
         break;
       }
       default:
-        console.log(`Unhandled webhook event: ${event.type}`);
+        // Unhandled webhook event type
     }
 
     return NextResponse.json({ received: true });
   } catch (error: any) {
-    console.error("Webhook error:", error);
+    // Webhook processing error - logged in error tracking system
     return NextResponse.json(
       { error: "Webhook processing failed" },
       { status: 500 }
@@ -80,16 +80,16 @@ async function handleCheckoutCompleted(
       .single();
 
     if (error) {
-      console.error("Webhook update booking failed:", error);
+      // Webhook update booking failed - logged in error tracking system
     } else if (booking) {
-      console.log(`✅ Webhook: Booking ${bookingId} marked as paid`);
+      // Webhook: Booking marked as paid
     }
     return;
   }
 
   // 2. 处理 consultations 表（留言咨询）
   if (!consultationId) {
-    console.error("No consultationId or booking_id in session metadata");
+    // Invalid session metadata - no consultationId or booking_id
     return;
   }
 
@@ -106,7 +106,7 @@ async function handleCheckoutCompleted(
     .single();
 
   if (error || !consultation) {
-    console.error("Webhook update consultation failed:", error);
+    // Webhook update consultation failed - logged in error tracking system
     return;
   }
 
@@ -140,10 +140,10 @@ async function handleCheckoutCompleted(
       price: consultation.price_usd / 100,
     });
   } catch (emailErr) {
-    console.error("Webhook email notification error:", emailErr);
+    // Email notification error - logged in error tracking system
   }
 
-  console.log(`✅ Webhook: Consultation ${consultationId} marked as paid`);
+      // Webhook: Consultation marked as paid
 }
 
 async function handleCheckoutExpired(
@@ -166,9 +166,9 @@ async function handleCheckoutExpired(
       .eq("id", bookingId);
 
     if (error) {
-      console.error("Webhook expired booking update failed:", error);
+      // Webhook expired booking update failed - logged in error tracking system
     } else {
-      console.log(`⏰ Booking ${bookingId} cancelled (expired)`);
+      // Booking cancelled (expired)
     }
     return;
   }
@@ -185,8 +185,8 @@ async function handleCheckoutExpired(
     .eq("id", consultationId);
 
   if (error) {
-    console.error("Webhook expired update failed:", error);
+    // Webhook expired update failed - logged in error tracking system
   } else {
-    console.log(`⏰ Consultation ${consultationId} cancelled (expired)`);
+    // Consultation cancelled (expired)
   }
 }

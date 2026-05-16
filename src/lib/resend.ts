@@ -7,16 +7,7 @@ function getResend() {
   if (!resendInstance) {
     const apiKey = process.env.RESEND_API_KEY;
     if (!apiKey) {
-      console.warn('RESEND_API_KEY not set, email sending disabled');
-      // 返回一个 mock 对象避免构建失败
-      return {
-        emails: {
-          send: async () => {
-            console.warn('Mock email send (no RESEND_API_KEY)');
-            return { id: 'mock-id' };
-          },
-        },
-      } as unknown as Resend;
+      throw new Error('RESEND_API_KEY not configured - email sending unavailable');
     }
     resendInstance = new Resend(apiKey);
   }

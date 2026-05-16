@@ -112,7 +112,7 @@ export async function POST(
     // 验证 booking 存在
     const { data: booking, error: bookingError } = await supabase
       .from('bookings')
-      .select('id, user_id, master_id, status, payment_status')
+      .select('id, user_id, master_id, status, payment_status, scheduled_at, duration_minutes')
       .eq('id', bookingId)
       .single();
 
@@ -140,6 +140,14 @@ export async function POST(
 
     if (booking.payment_status !== 'paid') {
       return NextResponse.json({ error: 'Booking not paid' }, { status: 400 });
+    }
+
+    // 检查是否已超时（咨询时间结束）
+    if (booking.scheduled_at && booking.duration_minutes) {
+      const endTime = new Date(booking.scheduled_at).getTime() + booking.duration_minutes * 60 * 1000;
+      if (Date.now() > endTime) {
+        return NextResponse.json({ error: 'Consultation time has ended' }, { status: 400 });
+      }
     }
 
     // 如果 booking 是 confirmed，自动更新为 in_progress（首次进入聊天）

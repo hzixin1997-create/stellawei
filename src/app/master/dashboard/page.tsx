@@ -17,7 +17,6 @@ import {
   ArrowRight,
   MessageCircle,
   Ban,
-  Eye,
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -217,19 +216,17 @@ export default function MasterDashboard() {
     }
     setRejectingId(bookingId)
     try {
-      const supabase = createClient()
-      const { error } = await supabase
-        .from('bookings')
-        .update({
-          status: 'cancelled',
-          payment_status: 'cancelled',
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', bookingId)
+      const res = await fetch('/api/master/reject-booking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookingId }),
+      })
 
-      if (error) {
-        throw new Error(error.message)
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error || 'Reject failed')
       }
+
       setBookings((prev) =>
         prev.map((b) =>
           b.id === bookingId
@@ -457,36 +454,22 @@ export default function MasterDashboard() {
                               </>
                             )}
                             {isProcessing && (
-                              <>
-                                <Link href={`/chat/${booking.id}`} className="inline-flex">
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    className="text-violet-600 border-violet-200 hover:bg-violet-50 w-full"
-                                  >
-                                    <MessageCircle className="w-4 h-4 mr-1" />
-                                    {isZh ? '进入咨询' : 'Enter Chat'}
-                                  </Button>
-                                </Link>
-                                <Link href={`/master/orders/${booking.id}`}>
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    className="w-full"
-                                  >
-                                    <Eye className="w-4 h-4 mr-1" />
-                                    {isZh ? '详情' : 'Details'}
-                                  </Button>
-                                </Link>
-                              </>
-                            )}
-                            {isCompleted && (
-                              <Link href={`/master/orders/${booking.id}`}>
-                                <Button size="sm" variant="outline" className="w-full">
-                                  <Eye className="w-4 h-4 mr-1" />
-                                  {isZh ? '详情' : 'Details'}
+                              <Link href={`/chat/${booking.id}`} className="inline-flex">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-violet-600 border-violet-200 hover:bg-violet-50 w-full"
+                                >
+                                  <MessageCircle className="w-4 h-4 mr-1" />
+                                  {isZh ? '进入咨询' : 'Enter Chat'}
                                 </Button>
                               </Link>
+                            )}
+                            {isCompleted && (
+                              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                                <CheckCircle className="w-3 h-3 mr-1" />
+                                {isZh ? '已完成' : 'Completed'}
+                              </Badge>
                             )}
                             {(booking.status === 'cancelled' ||
                               booking.payment_status === 'cancelled') && (

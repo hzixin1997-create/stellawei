@@ -58,7 +58,8 @@ export async function POST(request: Request) {
     try {
       const resendClient = getResend()
       if (!resendClient) {
-        console.log('Resend not configured, skipping admin email notification')
+      // Resend not configured, skip admin notification
+      // In production, this should not happen - ensure RESEND_API_KEY is set
       } else {
         const orderNumber = `CH-${bookingId.slice(0, 8).toUpperCase()}`
         
@@ -80,7 +81,7 @@ export async function POST(request: Request) {
           `,
         })
         
-        console.log(`✅ Admin notification sent for booking ${bookingId}`)
+      // Admin notification sent successfully
       }
     } catch (emailError) {
       console.error('Failed to send admin email:', emailError)

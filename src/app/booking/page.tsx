@@ -72,9 +72,9 @@ const MASTERS = [
 
 // 档位
 const TIERS = [
-  { id: 'first', nameZh: '首单体验', nameEn: 'First-time', durationZh: '20-30 分钟', durationEn: '20-30 min' },
-  { id: 'basic', nameZh: '基础咨询', nameEn: 'Basic', durationZh: '20-30 分钟', durationEn: '20-30 min' },
-  { id: 'deep', nameZh: '深度咨询', nameEn: 'Deep', durationZh: '40-60 分钟', durationEn: '40-60 min' },
+  { id: 'first', nameZh: '首单体验', nameEn: 'First-time', durationZh: '20-30 分钟', durationEn: '20-30 min', durationMinutes: 25 },
+  { id: 'basic', nameZh: '基础咨询', nameEn: 'Basic', durationZh: '20-30 分钟', durationEn: '20-30 min', durationMinutes: 25 },
+  { id: 'deep', nameZh: '深度咨询', nameEn: 'Deep', durationZh: '40-60 分钟', durationEn: '40-60 min', durationMinutes: 50 },
 ]
 
 // 时区标签
@@ -124,15 +124,13 @@ export default function BookingPage() {
 
       setUser(session.user)
       
-      const { data: bookings } = await supabase
-        .from('bookings')
-        .select('id')
-        .eq('user_id', session.user.id)
-        .eq('payment_status', 'paid')
-        .limit(1)
-      
-      if (bookings && bookings.length > 0) {
-        setIsFirstTime(false)
+      // 通过 API 检查是否首单（绕过 RLS）
+      const checkRes = await fetch('/api/user/check-first-time', {
+        headers: { authorization: `Bearer ${session.access_token || ''}` },
+      })
+      if (checkRes.ok) {
+        const checkData = await checkRes.json()
+        setIsFirstTime(checkData.isFirstTime)
       }
       
       setIsLoading(false)
@@ -149,25 +147,13 @@ export default function BookingPage() {
       }
       setCheckingSlots(true)
       try {
-        const supabase = createClient()
         const dateStr = selectedDate.toISOString().split('T')[0]
-        const { data, error } = await supabase
-          .from('bookings')
-          .select('scheduled_time, status, expires_at')
-          .eq('master_id', selectedMaster)
-          .eq('scheduled_date', dateStr)
-          .not('status', 'in', '(cancelled,refunded)')
         
-        if (!error && data) {
-          const now = Date.now()
-          const occupied = data.filter((b: any) => {
-            if (['paid', 'confirmed', 'in_progress'].includes(b.status)) return true
-            if (b.status === 'pending') {
-              if (!b.expires_at) return true
-              return new Date(b.expires_at).getTime() > now
-            }
-            return false
-          }).map((b: any) => b.scheduled_time)
+        // 通过 API 查询已占用时间槽（绕过 RLS）
+        const res = await fetch(`/api/bookings/occupied-slots?master_id=${selectedMaster}&date=${dateStr}`)
+        if (res.ok) {
+          const data = await res.json()
+          const occupied = data.occupiedSlots || []
           setBookedSlots(occupied)
           if (selectedTime && occupied.includes(selectedTime)) {
             setSelectedTime('')
@@ -228,6 +214,8 @@ export default function BookingPage() {
 
       const finalPrice = getPrice()
       const durationText = getDuration()
+      const tierInfo = TIERS.find(t => t.id === selectedTier)
+      const durationMinutes = tierInfo?.durationMinutes || 25
       
       const supabase = createClient()
 
@@ -248,6 +236,7 @@ export default function BookingPage() {
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         is_first_time: selectedTier === 'first',
         duration_text: durationText,
+        duration_minutes: durationMinutes,
       }
 
       // 实时咨询需要时间和过期检查
@@ -277,7 +266,7 @@ export default function BookingPage() {
         bookingData.scheduled_at = scheduledDateTime.toISOString()
         bookingData.scheduled_date = dateStr
         bookingData.scheduled_time = selectedTime
-        bookingData.expires_at = new Date(Date.now() + 30 * 60 * 1000).toISOString()
+        bookingData.expires_at = new Date(Date.now() + 10 * 60 * 1000).toISOString()
       }
 
       // 留言咨询不需要时间
@@ -285,14 +274,20 @@ export default function BookingPage() {
         bookingData.expires_at = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() // 7天
       }
 
-      const { data: booking, error: bookingError } = await supabase
-        .from('bookings')
-        .insert(bookingData)
-        .select()
-        .single()
+      // 通过 API 创建 booking（绕过 RLS）
+      const { data: { session } } = await supabase.auth.getSession()
+      const createRes = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${session?.access_token || ''}`,
+        },
+        body: JSON.stringify(bookingData),
+      })
 
-      if (bookingError) {
-        throw new Error(`Failed to create booking: ${bookingError.message}`)
+      if (!createRes.ok) {
+        const err = await createRes.json()
+        throw new Error(err.error || err.message || 'Failed to create booking')
       }
 
       // 成功，跳 Dashboard

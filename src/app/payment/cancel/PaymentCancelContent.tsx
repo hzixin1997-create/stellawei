@@ -21,16 +21,14 @@ export default function PaymentCancelContent() {
 
       try {
         const supabase = createClient()
+        const { data: { session } } = await supabase.auth.getSession()
         
-        // 更新 booking 状态为取消
-        await supabase
-          .from('bookings')
-          .update({
-            payment_status: 'cancelled',
-            status: 'cancelled',
-            updated_at: new Date().toISOString(),
-          })
-          .eq('id', bookingId)
+        await fetch(`/api/bookings/${bookingId}/payment-cancel`, {
+          method: 'POST',
+          headers: {
+            authorization: `Bearer ${session?.access_token || ''}`,
+          },
+        })
       } catch (error) {
         console.error('Error updating booking status:', error)
       }

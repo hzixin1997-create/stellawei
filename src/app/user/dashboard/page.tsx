@@ -194,25 +194,23 @@ export default function UserDashboard() {
     setCancellingId(bookingId)
     try {
       const supabase = createClient()
-      const { error } = await supabase
-        .from('bookings')
-        .update({
-          status: 'cancelled',
-          payment_status: 'cancelled',
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', bookingId)
-        .eq('user_id', user.id)
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch(`/api/bookings/${bookingId}/cancel`, {
+        method: 'POST',
+        headers: {
+          authorization: `Bearer ${session?.access_token || ''}`,
+        },
+      })
 
-      if (error) {
-        alert(isZh ? '取消失败，请重试' : 'Cancel failed, please try again')
-        console.error('Cancel error:', error)
-      } else {
-        setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status: 'cancelled', payment_status: 'cancelled' } : b))
+      if (!res.ok) {
+        const err = await res.json()
+        throw new Error(err.error || 'Cancel failed')
       }
-    } catch (err) {
+
+      setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status: 'cancelled', payment_status: 'cancelled' } : b))
+    } catch (err: any) {
       console.error('Cancel error:', err)
-      alert(isZh ? '取消失败' : 'Cancel failed')
+      alert(isZh ? `取消失败: ${err.message}` : `Cancel failed: ${err.message}`)
     } finally {
       setCancellingId(null)
     }
@@ -231,18 +229,17 @@ export default function UserDashboard() {
     setDeletingId(bookingId)
     try {
       const supabase = createClient()
-      const { error } = await supabase
-        .from('bookings')
-        .update({
-          deleted_at: new Date().toISOString(),
-          status: 'cancelled',
-          payment_status: 'cancelled',
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', bookingId)
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch(`/api/bookings/${bookingId}/soft-delete`, {
+        method: 'POST',
+        headers: {
+          authorization: `Bearer ${session?.access_token || ''}`,
+        },
+      })
 
-      if (error) {
-        throw new Error(error.message)
+      if (!res.ok) {
+        const err = await res.json()
+        throw new Error(err.error || 'Delete failed')
       }
 
       // 前端移除

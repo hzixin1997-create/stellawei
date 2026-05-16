@@ -31,19 +31,18 @@ function RefundPolicyContent() {
 
     setSubmitting(true)
     try {
-      // 用户申请退款：只更新状态，不直接调 Stripe
       const supabase = createClient()
-      const { error } = await supabase
-        .from('bookings')
-        .update({
-          status: 'refund_requested',
-          payment_status: 'refund_requested',
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', bookingId)
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch(`/api/bookings/${bookingId}/request-refund`, {
+        method: 'POST',
+        headers: {
+          authorization: `Bearer ${session?.access_token || ''}`,
+        },
+      })
 
-      if (error) {
-        throw new Error(error.message)
+      if (!res.ok) {
+        const err = await res.json()
+        throw new Error(err.error || 'Request failed')
       }
 
       alert(isZh ? '退款申请已提交，等待管理员审核处理' : 'Refund request submitted, awaiting admin review')

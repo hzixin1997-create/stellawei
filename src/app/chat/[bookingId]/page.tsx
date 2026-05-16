@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   ArrowLeft,
   Send,
@@ -14,7 +13,8 @@ import {
   CheckCircle,
   User,
   Crown,
-  X,
+  Clock,
+  Star,
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -37,7 +37,9 @@ interface BookingInfo {
   payment_status: string
   scheduled_date: string
   scheduled_time: string
+  scheduled_at: string
   total_amount: number
+  duration_minutes: number
 }
 
 const services: Record<string, { name: string; nameCn: string }> = {
@@ -55,6 +57,13 @@ const masters: Record<string, { name: string; nameCn: string }> = {
   'wu-yang': { name: 'Master Wu Yang', nameCn: '戊阳' },
 }
 
+function formatCountdown(seconds: number): string {
+  if (seconds <= 0) return '00:00'
+  const m = Math.floor(seconds / 60)
+  const s = seconds % 60
+  return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
+}
+
 export default function ChatPage({ params }: { params: { bookingId: string } }) {
   const router = useRouter()
   const { bookingId } = params
@@ -68,11 +77,20 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   const [user, setUser] = useState<any>(null)
   const [isMaster, setIsMaster] = useState(false)
   const [uploadingImage, setUploadingImage] = useState(false)
+  
+  const [countdownSeconds, setCountdownSeconds] = useState(0)
+  const [isExpired, setIsExpired] = useState(false)
+  const [consultStatus, setConsultStatus] = useState<'not_started' | 'in_progress' | 'ended'>('not_started')
+  
+  const [showReview, setShowReview] = useState(false)
+  const [reviewRating, setReviewRating] = useState(0)
+  const [reviewText, setReviewText] = useState('')
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false)
+  
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const supabase = createClient()
 
-  // 滚动到底部
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
@@ -81,7 +99,6 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     scrollToBottom()
   }, [messages])
 
-  // 加载历史消息和 booking 信息
   useEffect(() => {
     const loadData = async () => {
       const { data: { user } } = await supabase.auth.getUser()
@@ -91,7 +108,6 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       }
       setUser(user)
 
-      // 判断是否是师傅
       const masterRes = await fetch('/api/master/profile', {
         headers: { authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token || ''}` },
       })
@@ -102,7 +118,6 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         }
       }
 
-      // 获取 booking 信息
       const { data: { session } } = await supabase.auth.getSession()
       const bookingRes = await fetch(`/api/chat/${bookingId}/messages`, {
         headers: { authorization: `Bearer ${session?.access_token || ''}` },
@@ -112,7 +127,6 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         setMessages(json.messages || [])
       }
 
-      // 获取 booking 详情
       const { data: bookingData } = await supabase
         .from('bookings')
         .select('*')
@@ -120,6 +134,10 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         .single()
       if (bookingData) {
         setBooking(bookingData)
+        if (bookingData.status === 'completed') {
+          setIsExpired(true)
+          setCountdownSeconds(0)
+        }
       }
 
       setIsLoading(false)
@@ -128,39 +146,125 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     loadData()
   }, [bookingId, router, supabase])
 
-  // 订阅 Supabase Realtime 实时消息
+  useEffect(() => {
+    if (!booking || booking.status === 'completed') return
+    
+    const calculateRemaining = () => {
+      if (!booking.scheduled_at || !booking.duration_minutes) return 0
+      const endTime = new Date(booking.scheduled_at).getTime() + booking.duration_minutes * 60 * 1000
+      const now = Date.now()
+      return Math.max(0, Math.floor((endTime - now) / 1000))
+    }
+    
+    setCountdownSeconds(calculateRemaining())
+    
+    const interval = setInterval(() => {
+      const remaining = calculateRemaining()
+      setCountdownSeconds(remaining)
+      
+      if (remaining <= 0 && !isExpired) {
+        setIsExpired(true)
+        clearInterval(interval)
+        handleAutoComplete()
+      }
+    }, 1000)
+    
+    return () => clearInterval(interval)
+  }, [booking])
+
+  // 咨询状态提示
+  useEffect(() => {
+    if (!booking) return
+    
+    const checkStatus = () => {
+      if (!booking.scheduled_at || !booking.duration_minutes) return
+      const scheduledTime = new Date(booking.scheduled_at).getTime()
+      const endTime = scheduledTime + booking.duration_minutes * 60 * 1000
+      const now = Date.now()
+      
+      if (now < scheduledTime) {
+        setConsultStatus('not_started')
+      } else if (now >= scheduledTime && now < endTime) {
+        setConsultStatus('in_progress')
+      } else {
+        setConsultStatus('ended')
+      }
+    }
+    
+    checkStatus()
+    const interval = setInterval(checkStatus, 30000) // 每30秒检查一次状态
+    
+    return () => clearInterval(interval)
+  }, [booking])
+
+  const getConsultStatusBanner = () => {
+    switch (consultStatus) {
+      case 'not_started':
+        return {
+          text: isZh ? '⏰ 咨询未开始，您可以提前向师傅发送背景信息或问题' : '⏰ Consultation not started yet. You can send background info or questions in advance.',
+          bgColor: 'bg-amber-50 border-amber-200 text-amber-800',
+        }
+      case 'in_progress':
+        return {
+          text: isZh ? '🔴 咨询进行中' : '🔴 Consultation in progress',
+          bgColor: 'bg-green-50 border-green-200 text-green-800',
+        }
+      case 'ended':
+        return {
+          text: isZh ? '✅ 咨询已结束' : '✅ Consultation ended',
+          bgColor: 'bg-stone-100 border-stone-200 text-stone-600',
+        }
+    }
+  }
+
+  const handleAutoComplete = async () => {
+    if (booking?.status === 'completed') return
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      await fetch(`/api/chat/${bookingId}/complete`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${session?.access_token || ''}`,
+        },
+      })
+      setBooking(prev => prev ? { ...prev, status: 'completed' } : null)
+    } catch (err) {
+      console.error('Auto complete error:', err)
+    }
+  }
+
   useEffect(() => {
     if (!bookingId) return
 
-    const channel = supabase
-      .channel(`chat-${bookingId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'messages',
-          filter: `booking_id=eq.${bookingId}`,
-        },
-        (payload: any) => {
-          const newMessage = payload.new as Message
+    const pollMessages = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        const res = await fetch(`/api/chat/${bookingId}/messages`, {
+          headers: { authorization: `Bearer ${session?.access_token || ''}` },
+        })
+
+        if (res.ok) {
+          const json = await res.json()
           setMessages((prev) => {
-            // 避免重复添加
-            if (prev.some((m) => m.id === newMessage.id)) return prev
-            return [...prev, newMessage]
+            const newMessages = json.messages || []
+            if (newMessages.length === prev.length) return prev
+            return newMessages
           })
         }
-      )
-      .subscribe()
-
-    return () => {
-      supabase.removeChannel(channel)
+      } catch (err) {
+        console.error('Poll messages error:', err)
+      }
     }
+
+    pollMessages()
+    const interval = setInterval(pollMessages, 2000)
+
+    return () => clearInterval(interval)
   }, [bookingId, supabase])
 
-  // 发送消息
   const handleSend = async () => {
-    if (!inputValue.trim() || isSending) return
+    if (!inputValue.trim() || isSending || isExpired) return
 
     setIsSending(true)
     try {
@@ -176,7 +280,6 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
       if (res.ok) {
         setInputValue('')
-        // 本地乐观更新（实际上 Realtime 会推送回来）
         const json = await res.json()
         if (json.message) {
           setMessages((prev) => {
@@ -195,30 +298,32 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     }
   }
 
-  // 发送图片
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (!file) return
+    if (!file || isExpired) return
 
     setUploadingImage(true)
     try {
-      // 上传到 Supabase Storage
-      const fileExt = file.name.split('.').pop()
-      const fileName = `${bookingId}/${Date.now()}.${fileExt}`
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('chat-images')
-        .upload(fileName, file)
+      const { data: { session } } = await supabase.auth.getSession()
+      const formData = new FormData()
+      formData.append('file', file)
 
-      if (uploadError) {
-        throw uploadError
+      const uploadRes = await fetch(`/api/chat/${bookingId}/upload-image`, {
+        method: 'POST',
+        headers: {
+          authorization: `Bearer ${session?.access_token || ''}`,
+        },
+        body: formData,
+      })
+
+      if (!uploadRes.ok) {
+        const err = await uploadRes.json()
+        throw new Error(err.error || 'Upload failed')
       }
 
-      // 获取 public URL
-      const { data: urlData } = supabase.storage.from('chat-images').getPublicUrl(fileName)
-      const imageUrl = urlData.publicUrl
+      const uploadData = await uploadRes.json()
+      const imageUrl = uploadData.image_url
 
-      // 发送带图片的消息
-      const { data: { session } } = await supabase.auth.getSession()
       const res = await fetch(`/api/chat/${bookingId}/messages`, {
         method: 'POST',
         headers: {
@@ -243,7 +348,6 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     }
   }
 
-  // 结束咨询
   const handleComplete = async () => {
     if (!confirm(isZh ? '确定要结束这次咨询吗？' : 'Are you sure you want to complete this consultation?')) {
       return
@@ -260,7 +364,14 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       })
 
       if (res.ok) {
-        router.push(isMaster ? '/master/dashboard' : '/user/dashboard')
+        setBooking(prev => prev ? { ...prev, status: 'completed' } : null)
+        setIsExpired(true)
+        setCountdownSeconds(0)
+        if (!isMaster) {
+          setShowReview(true)
+        } else {
+          router.push('/master/dashboard')
+        }
       } else {
         const err = await res.json()
         alert(err.error || 'Complete failed')
@@ -272,7 +383,41 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     }
   }
 
-  // 格式化时间
+  const handleSubmitReview = async () => {
+    if (reviewRating === 0) {
+      alert(isZh ? '请选择评分' : 'Please select a rating')
+      return
+    }
+    
+    setIsSubmittingReview(true)
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch(`/api/bookings/${bookingId}/review`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${session?.access_token || ''}`,
+        },
+        body: JSON.stringify({
+          rating: reviewRating,
+          content: reviewText,
+        }),
+      })
+
+      if (res.ok) {
+        setShowReview(false)
+        router.push('/user/dashboard')
+      } else {
+        const err = await res.json()
+        alert(err.error || 'Submit failed')
+      }
+    } catch (err) {
+      console.error('Review error:', err)
+    } finally {
+      setIsSubmittingReview(false)
+    }
+  }
+
   const formatTime = (dateStr: string) => {
     const d = new Date(dateStr)
     return d.toLocaleTimeString(isZh ? 'zh-CN' : 'en-US', {
@@ -291,7 +436,8 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
   const master = booking ? masters[booking.master_id] : null
   const service = booking ? services[booking.service_id] : null
-  const canComplete = booking?.status === 'in_progress'
+  const canComplete = booking?.status === 'in_progress' && !isExpired
+  const isCompleted = booking?.status === 'completed' || isExpired
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-50 to-stone-100 flex flex-col">
@@ -314,6 +460,17 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
             </p>
           </div>
           <div className="flex items-center gap-2">
+            <div className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${
+              countdownSeconds <= 300 
+                ? 'bg-red-100 text-red-700' 
+                : 'bg-stone-100 text-stone-600'
+            }`}>
+              <Clock className="w-3 h-3" />
+              {isCompleted 
+                ? (isZh ? '已结束' : 'Ended')
+                : formatCountdown(countdownSeconds)
+              }
+            </div>
             {canComplete && (
               <Button
                 size="sm"
@@ -339,6 +496,12 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       {/* 消息区域 */}
       <div className="flex-1 overflow-y-auto py-4 px-4">
         <div className="max-w-3xl mx-auto space-y-4">
+          {/* 咨询状态提示 */}
+          {booking && (
+            <div className={`border rounded-lg px-4 py-3 text-sm text-center ${getConsultStatusBanner().bgColor}`}>
+              {getConsultStatusBanner().text}
+            </div>
+          )}
           {messages.length === 0 && (
             <div className="text-center py-12">
               <p className="text-stone-400">
@@ -392,57 +555,144 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         </div>
       </div>
 
-      {/* 输入区域 */}
-      <div className="bg-white border-t border-stone-200 px-4 py-3">
-        <div className="max-w-3xl mx-auto flex items-end gap-2">
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            ref={fileInputRef}
-            onChange={handleImageUpload}
-          />
-          <Button
-            variant="outline"
-            size="icon"
-            className="shrink-0"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploadingImage}
-          >
-            {uploadingImage ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <ImageIcon className="w-4 h-4" />
+      {/* 已结束状态 */}
+      {isCompleted && (
+        <div className="bg-white border-t border-stone-200 px-4 py-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <p className="text-stone-500 text-sm mb-2">
+              {isZh ? '咨询已结束，您可以查看历史消息' : 'Consultation has ended. You can view the chat history.'}
+            </p>
+            {!isMaster && !showReview && (
+              <Button 
+                className="bg-violet-600 hover:bg-violet-700"
+                onClick={() => setShowReview(true)}
+              >
+                <Star className="w-4 h-4 mr-1" />
+                {isZh ? '评价本次咨询' : 'Rate this consultation'}
+              </Button>
             )}
-          </Button>
-          <div className="flex-1 relative">
-            <Input
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault()
-                  handleSend()
-                }
-              }}
-              placeholder={isZh ? '输入消息...' : 'Type a message...'}
-              className="pr-10"
-              disabled={isSending}
-            />
           </div>
-          <Button
-            className="shrink-0 bg-violet-600 hover:bg-violet-700"
-            onClick={handleSend}
-            disabled={!inputValue.trim() || isSending}
-          >
-            {isSending ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Send className="w-4 h-4" />
-            )}
-          </Button>
         </div>
-      </div>
+      )}
+
+      {/* 输入区域 - 进行中 */}
+      {!isCompleted && (
+        <div className="bg-white border-t border-stone-200 px-4 py-3">
+          <div className="max-w-3xl mx-auto flex items-end gap-2">
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              ref={fileInputRef}
+              onChange={handleImageUpload}
+            />
+            <Button
+              variant="outline"
+              size="icon"
+              className="shrink-0"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploadingImage}
+            >
+              {uploadingImage ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <ImageIcon className="w-4 h-4" />
+              )}
+            </Button>
+            <div className="flex-1 relative">
+              <Input
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault()
+                    handleSend()
+                  }
+                }}
+                placeholder={isZh ? '输入消息...' : 'Type a message...'}
+                className="pr-10"
+                disabled={isSending}
+              />
+            </div>
+            <Button
+              className="shrink-0 bg-violet-600 hover:bg-violet-700"
+              onClick={handleSend}
+              disabled={!inputValue.trim() || isSending}
+            >
+              {isSending ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Send className="w-4 h-4" />
+              )}
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* 评价弹窗 */}
+      {showReview && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4">
+            <h3 className="text-xl font-bold text-center mb-4">
+              {isZh ? '评价本次咨询' : 'Rate this Consultation'}
+            </h3>
+            <p className="text-stone-500 text-center mb-6">
+              {isZh ? `您对 ${master?.nameCn} 师傅的服务满意吗？` : `How was your experience with ${master?.name}?`}
+            </p>
+            
+            <div className="flex justify-center gap-2 mb-6">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  onClick={() => setReviewRating(star)}
+                  className="focus:outline-none"
+                >
+                  <Star
+                    className={`w-8 h-8 ${
+                      star <= reviewRating
+                        ? 'text-amber-400 fill-amber-400'
+                        : 'text-stone-300'
+                    }`}
+                  />
+                </button>
+              ))}
+            </div>
+            
+            <textarea
+              value={reviewText}
+              onChange={(e) => setReviewText(e.target.value)}
+              placeholder={isZh ? '写下您的评价（可选）' : 'Write your review (optional)'}
+              className="w-full border rounded-lg p-3 text-sm mb-4 resize-none"
+              rows={4}
+              maxLength={500}
+            />
+            
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => {
+                  setShowReview(false)
+                  router.push('/user/dashboard')
+                }}
+              >
+                {isZh ? '跳过' : 'Skip'}
+              </Button>
+              <Button
+                className="flex-1 bg-violet-600 hover:bg-violet-700"
+                onClick={handleSubmitReview}
+                disabled={isSubmittingReview}
+              >
+                {isSubmittingReview ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  isZh ? '提交评价' : 'Submit'
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
