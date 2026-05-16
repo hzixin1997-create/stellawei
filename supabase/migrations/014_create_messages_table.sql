@@ -23,6 +23,11 @@ ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Service key has full access" ON messages
   FOR ALL USING (true) WITH CHECK (true);
 
+-- Supabase Data API 权限（2026-10-30 后强制执行）
+GRANT SELECT ON public.messages TO anon;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.messages TO authenticated;
+GRANT ALL ON public.messages TO service_role;
+
 -- 触发器：自动更新 updated_at（messages 不需要 updated_at 列，但保留函数）
 -- 消息是 append-only，不改
 

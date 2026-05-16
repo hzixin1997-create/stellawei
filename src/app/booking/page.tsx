@@ -28,8 +28,8 @@ const CONSULTATION_TYPES = [
     id: 'realtime', 
     nameZh: '实时咨询', 
     nameEn: 'Real-time',
-    descZh: '预约时间与师傅进行实时视频/语音对话',
-    descEn: 'Schedule a real-time video/voice session with your master',
+    descZh: '预约时间与师傅进行实时文字/图片对话',
+    descEn: 'Schedule a real-time text/image chat with your master',
     icon: Video,
   },
   { 

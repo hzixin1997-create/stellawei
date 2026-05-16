@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   DollarSign,
@@ -12,40 +12,78 @@ import {
   ArrowDownRight,
   Calendar,
   Filter,
+  Loader2,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { createClient } from '@/lib/supabase/client';
 
 interface Transaction {
   id: string;
   date: string;
-  type: 'income' | 'withdrawal' | 'refund';
+  type: 'income' | 'refund';
   amount: number;
   description: string;
-  status: 'completed' | 'pending' | 'failed';
+  status: string;
 }
 
-const mockTransactions: Transaction[] = [];
+interface StatsData {
+  overview: {
+    totalRevenue: number;
+    totalRefunds: number;
+  };
+  transactions: Transaction[];
+}
 
 export default function FinancePage() {
   const { t, i18n } = useTranslation();
   const isZh = i18n.language === 'zh';
-  const [filter, setFilter] = useState<'all' | 'income' | 'withdrawal' | 'refund'>('all');
+  const [stats, setStats] = useState<StatsData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState<'all' | 'income' | 'refund'>('all');
 
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const supabase = createClient();
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          setLoading(false);
+          return;
+        }
+
+        const res = await fetch('/api/admin/stats', {
+          headers: { authorization: `Bearer ${session.access_token}` },
+        });
+        const data = await res.json();
+
+        if (res.ok && data.overview) {
+          setStats(data);
+        }
+      } catch (err) {
+        console.error('Fetch finance stats error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  const transactions = stats?.transactions || [];
   const filteredTransactions = filter === 'all'
-    ? mockTransactions
-    : mockTransactions.filter(t => t.type === filter);
+    ? transactions
+    : transactions.filter(t => t.type === filter);
 
-  const totalIncome = mockTransactions
+  const totalIncome = transactions
     .filter(t => t.type === 'income')
     .reduce((sum, t) => sum + t.amount, 0);
 
-  const totalWithdrawals = mockTransactions
-    .filter(t => t.type === 'withdrawal')
+  const totalRefunds = transactions
+    .filter(t => t.type === 'refund')
     .reduce((sum, t) => sum + t.amount, 0);
 
-  const balance = totalIncome - totalWithdrawals;
+  const balance = totalIncome - totalRefunds;
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -64,10 +102,8 @@ export default function FinancePage() {
     switch (type) {
       case 'income':
         return <ArrowUpRight className="w-4 h-4 text-green-600" />;
-      case 'withdrawal':
-        return <ArrowDownRight className="w-4 h-4 text-red-600" />;
       case 'refund':
-        return <ArrowDownRight className="w-4 h-4 text-amber-600" />;
+        return <ArrowDownRight className="w-4 h-4 text-red-600" />;
       default:
         return null;
     }
@@ -77,14 +113,20 @@ export default function FinancePage() {
     switch (type) {
       case 'income':
         return isZh ? '收入' : 'Income';
-      case 'withdrawal':
-        return isZh ? '提现' : 'Withdrawal';
       case 'refund':
         return isZh ? '退款' : 'Refund';
       default:
         return type;
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-stone-50 to-stone-100 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-violet-600" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -95,7 +137,7 @@ export default function FinancePage() {
             {isZh ? '财务管理' : 'Financial Management'}
           </h1>
           <p className="text-sm text-stone-500 mt-1">
-            {isZh ? '查看收入、提现和账户余额' : 'View income, withdrawals, and account balance'}
+            {isZh ? '查看收入、退款和账户余额' : 'View income, refunds, and account balance'}
           </p>
         </div>
         <Button variant="outline" size="sm">
@@ -138,8 +180,8 @@ export default function FinancePage() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-stone-500">{isZh ? '总提现' : 'Total Withdrawn'}</p>
-                <p className="text-3xl font-bold text-red-600 mt-1">${totalWithdrawals.toFixed(2)}</p>
+                <p className="text-sm text-stone-500">{isZh ? '总退款' : 'Total Refunds'}</p>
+                <p className="text-3xl font-bold text-red-600 mt-1">${totalRefunds.toFixed(2)}</p>
               </div>
               <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
                 <TrendingDown className="w-6 h-6 text-red-600" />
@@ -159,7 +201,7 @@ export default function FinancePage() {
             <div className="flex-1">
               <h3 className="font-semibold text-stone-900">Stripe {isZh ? '收款账户' : 'Account'}</h3>
               <p className="text-sm text-stone-500">
-                {isZh ? '香港个人账户 • 每周一自动提现至汇丰银行' : 'Hong Kong Individual • Auto-payout every Monday to HSBC'}
+                {isZh ? '香港个人账户 · 每周一自动提现至汇丰银行' : 'Hong Kong Individual • Auto-payout every Monday to HSBC'}
               </p>
             </div>
             <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
@@ -183,7 +225,6 @@ export default function FinancePage() {
               >
                 <option value="all">{isZh ? '全部' : 'All'}</option>
                 <option value="income">{isZh ? '收入' : 'Income'}</option>
-                <option value="withdrawal">{isZh ? '提现' : 'Withdrawal'}</option>
                 <option value="refund">{isZh ? '退款' : 'Refund'}</option>
               </select>
             </div>
@@ -208,7 +249,7 @@ export default function FinancePage() {
                     </div>
                     <div>
                       <p className="font-medium text-stone-900">{transaction.description}</p>
-                      <p className="text-sm text-stone-500">{transaction.date} • {getTypeLabel(transaction.type)}</p>
+                      <p className="text-sm text-stone-500">{new Date(transaction.date).toLocaleString()} · {getTypeLabel(transaction.type)}</p>
                     </div>
                   </div>
                   <div className="text-right">
