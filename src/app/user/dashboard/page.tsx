@@ -466,6 +466,20 @@ export default function UserDashboard() {
                             )}
                           </div>
                           <div className="flex flex-col gap-2 ml-4 min-w-[80px]">
+                            {/* 已完成订单 - 查看历史对话 */}
+                            {booking.payment_status === 'paid' && !canEnterChat(booking) && (
+                              <Link href={`/chat/${booking.id}`} className="inline-flex">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-stone-600 border-stone-300 hover:bg-stone-100 w-full"
+                                >
+                                  <MessageCircle className="w-4 h-4 mr-1" />
+                                  {isZh ? '查看历史' : 'View History'}
+                                </Button>
+                              </Link>
+                            )}
+                            {/* 进行中订单 - 进入咨询 */}
                             {canEnterChat(booking) && (
                               <Link href={`/chat/${booking.id}`} className="inline-flex">
                                 <Button
@@ -478,7 +492,8 @@ export default function UserDashboard() {
                                 </Button>
                               </Link>
                             )}
-                            {booking.payment_status === 'paid' && (
+                            {/* 已支付但非已完成/进行中 - 申请退款 */}
+                            {booking.payment_status === 'paid' && canEnterChat(booking) && (
                               <Button
                                 size="sm"
                                 variant="outline"

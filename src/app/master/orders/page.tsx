@@ -303,6 +303,14 @@ export default function MasterOrdersPage() {
                         </p>
                       </div>
                       <div className="flex flex-col gap-2 flex-shrink-0">
+                        {/* 已完成订单 - 查看历史对话 */}
+                        {order.status === 'completed' && (
+                          <Link href={`/chat/${order.id}`}>
+                            <button className="px-4 py-2 text-sm bg-stone-100 text-stone-600 rounded-lg hover:bg-stone-200 transition-colors text-center w-full">
+                              查看历史对话
+                            </button>
+                          </Link>
+                        )}
                         {canAccept && (
                           <button
                             onClick={() => handleAccept(order.id)}
@@ -313,10 +321,12 @@ export default function MasterOrdersPage() {
                             {acceptingId === order.id ? '处理中...' : '接单'}
                           </button>
                         )}
-                        {isConfirmed && (
-                          <span className="px-4 py-2 text-sm bg-stone-100 text-stone-400 rounded-lg text-center">
-                            视频功能即将上线
-                          </span>
+                        {isConfirmed && order.status !== 'completed' && (
+                          <Link href={`/chat/${order.id}`}>
+                            <button className="px-4 py-2 text-sm bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors text-center w-full">
+                              进入咨询
+                            </button>
+                          </Link>
                         )}
                         {order.payment_status === 'pending' && (
                           <span className="px-4 py-2 text-sm bg-yellow-50 text-yellow-600 rounded-lg text-center">
