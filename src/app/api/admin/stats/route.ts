@@ -53,7 +53,10 @@ export async function GET() {
       b.payment_status !== 'refunded';
 
     const todayOrders = bookings.filter(b => isValidOrder(b) && new Date(b.created_at) >= today).length;
-    const totalOrders = bookings.filter(isValidOrder).length;
+    // 总订单 = 已支付 + 已退款（不含取消的）
+    const totalOrders = bookings.filter(b =>
+      b.payment_status === 'paid' || b.payment_status === 'refunded'
+    ).length;
     const refundOrders = bookings.filter(b => b.payment_status === 'refunded');
     const refundCount = refundOrders.length;
     const refundAmount = refundOrders.reduce((sum, b) => sum + (b.total_amount || 0), 0);
