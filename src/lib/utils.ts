@@ -54,3 +54,27 @@ export function calculateTimeSlots(
   }
   return slots
 }
+
+// ─── 咨询时间过期判断 ───
+
+export function isConsultationExpired(
+  booking: { scheduled_at?: string | null; duration_minutes?: number | null; status?: string }
+): boolean {
+  if (booking.status === 'completed' || booking.status === 'cancelled' || booking.status === 'refunded') {
+    return false // Already in a terminal state
+  }
+  if (!booking.scheduled_at || !booking.duration_minutes) {
+    return false // Can't determine if no time data
+  }
+  const endTime = new Date(booking.scheduled_at).getTime() + booking.duration_minutes * 60 * 1000
+  return Date.now() > endTime
+}
+
+export function getConsultationDisplayStatus(
+  booking: { status: string; scheduled_at?: string | null; duration_minutes?: number | null }
+): string {
+  if (isConsultationExpired(booking)) {
+    return 'completed'
+  }
+  return booking.status
+}

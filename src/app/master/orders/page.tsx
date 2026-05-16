@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { getConsultationDisplayStatus } from '@/lib/utils';
 import { Inbox, CheckCircle, Clock, AlertCircle, Video, MessageSquare, ArrowLeft, Loader2, UserCheck } from 'lucide-react';
 
 interface BookingOrder {
@@ -262,7 +263,8 @@ export default function MasterOrdersPage() {
               </div>
             ) : (
               realtimeOrders.map((order) => {
-                const status = statusMap[order.status] || statusMap.pending;
+                const displayStatus = getConsultationDisplayStatus(order);
+                const status = statusMap[displayStatus] || statusMap.pending;
                 const Icon = status.icon;
                 const canAccept = order.payment_status === 'paid' && order.status === 'pending';
                 const isConfirmed = order.status === 'confirmed' || order.status === 'in_progress';

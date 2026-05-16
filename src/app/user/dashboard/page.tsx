@@ -9,7 +9,7 @@ import { createClient } from '@/lib/supabase/client'
 import { ShoppingBag, MessageSquare, ArrowRight, Clock, User, Home, LogOut, MessageCircle, AlertTriangle } from 'lucide-react'
 import Link from 'next/link'
 
-// 师傅数据（用于展示）
+import { isConsultationExpired, getConsultationDisplayStatus } from '@/lib/utils'
 const masters: Record<string, { name: string; nameCn: string; specialty: string }> = {
   'master-luna': { name: 'Master Luna', nameCn: '卢娜师傅', specialty: 'Tarot' },
   'zhang-yihua': { name: 'Master Zhang Yihua', nameCn: '张易桦', specialty: 'Qi Men Dun Jia' },
@@ -149,41 +149,46 @@ export default function UserDashboard() {
   }, [bookings])
 
   // 状态标签样式
-  const getStatusBadge = (status: string, paymentStatus: string, expired: boolean) => {
-    if (expired && (paymentStatus === 'pending' || paymentStatus === 'pending_payment')) {
+  const getStatusBadge = (booking: Booking) => {
+    const displayStatus = getConsultationDisplayStatus(booking)
+    const { status, payment_status } = booking
+    const expired = isExpired(booking)
+    
+    if (expired && (payment_status === 'pending' || payment_status === 'pending_payment')) {
       return <Badge variant="outline" className="bg-stone-100 text-stone-400 border-stone-200">{isZh ? '已过期' : 'Expired'}</Badge>
     }
-    if (paymentStatus === 'refund_requested' || status === 'refund_requested') {
+    if (payment_status === 'refund_requested' || status === 'refund_requested') {
       return <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">{isZh ? '退款申请中' : 'Refund Requested'}</Badge>
     }
-    if (paymentStatus === 'refunded' || status === 'refunded') {
+    if (payment_status === 'refunded' || status === 'refunded') {
       return <Badge variant="outline" className="bg-gray-100 text-gray-500 border-gray-200">{isZh ? '已退款' : 'Refunded'}</Badge>
     }
-    if (paymentStatus === 'pending' || paymentStatus === 'pending_payment') {
+    if (payment_status === 'pending' || payment_status === 'pending_payment') {
       return <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">{isZh ? '待支付' : 'Pending Payment'}</Badge>
     }
-    if (paymentStatus === 'paid') {
-      if (status === 'confirmed' || status === 'in_progress') {
+    if (payment_status === 'paid') {
+      if (displayStatus === 'confirmed' || displayStatus === 'in_progress') {
         return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">{isZh ? '已确认' : 'Confirmed'}</Badge>
       }
-      if (status === 'completed') {
+      if (displayStatus === 'completed') {
         return <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">{isZh ? '已完成' : 'Completed'}</Badge>
       }
       return <Badge variant="outline" className="bg-violet-50 text-violet-700 border-violet-200">{isZh ? '已支付' : 'Paid'}</Badge>
     }
-    if (paymentStatus === 'failed') {
+    if (payment_status === 'failed') {
       return <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">{isZh ? '支付失败' : 'Failed'}</Badge>
     }
-    if (status === 'cancelled' || paymentStatus === 'cancelled') {
+    if (status === 'cancelled' || payment_status === 'cancelled') {
       return <Badge variant="outline" className="bg-stone-100 text-stone-500 border-stone-200">{isZh ? '已取消' : 'Cancelled'}</Badge>
     }
     return <Badge variant="outline">{status}</Badge>
   }
 
-  // 判断订单是否可以进入聊天
+  // 判断订单是否可以进入聊天（已过期不能进入）
   const canEnterChat = (booking: Booking) => {
+    const displayStatus = getConsultationDisplayStatus(booking)
     return booking.payment_status === 'paid' && 
-      (booking.status === 'confirmed' || booking.status === 'in_progress')
+      (displayStatus === 'confirmed' || displayStatus === 'in_progress')
   }
 
   // 取消订单
@@ -421,7 +426,7 @@ export default function UserDashboard() {
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
                               <span className="font-semibold">{isZh ? master.nameCn : master.name}</span>
-                              {getStatusBadge(booking.status, booking.payment_status, expired)}
+                              {getStatusBadge(booking)}
                             </div>
                             <p className="text-sm text-stone-600 mb-1">
                               {isZh ? service.nameCn : service.name}

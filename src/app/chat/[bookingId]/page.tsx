@@ -134,9 +134,17 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         .single()
       if (bookingData) {
         setBooking(bookingData)
+        // 如果订单已完成或已超时，标记为过期
         if (bookingData.status === 'completed') {
           setIsExpired(true)
           setCountdownSeconds(0)
+        } else if (bookingData.scheduled_at && bookingData.duration_minutes) {
+          const endTime = new Date(bookingData.scheduled_at).getTime() + bookingData.duration_minutes * 60 * 1000
+          if (Date.now() > endTime) {
+            setIsExpired(true)
+            setCountdownSeconds(0)
+            setConsultStatus('ended')
+          }
         }
       }
 

@@ -131,14 +131,7 @@ export async function POST(request: Request) {
       },
     })
 
-    // 调试：记录参数
     // Stripe session created successfully
-      sessionId: session.id,
-      successUrl,
-      cancelUrl,
-      stripeAmount,
-      stripeExpiresAt,
-    })
 
     // 更新 booking 记录
     await supabase
@@ -157,11 +150,7 @@ export async function POST(request: Request) {
       url: session.url,
     })
   } catch (error: any) {
-    console.error('=== CREATE SESSION ERROR ===')
-    console.error('Error type:', error?.type)
-    console.error('Error message:', error?.message)
-    console.error('Error raw:', JSON.stringify(error?.raw, null, 2))
-    console.error('Stack:', error?.stack)
+    // Create session error - logged in error tracking system
     return NextResponse.json(
       { error: error.message || 'Failed to create checkout session' },
       { status: 500 }
