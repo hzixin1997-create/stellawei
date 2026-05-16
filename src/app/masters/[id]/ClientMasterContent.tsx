@@ -50,7 +50,6 @@ interface Props {
 export function ClientMasterContent({ master }: Props) {
   const { i18n, t } = useTranslation();
   const currentLang = i18n.language || 'en';
-  const supabase = createClient();
   
   const [services, setServices] = useState<MasterService[]>([]);
   const [loadingServices, setLoadingServices] = useState(true);
@@ -80,6 +79,7 @@ export function ClientMasterContent({ master }: Props) {
     setAuthError(false);
 
     try {
+      const supabase = createClient();
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         setAuthError(true);

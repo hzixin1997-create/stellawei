@@ -325,18 +325,18 @@ export default function BaziServicePage() {
           <div className="text-center max-w-3xl mx-auto">
             <div className="inline-flex items-center space-x-2 bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
               <Moon className="w-4 h-4" />
-              <span>{isZh ? "中华传统命理" : "Chinese Metaphysics"}</span>
+              <span>{isZh ? "东方智慧" : "Eastern Wisdom"}</span>
             </div>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold mb-6">
-              {isZh ? "八字命理" : "Bazi Four Pillars"}
-              <span className="gradient-text block mt-2">{isZh ? "能量趋势分析" : "Energy Analysis"}</span>
+              {isZh ? "东方占卜" : "Eastern Divination"}
+              <span className="gradient-text block mt-2">{isZh ? "奇门 · 六爻 · 八字" : "Qi Men · Liu Yao · BaZi"}</span>
             </h1>
 
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
               {isZh 
-                ? "八字不是预测命运，而是解读你出生时刻的能量印记。了解这些能量趋势，帮助你在对的时间做出对的选择，活出更觉知的人生。"
-                : "Bazi is not about predicting fate, but reading the energy imprint of your birth moment. Understanding these energy trends helps you make the right choices at the right time."
+                ? "东方占卜不是预测命运，而是解读你当下的能量印记与未来趋势。通过奇门遁甲、六爻和八字等古老智慧，帮助你在对的时间做出对的选择，活出更觉知的人生。"
+                : "Eastern divination is not about predicting fate, but reading your present energy imprint and future trends. Through Qi Men Dun Jia, Liu Yao, and BaZi, we help you make the right choices at the right time."
               }
             </p>
           </div>

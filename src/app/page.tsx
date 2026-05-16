@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Star, Shield, Clock, Sparkles, Moon, Sun, Users, Heart, Briefcase, Coins, Sparkles as SparklesIcon, User, X, MessageCircle, Video } from "lucide-react"
+import { Star, Shield, Clock, Sparkles, Moon, Sun, Users, Heart, Briefcase, Coins, Sparkles as SparklesIcon, User, X, MessageCircle, Video, Compass } from "lucide-react"
 import Link from "next/link"
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -44,21 +44,21 @@ const services = [
     color: "from-purple-500 to-pink-500",
   },
   {
-    id: "astrology",
-    nameKey: "services.astrology.name",
-    descriptionKey: "services.astrology.description",
+    id: "eastern",
+    nameKey: "services.eastern.name",
+    descriptionKey: "services.eastern.description",
     price: "$45-55",
     duration: "30-40 min",
-    icon: Sun,
+    icon: Compass,
     color: "from-amber-500 to-orange-500",
   },
   {
-    id: "bazi",
-    nameKey: "services.bazi.name",
-    descriptionKey: "services.bazi.description",
+    id: "spiritual",
+    nameKey: "services.spiritual.name",
+    descriptionKey: "services.spiritual.description",
     price: "$60-80",
     duration: "40-60 min",
-    icon: Moon,
+    icon: Sun,
     color: "from-indigo-500 to-purple-600",
   },
 ]
@@ -172,12 +172,12 @@ export default function Home() {
   // 检查用户登录状态
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
+    supabase.auth.getSession().then(({ data }: { data: { session: any } }) => {
+      setUser(data.session?.user ?? null);
     });
     
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      (_event: any, session: any) => {
         setUser(session?.user ?? null);
       }
     );
@@ -310,7 +310,7 @@ export default function Home() {
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-end">
-                    <Link href={service.id === 'astrology' ? '/services/spiritual' : `/services/${service.id}`}>
+                    <Link href={service.id === 'eastern' ? '/services/bazi' : `/services/${service.id}`}>
                       <Button variant="outline" size="sm">{t('services.learnMore')}</Button>
                     </Link>
                   </div>

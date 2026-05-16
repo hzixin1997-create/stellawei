@@ -458,15 +458,16 @@ export default function MasterDashboard() {
                             )}
                             {isProcessing && (
                               <>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className="text-violet-600 border-violet-200 hover:bg-violet-50 w-full"
-                                  disabled
-                                >
-                                  <MessageCircle className="w-4 h-4 mr-1" />
-                                  {isZh ? '等待咨询' : 'Wait for consult'}
-                                </Button>
+                                <Link href={`/chat/${booking.id}`} className="inline-flex">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="text-violet-600 border-violet-200 hover:bg-violet-50 w-full"
+                                  >
+                                    <MessageCircle className="w-4 h-4 mr-1" />
+                                    {isZh ? '进入咨询' : 'Enter Chat'}
+                                  </Button>
+                                </Link>
                                 <Link href={`/master/orders/${booking.id}`}>
                                   <Button
                                     size="sm"

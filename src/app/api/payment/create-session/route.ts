@@ -2,17 +2,17 @@ import { NextResponse } from 'next/server'
 import { getStripe, convertToStripeAmount } from '@/lib/stripe'
 import { createServiceClient } from '@/lib/supabase'
 
-const PAYMENT_TIMEOUT_MINUTES = 10
+const PAYMENT_TIMEOUT_MINUTES = 30
 
 export async function POST(request: Request) {
   try {
     const stripe = getStripe()
     const body = await request.json()
-    const { 
-      bookingId, 
-      masterId, 
-      serviceId, 
-      amount, 
+    const {
+      bookingId,
+      masterId,
+      serviceId,
+      amount,
       currency = 'usd',
       userId,
       userEmail,
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
       )
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    const appUrl = 'https://stellawei.org'
     const supabase = createServiceClient()
 
     // ─── 检查订单是否已过期 ───
@@ -80,70 +80,47 @@ export async function POST(request: Request) {
         .update({ expires_at: bookingExpiresAt })
         .eq('id', bookingId)
     }
-    
-    // 创建或获取 Stripe Customer
-    let customerId: string
-    
-    // 查询用户是否已有 stripe_customer_id
-    const { data: userData, error: userError } = await supabase
-      .from('users')
-      .select('stripe_customer_id')
-      .eq('id', userId)
-      .single()
 
-    if (userError || !userData?.stripe_customer_id) {
-      // 创建新的 Stripe Customer
-      const customer = await stripe.customers.create({
-        email: userEmail,
-        name: userName,
-        metadata: {
-          user_id: userId,
-        },
-      })
-      customerId = customer.id
+    // 创建 Stripe Customer
+    const customer = await stripe.customers.create({
+      email: userEmail,
+      name: userName,
+      metadata: { user_id: userId },
+    })
+    const customerId = customer.id
 
-      // 更新用户记录
-      await supabase
-        .from('users')
-        .update({ stripe_customer_id: customerId })
-        .eq('id', userId)
-    } else {
-      customerId = userData.stripe_customer_id
-    }
-
-    // 构建服务描述
-    const serviceDescription = serviceName 
+    // 构建参数
+    const serviceDescription = serviceName
       ? `${serviceName} with ${masterName || 'Master'}`
       : 'Consultation Service'
 
-    // 构建预约时间描述
     const bookingTimeDescription = scheduledDate && scheduledTime
       ? `Scheduled for ${scheduledDate} at ${scheduledTime}`
       : ''
 
-    // 转换金额为 Stripe 格式（美分）
     const stripeAmount = convertToStripeAmount(amount, currency)
+
+    const successUrl = `${appUrl}/payment/success?session_id={CHECKOUT_SESSION_ID}`
+    const cancelUrl = `${appUrl}/payment/cancel?booking_id=${bookingId}`
 
     // 创建 Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
-      line_items: [
-        {
-          price_data: {
-            currency: currency.toLowerCase(),
-            product_data: {
-              name: serviceDescription,
-              description: bookingTimeDescription,
-            },
-            unit_amount: stripeAmount,
+      line_items: [{
+        price_data: {
+          currency: currency.toLowerCase(),
+          product_data: {
+            name: serviceDescription,
+            description: bookingTimeDescription,
           },
-          quantity: 1,
+          unit_amount: stripeAmount,
         },
-      ],
-      mode: 'payment',
+        quantity: 1,
+      }],
+      mode: 'payment' as const,
       expires_at: stripeExpiresAt,
-      success_url: `${appUrl}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${appUrl}/payment/cancel?booking_id=${bookingId}`,
+      success_url: successUrl,
+      cancel_url: cancelUrl,
       metadata: {
         booking_id: bookingId,
         user_id: userId,
@@ -152,10 +129,18 @@ export async function POST(request: Request) {
         is_first_time: String(isFirstTime),
         original_amount: String(amount),
       },
-      customer_email: userEmail || undefined,
     })
 
-    // 更新 booking 记录，保存 session ID
+    // 调试：记录参数
+    console.log('Stripe session created:', {
+      sessionId: session.id,
+      successUrl,
+      cancelUrl,
+      stripeAmount,
+      stripeExpiresAt,
+    })
+
+    // 更新 booking 记录
     await supabase
       .from('bookings')
       .update({
@@ -172,9 +157,13 @@ export async function POST(request: Request) {
       url: session.url,
     })
   } catch (error: any) {
-    console.error('Error creating checkout session:', error)
+    console.error('=== CREATE SESSION ERROR ===')
+    console.error('Error type:', error?.type)
+    console.error('Error message:', error?.message)
+    console.error('Error raw:', JSON.stringify(error?.raw, null, 2))
+    console.error('Stack:', error?.stack)
     return NextResponse.json(
-      { error: 'Failed to create checkout session', message: error.message },
+      { error: error.message || 'Failed to create checkout session' },
       { status: 500 }
     )
   }

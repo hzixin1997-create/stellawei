@@ -9,6 +9,7 @@ import {
   ShoppingBag,
   Home,
   Loader2,
+  Trash2,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -30,6 +31,8 @@ const statusLabels: Record<string, { text: string; color: string }> = {
   in_progress: { text: '服务中', color: 'bg-violet-100 text-violet-800' },
   completed: { text: '已完成', color: 'bg-green-100 text-green-800' },
   cancelled: { text: '已取消', color: 'bg-gray-100 text-gray-800' },
+  refund_requested: { text: '退款申请', color: 'bg-orange-100 text-orange-800' },
+  refunded: { text: '已退款', color: 'bg-gray-100 text-gray-800' },
 };
 
 export default function AdminOrders() {
@@ -40,20 +43,130 @@ export default function AdminOrders() {
   const [query, setQuery] = useState('');
   const [masterFilter, setMasterFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [processingRefund, setProcessingRefund] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [deleting, setDeleting] = useState(false);
+
+  const handleProcessRefund = async (orderId: string) => {
+    if (!confirm(isZh ? '确认处理此退款申请？款项将原路退回用户。' : 'Confirm processing this refund? The amount will be returned to the user.')) {
+      return;
+    }
+    setProcessingRefund(orderId);
+    try {
+      const res = await fetch('/api/admin/process-refund', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookingId: orderId }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Refund failed');
+      }
+
+      // 更新本地订单状态
+      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: 'refunded', payment_status: 'refunded' } : o));
+      alert(isZh ? '退款处理成功' : 'Refund processed successfully');
+    } catch (err: any) {
+      console.error('Process refund error:', err);
+      alert(isZh ? `处理失败: ${err.message}` : `Processing failed: ${err.message}`);
+    } finally {
+      setProcessingRefund(null);
+    }
+  };
+
+  // 批量删除
+  const handleBatchDelete = async () => {
+    const ids = Array.from(selectedIds);
+    if (ids.length === 0) {
+      alert(isZh ? '请先选择要删除的订单' : 'Please select orders to delete');
+      return;
+    }
+    if (!confirm(isZh ? `确定要删除选中的 ${ids.length} 个订单吗？` : `Are you sure you want to delete ${ids.length} selected orders?`)) {
+      return;
+    }
+    setDeleting(true);
+    try {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        alert(isZh ? '请先登录' : 'Please login');
+        return;
+      }
+
+      const res = await fetch('/api/admin/delete-bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ ids }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Delete failed');
+      }
+
+      // 从本地列表移除已删除的
+      setOrders(prev => prev.filter(o => !selectedIds.has(o.id)));
+      setSelectedIds(new Set());
+      alert(isZh ? `已删除 ${ids.length} 个订单` : `Deleted ${ids.length} orders`);
+    } catch (err: any) {
+      console.error('Batch delete error:', err);
+      alert(isZh ? `删除失败: ${err.message}` : `Delete failed: ${err.message}`);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  // 切换选中状态
+  const toggleSelect = (id: string) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
+  // 全选/取消全选
+  const toggleSelectAll = () => {
+    if (selectedIds.size === filteredOrders.length && filteredOrders.length > 0) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredOrders.map(o => o.id)));
+    }
+  };
 
   useEffect(() => {
     const fetchOrders = async () => {
-      const supabase = createClient();
-      const { data, error } = await supabase
-        .from('bookings')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(100);
+      try {
+        const supabase = createClient();
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          setLoading(false);
+          return;
+        }
 
-      if (!error && data) {
-        setOrders(data);
+        const res = await fetch('/api/admin/orders?limit=100', {
+          headers: { authorization: `Bearer ${session.access_token}` },
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          console.error('Admin orders fetch error:', data.error);
+        } else if (data.orders) {
+          setOrders(data.orders);
+        }
+      } catch (err) {
+        console.error('Fetch orders error:', err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
     fetchOrders();
   }, []);
@@ -117,18 +230,48 @@ export default function AdminOrders() {
                 <option value="paid">{isZh ? '已付款' : 'Paid'}</option>
                 <option value="confirmed">{isZh ? '已确认' : 'Confirmed'}</option>
                 <option value="completed">{isZh ? '已完成' : 'Completed'}</option>
-                <option value="cancelled">{isZh ? '已取消' : 'Cancelled'}</option>
+                <option value="refund_requested">{isZh ? '退款申请' : 'Refund Requested'}</option>
+                <option value="refunded">{isZh ? '已退款' : 'Refunded'}</option>
               </select>
             </div>
+            {/* 批量删除按钮 */}
+            {selectedIds.size > 0 && (
+              <Button
+                size="sm"
+                variant="outline"
+                className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                onClick={handleBatchDelete}
+                disabled={deleting}
+              >
+                <Trash2 className="w-4 h-4 mr-1" />
+                {deleting
+                  ? (isZh ? '删除中...' : 'Deleting...')
+                  : (isZh ? `删除选中 (${selectedIds.size})` : `Delete Selected (${selectedIds.size})`)}
+              </Button>
+            )}
           </CardContent>
         </Card>
 
         {/* 订单列表 */}
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-base font-sans font-semibold">
-              {isZh ? '订单列表' : 'Orders'} ({filteredOrders.length})
-            </CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-base font-sans font-semibold">
+                {isZh ? '订单列表' : 'Orders'} ({filteredOrders.length})
+              </CardTitle>
+              {/* 全选 */}
+              {filteredOrders.length > 0 && (
+                <label className="flex items-center gap-2 text-sm text-stone-600 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.size === filteredOrders.length && filteredOrders.length > 0}
+                    onChange={toggleSelectAll}
+                    className="w-4 h-4 rounded border-stone-300 text-violet-600 focus:ring-violet-500"
+                  />
+                  {isZh ? '全选' : 'Select All'}
+                </label>
+              )}
+            </div>
           </CardHeader>
           <CardContent>
             {loading ? (
@@ -149,27 +292,50 @@ export default function AdminOrders() {
                     className="border rounded-lg p-4 hover:bg-stone-50 transition-colors"
                   >
                     <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="font-medium">{mastersMap[order.master_id] || order.master_id}</span>
-                          <Badge className={statusLabels[order.payment_status]?.color || 'bg-gray-100'}>
-                            {statusLabels[order.payment_status]?.text || order.payment_status}
-                          </Badge>
-                          <span className="text-xs text-stone-400">{order.id.slice(0, 8)}</span>
+                      <div className="flex items-start gap-3 flex-1">
+                        {/* 复选框 */}
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.has(order.id)}
+                          onChange={() => toggleSelect(order.id)}
+                          className="mt-1 w-4 h-4 rounded border-stone-300 text-violet-600 focus:ring-violet-500"
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="font-medium">{mastersMap[order.master_id] || order.master_id}</span>
+                            <Badge className={statusLabels[order.payment_status]?.color || 'bg-gray-100'}>
+                              {statusLabels[order.payment_status]?.text || order.payment_status}
+                            </Badge>
+                            <span className="text-xs text-stone-400">{order.id.slice(0, 8)}</span>
+                          </div>
+                          <p className="text-sm text-stone-600">
+                            {order.service_id} · ${order.total_amount} · {order.scheduled_date} {order.scheduled_time}
+                          </p>
+                          <p className="text-xs text-stone-400 mt-1">
+                            User: {order.user_id?.slice(0, 12)}... · {new Date(order.created_at).toLocaleString()}
+                          </p>
                         </div>
-                        <p className="text-sm text-stone-600">
-                          {order.service_id} · ${order.total_amount} · {order.scheduled_date} {order.scheduled_time}
-                        </p>
-                        <p className="text-xs text-stone-400 mt-1">
-                          User: {order.user_id?.slice(0, 12)}... · {new Date(order.created_at).toLocaleString()}
-                        </p>
                       </div>
                       <div className="flex flex-col gap-2 ml-4">
-                        <Link href={`/order/${order.id}`}>
-                          <Button size="sm" variant="outline">
-                            {isZh ? '查看' : 'View'}
+                        {(order.status === 'refund_requested' || order.payment_status === 'refund_requested') && (
+                          <Button
+                            size="sm"
+                            className="bg-orange-600 hover:bg-orange-700 text-white"
+                            onClick={() => handleProcessRefund(order.id)}
+                            disabled={processingRefund === order.id}
+                          >
+                            {processingRefund === order.id
+                              ? (isZh ? '处理中...' : 'Processing...')
+                              : (isZh ? '处理退款' : 'Process Refund')}
                           </Button>
-                        </Link>
+                        )}
+                        {order.status !== 'refund_requested' && order.payment_status !== 'refund_requested' && (
+                          <Link href={`/order/${order.id}`}>
+                            <Button size="sm" variant="outline">
+                              {isZh ? '查看' : 'View'}
+                            </Button>
+                          </Link>
+                        )}
                       </div>
                     </div>
                   </div>

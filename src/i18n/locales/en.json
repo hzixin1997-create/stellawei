@@ -24,9 +24,9 @@
       "name": "Tarot Reading",
       "description": "Gain clarity on love, career, and life's questions through the ancient wisdom of tarot cards."
     },
-    "astrology": {
-      "name": "Spiritual Awakening",
-      "description": "Explore your inner journey and discover your soul's calling through spiritual guidance."
+    "eastern": {
+      "name": "Eastern Divination",
+      "description": "Gain clarity on life direction through ancient Eastern wisdom including Qi Men Dun Jia, Liu Yao, and BaZi."
     },
     "bazi": {
       "name": "Bazi (Four Pillars)",
