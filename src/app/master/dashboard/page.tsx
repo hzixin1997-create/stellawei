@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/client'
+import { getConsultationDisplayStatus } from '@/lib/utils'
 import {
   ShoppingBag,
   Clock,
@@ -36,6 +37,7 @@ interface Booking {
   service_id: string
   scheduled_date: string
   scheduled_time: string
+  scheduled_at?: string
   duration_minutes: number
   status: string
   payment_status: string
@@ -110,23 +112,32 @@ export default function MasterDashboard() {
     getUserAndBookings()
   }, [router])
 
-  // 统计
+  // 统计（使用 displayStatus 统一判断超时）
+  const getDisplayStatus = (b: Booking) => {
+    const scheduledAt = b.scheduled_at
+      ? new Date(b.scheduled_at)
+      : b.scheduled_date && b.scheduled_time
+        ? new Date(`${b.scheduled_date}T${b.scheduled_time}`)
+        : null
+    return getConsultationDisplayStatus(b.status, scheduledAt, b.duration_minutes || 30)
+  }
+
   const visibleBookings = bookings.filter((b) => !b.deleted_at)
   const totalOrders = visibleBookings.length
   const pendingOrders = visibleBookings.filter(
-    (b) => b.payment_status === 'paid' && b.status === 'pending'
+    (b) => b.payment_status === 'paid' && getDisplayStatus(b) === 'pending'
   ).length
   const processingOrders = visibleBookings.filter(
     (b) =>
       b.payment_status === 'paid' &&
-      (b.status === 'confirmed' || b.status === 'in_progress')
+      (getDisplayStatus(b) === 'confirmed' || getDisplayStatus(b) === 'in_progress')
   ).length
   const completedOrders = visibleBookings.filter(
-    (b) => b.status === 'completed'
+    (b) => getDisplayStatus(b) === 'completed'
   ).length
 
-  // 状态标签样式
-  const getStatusBadge = (status: string, paymentStatus: string) => {
+  // 状态标签样式（基于 displayStatus）
+  const getStatusBadge = (displayStatus: string, paymentStatus: string) => {
     if (paymentStatus === 'pending' || paymentStatus === 'pending_payment') {
       return (
         <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
@@ -134,35 +145,35 @@ export default function MasterDashboard() {
         </Badge>
       )
     }
-    if (paymentStatus === 'paid' && status === 'pending') {
+    if (paymentStatus === 'paid' && displayStatus === 'pending') {
       return (
         <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
           {isZh ? '待接单' : 'Pending Accept'}
         </Badge>
       )
     }
-    if (status === 'confirmed') {
+    if (displayStatus === 'confirmed') {
       return (
         <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
           {isZh ? '已接单' : 'Confirmed'}
         </Badge>
       )
     }
-    if (status === 'in_progress') {
+    if (displayStatus === 'in_progress') {
       return (
         <Badge variant="outline" className="bg-violet-50 text-violet-700 border-violet-200">
           {isZh ? '进行中' : 'In Progress'}
         </Badge>
       )
     }
-    if (status === 'completed') {
+    if (displayStatus === 'completed') {
       return (
         <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
           {isZh ? '已完成' : 'Completed'}
         </Badge>
       )
     }
-    if (status === 'cancelled' || paymentStatus === 'cancelled') {
+    if (displayStatus === 'cancelled' || paymentStatus === 'cancelled') {
       return (
         <Badge variant="outline" className="bg-stone-100 text-stone-500 border-stone-200">
           {isZh ? '已取消' : 'Cancelled'}
@@ -176,7 +187,7 @@ export default function MasterDashboard() {
         </Badge>
       )
     }
-    return <Badge variant="outline">{status}</Badge>
+    return <Badge variant="outline">{displayStatus}</Badge>
   }
 
   // 接单
@@ -388,12 +399,13 @@ export default function MasterDashboard() {
                       name: booking.service_id,
                       nameCn: booking.service_id,
                     }
+                    const displayStatus = getDisplayStatus(booking)
                     const isPendingAccept =
-                      booking.payment_status === 'paid' && booking.status === 'pending'
+                      booking.payment_status === 'paid' && displayStatus === 'pending'
                     const isProcessing =
                       booking.payment_status === 'paid' &&
-                      (booking.status === 'confirmed' || booking.status === 'in_progress')
-                    const isCompleted = booking.status === 'completed'
+                      (displayStatus === 'confirmed' || displayStatus === 'in_progress')
+                    const isCompleted = displayStatus === 'completed'
 
                     return (
                       <div
@@ -406,7 +418,7 @@ export default function MasterDashboard() {
                               <span className="font-semibold">
                                 {isZh ? service.nameCn : service.name}
                               </span>
-                              {getStatusBadge(booking.status, booking.payment_status)}
+                              {getStatusBadge(displayStatus, booking.payment_status)}
                             </div>
                             <div className="flex items-center gap-4 text-sm text-stone-500">
                               <span className="flex items-center gap-1">
