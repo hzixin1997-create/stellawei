@@ -320,7 +320,7 @@ export default function MasterOrdersPage() {
                             {acceptingId === order.id ? '处理中...' : '接单'}
                           </button>
                         )}
-                        {isConfirmed && displayStatus !== 'completed' && (
+                        {isConfirmed && (
                           <Link href={`/chat/${order.id}`}>
                             <button className="px-4 py-2 text-sm bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors text-center w-full">
                               进入咨询
