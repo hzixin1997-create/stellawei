@@ -68,8 +68,11 @@ export async function GET() {
       .filter(b => b.payment_status === 'paid')
       .reduce((sum, b) => sum + (b.total_amount || 0), 0);
 
-    // 退款率 = 退款金额 / 总收入
-    const refundRate = totalRevenue > 0 ? ((refundAmount / totalRevenue) * 100).toFixed(1) : '0.0';
+    // 退款率 = 退款订单数 / 总订单数（已支付或已退款）× 100%
+    const totalPaidOrders = bookings.filter(b =>
+      b.payment_status === 'paid' || b.payment_status === 'refunded'
+    ).length;
+    const refundRate = totalPaidOrders > 0 ? ((refundCount / totalPaidOrders) * 100).toFixed(1) : '0.0';
 
     // 活跃师傅 = 至少有一个 paid/confirmed/in_progress/completed 订单的师傅
     const activeMasters = new Set(
