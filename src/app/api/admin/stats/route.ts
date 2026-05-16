@@ -43,7 +43,7 @@ export async function GET() {
       );
     }
 
-    const bookings = allBookings || [];
+    const bookings = (allBookings || []).filter(b => b.deleted_at === null);
 
     // 3. 计算统计
     // 有效订单 = 非取消 且 非退款

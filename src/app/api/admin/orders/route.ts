@@ -27,7 +27,7 @@ export async function GET(request: Request) {
     let query = supabase
       .from('bookings')
       .select('*')
-      .is('deleted_at', null)
+      .filter('deleted_at', 'is', null)
       .order('created_at', { ascending: false })
       .limit(limit)
 
