@@ -10,6 +10,8 @@ import {
   Users,
   Home,
   Loader2,
+  RotateCcw,
+  AlertTriangle,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -22,7 +24,9 @@ interface StatsData {
     totalOrders: number;
     monthRevenue: number;
     totalRevenue: number;
-    totalRefunds: number;
+    refundCount: number;
+    refundAmount: number;
+    refundRate: string;
     activeMasters: number;
   };
   masterStats: Array<{
@@ -123,7 +127,7 @@ export default function AdminDashboard() {
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* 统计卡片 */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
@@ -159,6 +163,33 @@ export default function AdminDashboard() {
                 <div>
                   <p className="text-sm text-stone-500">{isZh ? '本月收入' : 'Monthly Revenue'}</p>
                   <p className="text-2xl font-bold">${(ov?.monthRevenue || 0).toFixed(2)}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+                  <RotateCcw className="w-5 h-5 text-red-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-stone-500">{isZh ? '退款订单' : 'Refunded Orders'}</p>
+                  <p className="text-2xl font-bold">{ov?.refundCount || 0}</p>
+                  <p className="text-xs text-red-500">${(ov?.refundAmount || 0).toFixed(2)}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
+                  <AlertTriangle className="w-5 h-5 text-orange-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-stone-500">{isZh ? '退款率' : 'Refund Rate'}</p>
+                  <p className="text-2xl font-bold">{ov?.refundRate || '0.0'}%</p>
                 </div>
               </div>
             </CardContent>

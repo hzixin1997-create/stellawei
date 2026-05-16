@@ -46,19 +46,38 @@ export async function GET() {
     const bookings = allBookings || [];
 
     // 3. 计算统计
-    const todayOrders = bookings.filter(b => new Date(b.created_at) >= today).length;
-    const totalOrders = bookings.length;
+    // 有效订单 = 非取消 且 非退款
+    const isValidOrder = (b: any) =>
+      b.status !== 'cancelled' &&
+      b.payment_status !== 'cancelled' &&
+      b.payment_status !== 'refunded';
+
+    const todayOrders = bookings.filter(b => isValidOrder(b) && new Date(b.created_at) >= today).length;
+    const totalOrders = bookings.filter(isValidOrder).length;
+    const refundOrders = bookings.filter(b => b.payment_status === 'refunded');
+    const refundCount = refundOrders.length;
+    const refundAmount = refundOrders.reduce((sum, b) => sum + (b.total_amount || 0), 0);
+
     const monthRevenue = bookings
       .filter(b => b.payment_status === 'paid' && new Date(b.created_at) >= monthStart)
       .reduce((sum, b) => sum + (b.total_amount || 0), 0);
     const totalRevenue = bookings
       .filter(b => b.payment_status === 'paid')
       .reduce((sum, b) => sum + (b.total_amount || 0), 0);
-    const totalRefunds = bookings
-      .filter(b => b.payment_status === 'refunded')
-      .reduce((sum, b) => sum + (b.total_amount || 0), 0);
+
+    // 退款率 = 退款金额 / 总收入
+    const refundRate = totalRevenue > 0 ? ((refundAmount / totalRevenue) * 100).toFixed(1) : '0.0';
+
+    // 活跃师傅 = 至少有一个 paid/confirmed/in_progress/completed 订单的师傅
     const activeMasters = new Set(
-      bookings.filter(b => b.status !== 'cancelled').map(b => b.master_id)
+      bookings
+        .filter(b =>
+          b.payment_status === 'paid' ||
+          b.status === 'confirmed' ||
+          b.status === 'in_progress' ||
+          b.status === 'completed'
+        )
+        .map(b => b.master_id)
     ).size;
 
     // 4. 师傅统计
@@ -115,7 +134,9 @@ export async function GET() {
         totalOrders,
         monthRevenue,
         totalRevenue,
-        totalRefunds,
+        refundCount,
+        refundAmount,
+        refundRate,
         activeMasters: activeMasters || MASTER_WHITELIST.length,
       },
       masterStats,
