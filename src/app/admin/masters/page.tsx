@@ -89,9 +89,8 @@ export default function MastersManagement() {
       
       const data = await res.json();
       if (res.ok) {
-        setMasterList((prev) =>
-          prev.map((m) => (m.id === id ? { ...m, status: newStatus } : m))
-        );
+        // 强制重新获取最新状态（避免缓存）
+        window.location.reload()
       } else {
         alert(isZh ? `更新失败: ${data.error}` : `Failed: ${data.error}`);
       }

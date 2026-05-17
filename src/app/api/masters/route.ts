@@ -51,7 +51,17 @@ export async function GET() {
       is_active: m.is_active,
     }));
 
-    return NextResponse.json({ masters: mastersWithStatus });
+    return NextResponse.json(
+      { masters: mastersWithStatus },
+      { 
+        status: 200,
+        headers: {
+          'Cache-Control': 'no-store, max-age=0, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        }
+      }
+    );
   } catch (error: any) {
     console.error('Masters API error:', error);
     return NextResponse.json(

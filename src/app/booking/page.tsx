@@ -134,9 +134,9 @@ export default function BookingPage() {
         setIsFirstTime(checkData.isFirstTime)
       }
 
-      // 获取师傅实时状态
+      // 获取师傅实时状态（带 no-store 防止浏览器缓存）
       try {
-        const mastersRes = await fetch('/api/masters')
+        const mastersRes = await fetch('/api/masters', { cache: 'no-store' })
         if (mastersRes.ok) {
           const mastersData = await mastersRes.json()
           const statusMap: Record<string, string> = {}
