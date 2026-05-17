@@ -644,7 +644,7 @@ export default function BookingPage() {
                           today.setHours(0, 0, 0, 0)
                           const d = new Date(date)
                           d.setHours(0, 0, 0, 0)
-                          return d.getTime() < today.getTime() || date.getDay() === 0
+                          return d.getTime() < today.getTime()
                         }}
                         className="rounded-md border"
                       />
