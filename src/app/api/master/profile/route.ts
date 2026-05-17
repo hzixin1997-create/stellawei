@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 
 /**
  * GET /api/master/profile
- * 获取当前登录师傅的信息
+ * 获取当前登录师傅的信息（包含数据库状态）
  */
 export async function GET() {
   try {
@@ -22,7 +22,20 @@ export async function GET() {
       return NextResponse.json({ error: 'Not a master' }, { status: 403 });
     }
 
-    return NextResponse.json({ master: masterInfo });
+    // 从数据库获取实时状态
+    const { data: master } = await authSupabase
+      .from('masters')
+      .select('id, status')
+      .eq('user_id', user.id)
+      .single();
+
+    return NextResponse.json({
+      master: {
+        ...masterInfo,
+        id: master?.id,
+        status: master?.status || 'online',
+      },
+    });
   } catch (error: any) {
     console.error('Master profile API error:', error);
     return NextResponse.json(

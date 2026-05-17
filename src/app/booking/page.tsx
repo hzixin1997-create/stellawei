@@ -45,7 +45,7 @@ const CONSULTATION_TYPES = [
 // 师傅
 const MASTERS = [
   { 
-    id: 'master-luna', 
+    id: '397b115d-3b7f-4426-af62-c484b849448a', 
     name: 'Master Luna', 
     nameCn: '卢娜师傅',
     categories: ['tarot', 'spiritual'],
@@ -53,7 +53,7 @@ const MASTERS = [
     timezone: 'America/Los_Angeles',
   },
   { 
-    id: 'zhang-yihua', 
+    id: '38e313ca-2cf5-47fe-9967-864001ce049e', 
     name: 'Master Zhang Yihua', 
     nameCn: '张易桦',
     categories: ['eastern'],
@@ -61,7 +61,7 @@ const MASTERS = [
     timezone: 'Asia/Shanghai',
   },
   { 
-    id: 'wu-yang', 
+    id: '94b1582e-5e9e-4835-be8b-1cfbd3ec8d3b', 
     name: 'Master Wu Yang', 
     nameCn: '戊阳',
     categories: ['eastern'],
@@ -108,10 +108,11 @@ export default function BookingPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [user, setUser] = useState<any>(null)
   const [error, setError] = useState('')
+  const [masterStatuses, setMasterStatuses] = useState<Record<string, string>>({})
 
   const isZh = i18n.language === 'zh'
 
-  // 检测用户是否首次
+  // 检测用户是否首次 + 获取师傅状态
   useEffect(() => {
     const checkUser = async () => {
       const supabase = createClient()
@@ -131,6 +132,21 @@ export default function BookingPage() {
       if (checkRes.ok) {
         const checkData = await checkRes.json()
         setIsFirstTime(checkData.isFirstTime)
+      }
+
+      // 获取师傅实时状态
+      try {
+        const mastersRes = await fetch('/api/masters')
+        if (mastersRes.ok) {
+          const mastersData = await mastersRes.json()
+          const statusMap: Record<string, string> = {}
+          ;(mastersData.masters || []).forEach((m: any) => {
+            statusMap[m.id] = m.status || 'online'
+          })
+          setMasterStatuses(statusMap)
+        }
+      } catch (err) {
+        console.error('Failed to fetch master statuses:', err)
       }
       
       setIsLoading(false)
@@ -437,8 +453,26 @@ export default function BookingPage() {
             {step === 3 && (
               <RadioGroup value={selectedMaster} onValueChange={setSelectedMaster} className="space-y-4">
                 {MASTERS
-                  .filter(m => m.categories.includes(category))
-                  .map((m) => (
+                  .filter(m => {
+                    // 分类匹配
+                    if (!m.categories.includes(category)) return false
+                    // 状态过滤
+                    const status = masterStatuses[m.id] || 'online'
+                    // 休息中：完全隐藏
+                    if (status === 'rest') return false
+                    // 实时咨询：只显示在线
+                    if (consultationType === 'realtime' && status !== 'online') return false
+                    // 留言咨询：显示在线+离线
+                    return true
+                  })
+                  .map((m) => {
+                    const status = masterStatuses[m.id] || 'online'
+                    const statusColors: Record<string, string> = {
+                      online: 'bg-green-100 text-green-700 border-green-200',
+                      offline: 'bg-gray-100 text-gray-600 border-gray-200',
+                      rest: 'bg-orange-100 text-orange-700 border-orange-200',
+                    }
+                    return (
                   <div key={m.id}>
                     <RadioGroupItem value={m.id} id={m.id} className="peer sr-only" />
                     <Label
@@ -449,7 +483,15 @@ export default function BookingPage() {
                         {m.name.charAt(0)}
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-semibold text-lg">{isZh ? m.nameCn : m.name}</h3>
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-semibold text-lg">{isZh ? m.nameCn : m.name}</h3>
+                          <Badge variant="outline" className={`text-xs ${statusColors[status] || statusColors.online}`}>
+                            {isZh
+                              ? status === 'online' ? '在线' : status === 'offline' ? '离线' : '休息中'
+                              : status === 'online' ? 'Online' : status === 'offline' ? 'Offline' : 'Resting'
+                            }
+                          </Badge>
+                        </div>
                         <p className="text-stone-600 text-sm">
                           {isZh 
                             ? `${m.categories.map(c => CATEGORIES.find(cat => cat.id === c)?.nameZh).join(' / ')}` 
@@ -474,7 +516,21 @@ export default function BookingPage() {
                       </div>
                     </Label>
                   </div>
-                ))}
+                )})}
+                {MASTERS.filter(m => {
+                  if (!m.categories.includes(category)) return false
+                  const status = masterStatuses[m.id] || 'online'
+                  if (status === 'rest') return false
+                  if (consultationType === 'realtime' && status !== 'online') return false
+                  return true
+                }).length === 0 && (
+                  <div className="text-center py-8 text-stone-500">
+                    {isZh 
+                      ? '暂无可用师傅，请尝试其他咨询方式或稍后再试'
+                      : 'No masters available. Please try another consultation type or check back later.'
+                    }
+                  </div>
+                )}
               </RadioGroup>
             )}
 
@@ -546,7 +602,7 @@ export default function BookingPage() {
                 </div>
 
                 {/* 风水专项（仅戊阳） */}
-                {master.id === 'wu-yang' && master.pricing.fengshui && (
+                {master.id === '94b1582e-5e9e-4835-be8b-1cfbd3ec8d3b' && master.pricing.fengshui && (
                   <div>
                     <RadioGroupItem value="fengshui" id="tier-fengshui" className="peer sr-only" />
                     <Label

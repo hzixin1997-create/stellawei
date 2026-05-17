@@ -89,7 +89,26 @@ export async function GET() {
         .map(b => b.master_id)
     ).size;
 
-    // 4. 师傅统计
+    // 4. 获取师傅数据库状态（通过 profiles 表关联 email）
+    const { data: dbMasters } = await supabase
+      .from('masters')
+      .select('id, user_id, status');
+
+    // 获取 profiles 中的 email 映射
+    const userIds = (dbMasters || []).map(m => m.user_id);
+    const { data: profiles } = userIds.length > 0
+      ? await supabase.from('profiles').select('id, email').in('id', userIds)
+      : { data: [] };
+
+    const emailToStatus = new Map<string, string>();
+    (dbMasters || []).forEach(m => {
+      const profile = (profiles || []).find(p => p.id === m.user_id);
+      if (profile?.email) {
+        emailToStatus.set(profile.email, m.status || 'online');
+      }
+    });
+
+    // 5. 师傅统计
     const masterStats = MASTER_WHITELIST.map(master => {
       const masterBookings = bookings.filter(b => b.master_id === master.slug);
       const masterPaid = masterBookings.filter(b => b.payment_status === 'paid');
@@ -106,7 +125,7 @@ export async function GET() {
         monthOrders: masterMonth.length,
         revenue: masterPaid.reduce((sum, b) => sum + (b.total_amount || 0) * 0.7, 0),
         platformRevenue: masterPaid.reduce((sum, b) => sum + (b.total_amount || 0) * 0.3, 0),
-        isOnline: true, // 简化，后续可接入真实在线状态
+        status: emailToStatus.get(master.email) || 'online',
       };
     });
 

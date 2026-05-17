@@ -25,18 +25,25 @@ interface MasterStat {
   monthOrders: number;
   revenue: number;
   platformRevenue: number;
-  isOnline: boolean;
+  status: 'online' | 'offline' | 'rest';
 }
 
 interface StatsData {
   masterStats: MasterStat[];
 }
 
+const statusConfig = {
+  online: { label: '在线', labelEn: 'Online', color: 'bg-green-100 text-green-700 border-green-200' },
+  offline: { label: '离线', labelEn: 'Offline', color: 'bg-gray-100 text-gray-600 border-gray-200' },
+  rest: { label: '休息中', labelEn: 'Resting', color: 'bg-orange-100 text-orange-700 border-orange-200' },
+};
+
 export default function MastersManagement() {
   const { t, i18n } = useTranslation();
   const isZh = i18n.language === 'zh';
   const [masterList, setMasterList] = useState<MasterStat[]>([]);
   const [loading, setLoading] = useState(true);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -65,10 +72,34 @@ export default function MastersManagement() {
     fetchStats();
   }, []);
 
-  const toggleStatus = (id: string) => {
-    setMasterList((prev) =>
-      prev.map((m) => (m.id === id ? { ...m, isOnline: !m.isOnline } : m))
-    );
+  const updateStatus = async (id: string, newStatus: 'online' | 'offline' | 'rest') => {
+    setUpdatingId(id);
+    try {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      const res = await fetch('/api/admin/master-status', {
+        method: 'PUT',
+        headers: { 
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${session?.access_token || ''}`
+        },
+        body: JSON.stringify({ masterId: id, status: newStatus }),
+      });
+      
+      const data = await res.json();
+      if (res.ok) {
+        setMasterList((prev) =>
+          prev.map((m) => (m.id === id ? { ...m, status: newStatus } : m))
+        );
+      } else {
+        alert(isZh ? `更新失败: ${data.error}` : `Failed: ${data.error}`);
+      }
+    } catch (err: any) {
+      alert(isZh ? `更新失败: ${err.message}` : `Failed: ${err.message}`);
+    } finally {
+      setUpdatingId(null);
+    }
   };
 
   if (loading) {
@@ -109,106 +140,109 @@ export default function MastersManagement() {
               <p className="text-stone-500">{isZh ? '暂无师傅数据' : 'No master data yet'}</p>
             </div>
           ) : (
-            masterList.map((master) => (
-              <Card key={master.id} className="overflow-hidden">
-                <CardHeader className="pb-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl">
-                        {master.name.charAt(0)}
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h2 className="text-xl font-bold">{isZh ? master.name : master.nameEn}</h2>
-                          <Badge
-                            variant={master.isOnline ? 'default' : 'secondary'}
-                          >
-                            {master.isOnline
-                              ? isZh
-                                ? '🟢 在线'
-                                : '🟢 Online'
-                              : isZh
-                                ? '⚪ 离线'
-                                : '⚪ Offline'}
-                          </Badge>
+            masterList.map((master) => {
+              const status = statusConfig[master.status] || statusConfig.online;
+              return (
+                <Card key={master.id} className="overflow-hidden">
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl">
+                          {master.name.charAt(0)}
                         </div>
-                        <p className="text-sm text-stone-500">
-                          {isZh ? master.specialty : master.specialtyEn}
-                        </p>
-                        <p className="text-xs text-stone-400">{master.email}</p>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h2 className="text-xl font-bold">{isZh ? master.name : master.nameEn}</h2>
+                            <Badge variant="outline" className={status.color}>
+                              {isZh ? status.label : status.labelEn}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-stone-500">
+                            {isZh ? master.specialty : master.specialtyEn}
+                          </p>
+                          <p className="text-xs text-stone-400">{master.email}</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        {(Object.keys(statusConfig) as Array<'online' | 'offline' | 'rest'>).map((s) => {
+                          const config = statusConfig[s];
+                          const isActive = master.status === s;
+                          return (
+                            <button
+                              key={s}
+                              onClick={() => updateStatus(master.id, s)}
+                              disabled={updatingId === master.id}
+                              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors border ${
+                                isActive
+                                  ? `${config.color} border-current`
+                                  : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
+                              } disabled:opacity-50`}
+                            >
+                              {isZh ? config.label : config.labelEn}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
-                    <Button
-                      variant={master.isOnline ? 'outline' : 'default'}
-                      onClick={() => toggleStatus(master.id)}
-                    >
-                      {master.isOnline
-                        ? isZh
-                          ? '下线'
-                          : 'Go Offline'
-                        : isZh
-                          ? '上线'
-                          : 'Go Online'}
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-stone-50 p-4 rounded-lg">
-                      <div className="flex items-center gap-2 text-stone-500 mb-1">
-                        <ShoppingBag className="w-4 h-4" />
-                        <span className="text-sm">
-                          {isZh ? '总订单' : 'Total Orders'}
-                        </span>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="bg-stone-50 p-4 rounded-lg">
+                        <div className="flex items-center gap-2 text-stone-500 mb-1">
+                          <ShoppingBag className="w-4 h-4" />
+                          <span className="text-sm">
+                            {isZh ? '总订单' : 'Total Orders'}
+                          </span>
+                        </div>
+                        <p className="text-2xl font-bold">{master.totalOrders}</p>
                       </div>
-                      <p className="text-2xl font-bold">{master.totalOrders}</p>
+
+                      <div className="bg-stone-50 p-4 rounded-lg">
+                        <div className="flex items-center gap-2 text-stone-500 mb-1">
+                          <Users className="w-4 h-4" />
+                          <span className="text-sm">
+                            {isZh ? '本月订单' : 'This Month'}
+                          </span>
+                        </div>
+                        <p className="text-2xl font-bold">{master.monthOrders}</p>
+                      </div>
+
+                      <div className="bg-stone-50 p-4 rounded-lg">
+                        <div className="flex items-center gap-2 text-stone-500 mb-1">
+                          <Clock className="w-4 h-4" />
+                          <span className="text-sm">
+                            {isZh ? '师傅收入(70%)' : 'Revenue (70%)'}
+                          </span>
+                        </div>
+                        <p className="text-2xl font-bold text-violet-600">${master.revenue.toFixed(2)}</p>
+                      </div>
+
+                      <div className="bg-stone-50 p-4 rounded-lg">
+                        <div className="flex items-center gap-2 text-stone-500 mb-1">
+                          <Star className="w-4 h-4" />
+                          <span className="text-sm">
+                            {isZh ? '平台抽成(30%)' : 'Platform (30%)'}
+                          </span>
+                        </div>
+                        <p className="text-2xl font-bold text-stone-600">${master.platformRevenue.toFixed(2)}</p>
+                      </div>
                     </div>
 
-                    <div className="bg-stone-50 p-4 rounded-lg">
-                      <div className="flex items-center gap-2 text-stone-500 mb-1">
-                        <Users className="w-4 h-4" />
-                        <span className="text-sm">
-                          {isZh ? '本月订单' : 'This Month'}
+                    <div className="mt-4 pt-4 border-t flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-600" />
+                        <span className="text-sm text-stone-600">
+                          {isZh ? '累计收入（含平台抽成）' : 'Total Revenue (incl. platform)'}
                         </span>
                       </div>
-                      <p className="text-2xl font-bold">{master.monthOrders}</p>
-                    </div>
-
-                    <div className="bg-stone-50 p-4 rounded-lg">
-                      <div className="flex items-center gap-2 text-stone-500 mb-1">
-                        <Clock className="w-4 h-4" />
-                        <span className="text-sm">
-                          {isZh ? '师傅收入(70%)' : 'Revenue (70%)'}
-                        </span>
-                      </div>
-                      <p className="text-2xl font-bold text-violet-600">${master.revenue.toFixed(2)}</p>
-                    </div>
-
-                    <div className="bg-stone-50 p-4 rounded-lg">
-                      <div className="flex items-center gap-2 text-stone-500 mb-1">
-                        <Star className="w-4 h-4" />
-                        <span className="text-sm">
-                          {isZh ? '平台抽成(30%)' : 'Platform (30%)'}
-                        </span>
-                      </div>
-                      <p className="text-2xl font-bold text-stone-600">${master.platformRevenue.toFixed(2)}</p>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 pt-4 border-t flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                      <span className="text-sm text-stone-600">
-                        {isZh ? '累计收入（含平台抽成）' : 'Total Revenue (incl. platform)'}
+                      <span className="text-xl font-bold text-violet-600">
+                        ${(master.revenue + master.platformRevenue).toFixed(2)}
                       </span>
                     </div>
-                    <span className="text-xl font-bold text-violet-600">
-                      ${(master.revenue + master.platformRevenue).toFixed(2)}
-                    </span>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
+                  </CardContent>
+                </Card>
+              );
+            })
           )}
         </div>
       </div>

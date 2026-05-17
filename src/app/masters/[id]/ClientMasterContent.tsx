@@ -55,9 +55,11 @@ export function ClientMasterContent({ master }: Props) {
   const [loadingServices, setLoadingServices] = useState(true);
   const [creatingOrder, setCreatingOrder] = useState<string | null>(null);
   const [authError, setAuthError] = useState(false);
+  const [masterStatus, setMasterStatus] = useState<string>('online');
 
   useEffect(() => {
     loadServices();
+    loadMasterStatus();
   }, [master.id]);
 
   async function loadServices() {
@@ -71,6 +73,22 @@ export function ClientMasterContent({ master }: Props) {
       console.error("Failed to load services:", err);
     } finally {
       setLoadingServices(false);
+    }
+  }
+
+  async function loadMasterStatus() {
+    try {
+      // 通过 /api/masters 获取所有师傅状态
+      const res = await fetch('/api/masters');
+      if (res.ok) {
+        const data = await res.json();
+        const found = (data.masters || []).find((m: any) => m.id === master.id);
+        if (found) {
+          setMasterStatus(found.status || 'online');
+        }
+      }
+    } catch (err) {
+      console.error("Failed to load master status:", err);
     }
   }
 
@@ -167,6 +185,12 @@ export function ClientMasterContent({ master }: Props) {
     loginRequired: currentLang === 'zh' ? '请先登录' : 'Please sign in first',
   }
 
+  const statusConfig: Record<string, { label: string; labelEn: string; color: string }> = {
+    online: { label: '在线', labelEn: 'Online', color: 'bg-green-100 text-green-700 border-green-200' },
+    offline: { label: '离线', labelEn: 'Offline', color: 'bg-gray-100 text-gray-600 border-gray-200' },
+    rest: { label: '休息中', labelEn: 'Resting', color: 'bg-orange-100 text-orange-700 border-orange-200' },
+  };
+
   return (
     <div className="min-h-screen bg-cream">
       {/* Navigation */}
@@ -208,13 +232,19 @@ export function ClientMasterContent({ master }: Props) {
                 </div>
                 
                 <CardHeader>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
                     <CardTitle className="font-serif">{displayName}</CardTitle>
-                    <div className="flex items-center space-x-1">
-                      <Star className="w-4 h-4 text-stellawei-gold fill-stellawei-gold" />
-                      <span className="font-semibold">{master.rating_average}</span>
-                      <span className="text-muted-foreground text-sm">({master.rating_count})</span>
-                    </div>
+                    <Badge variant="outline" className={`text-xs ${statusConfig[masterStatus]?.color || statusConfig.online.color}`}>
+                      {currentLang === 'zh' 
+                        ? (statusConfig[masterStatus]?.label || statusConfig.online.label)
+                        : (statusConfig[masterStatus]?.labelEn || statusConfig.online.labelEn)
+                      }
+                    </Badge>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <Star className="w-4 h-4 text-stellawei-gold fill-stellawei-gold" />
+                    <span className="font-semibold">{master.rating_average}</span>
+                    <span className="text-muted-foreground text-sm">({master.rating_count})</span>
                   </div>
                   
                   <p className="text-sm text-muted-foreground italic">"{tagline}"</p>

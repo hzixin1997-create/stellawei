@@ -17,7 +17,9 @@ import {
   User,
   ArrowRight,
   MessageCircle,
-  Ban,
+  Wifi,
+  WifiOff,
+  Moon,
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -54,6 +56,13 @@ interface MasterInfo {
   slug: string
   specialties: string[]
   experience: string
+  status: 'online' | 'offline' | 'rest'
+}
+
+const statusConfig = {
+  online: { label: '在线', labelEn: 'Online', color: 'bg-green-100 text-green-700 border-green-200', icon: Wifi },
+  offline: { label: '离线', labelEn: 'Offline', color: 'bg-gray-100 text-gray-600 border-gray-200', icon: WifiOff },
+  rest: { label: '休息中', labelEn: 'Resting', color: 'bg-orange-100 text-orange-700 border-orange-200', icon: Moon },
 }
 
 export default function MasterDashboard() {
@@ -64,7 +73,7 @@ export default function MasterDashboard() {
   const [isLoading, setIsLoading] = useState(true)
   const [isZh, setIsZh] = useState(true)
   const [acceptingId, setAcceptingId] = useState<string | null>(null)
-  const [rejectingId, setRejectingId] = useState<string | null>(null)
+  const [updatingStatus, setUpdatingStatus] = useState(false)
 
   const handleLogout = async () => {
     const supabase = createClient()
@@ -84,7 +93,7 @@ export default function MasterDashboard() {
       }
       setUser(user)
 
-      // 2. 获取师傅信息
+      // 2. 获取师傅信息（含状态）
       const { data: { session } } = await supabase.auth.getSession()
       const masterRes = await fetch('/api/master/profile', {
         headers: { authorization: `Bearer ${session?.access_token || ''}` },
@@ -111,6 +120,29 @@ export default function MasterDashboard() {
 
     getUserAndBookings()
   }, [router])
+
+  // 更新师傅状态
+  const updateStatus = async (newStatus: 'online' | 'offline' | 'rest') => {
+    if (!masterInfo) return
+    setUpdatingStatus(true)
+    try {
+      const res = await fetch('/api/master/status', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        setMasterInfo({ ...masterInfo, status: newStatus })
+      } else {
+        alert(isZh ? `更新状态失败: ${data.error}` : `Failed: ${data.error}`)
+      }
+    } catch (err: any) {
+      alert(isZh ? `更新状态失败: ${err.message}` : `Failed: ${err.message}`)
+    } finally {
+      setUpdatingStatus(false)
+    }
+  }
 
   // 统计（使用 displayStatus 统一判断超时）
   const getDisplayStatus = (b: Booking) => {
@@ -224,39 +256,6 @@ export default function MasterDashboard() {
     }
   }
 
-  // 拒绝订单
-  const handleReject = async (bookingId: string) => {
-    if (!confirm(isZh ? '确定要拒绝这个订单吗？拒绝后订单将取消。' : 'Are you sure you want to reject this order? It will be cancelled.')) {
-      return
-    }
-    setRejectingId(bookingId)
-    try {
-      const res = await fetch('/api/master/reject-booking', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ bookingId }),
-      })
-
-      if (!res.ok) {
-        const data = await res.json()
-        throw new Error(data.error || 'Reject failed')
-      }
-
-      setBookings((prev) =>
-        prev.map((b) =>
-          b.id === bookingId
-            ? { ...b, status: 'cancelled', payment_status: 'cancelled' }
-            : b
-        )
-      )
-    } catch (err: any) {
-      console.error('Reject error:', err)
-      alert(isZh ? `拒绝失败: ${err.message}` : `Reject failed: ${err.message}`)
-    } finally {
-      setRejectingId(null)
-    }
-  }
-
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-stone-50 to-stone-100 flex items-center justify-center">
@@ -264,6 +263,10 @@ export default function MasterDashboard() {
       </div>
     )
   }
+
+  const currentStatus = masterInfo?.status || 'online'
+  const statusInfo = statusConfig[currentStatus]
+  const StatusIcon = statusInfo.icon
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-50 to-stone-100">
@@ -304,14 +307,20 @@ export default function MasterDashboard() {
 
       <div className="py-8 px-4">
         <div className="max-w-4xl mx-auto">
-          {/* 欢迎语 */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-serif font-bold text-stone-900">
-              {isZh
-                ? `欢迎回来，${masterInfo?.name || ''}师傅`
-                : `Welcome Back, ${masterInfo?.name || ''}`}
-            </h1>
-            <p className="text-stone-600 mt-2">
+          {/* 欢迎语 + 状态控制 */}
+          <div className="mb-6">
+            <div className="flex items-center gap-3 mb-2">
+              <h1 className="text-3xl font-serif font-bold text-stone-900">
+                {isZh
+                  ? `欢迎回来，${masterInfo?.name || ''}师傅`
+                  : `Welcome Back, ${masterInfo?.name || ''}`}
+              </h1>
+              <Badge variant="outline" className={`flex items-center gap-1 ${statusInfo.color}`}>
+                <StatusIcon className="w-3.5 h-3.5" />
+                {isZh ? statusInfo.label : statusInfo.labelEn}
+              </Badge>
+            </div>
+            <p className="text-stone-600">
               {masterInfo
                 ? `${masterInfo.specialties.join(' · ')} · ${masterInfo.experience}经验`
                 : isZh
@@ -319,6 +328,54 @@ export default function MasterDashboard() {
                   : 'Manage your orders and consultations'}
             </p>
           </div>
+
+          {/* 状态切换栏 */}
+          <Card className="mb-6">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-stone-500 mb-1">
+                    {isZh ? '当前工作状态' : 'Current Work Status'}
+                  </p>
+                  <p className="text-sm text-stone-700">
+                    {isZh
+                      ? currentStatus === 'online'
+                        ? '用户可以看到您并预约实时咨询'
+                        : currentStatus === 'offline'
+                          ? '用户可以看到您但只能预约留言咨询'
+                          : '用户看不到您，无法预约任何咨询'
+                      : currentStatus === 'online'
+                        ? 'Users can see you and book real-time consultations'
+                        : currentStatus === 'offline'
+                          ? 'Users can see you but only book message consultations'
+                          : 'Users cannot see you or book any consultations'}
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  {(Object.keys(statusConfig) as Array<'online' | 'offline' | 'rest'>).map((s) => {
+                    const config = statusConfig[s]
+                    const Icon = config.icon
+                    const isActive = currentStatus === s
+                    return (
+                      <button
+                        key={s}
+                        onClick={() => updateStatus(s)}
+                        disabled={updatingStatus}
+                        className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors border ${
+                          isActive
+                            ? `${config.color} border-current`
+                            : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
+                        } disabled:opacity-50`}
+                      >
+                        <Icon className="w-4 h-4" />
+                        {isZh ? config.label : config.labelEn}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* 统计卡片 */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
@@ -437,37 +494,20 @@ export default function MasterDashboard() {
                           </div>
                           <div className="flex flex-col gap-2 ml-4 min-w-[100px]">
                             {isPendingAccept && (
-                              <>
-                                <Button
-                                  size="sm"
-                                  className="bg-green-600 hover:bg-green-700 text-white w-full"
-                                  onClick={() => handleAccept(booking.id)}
-                                  disabled={acceptingId === booking.id}
-                                >
-                                  {acceptingId === booking.id
-                                    ? isZh
-                                      ? '处理中...'
-                                      : 'Processing...'
-                                    : isZh
-                                      ? '接单'
-                                      : 'Accept'}
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className="text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600 w-full"
-                                  onClick={() => handleReject(booking.id)}
-                                  disabled={rejectingId === booking.id}
-                                >
-                                  {rejectingId === booking.id
-                                    ? isZh
-                                      ? '处理中...'
-                                      : 'Processing...'
-                                    : isZh
-                                      ? '拒绝'
-                                      : 'Reject'}
-                                </Button>
-                              </>
+                              <Button
+                                size="sm"
+                                className="bg-green-600 hover:bg-green-700 text-white w-full"
+                                onClick={() => handleAccept(booking.id)}
+                                disabled={acceptingId === booking.id}
+                              >
+                                {acceptingId === booking.id
+                                  ? isZh
+                                    ? '处理中...'
+                                    : 'Processing...'
+                                  : isZh
+                                    ? '接单'
+                                    : 'Accept'}
+                              </Button>
                             )}
                             {isProcessing && (
                               <Link href={`/chat/${booking.id}`} className="inline-flex">
