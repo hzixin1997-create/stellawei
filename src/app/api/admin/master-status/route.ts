@@ -3,21 +3,43 @@ import { createServiceClient } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
 
+const adminEmails = ['hzixin1997@gmail.com', 'zixihuang@foxmail.com'];
+
+async function getUserFromToken(token: string) {
+  // 直接用 token 调用 Supabase Auth API 验证用户
+  const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL!}/auth/v1/user`;
+  const res = await fetch(url, {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    },
+  });
+  if (!res.ok) return null;
+  const data = await res.json();
+  return data;
+}
+
 /**
  * PUT /api/admin/master-status
  * 总裁修改指定师傅的状态（online/offline/rest）
  */
 export async function PUT(request: Request) {
   try {
-    const authSupabase = createServiceClient();
-    const { data: { user } } = await authSupabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // 从 header 提取 Bearer token
+    const authHeader = request.headers.get('authorization') || '';
+    const token = authHeader.replace('Bearer ', '').trim();
+    
+    if (!token) {
+      return NextResponse.json({ error: 'Unauthorized: missing token' }, { status: 401 });
     }
 
-    // 检查是否是管理员（通过邮箱判断）
-    const adminEmails = ['hzixin1997@gmail.com', 'zixihuang@foxmail.com'];
+    // 验证用户
+    const user = await getUserFromToken(token);
+    if (!user?.id) {
+      return NextResponse.json({ error: 'Unauthorized: invalid token' }, { status: 401 });
+    }
+
+    // 检查是否是管理员
     if (!adminEmails.includes(user.email || '')) {
       return NextResponse.json({ error: 'Forbidden: admin only' }, { status: 403 });
     }
@@ -28,7 +50,9 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'Invalid masterId or status' }, { status: 400 });
     }
 
-    const { error } = await authSupabase
+    // 用 service role key 绕过 RLS 更新数据库
+    const supabase = createServiceClient();
+    const { error } = await supabase
       .from('masters')
       .update({ status, updated_at: new Date().toISOString() })
       .eq('id', masterId);
