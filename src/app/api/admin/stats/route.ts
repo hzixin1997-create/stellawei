@@ -162,22 +162,31 @@ export async function GET() {
       }))
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-    return NextResponse.json({
-      overview: {
-        todayOrders,
-        totalOrders,
-        monthRevenue,
-        totalRevenue,
-        refundCount,
-        refundAmount,
-        refundFee,
-        refundRate,
-        activeMasters: activeMasters || MASTER_WHITELIST.length,
+    return NextResponse.json(
+      {
+        overview: {
+          todayOrders,
+          totalOrders,
+          monthRevenue,
+          totalRevenue,
+          refundCount,
+          refundAmount,
+          refundFee,
+          refundRate,
+          activeMasters: activeMasters || MASTER_WHITELIST.length,
+        },
+        masterStats,
+        recentOrders,
+        transactions,
       },
-      masterStats,
-      recentOrders,
-      transactions,
-    });
+      {
+        headers: {
+          'Cache-Control': 'no-store, max-age=0, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        }
+      }
+    );
   } catch (error: any) {
     console.error('Admin stats API error:', error);
     return NextResponse.json(

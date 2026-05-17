@@ -126,9 +126,14 @@ export default function MasterDashboard() {
     if (!masterInfo) return
     setUpdatingStatus(true)
     try {
+      const supabase = createClient()
+      const { data: { session } } = await supabase.auth.getSession()
       const res = await fetch('/api/master/status', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${session?.access_token || ''}`,
+        },
         body: JSON.stringify({ status: newStatus }),
       })
       const data = await res.json()

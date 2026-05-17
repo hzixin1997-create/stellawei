@@ -57,6 +57,7 @@ export default function MastersManagement() {
 
         const res = await fetch('/api/admin/stats', {
           headers: { authorization: `Bearer ${session.access_token}` },
+          cache: 'no-store',
         });
         const data = await res.json();
 

@@ -5,20 +5,6 @@ export const dynamic = 'force-dynamic';
 
 const adminEmails = ['hzixin1997@gmail.com', 'zixihuang@foxmail.com'];
 
-async function getUserFromToken(token: string) {
-  // 直接用 token 调用 Supabase Auth API 验证用户
-  const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL!}/auth/v1/user`;
-  const res = await fetch(url, {
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    },
-  });
-  if (!res.ok) return null;
-  const data = await res.json();
-  return data;
-}
-
 /**
  * PUT /api/admin/master-status
  * 总裁修改指定师傅的状态（online/offline/rest）
@@ -33,9 +19,12 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'Unauthorized: missing token' }, { status: 401 });
     }
 
-    // 验证用户
-    const user = await getUserFromToken(token);
-    if (!user?.id) {
+    // 验证用户：直接用 Supabase auth.getUser(token) 验证 JWT
+    const supabase = createServiceClient();
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    
+    if (authError || !user) {
+      console.error('Auth verification failed:', authError);
       return NextResponse.json({ error: 'Unauthorized: invalid token' }, { status: 401 });
     }
 
@@ -51,15 +40,20 @@ export async function PUT(request: Request) {
     }
 
     // 用 service role key 绕过 RLS 更新数据库
-    const supabase = createServiceClient();
-    const { error } = await supabase
+    const { data: updatedRows, error } = await supabase
       .from('masters')
       .update({ status, updated_at: new Date().toISOString() })
-      .eq('id', masterId);
+      .eq('id', masterId)
+      .select('id, status');
 
     if (error) {
       console.error('Admin update master status error:', error);
       return NextResponse.json({ error: 'Failed to update status', details: error.message }, { status: 500 });
+    }
+
+    // 检查是否真的更新了数据（masterId 不匹配时会返回空数组）
+    if (!updatedRows || updatedRows.length === 0) {
+      return NextResponse.json({ error: 'Master not found or no change needed' }, { status: 404 });
     }
 
     return NextResponse.json({ success: true, masterId, status });
