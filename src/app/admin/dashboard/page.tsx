@@ -250,35 +250,7 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
-        {/* 师傅工作量 */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {stats?.masterStats?.map((master) => (
-            <Card key={master.id}>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold">{isZh ? master.name : master.nameEn}</h3>
-                  <Badge variant="outline" className="text-green-600">
-                    {master.isOnline ? (isZh ? '🟢 在线' : '🟢 Online') : (isZh ? '⚪ 离线' : '⚪ Offline')}
-                  </Badge>
-                </div>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-stone-500">{isZh ? '订单总量' : 'Total Orders'}</span>
-                    <span>{master.totalOrders}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-stone-500">{isZh ? '本月订单' : 'This Month'}</span>
-                    <span>{master.monthOrders}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-stone-500">{isZh ? '累计收入(70%)' : 'Revenue (70%)'}</span>
-                    <span className="font-medium text-violet-600">${master.revenue.toFixed(2)}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+
       </div>
     </div>
   );
