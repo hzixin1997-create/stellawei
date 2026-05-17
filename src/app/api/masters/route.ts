@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
+import { unstable_noStore } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
 
@@ -8,6 +9,8 @@ export const dynamic = 'force-dynamic';
  * 获取所有师傅列表（包含实时状态）
  */
 export async function GET() {
+  unstable_noStore(); // 禁用 Next.js Data Cache，确保每次请求都查询最新数据库状态
+  
   try {
     // 使用 service role client 绕过 RLS
     const supabase = createServiceClient();
