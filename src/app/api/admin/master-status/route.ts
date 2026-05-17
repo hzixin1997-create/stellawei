@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
  */
 export async function PUT(request: Request) {
   try {
-    const authSupabase = await createClient();
+    const authSupabase = createServiceClient();
     const { data: { user } } = await authSupabase.auth.getUser();
 
     if (!user) {

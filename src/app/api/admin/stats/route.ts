@@ -114,8 +114,14 @@ export async function GET() {
       const masterPaid = masterBookings.filter(b => b.payment_status === 'paid');
       const masterMonth = masterPaid.filter(b => new Date(b.created_at) >= monthStart);
 
+      // 找到数据库中对应的 UUID
+      const dbMaster = (dbMasters || []).find(m => {
+        const profile = (profiles || []).find(p => p.id === m.user_id);
+        return profile?.email === master.email;
+      });
+
       return {
-        id: master.slug,
+        id: dbMaster?.id || master.slug,
         name: master.name,
         nameEn: master.name,
         email: master.email,
