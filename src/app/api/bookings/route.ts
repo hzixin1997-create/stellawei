@@ -22,6 +22,49 @@ export async function POST(request: Request) {
 
     const supabase = createServiceClient();
 
+    // ===== 待支付订单检查 =====
+    // 每个用户同时只能有一个待支付订单，防止占用多个时间槽
+    const now = new Date().toISOString();
+    const { data: pendingOrders } = await supabase
+      .from('bookings')
+      .select('id, scheduled_date, scheduled_time, master_id')
+      .eq('user_id', user.id)
+      .eq('payment_status', 'pending')
+      .eq('status', 'pending')
+      .gt('expires_at', now)
+      .limit(1);
+
+    if (pendingOrders && pendingOrders.length > 0) {
+      const p = pendingOrders[0];
+      return NextResponse.json(
+        {
+          error: 'You already have a pending order',
+          message: `You have an unpaid order scheduled for ${p.scheduled_date} ${p.scheduled_time}. Please complete payment or wait for it to expire before creating a new order.`,
+          existingOrderId: p.id,
+        },
+        { status: 400 }
+      );
+    }
+
+    // ===== 首单优惠校验 =====
+    // first 档位仅限真正的新用户：从未成功付款过的用户
+    // 未支付/已过期的订单不算占用首单资格
+    if (body.tier === 'first' || body.tier === 'first_time') {
+      const { data: paidOrders } = await supabase
+        .from('bookings')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('payment_status', 'paid')
+        .limit(1);
+
+      if (paidOrders && paidOrders.length > 0) {
+        return NextResponse.json(
+          { error: 'First-time discount is only available for your first order' },
+          { status: 400 }
+        );
+      }
+    }
+
     // 构建 booking 数据
     const bookingData: any = {
       user_id: user.id,

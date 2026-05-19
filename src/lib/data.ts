@@ -219,8 +219,8 @@ export const masters = [
     bio: "I use tarot as a mirror to reveal what is hidden beneath the surface — your emotions, your patterns, and the energy surrounding your path. Whether you're facing uncertainty in love, career decisions, or life direction, my readings are designed to bring clarity, not confusion. My approach is intuitive, honest, and deeply personal — helping you reconnect with your inner truth and move forward with confidence.",
     bioCn: "我将塔罗视为一面镜子，揭示隐藏在表面之下的一切——您的情感、您的模式，以及围绕您道路的能量。无论您面临爱情、职业决策还是人生方向的不确定性，我的解读旨在带来清晰而非困惑。我的方法是直观的、诚实的、且非常个人化的——帮助您重新与内在真理连接，并自信地前行。",
     avatar_url: "/masters/master_luna.jpg",
-    specialties: ["tarot"],
-    specialtiesCn: ["塔罗占卜"],
+    specialties: ["tarot", "spiritual"],
+    specialtiesCn: ["塔罗占卜", "灵性探索"],
     languages: ["en"],
     experience_years: 10,
     certifications: [

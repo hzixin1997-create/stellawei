@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getConsultationDisplayStatus } from '@/lib/utils';
-import { Inbox, CheckCircle, Clock, AlertCircle, Video, MessageSquare, ArrowLeft, Loader2, UserCheck } from 'lucide-react';
+import { Inbox, CheckCircle, Clock, AlertCircle, Video, MessageSquare, ArrowLeft, Loader2, UserCheck, Star } from 'lucide-react';
 
 interface BookingOrder {
   id: string;
@@ -23,6 +23,7 @@ interface BookingOrder {
   is_first_time: boolean;
   created_at: string;
   user_id: string;
+  order_number?: string;
 }
 
 interface MessageOrder {
@@ -70,6 +71,9 @@ export default function MasterOrdersPage() {
   const [messageOrders, setMessageOrders] = useState<MessageOrder[]>([]);
   const [realtimeOrders, setRealtimeOrders] = useState<BookingOrder[]>([]);
   const [acceptingId, setAcceptingId] = useState<string | null>(null);
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [reviewData, setReviewData] = useState<any>(null);
+  const [reviewLoading, setReviewLoading] = useState(false);
 
   useEffect(() => {
     loadOrders();
@@ -142,6 +146,27 @@ export default function MasterOrdersPage() {
       alert(`接单失败: ${err.message}`);
     } finally {
       setAcceptingId(null);
+    }
+  };
+
+  // 查看评价
+  const openReviewModal = async (bookingId: string) => {
+    setReviewModalOpen(true);
+    setReviewLoading(true);
+    setReviewData(null);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch(`/api/bookings/${bookingId}/review`, {
+        headers: { authorization: `Bearer ${session?.access_token || ''}` },
+      });
+      if (res.ok) {
+        const json = await res.json();
+        setReviewData(json.review);
+      }
+    } catch (err) {
+      console.error('Fetch review error:', err);
+    } finally {
+      setReviewLoading(false);
     }
   };
 
@@ -228,6 +253,9 @@ export default function MasterOrdersPage() {
                             </span>
                           )}
                         </div>
+                        <p className="text-xs text-stone-400 mb-1">
+                          订单号: {order.id.slice(0, 8)}
+                        </p>
                         <p className="text-sm text-stone-600">
                           {order.user?.full_name || order.user?.email || '匿名用户'} · {order.currency} {order.amount}
                         </p>
@@ -290,6 +318,9 @@ export default function MasterOrdersPage() {
                             {status.label}
                           </span>
                         </div>
+                        <p className="text-xs text-stone-400 mb-1">
+                          订单号: {order.order_number || order.id.slice(0, 8)}
+                        </p>
                         <p className="text-sm text-stone-600">
                           {order.duration_text} · {order.currency.toUpperCase()} {order.total_amount}
                         </p>
@@ -304,11 +335,19 @@ export default function MasterOrdersPage() {
                       </div>
                       <div className="flex flex-col gap-2 flex-shrink-0">
                         {displayStatus === 'completed' && (
-                          <Link href={`/chat/${order.id}`}>
-                            <button className="px-4 py-2 text-sm bg-stone-100 text-stone-600 rounded-lg hover:bg-stone-200 transition-colors text-center w-full">
-                              查看历史对话
+                          <>
+                            <Link href={`/chat/${order.id}`}>
+                              <button className="px-4 py-2 text-sm bg-stone-100 text-stone-600 rounded-lg hover:bg-stone-200 transition-colors text-center w-full">
+                                查看历史对话
+                              </button>
+                            </Link>
+                            <button
+                              onClick={() => openReviewModal(order.id)}
+                              className="px-4 py-2 text-sm bg-amber-50 text-amber-700 rounded-lg hover:bg-amber-100 transition-colors text-center w-full"
+                            >
+                              查看评价
                             </button>
-                          </Link>
+                          </>
                         )}
                         {canAccept && (
                           <button
@@ -343,6 +382,56 @@ export default function MasterOrdersPage() {
                 );
               })
             )}
+          </div>
+        )}
+
+        {/* 评价查看弹窗 */}
+        {reviewModalOpen && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4">
+              <h3 className="text-xl font-bold text-center mb-4">查看评价</h3>
+
+              {reviewLoading ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="w-6 h-6 animate-spin text-violet-600" />
+                </div>
+              ) : reviewData ? (
+                <>
+                  <div className="flex justify-center gap-2 mb-4">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className={`w-8 h-8 ${
+                          star <= reviewData.rating
+                            ? 'text-amber-400 fill-amber-400'
+                            : 'text-stone-300'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <p className="text-stone-600 text-center mb-4 whitespace-pre-wrap">
+                    {reviewData.content || '用户未留下文字评价'}
+                  </p>
+                  <p className="text-xs text-stone-400 text-center">
+                    {new Date(reviewData.created_at).toLocaleDateString('zh-CN')}
+                  </p>
+                </>
+              ) : (
+                <p className="text-stone-500 text-center py-4">暂无评价</p>
+              )}
+
+              <div className="mt-6">
+                <button
+                  onClick={() => {
+                    setReviewModalOpen(false);
+                    setReviewData(null);
+                  }}
+                  className="w-full px-4 py-2 text-sm bg-stone-100 text-stone-600 rounded-lg hover:bg-stone-200 transition-colors"
+                >
+                  关闭
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>

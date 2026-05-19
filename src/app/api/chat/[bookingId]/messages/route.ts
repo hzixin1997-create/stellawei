@@ -29,7 +29,7 @@ export async function GET(
     // 验证 booking 存在且当前用户有权访问
     const { data: booking, error: bookingError } = await supabase
       .from('bookings')
-      .select('id, user_id, master_id, status, payment_status')
+      .select('id, user_id, master_id, status, payment_status, scheduled_at, scheduled_date, scheduled_time, duration_minutes, timezone, service_id, total_amount, currency, is_first_time')
       .eq('id', bookingId)
       .single();
 
@@ -69,7 +69,7 @@ export async function GET(
       );
     }
 
-    return NextResponse.json({ messages: messages || [] });
+    return NextResponse.json({ messages: messages || [], booking });
   } catch (error: any) {
     console.error('Chat messages API error:', error);
     return NextResponse.json(
@@ -150,13 +150,8 @@ export async function POST(
       }
     }
 
-    // 如果 booking 是 confirmed，自动更新为 in_progress（首次进入聊天）
-    if (booking.status === 'confirmed') {
-      await supabase
-        .from('bookings')
-        .update({ status: 'in_progress', updated_at: new Date().toISOString() })
-        .eq('id', bookingId);
-    }
+    // 状态由时间驱动，不在发消息时自动变更
+    // confirmed / in_progress 均可发消息，前端根据时间显示正确状态
 
     // 获取发送者名称
     const senderName = isMaster

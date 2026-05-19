@@ -73,8 +73,21 @@ export function isConsultationExpired(
 export function getConsultationDisplayStatus(
   booking: { status: string; scheduled_at?: string | null; duration_minutes?: number | null }
 ): string {
-  if (isConsultationExpired(booking)) {
-    return 'completed'
+  if (booking.status === 'completed' || booking.status === 'cancelled' || booking.status === 'refunded') {
+    return booking.status
   }
-  return booking.status
+  if (!booking.scheduled_at || !booking.duration_minutes) {
+    return booking.status
+  }
+  const scheduledTime = new Date(booking.scheduled_at).getTime()
+  const endTime = scheduledTime + booking.duration_minutes * 60 * 1000
+  const now = Date.now()
+  
+  if (now < scheduledTime) {
+    return 'confirmed' // 还没到预约时间
+  } else if (now >= scheduledTime && now < endTime) {
+    return 'in_progress' // 咨询进行中
+  } else {
+    return 'completed' // 时间结束
+  }
 }

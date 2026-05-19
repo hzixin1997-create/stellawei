@@ -25,11 +25,11 @@ export async function GET(request: Request) {
 
     const { data: bookings, error } = await supabase
       .from('bookings')
-      .select('id, status, expires_at')
+      .select('id, status, created_at, expires_at')
       .eq('master_id', masterId)
       .eq('scheduled_date', date)
       .eq('scheduled_time', time)
-      .not('status', 'in', '(cancelled,refunded)');
+      .in('status', ['pending', 'paid', 'confirmed', 'in_progress']);
 
     if (error) {
       console.error('Check slot error:', error);
@@ -40,12 +40,19 @@ export async function GET(request: Request) {
     }
 
     // 判断是否有有效占用
+    // paid/confirmed/in_progress: 永久占用（已付/已接/进行中）
+    // pending: 保留30分钟占位（created_at + 30分钟）
+    // 已过期 pending（超过30分钟未支付）不算占用
     const now = Date.now();
+    const SLOT_HOLD_MINUTES = 30;
     const occupied = (bookings || []).filter((b: any) => {
+      // 已付款/已接单/进行中 → 永久占用
       if (['paid', 'confirmed', 'in_progress'].includes(b.status)) return true;
+      // pending 订单：只保留30分钟占位
       if (b.status === 'pending') {
-        if (!b.expires_at) return true;
-        return new Date(b.expires_at).getTime() > now;
+        const createdAt = new Date(b.created_at || Date.now()).getTime();
+        const holdUntil = createdAt + SLOT_HOLD_MINUTES * 60 * 1000;
+        return holdUntil > now; // 30分钟内才算占用
       }
       return false;
     });

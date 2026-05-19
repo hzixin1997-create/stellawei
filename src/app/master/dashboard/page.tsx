@@ -48,6 +48,7 @@ interface Booking {
   user_id: string
   created_at: string
   deleted_at?: string | null
+  order_number?: string
 }
 
 interface MasterInfo {
@@ -163,7 +164,7 @@ export default function MasterDashboard() {
     })
   }
 
-  const visibleBookings = bookings.filter((b) => !b.deleted_at)
+  const visibleBookings = bookings.filter((b) => !b.deleted_at && b.status !== 'cancelled' && b.payment_status !== 'cancelled' && b.payment_status !== 'refunded')
   const totalOrders = visibleBookings.length
   const pendingOrders = visibleBookings.filter(
     (b) => b.payment_status === 'paid' && getDisplayStatus(b) === 'pending'
@@ -485,6 +486,9 @@ export default function MasterDashboard() {
                                 {isZh ? service.nameCn : service.name}
                               </span>
                               {getStatusBadge(displayStatus, booking.payment_status)}
+                            </div>
+                            <div className="text-xs text-stone-400 mb-1.5">
+                              {isZh ? '订单号' : 'Order'}: {booking.order_number || booking.id.slice(0, 8)}
                             </div>
                             <div className="flex items-center gap-4 text-sm text-stone-500">
                               <span className="flex items-center gap-1">

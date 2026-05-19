@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -82,6 +82,14 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   const [isExpired, setIsExpired] = useState(false)
   const [consultStatus, setConsultStatus] = useState<'not_started' | 'in_progress' | 'ended'>('not_started')
   
+  const PRE_CONSULT_LIMIT = 5
+  
+  // 从 messages 派生咨询前消息计数，避免竞态
+  const preConsultMsgCount = useMemo(() => {
+    if (consultStatus !== 'not_started') return 0
+    return messages.filter((m: Message) => m.sender_type === 'user').length
+  }, [messages, consultStatus])
+  
   const [showReview, setShowReview] = useState(false)
   const [reviewRating, setReviewRating] = useState(0)
   const [reviewText, setReviewText] = useState('')
@@ -98,6 +106,8 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  // 咨询前消息数已从 messages 派生（preConsultMsgCount useMemo）
 
   useEffect(() => {
     const loadData = async () => {
@@ -118,32 +128,39 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         }
       }
 
+      // 通过 API 获取 booking + messages（不受 RLS 限制）
       const { data: { session } } = await supabase.auth.getSession()
       const bookingRes = await fetch(`/api/chat/${bookingId}/messages`, {
         headers: { authorization: `Bearer ${session?.access_token || ''}` },
       })
       if (bookingRes.ok) {
         const json = await bookingRes.json()
-        setMessages(json.messages || [])
-      }
-
-      const { data: bookingData } = await supabase
-        .from('bookings')
-        .select('*')
-        .eq('id', bookingId)
-        .single()
-      if (bookingData) {
-        setBooking(bookingData)
-        // 如果订单已完成或已超时，标记为过期
-        if (bookingData.status === 'completed') {
-          setIsExpired(true)
-          setCountdownSeconds(0)
-        } else if (bookingData.scheduled_at && bookingData.duration_minutes) {
-          const endTime = new Date(bookingData.scheduled_at).getTime() + bookingData.duration_minutes * 60 * 1000
-          if (Date.now() > endTime) {
+        const msgs = json.messages || []
+        setMessages(msgs)
+        
+        // 从 API 响应获取 booking 数据
+        const bookingData = json.booking
+        console.log('[chat] API booking:', JSON.stringify(bookingData))
+        if (bookingData) {
+          setBooking(bookingData)
+          if (bookingData.status === 'completed') {
+            console.log('[chat] init: status=completed → ended')
             setIsExpired(true)
             setCountdownSeconds(0)
             setConsultStatus('ended')
+          } else if (bookingData.scheduled_at && bookingData.duration_minutes) {
+            const scheduledTime = new Date(bookingData.scheduled_at).getTime()
+            const endTime = scheduledTime + bookingData.duration_minutes * 60 * 1000
+            const now = Date.now()
+            console.log('[chat] init time check:', { scheduled_at: bookingData.scheduled_at, scheduledTime, endTime, now, isPast: now > endTime })
+            if (now > endTime) {
+              console.log('[chat] init: past endTime → ended')
+              setIsExpired(true)
+              setCountdownSeconds(0)
+              setConsultStatus('ended')
+            } else {
+              console.log('[chat] init: within time window')
+            }
           }
         }
       }
@@ -154,58 +171,98 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     loadData()
   }, [bookingId, router, supabase])
 
+  // 倒计时 + 状态同步（每秒更新）
   useEffect(() => {
     if (!booking || booking.status === 'completed') return
     
-    const calculateRemaining = () => {
-      if (!booking.scheduled_at || !booking.duration_minutes) return 0
-      const endTime = new Date(booking.scheduled_at).getTime() + booking.duration_minutes * 60 * 1000
-      const now = Date.now()
-      return Math.max(0, Math.floor((endTime - now) / 1000))
-    }
-    
-    setCountdownSeconds(calculateRemaining())
-    
-    const interval = setInterval(() => {
-      const remaining = calculateRemaining()
-      setCountdownSeconds(remaining)
-      
-      if (remaining <= 0 && !isExpired) {
-        setIsExpired(true)
-        clearInterval(interval)
-        handleAutoComplete()
+    const tick = () => {
+      if (!booking.scheduled_at || !booking.duration_minutes) {
+        console.log('[chat] tick: missing scheduled_at or duration')
+        setCountdownSeconds(0)
+        return
       }
-    }, 1000)
-    
-    return () => clearInterval(interval)
-  }, [booking])
-
-  // 咨询状态提示
-  useEffect(() => {
-    if (!booking) return
-    
-    const checkStatus = () => {
-      if (!booking.scheduled_at || !booking.duration_minutes) return
+      
       const scheduledTime = new Date(booking.scheduled_at).getTime()
+      if (isNaN(scheduledTime)) {
+        console.log('[chat] tick: invalid scheduled_at', booking.scheduled_at)
+        setCountdownSeconds(0)
+        return
+      }
+      
       const endTime = scheduledTime + booking.duration_minutes * 60 * 1000
       const now = Date.now()
       
+      let remaining: number
       if (now < scheduledTime) {
-        setConsultStatus('not_started')
+        remaining = Math.max(0, Math.floor((scheduledTime - now) / 1000))
       } else if (now >= scheduledTime && now < endTime) {
-        setConsultStatus('in_progress')
+        remaining = Math.max(0, Math.floor((endTime - now) / 1000))
       } else {
-        setConsultStatus('ended')
+        remaining = 0
+      }
+      
+      setCountdownSeconds(remaining)
+      
+      let newStatus: 'not_started' | 'in_progress' | 'ended'
+      
+      if (booking.status === 'completed') {
+        newStatus = 'ended'
+      } else if (booking.status === 'confirmed') {
+        if (now < scheduledTime) {
+          newStatus = 'not_started'
+        } else if (now >= scheduledTime && now < endTime) {
+          newStatus = 'in_progress'
+        } else {
+          newStatus = 'ended'
+        }
+      } else if (booking.status === 'in_progress') {
+        if (now < scheduledTime) {
+          newStatus = 'not_started'
+        } else if (now >= scheduledTime && now < endTime) {
+          newStatus = 'in_progress'
+        } else {
+          newStatus = 'ended'
+        }
+      } else {
+        if (now < scheduledTime) {
+          newStatus = 'not_started'
+        } else if (now >= scheduledTime && now < endTime) {
+          newStatus = 'in_progress'
+        } else {
+          newStatus = 'ended'
+        }
+      }
+      
+      console.log('[chat] tick:', { now, scheduledTime, endTime, remaining, status: booking.status, newStatus, isExpired })
+      
+      setConsultStatus(prev => {
+        if (prev !== newStatus) {
+          console.log('[chat] status change:', prev, '→', newStatus)
+        }
+        return newStatus
+      })
+      
+      if (remaining <= 0 && !isExpired) {
+        console.log('[chat] auto-completing: remaining<=0')
+        setIsExpired(true)
+        handleAutoComplete()
       }
     }
     
-    checkStatus()
-    const interval = setInterval(checkStatus, 30000) // 每30秒检查一次状态
+    tick()
+    const interval = setInterval(tick, 1000)
     
     return () => clearInterval(interval)
-  }, [booking])
+  }, [booking, isExpired])
 
   const getConsultStatusBanner = () => {
+    // 咨询前消息已达上限
+    if (consultStatus === 'not_started' && preConsultMsgCount >= PRE_CONSULT_LIMIT && !isMaster) {
+      return {
+        text: isZh ? `✋ 您的消息次数已用完（${PRE_CONSULT_LIMIT}/${PRE_CONSULT_LIMIT}），等待预约时间正式开始对话` : `✋ Message limit reached (${PRE_CONSULT_LIMIT}/${PRE_CONSULT_LIMIT}). Wait for the scheduled time to start chatting.`,
+        bgColor: 'bg-orange-50 border-orange-200 text-orange-800',
+      }
+    }
     switch (consultStatus) {
       case 'not_started':
         return {
@@ -254,8 +311,18 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
         if (res.ok) {
           const json = await res.json()
+          const newMessages = json.messages || []
+          const newBooking = json.booking
+          
+          // 更新 booking 数据（服务端状态可能已变更）
+          if (newBooking && newBooking.id) {
+            setBooking(prev => {
+              if (prev && prev.status === newBooking.status) return prev
+              return newBooking
+            })
+          }
+          
           setMessages((prev) => {
-            const newMessages = json.messages || []
             if (newMessages.length === prev.length) return prev
             return newMessages
           })
@@ -269,10 +336,19 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     const interval = setInterval(pollMessages, 2000)
 
     return () => clearInterval(interval)
-  }, [bookingId, supabase])
+  }, [bookingId, supabase, consultStatus])
 
   const handleSend = async () => {
     if (!inputValue.trim() || isSending || isExpired) return
+
+    // 前端：咨询未开始时检查5条限制
+    if (consultStatus === 'not_started' && !isMaster && preConsultMsgCount >= PRE_CONSULT_LIMIT) {
+      alert(isZh 
+        ? `已达到咨询前消息上限（${PRE_CONSULT_LIMIT}条），请等待预约时间正式开始对话`
+        : `Pre-consultation message limit reached (${PRE_CONSULT_LIMIT}). Please wait for the scheduled time.`
+      )
+      return
+    }
 
     setIsSending(true)
     try {
@@ -294,6 +370,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
             if (prev.some((m) => m.id === json.message.id)) return prev
             return [...prev, json.message]
           })
+          // preConsultMsgCount 已从 messages 派生，无需乐观更新
         }
       } else {
         const err = await res.json()
@@ -309,6 +386,15 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file || isExpired) return
+
+    // 前端：咨询未开始时检查5条限制（图片也算一条消息）
+    if (consultStatus === 'not_started' && !isMaster && preConsultMsgCount >= PRE_CONSULT_LIMIT) {
+      alert(isZh 
+        ? `已达到咨询前消息上限（${PRE_CONSULT_LIMIT}条），请等待预约时间正式开始对话`
+        : `Pre-consultation message limit reached (${PRE_CONSULT_LIMIT}). Please wait for the scheduled time.`
+      )
+      return
+    }
 
     setUploadingImage(true)
     try {
@@ -345,6 +431,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         const err = await res.json()
         alert(err.error || 'Image send failed')
       }
+      // preConsultMsgCount 已从 messages 派生，无需乐观更新
     } catch (err: any) {
       console.error('Image upload error:', err)
       alert(`Upload failed: ${err.message}`)
@@ -446,6 +533,8 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   const service = booking ? services[booking.service_id] : null
   const canComplete = booking?.status === 'in_progress' && !isExpired
   const isCompleted = booking?.status === 'completed' || isExpired
+  
+  console.log('[chat] render:', { status: booking?.status, isExpired, isCompleted, consultStatus, countdownSeconds })
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-50 to-stone-100 flex flex-col">
@@ -469,14 +558,16 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
           </div>
           <div className="flex items-center gap-2">
             <div className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${
-              countdownSeconds <= 300 
+              countdownSeconds <= 300 && consultStatus === 'in_progress'
                 ? 'bg-red-100 text-red-700' 
                 : 'bg-stone-100 text-stone-600'
             }`}>
               <Clock className="w-3 h-3" />
               {isCompleted 
                 ? (isZh ? '已结束' : 'Ended')
-                : formatCountdown(countdownSeconds)
+                : consultStatus === 'not_started'
+                  ? (isZh ? '未开始' : 'Upcoming')
+                  : formatCountdown(countdownSeconds)
               }
             </div>
             {canComplete && (
@@ -563,79 +654,90 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         </div>
       </div>
 
-      {/* 已结束状态 */}
-      {isCompleted && (
-        <div className="bg-white border-t border-stone-200 px-4 py-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <p className="text-stone-500 text-sm mb-2">
-              {isZh ? '咨询已结束，您可以查看历史消息' : 'Consultation has ended. You can view the chat history.'}
-            </p>
-            {!isMaster && !showReview && (
-              <Button 
-                className="bg-violet-600 hover:bg-violet-700"
-                onClick={() => setShowReview(true)}
-              >
-                <Star className="w-4 h-4 mr-1" />
-                {isZh ? '评价本次咨询' : 'Rate this consultation'}
-              </Button>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* 输入区域 - 进行中 */}
-      {!isCompleted && (
-        <div className="bg-white border-t border-stone-200 px-4 py-3">
-          <div className="max-w-3xl mx-auto flex items-end gap-2">
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              ref={fileInputRef}
-              onChange={handleImageUpload}
-            />
-            <Button
-              variant="outline"
-              size="icon"
-              className="shrink-0"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploadingImage}
-            >
-              {uploadingImage ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <ImageIcon className="w-4 h-4" />
+      {/* 输入区域 */}
+      <div className="bg-white border-t border-stone-200 px-4 py-3">
+        <div className="max-w-3xl mx-auto">
+          {/* 已结束 - 只读提示 */}
+          {isCompleted && (
+            <div className="flex items-center justify-center gap-2 py-2">
+              <p className="text-stone-400 text-sm">
+                {isZh ? '✅ 咨询已结束，真心希望能帮助到您，别忘了留下评价哦~' : '✅ Consultation ended. We hope it was helpful. Please leave a review!'}
+              </p>
+              {!isMaster && !showReview && (
+                <Button 
+                  size="sm"
+                  className="bg-violet-600 hover:bg-violet-700"
+                  onClick={() => setShowReview(true)}
+                >
+                  <Star className="w-4 h-4 mr-1" />
+                  {isZh ? '评价' : 'Rate'}
+                </Button>
               )}
-            </Button>
-            <div className="flex-1 relative">
-              <Input
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault()
-                    handleSend()
-                  }
-                }}
-                placeholder={isZh ? '输入消息...' : 'Type a message...'}
-                className="pr-10"
-                disabled={isSending}
-              />
             </div>
-            <Button
-              className="shrink-0 bg-violet-600 hover:bg-violet-700"
-              onClick={handleSend}
-              disabled={!inputValue.trim() || isSending}
-            >
-              {isSending ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Send className="w-4 h-4" />
-              )}
-            </Button>
-          </div>
+          )}
+          
+          {/* 咨询前消息次数已达上限 */}
+          {consultStatus === 'not_started' && preConsultMsgCount >= PRE_CONSULT_LIMIT && !isMaster && !isCompleted && (
+            <div className="flex items-center justify-center py-2">
+              <p className="text-orange-500 text-sm">
+                {isZh ? `✋ 您的消息次数已用完（${preConsultMsgCount}/${PRE_CONSULT_LIMIT}），等待预约时间正式开始对话` : `✋ Message limit reached (${preConsultMsgCount}/${PRE_CONSULT_LIMIT}). Wait for the scheduled time.`}
+              </p>
+            </div>
+          )}
+          
+          {/* 正常输入区域 */}
+          {(!isCompleted && !(consultStatus === 'not_started' && preConsultMsgCount >= PRE_CONSULT_LIMIT && !isMaster)) && (
+            <div className="flex items-end gap-2">
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                ref={fileInputRef}
+                onChange={handleImageUpload}
+              />
+              <Button
+                variant="outline"
+                size="icon"
+                className="shrink-0"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadingImage}
+              >
+                {uploadingImage ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <ImageIcon className="w-4 h-4" />
+                )}
+              </Button>
+              <div className="flex-1 relative">
+                <Input
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault()
+                      handleSend()
+                    }
+                  }}
+                  placeholder={isZh ? '输入消息...' : 'Type a message...'}
+                  className="pr-10"
+                  disabled={isSending}
+                />
+              </div>
+              <Button
+                className="shrink-0 bg-violet-600 hover:bg-violet-700"
+                onClick={handleSend}
+                disabled={!inputValue.trim() || isSending}
+              >
+                {isSending ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Send className="w-4 h-4" />
+                )}
+              </Button>
+            </div>
+          )}
         </div>
-      )}
+      </div>
 
       {/* 评价弹窗 */}
       {showReview && (

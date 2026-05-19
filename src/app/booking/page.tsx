@@ -42,10 +42,10 @@ const CONSULTATION_TYPES = [
   },
 ]
 
-// 师傅
+// 师傅（id 必须和数据库 masters.slug + bookings.master_id 保持一致）
 const MASTERS = [
   { 
-    id: '397b115d-3b7f-4426-af62-c484b849448a', 
+    id: 'master-luna', 
     name: 'Master Luna', 
     nameCn: '卢娜师傅',
     categories: ['tarot', 'spiritual'],
@@ -53,7 +53,7 @@ const MASTERS = [
     timezone: 'America/Los_Angeles',
   },
   { 
-    id: '38e313ca-2cf5-47fe-9967-864001ce049e', 
+    id: 'zhang-yihua', 
     name: 'Master Zhang Yihua', 
     nameCn: '张易桦',
     categories: ['eastern'],
@@ -61,7 +61,7 @@ const MASTERS = [
     timezone: 'Asia/Shanghai',
   },
   { 
-    id: '94b1582e-5e9e-4835-be8b-1cfbd3ec8d3b', 
+    id: 'wu-yang', 
     name: 'Master Wu Yang', 
     nameCn: '戊阳',
     categories: ['eastern'],
@@ -163,7 +163,8 @@ export default function BookingPage() {
       }
       setCheckingSlots(true)
       try {
-        const dateStr = selectedDate.toISOString().split('T')[0]
+        // 使用本地日期，避免 UTC 时区偏差
+        const dateStr = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`
         
         // 通过 API 查询已占用时间槽（绕过 RLS）
         const res = await fetch(`/api/bookings/occupied-slots?master_id=${selectedMaster}&date=${dateStr}`)
@@ -265,7 +266,8 @@ export default function BookingPage() {
         const [hours, minutes] = selectedTime.split(':')
         scheduledDateTime.setHours(parseInt(hours), parseInt(minutes))
 
-        const dateStr = selectedDate.toISOString().split('T')[0]
+        // 使用本地日期，避免 toISOString() 返回 UTC 日期导致时区偏差（UTC+8 可能前一天）
+        const dateStr = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`
         
         // 时间槽占用检查（通过 API 绕过 RLS）
         const checkRes = await fetch(`/api/bookings/check-slot?master_id=${selectedMaster}&date=${dateStr}&time=${selectedTime}`)

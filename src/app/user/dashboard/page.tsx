@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/client'
-import { ShoppingBag, MessageSquare, ArrowRight, Clock, User, Home, LogOut, MessageCircle, AlertTriangle } from 'lucide-react'
+import { ShoppingBag, MessageSquare, ArrowRight, Clock, User, Home, LogOut, MessageCircle, AlertTriangle, Star } from 'lucide-react'
 import Link from 'next/link'
 
 import { isConsultationExpired, getConsultationDisplayStatus } from '@/lib/utils'
@@ -62,6 +62,13 @@ export default function UserDashboard() {
   const [cancellingId, setCancellingId] = useState<string | null>(null)
   const [refundingId, setRefundingId] = useState<string | null>(null)
   const [payingId, setPayingId] = useState<string | null>(null)
+  const [showReviewModal, setShowReviewModal] = useState(false)
+  const [reviewTargetBooking, setReviewTargetBooking] = useState<Booking | null>(null)
+  const [reviewData, setReviewData] = useState<any>(null)
+  const [reviewLoading, setReviewLoading] = useState(false)
+  const [reviewRating, setReviewRating] = useState(0)
+  const [reviewText, setReviewText] = useState('')
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false)
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
   // 倒计时状态：booking_id -> remaining_seconds
@@ -167,7 +174,10 @@ export default function UserDashboard() {
       return <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">{isZh ? '待支付' : 'Pending Payment'}</Badge>
     }
     if (payment_status === 'paid') {
-      if (displayStatus === 'confirmed' || displayStatus === 'in_progress') {
+      if (displayStatus === 'in_progress') {
+        return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">{isZh ? '咨询中' : 'In Progress'}</Badge>
+      }
+      if (displayStatus === 'confirmed') {
         return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">{isZh ? '已确认' : 'Confirmed'}</Badge>
       }
       if (displayStatus === 'completed') {
@@ -254,6 +264,67 @@ export default function UserDashboard() {
       alert(isZh ? `删除失败: ${err.message}` : `Delete failed: ${err.message}`)
     } finally {
       setDeletingId(null)
+    }
+  }
+
+  // 打开评价弹窗
+  const openReviewModal = async (booking: Booking) => {
+    setReviewTargetBooking(booking)
+    setReviewLoading(true)
+    setShowReviewModal(true)
+    setReviewRating(0)
+    setReviewText('')
+    try {
+      const supabase = createClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch(`/api/bookings/${booking.id}/review`, {
+        headers: { authorization: `Bearer ${session?.access_token || ''}` },
+      })
+      if (res.ok) {
+        const json = await res.json()
+        setReviewData(json.review)
+        if (json.review) {
+          setReviewRating(json.review.rating || 0)
+          setReviewText(json.review.content || '')
+        }
+      }
+    } catch (err) {
+      console.error('Fetch review error:', err)
+    } finally {
+      setReviewLoading(false)
+    }
+  }
+
+  // 提交评价
+  const handleSubmitReview = async () => {
+    if (!reviewTargetBooking || reviewRating === 0) {
+      alert(isZh ? '请选择评分' : 'Please select a rating')
+      return
+    }
+    setIsSubmittingReview(true)
+    try {
+      const supabase = createClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch(`/api/bookings/${reviewTargetBooking.id}/review`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${session?.access_token || ''}`,
+        },
+        body: JSON.stringify({ rating: reviewRating, content: reviewText }),
+      })
+      if (res.ok) {
+        const json = await res.json()
+        setReviewData(json.review)
+        alert(isZh ? '评价提交成功！' : 'Review submitted!')
+      } else {
+        const err = await res.json()
+        alert(err.error || 'Submit failed')
+      }
+    } catch (err) {
+      console.error('Review submit error:', err)
+    } finally {
+      setIsSubmittingReview(false)
     }
   }
 
@@ -468,16 +539,27 @@ export default function UserDashboard() {
                           <div className="flex flex-col gap-2 ml-4 min-w-[80px]">
                             {/* 已完成订单 - 查看历史对话 */}
                             {booking.payment_status === 'paid' && !canEnterChat(booking) && (
-                              <Link href={`/chat/${booking.id}`} className="inline-flex">
+                              <>
+                                <Link href={`/chat/${booking.id}`} className="inline-flex">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="text-stone-600 border-stone-300 hover:bg-stone-100 w-full"
+                                  >
+                                    <MessageCircle className="w-4 h-4 mr-1" />
+                                    {isZh ? '查看历史' : 'View History'}
+                                  </Button>
+                                </Link>
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="text-stone-600 border-stone-300 hover:bg-stone-100 w-full"
+                                  className="text-amber-600 border-amber-200 hover:bg-amber-50 hover:text-amber-700 w-full"
+                                  onClick={() => openReviewModal(booking)}
                                 >
-                                  <MessageCircle className="w-4 h-4 mr-1" />
-                                  {isZh ? '查看历史' : 'View History'}
+                                  <Star className="w-4 h-4 mr-1" />
+                                  {isZh ? '查看评价' : 'Review'}
                                 </Button>
-                              </Link>
+                              </>
                             )}
                             {/* 进行中订单 - 进入咨询 */}
                             {canEnterChat(booking) && (
@@ -592,6 +674,86 @@ export default function UserDashboard() {
               </div>
             </CardContent>
           </Card>
+
+          {/* 评价弹窗 */}
+          {showReviewModal && reviewTargetBooking && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4">
+                <h3 className="text-xl font-bold text-center mb-4">
+                  {isZh ? '评价本次咨询' : 'Rate this Consultation'}
+                </h3>
+                <p className="text-stone-500 text-center mb-6">
+                  {isZh
+                    ? `您对 ${masters[reviewTargetBooking.master_id]?.nameCn || reviewTargetBooking.master_id} 师傅的服务满意吗？`
+                    : `How was your experience with ${masters[reviewTargetBooking.master_id]?.name || reviewTargetBooking.master_id}?`}
+                </p>
+
+                {reviewLoading ? (
+                  <div className="flex justify-center py-8">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-violet-600" />
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex justify-center gap-2 mb-6">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          onClick={() => setReviewRating(star)}
+                          className="focus:outline-none"
+                          disabled={reviewData !== null}
+                        >
+                          <Star
+                            className={`w-8 h-8 ${
+                              star <= reviewRating
+                                ? 'text-amber-400 fill-amber-400'
+                                : 'text-stone-300'
+                            }`}
+                          />
+                        </button>
+                      ))}
+                    </div>
+
+                    <textarea
+                      value={reviewText}
+                      onChange={(e) => setReviewText(e.target.value)}
+                      placeholder={isZh ? '写下您的评价（可选）' : 'Write your review (optional)'}
+                      className="w-full border rounded-lg p-3 text-sm mb-4 resize-none"
+                      rows={4}
+                      maxLength={500}
+                      disabled={reviewData !== null}
+                    />
+
+                    <div className="flex gap-3">
+                      <Button
+                        variant="outline"
+                        className="flex-1"
+                        onClick={() => {
+                          setShowReviewModal(false)
+                          setReviewTargetBooking(null)
+                          setReviewData(null)
+                        }}
+                      >
+                        {isZh ? '关闭' : 'Close'}
+                      </Button>
+                      {!reviewData && (
+                        <Button
+                          className="flex-1 bg-violet-600 hover:bg-violet-700"
+                          onClick={handleSubmitReview}
+                          disabled={isSubmittingReview}
+                        >
+                          {isSubmittingReview ? (
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                          ) : (
+                            isZh ? '提交评价' : 'Submit'
+                          )}
+                        </Button>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState } from "react"
-import { reviews } from "@/lib/data"
+import { reviews as mockReviews } from "@/lib/data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Star, Clock, Award, CheckCircle, MessageSquare, MessageCircle } from "lucide-react"
+import { Star, Clock, Award, CheckCircle } from "lucide-react"
 import Link from "next/link"
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -56,11 +56,28 @@ export function ClientMasterContent({ master }: Props) {
   const [creatingOrder, setCreatingOrder] = useState<string | null>(null);
   const [authError, setAuthError] = useState(false);
   const [masterStatus, setMasterStatus] = useState<string>('online');
+  const [masterReviews, setMasterReviews] = useState<any[]>([]);
+  const [loadingReviews, setLoadingReviews] = useState(true);
 
-  useEffect(() => {
-    loadServices();
-    loadMasterStatus();
-  }, [master.id]);
+  const specialtyLabels: Record<string, string> = {
+    tarot: "Tarot Reading",
+    astrology: "Astrology",
+    bazi: "Bazi (Four Pillars)",
+    fengshui: "Feng Shui",
+    qimen: "Qi Men Dun Jia",
+    liuyao: "Liu Yao Divination",
+    spiritual: "Spiritual Exploration",
+  }
+
+  const specialtyLabelsCn: Record<string, string> = {
+    tarot: "塔罗解读",
+    astrology: "占星",
+    bazi: "八字命理",
+    fengshui: "风水",
+    qimen: "奇门遁甲",
+    liuyao: "六爻占卜",
+    spiritual: "灵性探索",
+  }
 
   async function loadServices() {
     try {
@@ -137,24 +154,45 @@ export function ClientMasterContent({ master }: Props) {
     }
   }
 
-  const masterReviews = reviews.filter(r => r.master_id === master.id)
-  
-  const specialtyLabels: Record<string, string> = {
-    tarot: "Tarot Reading",
-    astrology: "Astrology",
-    bazi: "Bazi (Four Pillars)",
-    fengshui: "Feng Shui",
-    qimen: "Qi Men Dun Jia",
-    liuyao: "Liu Yao Divination",
-  }
+  useEffect(() => {
+    loadServices();
+    loadMasterStatus();
+    loadReviews();
+  }, [master.id]);
 
-  const specialtyLabelsCn: Record<string, string> = {
-    tarot: "塔罗解读",
-    astrology: "占星",
-    bazi: "八字命理",
-    fengshui: "风水",
-    qimen: "奇门遁甲",
-    liuyao: "六爻占卜",
+  async function loadReviews() {
+    try {
+      const res = await fetch(`/api/masters/${master.id}/reviews`);
+      const data = await res.json();
+      const apiReviews = data.reviews || [];
+      
+      // 合并 API 真实评价 + 硬编码展示数据（仅当 API 无数据时作为兜底）
+      const fallbackReviews = mockReviews.filter((r: any) => r.master_id === master.id);
+      
+      // 标准化评价数据格式（API 返回 rating/content/user[]，mock 返回 overall_rating/title/content）
+      const normalizedApi = apiReviews.map((r: any) => ({
+        ...r,
+        overall_rating: r.rating || r.overall_rating,
+        title: r.title || '',
+        content: r.content || r.review || '',
+        user: Array.isArray(r.user) && r.user.length > 0
+          ? r.user[0]
+          : (r.user || { full_name: 'Anonymous' }),
+      }));
+      
+      if (normalizedApi.length > 0) {
+        const apiIds = new Set(normalizedApi.map((r: any) => r.id));
+        const merged = [...normalizedApi, ...fallbackReviews.filter((r: any) => !apiIds.has(r.id))];
+        setMasterReviews(merged);
+      } else {
+        setMasterReviews(fallbackReviews);
+      }
+    } catch (err) {
+      console.error("Failed to load reviews:", err);
+      setMasterReviews(mockReviews.filter((r: any) => r.master_id === master.id));
+    } finally {
+      setLoadingReviews(false);
+    }
   }
 
   // 根据当前语言选择显示内容
@@ -337,88 +375,6 @@ export function ClientMasterContent({ master }: Props) {
                   </CardContent>
                 </Card>
               )}
-
-              {/* Services — 改造：从API加载，支持直接下单 */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="font-serif">{labels.services}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {authError && (
-                    <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
-                      <p className="font-medium mb-2">{labels.loginRequired}</p>
-                      <Link href={`/auth/login?redirect=/masters/${master.id}`}>
-                        <Button size="sm" variant="outline">{currentLang === 'zh' ? '去登录' : 'Sign In'}</Button>
-                      </Link>
-                    </div>
-                  )}
-
-                  {loadingServices ? (
-                    <div className="text-center py-8 text-muted-foreground">
-                      {currentLang === 'zh' ? '加载服务中...' : 'Loading services...'}
-                    </div>
-                  ) : services.length === 0 ? (
-                    <div className="text-center py-8 text-muted-foreground">
-                      {currentLang === 'zh' ? '暂无可用服务' : 'No services available'}
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      {services.map(service => (
-                        <div key={service.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2">
-                              <p className="font-medium">{service.name}</p>
-                              {service.type === 'message' ? (
-                                <Badge variant="secondary" className="text-xs flex items-center gap-1">
-                                  <MessageSquare className="w-3 h-3" />
-                                  {currentLang === 'zh' ? '留言' : 'Message'}
-                                </Badge>
-                              ) : (
-                                <Badge variant="secondary" className="text-xs flex items-center gap-1">
-                                  <MessageCircle className="w-3 h-3" />
-                                  {currentLang === 'zh' ? '预约' : 'Booking'}
-                                </Badge>
-                              )}
-                            </div>
-                            <div className="flex items-center space-x-3 text-sm text-muted-foreground mt-1">
-                              {service.duration_minutes ? (
-                                <span className="flex items-center">
-                                  <Clock className="w-3 h-3 mr-1" />
-                                  {service.duration_minutes} {labels.min}
-                                </span>
-                              ) : (
-                                <span className="flex items-center">
-                                  <Clock className="w-3 h-3 mr-1" />
-                                  {service.response_hours} {labels.hours}
-                                </span>
-                              )}
-                              {service.description && (
-                                <span className="truncate">{service.description}</span>
-                              )}
-                            </div>
-                          </div>
-                          <div className="flex items-center space-x-4 flex-shrink-0 ml-4">
-                            <p className="font-bold text-stellawei-purple">
-                              {service.currency} {service.price}
-                            </p>
-                            <Button
-                              size="sm"
-                              onClick={() => createOrder(service.id)}
-                              disabled={creatingOrder === service.id}
-                              className={service.type === 'message' ? 'bg-amber-700 hover:bg-amber-800' : ''}
-                            >
-                              {creatingOrder === service.id 
-                                ? (currentLang === 'zh' ? '处理中...' : 'Processing...')
-                                : service.type === 'message' ? labels.leaveMessage : labels.bookNow
-                              }
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
 
               {/* Reviews */}
               <Card>

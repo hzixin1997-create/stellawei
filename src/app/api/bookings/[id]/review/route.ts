@@ -5,6 +5,56 @@ import { createClient } from '@/lib/supabase/server';
 export const dynamic = 'force-dynamic';
 
 /**
+ * GET /api/bookings/[id]/review
+ * 查询指定订单的评价（用户/师傅均可查看）
+ */
+export async function GET(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { id } = params;
+    const supabase = createServiceClient();
+
+    // 查询该订单的评价（只返回 approved 状态的，或用户自己提交的 pending 状态）
+    const { data: reviews, error } = await supabase
+      .from('reviews')
+      .select('id, booking_id, user_id, master_id, rating, content, status, created_at')
+      .eq('booking_id', id)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Fetch review error:', error);
+      return NextResponse.json(
+        { error: 'Failed to fetch review' },
+        { status: 500 }
+      );
+    }
+
+    // 鉴权：获取当前用户
+    const authSupabase = await createClient();
+    const { data: { user } } = await authSupabase.auth.getUser();
+
+    // 过滤：如果是管理员，返回所有；否则只返回 approved + 自己提交的
+    const filtered = (reviews || []).filter((r) => {
+      if (!user) return r.status === 'approved';
+      return r.status === 'approved' || r.user_id === user.id;
+    });
+
+    return NextResponse.json({
+      review: filtered[0] || null,
+      hasReview: filtered.length > 0,
+    });
+  } catch (error: any) {
+    console.error('Review GET API error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error', message: error.message },
+      { status: 500 }
+    );
+  }
+}
+
+/**
  * POST /api/bookings/[id]/review
  * 用户提交对本次咨询的评价
  */
@@ -50,7 +100,7 @@ export async function POST(
       return NextResponse.json({ error: 'Booking is not completed' }, { status: 400 });
     }
 
-    // 插入评价
+    // 插入评价（默认 pending，需管理员审核后显示）
     const { data: review, error: insertError } = await supabase
       .from('reviews')
       .insert({
@@ -59,6 +109,7 @@ export async function POST(
         master_id: booking.master_id,
         rating,
         content: content || null,
+        status: 'pending',
       })
       .select()
       .single();
