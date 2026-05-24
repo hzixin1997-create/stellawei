@@ -23,6 +23,47 @@ export async function GET(request: Request) {
 
     const supabase = createServiceClient();
 
+    // 2小时预约缓冲校验
+    const [hour, minute] = time.split(':').map(Number);
+    const scheduledDateTime = new Date(date);
+    scheduledDateTime.setHours(hour, minute, 0, 0);
+    
+    const minBookingTime = new Date(Date.now() + 2 * 60 * 60 * 1000);
+    
+    if (scheduledDateTime.getTime() < minBookingTime.getTime()) {
+      return NextResponse.json({
+        available: false,
+        occupiedCount: 1,
+        reason: 'Real-time consultations must be booked at least 2 hours in advance',
+      });
+    }
+
+    // 先检查师傅可用时段设置
+    const { data: masterRecord } = await supabase
+      .from('masters')
+      .select('id')
+      .eq('slug', masterId)
+      .single();
+    const masterUuid = masterRecord?.id || masterId;
+
+    const { data: availability } = await supabase
+      .from('master_availability')
+      .select('available_slots')
+      .eq('master_id', masterUuid)
+      .eq('date', date)
+      .single();
+
+    // 如果师傅设置了可用时段，检查所选时间是否在列表中
+    if (availability?.available_slots && availability.available_slots.length > 0) {
+      if (!availability.available_slots.includes(time)) {
+        return NextResponse.json({
+          available: false,
+          occupiedCount: 1,
+          reason: 'Master has not opened this time slot',
+        });
+      }
+    }
+
     const { data: bookings, error } = await supabase
       .from('bookings')
       .select('id, status, created_at, expires_at')
@@ -40,19 +81,14 @@ export async function GET(request: Request) {
     }
 
     // 判断是否有有效占用
-    // paid/confirmed/in_progress: 永久占用（已付/已接/进行中）
-    // pending: 保留30分钟占位（created_at + 30分钟）
-    // 已过期 pending（超过30分钟未支付）不算占用
+    // paid/confirmed/in_progress: 永久占用
+    // pending: 看 expires_at，过期即释放
     const now = Date.now();
-    const SLOT_HOLD_MINUTES = 30;
     const occupied = (bookings || []).filter((b: any) => {
-      // 已付款/已接单/进行中 → 永久占用
       if (['paid', 'confirmed', 'in_progress'].includes(b.status)) return true;
-      // pending 订单：只保留30分钟占位
       if (b.status === 'pending') {
-        const createdAt = new Date(b.created_at || Date.now()).getTime();
-        const holdUntil = createdAt + SLOT_HOLD_MINUTES * 60 * 1000;
-        return holdUntil > now; // 30分钟内才算占用
+        if (!b.expires_at) return true;
+        return new Date(b.expires_at).getTime() > now;
       }
       return false;
     });

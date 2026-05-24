@@ -30,13 +30,13 @@ export async function sendEmail(
       to = toOrParams;
       subject = template.subject;
       html = template.html;
-      from = 'Stellawei <noreply@send.stellawei.org>';
+      from = 'Stellawei <noreply@stellawei.org>';
     } else if (typeof toOrParams === 'object') {
       // 新签名：sendEmail({to, subject, html, from})
       to = toOrParams.to;
       subject = toOrParams.subject;
       html = toOrParams.html;
-      from = toOrParams.from || 'Stellawei <noreply@send.stellawei.org>';
+      from = toOrParams.from || 'Stellawei <noreply@stellawei.org>';
     } else {
       throw new Error('Invalid sendEmail arguments');
     }

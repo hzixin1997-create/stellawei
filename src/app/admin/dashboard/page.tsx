@@ -8,6 +8,8 @@ import {
   MessageSquare,
   DollarSign,
   Users,
+  UserPlus,
+  Wifi,
   Home,
   Loader2,
   RotateCcw,
@@ -29,6 +31,9 @@ interface StatsData {
     refundFee: number;
     refundRate: string;
     activeMasters: number;
+    totalUsers: number;
+    newUsers7d: number;
+    onlineUsers: number;
   };
   masterStats: Array<{
     id: string;
@@ -112,7 +117,7 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-50 to-stone-100">
       {/* 顶部导航 */}
-      <div className="bg-white border-b border-stone-200 px-4 py-3">
+      <div className="bg-white border-b border-stone-200 px-2 sm:px-4 py-3 md:hidden">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center text-stone-600 hover:text-stone-900 gap-2">
             <Home className="w-5 h-5" />
@@ -126,9 +131,55 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* 统计卡片 */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-8 pt-4 sm:pt-8">
+        {/* 用户统计卡片 */}
+        <h2 className="text-lg font-semibold text-stone-800 mb-4">{isZh ? '用户统计' : 'User Stats'}</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-8">
+          <Card>
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                  <Users className="w-5 h-5 text-indigo-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-stone-500">{isZh ? '总注册用户' : 'Total Users'}</p>
+                  <p className="text-2xl font-bold">{ov?.totalUsers || 0}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                  <UserPlus className="w-5 h-5 text-emerald-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-stone-500">{isZh ? '7天内新用户' : 'New Users (7d)'}</p>
+                  <p className="text-2xl font-bold">{ov?.newUsers7d || 0}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-cyan-100 flex items-center justify-center">
+                  <Wifi className="w-5 h-5 text-cyan-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-stone-500">{isZh ? '当前在线' : 'Online Now'}</p>
+                  <p className="text-2xl font-bold">{ov?.onlineUsers || 0}</p>
+                  <p className="text-xs text-stone-400">{isZh ? '近30分钟活跃' : 'Active 30min'}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* 订单统计卡片 */}
+        <h2 className="text-lg font-semibold text-stone-800 mb-4">{isZh ? '订单 & 财务' : 'Orders & Finance'}</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-8">
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">

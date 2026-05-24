@@ -75,7 +75,7 @@ export async function sendConsultationReminder({
 
   try {
     const { data, error } = await resend.emails.send({
-      from: 'Stellawei <noreply@send.stellawei.org>',
+      from: 'Stellawei <noreply@stellawei.org>',
       to,
       subject,
       html,

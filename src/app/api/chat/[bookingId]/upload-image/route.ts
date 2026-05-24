@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
 import { createClient } from '@/lib/supabase/server';
+import { getMasterByEmail } from '@/lib/master-auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -36,22 +37,28 @@ export async function POST(
       return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
     }
 
-    // 检查权限
-    const { data: masterData } = await supabase
-      .from('masters')
-      .select('id, email')
-      .eq('email', user.email)
-      .single();
-
+    // 检查权限：与 messages API 保持一致，使用 getMasterByEmail
+    const masterInfo = getMasterByEmail(user.email || '');
     const isUser = booking.user_id === user.id;
-    const isMaster = masterData && booking.master_id === masterData.id;
+    const isMaster = masterInfo && booking.master_id === masterInfo.slug;
+
+    console.log('[upload-image] auth check:', {
+      userId: user.id,
+      userEmail: user.email,
+      bookingUserId: booking.user_id,
+      bookingMasterId: booking.master_id,
+      masterSlug: masterInfo?.slug,
+      isUser,
+      isMaster,
+    });
 
     if (!isUser && !isMaster) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    // 检查订单状态
-    if (!['confirmed', 'in_progress'].includes(booking.status)) {
+    // 用户端：只允许 confirmed / in_progress 状态
+    // 师傅端：只要不是 cancelled/refunded 都可以
+    if (isUser && !['confirmed', 'in_progress'].includes(booking.status)) {
       return NextResponse.json({ error: 'Booking is not ready for chat' }, { status: 400 });
     }
 

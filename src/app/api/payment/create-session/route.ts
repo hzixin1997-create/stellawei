@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { getStripe, convertToStripeAmount } from '@/lib/stripe'
 import { createServiceClient } from '@/lib/supabase'
 
-const PAYMENT_TIMEOUT_MINUTES = 30
+const STRIPE_SESSION_TIMEOUT_MINUTES = 30
 
 export async function POST(request: Request) {
   try {
@@ -66,13 +66,13 @@ export async function POST(request: Request) {
       )
     }
 
-    // 计算 Stripe 过期时间（Unix 时间戳，秒）
-    const stripeExpiresAt = Math.floor(Date.now() / 1000) + PAYMENT_TIMEOUT_MINUTES * 60
+    // 计算 Stripe 过期时间（Unix 时间戳，秒）—— Stripe 要求至少 30 分钟
+    const stripeExpiresAt = Math.floor(Date.now() / 1000) + STRIPE_SESSION_TIMEOUT_MINUTES * 60
 
-    // 更新 booking 的 expires_at（如果不存在的话）
+    // 更新 booking 的 expires_at（如果不存在的话）—— 用户看到的是 10 分钟
     const bookingExpiresAt = booking.expires_at
       ? new Date(booking.expires_at).toISOString()
-      : new Date(Date.now() + PAYMENT_TIMEOUT_MINUTES * 60 * 1000).toISOString()
+      : new Date(Date.now() + 10 * 60 * 1000).toISOString()
 
     if (!booking.expires_at) {
       await supabase
@@ -106,6 +106,7 @@ export async function POST(request: Request) {
     // 创建 Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
+      payment_method_types: ['card', 'alipay'],
       line_items: [{
         price_data: {
           currency: currency.toLowerCase(),

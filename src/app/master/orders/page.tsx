@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getConsultationDisplayStatus } from '@/lib/utils';
-import { Inbox, CheckCircle, Clock, AlertCircle, Video, MessageSquare, ArrowLeft, Loader2, UserCheck, Star } from 'lucide-react';
+import { Inbox, CheckCircle, Clock, AlertCircle, Video, MessageSquare, ArrowLeft, Loader2, UserCheck, Star, User, X } from 'lucide-react';
 
 interface BookingOrder {
   id: string;
@@ -24,6 +24,8 @@ interface BookingOrder {
   created_at: string;
   user_id: string;
   order_number?: string;
+  question_text?: string | null;
+  expires_at?: string | null;
 }
 
 interface MessageOrder {
@@ -41,6 +43,7 @@ interface MessageOrder {
 
 const statusMap: Record<string, { label: string; color: string; icon: any }> = {
   pending: { label: '待付款', color: 'bg-yellow-100 text-yellow-800', icon: Clock },
+  expired: { label: '已过期', color: 'bg-gray-100 text-gray-500', icon: AlertCircle },
   paid: { label: '已付款', color: 'bg-blue-100 text-blue-800', icon: CheckCircle },
   confirmed: { label: '已接单', color: 'bg-green-100 text-green-800', icon: CheckCircle },
   in_progress: { label: '进行中', color: 'bg-purple-100 text-purple-800', icon: Video },
@@ -68,12 +71,17 @@ export default function MasterOrdersPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'message' | 'realtime'>('message');
   const [loading, setLoading] = useState(true);
-  const [messageOrders, setMessageOrders] = useState<MessageOrder[]>([]);
+  const [messageOrders, setMessageOrders] = useState<BookingOrder[]>([]);
   const [realtimeOrders, setRealtimeOrders] = useState<BookingOrder[]>([]);
   const [acceptingId, setAcceptingId] = useState<string | null>(null);
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [reviewData, setReviewData] = useState<any>(null);
   const [reviewLoading, setReviewLoading] = useState(false);
+  // 查看历史弹窗（留言咨询）
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [historyBooking, setHistoryBooking] = useState<any>(null);
+  const [historyMessages, setHistoryMessages] = useState<any[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
 
   useEffect(() => {
     loadOrders();
@@ -87,37 +95,24 @@ export default function MasterOrdersPage() {
         return;
       }
 
-      // 获取师傅 ID
-      const { data: master } = await supabase
-        .from('masters')
-        .select('id')
-        .eq('user_id', session.user.id)
-        .single();
-
-      if (!master) return;
-
-      // 查留言订单（orders 表）
-      const res = await fetch(`/api/master/orders?limit=100`, {
+      // 使用 API 路由绕过 RLS（师傅身份在服务端验证）
+      const res = await fetch('/api/master/bookings', {
         headers: { authorization: `Bearer ${session.access_token}` },
       });
+
+      if (!res.ok) {
+        console.error('Failed to load orders:', res.status);
+        setLoading(false);
+        return;
+      }
+
       const data = await res.json();
-      if (data.orders) {
-        setMessageOrders(data.orders);
-      }
+      const bookings = data.bookings || [];
 
-      // 查实时咨询订单（bookings 表）
-      const { data: bookings } = await supabase
-        .from('bookings')
-        .select('*')
-        .eq('master_id', master.id)
-        .eq('consultation_type', 'realtime')
-        .order('created_at', { ascending: false });
-
-      if (bookings) {
-        setRealtimeOrders(bookings);
-      }
+      setMessageOrders(bookings.filter((b: any) => b.consultation_type === 'message'));
+      setRealtimeOrders(bookings.filter((b: any) => b.consultation_type === 'realtime'));
     } catch (err) {
-      console.error('Orders load error:', err);
+      console.error('Load orders error:', err);
     } finally {
       setLoading(false);
     }
@@ -164,9 +159,29 @@ export default function MasterOrdersPage() {
         setReviewData(json.review);
       }
     } catch (err) {
-      console.error('Fetch review error:', err);
     } finally {
       setReviewLoading(false);
+    }
+  };
+
+  // 查看留言历史弹窗
+  const openHistoryModal = async (booking: BookingOrder) => {
+    setHistoryBooking(booking);
+    setShowHistoryModal(true);
+    setHistoryLoading(true);
+    setHistoryMessages([]);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch(`/api/chat/${booking.id}/messages`, {
+        headers: { authorization: `Bearer ${session?.access_token || ''}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setHistoryMessages(data.messages || []);
+      }
+    } catch (err) {
+    } finally {
+      setHistoryLoading(false);
     }
   };
 
@@ -230,7 +245,8 @@ export default function MasterOrdersPage() {
               </div>
             ) : (
               messageOrders.map((order) => {
-                const status = statusMap[order.status] || statusMap.pending;
+                const displayStatus = getConsultationDisplayStatus(order);
+                const status = statusMap[displayStatus] || statusMap.pending;
                 const Icon = status.icon;
                 return (
                   <div
@@ -243,35 +259,35 @@ export default function MasterOrdersPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold text-stone-900">{order.service_name}</h3>
+                          <h3 className="font-semibold text-stone-900">
+                            {categoryMap[order.service_category] || order.service_category}
+                          </h3>
                           <span className={`px-2 py-0.5 text-xs rounded-full ${status.color}`}>
                             {status.label}
                           </span>
-                          {!order.master_read && order.user_question && (
+                          {order.question_text && (
                             <span className="px-2 py-0.5 text-xs rounded-full bg-red-100 text-red-700">
                               新消息
                             </span>
                           )}
                         </div>
                         <p className="text-xs text-stone-400 mb-1">
-                          订单号: {order.id.slice(0, 8)}
+                          订单号: {order.order_number || order.id.slice(0, 8)}
                         </p>
                         <p className="text-sm text-stone-600">
-                          {order.user?.full_name || order.user?.email || '匿名用户'} · {order.currency} {order.amount}
+                          {order.duration_text} · {order.currency.toUpperCase()} {order.total_amount}
                         </p>
-                        {order.user_question && !order.master_response && (
-                          <p className="text-xs text-orange-600 mt-2">⚠️ 等待您的回复</p>
-                        )}
                         <p className="text-xs text-stone-400 mt-1">
                           {new Date(order.created_at).toLocaleDateString('zh-CN')}
                         </p>
                       </div>
                       <div className="flex flex-col gap-2 flex-shrink-0">
-                        <Link href={`/master/orders/${order.id}`}>
-                          <button className="px-4 py-2 text-sm bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors">
-                            查看详情
-                          </button>
-                        </Link>
+                        <button
+                          onClick={() => openHistoryModal(order)}
+                          className="px-4 py-2 text-sm bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors"
+                        >
+                          查看历史
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -294,7 +310,7 @@ export default function MasterOrdersPage() {
                 const displayStatus = getConsultationDisplayStatus(order);
                 const status = statusMap[displayStatus] || statusMap.pending;
                 const Icon = status.icon;
-                const canAccept = order.payment_status === 'paid' && order.status === 'pending';
+                const canAccept = order.payment_status === 'paid' && displayStatus === 'pending';
                 const isConfirmed = displayStatus === 'confirmed' || displayStatus === 'in_progress';
 
                 return (
@@ -366,7 +382,12 @@ export default function MasterOrdersPage() {
                             </button>
                           </Link>
                         )}
-                        {order.payment_status === 'pending' && (
+                        {displayStatus === 'expired' && (
+                          <span className="px-4 py-2 text-sm bg-gray-100 text-gray-500 rounded-lg text-center">
+                            已过期
+                          </span>
+                        )}
+                        {order.payment_status === 'pending' && displayStatus !== 'expired' && (
                           <span className="px-4 py-2 text-sm bg-yellow-50 text-yellow-600 rounded-lg text-center">
                             待付款
                           </span>
@@ -385,48 +406,92 @@ export default function MasterOrdersPage() {
           </div>
         )}
 
-        {/* 评价查看弹窗 */}
-        {reviewModalOpen && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4">
-              <h3 className="text-xl font-bold text-center mb-4">查看评价</h3>
+        {/* 查看历史弹窗（留言咨询） */}
+        {showHistoryModal && historyBooking && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
+            <div className="bg-white rounded-xl p-6 w-full max-w-lg mx-4 shadow-xl max-h-[90vh] overflow-y-auto">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">查看历史</h3>
+                <button
+                  onClick={() => {
+                    setShowHistoryModal(false);
+                    setHistoryBooking(null);
+                    setHistoryMessages([]);
+                  }}
+                  className="text-stone-400 hover:text-stone-600"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
 
-              {reviewLoading ? (
-                <div className="flex justify-center py-8">
-                  <Loader2 className="w-6 h-6 animate-spin text-violet-600" />
+              {/* 用户问题 */}
+              <div className="bg-stone-50 border border-stone-200 rounded-lg p-4 mb-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <User className="w-4 h-4 text-stone-400" />
+                  <span className="text-sm font-medium text-stone-600">用户提问</span>
                 </div>
-              ) : reviewData ? (
-                <>
-                  <div className="flex justify-center gap-2 mb-4">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star
-                        key={star}
-                        className={`w-8 h-8 ${
-                          star <= reviewData.rating
-                            ? 'text-amber-400 fill-amber-400'
-                            : 'text-stone-300'
-                        }`}
+                <p className="text-sm text-stone-700 whitespace-pre-wrap">
+                  {historyBooking.question_text || '（无文字描述）'}
+                </p>
+                {historyBooking.question_images && historyBooking.question_images.length > 0 && (
+                  <div className="flex gap-2 mt-3 flex-wrap">
+                    {historyBooking.question_images.map((url: string, index: number) => (
+                      <img
+                        key={index}
+                        src={url}
+                        alt={`Question image ${index + 1}`}
+                        className="w-24 h-24 object-cover rounded-lg cursor-pointer border"
+                        onClick={() => window.open(url, '_blank')}
                       />
                     ))}
                   </div>
-                  <p className="text-stone-600 text-center mb-4 whitespace-pre-wrap">
-                    {reviewData.content || '用户未留下文字评价'}
-                  </p>
-                  <p className="text-xs text-stone-400 text-center">
-                    {new Date(reviewData.created_at).toLocaleDateString('zh-CN')}
-                  </p>
-                </>
-              ) : (
-                <p className="text-stone-500 text-center py-4">暂无评价</p>
-              )}
+                )}
+              </div>
 
-              <div className="mt-6">
+              {/* 师傅回复 */}
+              <div className="mb-4">
+                <h4 className="text-sm font-medium text-stone-700 mb-2">师傅回复</h4>
+                {historyLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="w-5 h-5 animate-spin text-stone-400" />
+                  </div>
+                ) : historyMessages.length === 0 ? (
+                  <div className="text-center py-8 bg-stone-50 rounded-lg">
+                    <p className="text-stone-500 text-sm">暂无回复</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {historyMessages.map((msg: any) => (
+                      <div key={msg.id} className="bg-violet-50 border border-violet-200 rounded-lg p-3">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-xs font-medium text-violet-700">{msg.sender_name}</span>
+                          <span className="text-xs text-violet-400">
+                            {new Date(msg.created_at).toLocaleString()}
+                          </span>
+                        </div>
+                        <p className="text-sm text-stone-700 whitespace-pre-wrap">{msg.content}</p>
+                        {msg.image_url && (
+                          <img
+                            src={msg.image_url}
+                            alt="Reply image"
+                            className="mt-2 max-w-full rounded-lg cursor-pointer"
+                            onClick={() => window.open(msg.image_url, '_blank')}
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-end">
                 <button
                   onClick={() => {
-                    setReviewModalOpen(false);
-                    setReviewData(null);
+                    setShowHistoryModal(false);
+                    setHistoryBooking(null);
+                    setHistoryMessages([]);
                   }}
-                  className="w-full px-4 py-2 text-sm bg-stone-100 text-stone-600 rounded-lg hover:bg-stone-200 transition-colors"
+                  className="px-4 py-2 text-sm bg-stone-100 text-stone-600 rounded-lg hover:bg-stone-200 transition-colors"
                 >
                   关闭
                 </button>

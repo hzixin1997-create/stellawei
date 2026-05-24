@@ -17,37 +17,38 @@ export async function GET(
 
     const { data: reviews, error } = await supabase
       .from('reviews')
-      .select(`
-        id,
-        rating,
-        content,
-        created_at,
-        user:profiles(full_name)
-      `)
+      .select('*')
       .eq('master_id', id)
       .or('status.eq.approved,status.is.null')
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('Fetch reviews error:', error);
       return NextResponse.json(
         { error: 'Failed to fetch reviews' },
         { status: 500 }
       );
     }
 
-    // 格式化评价数据
-    const formattedReviews = (reviews || []).map(r => ({
-      id: r.id,
-      overall_rating: r.rating,
-      content: r.content,
-      created_at: r.created_at,
-      user: {
-        full_name: r.user?.[0]?.full_name || 'Anonymous',
-      },
+    // 手动关联用户信息
+    const enrichedReviews = await Promise.all((reviews || []).map(async (review) => {
+      const { data: userData } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('id', review.user_id)
+        .single();
+
+      return {
+        id: review.id,
+        overall_rating: review.rating,
+        content: review.content,
+        created_at: review.created_at,
+        user: {
+          full_name: userData?.full_name || 'Anonymous',
+        },
+      };
     }));
 
-    return NextResponse.json({ reviews: formattedReviews });
+    return NextResponse.json({ reviews: enrichedReviews });
   } catch (error: any) {
     console.error('Master reviews API error:', error);
     return NextResponse.json(

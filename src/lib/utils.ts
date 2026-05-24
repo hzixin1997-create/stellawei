@@ -71,18 +71,29 @@ export function isConsultationExpired(
 }
 
 export function getConsultationDisplayStatus(
-  booking: { status: string; scheduled_at?: string | null; duration_minutes?: number | null }
+  booking: { status: string; scheduled_at?: string | null; duration_minutes?: number | null; expires_at?: string | null }
 ): string {
+  // 终端状态直接返回
   if (booking.status === 'completed' || booking.status === 'cancelled' || booking.status === 'refunded') {
     return booking.status
   }
+
+  // pending 订单：检查支付是否已过期
+  if (booking.status === 'pending' && booking.expires_at) {
+    const expiresTime = new Date(booking.expires_at).getTime()
+    if (!isNaN(expiresTime) && Date.now() > expiresTime) {
+      return 'expired'
+    }
+  }
+
+  // 以下是有 scheduled_at 的实时咨询的时间状态判断
   if (!booking.scheduled_at || !booking.duration_minutes) {
     return booking.status
   }
   const scheduledTime = new Date(booking.scheduled_at).getTime()
   const endTime = scheduledTime + booking.duration_minutes * 60 * 1000
   const now = Date.now()
-  
+
   if (now < scheduledTime) {
     return 'confirmed' // 还没到预约时间
   } else if (now >= scheduledTime && now < endTime) {

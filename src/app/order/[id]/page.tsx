@@ -33,6 +33,12 @@ export default function OrderDetail({ params }: { params: { id: string } }) {
   const [birthDate, setBirthDate] = useState("");
   const [birthTime, setBirthTime] = useState("");
   const [birthLocation, setBirthLocation] = useState("");
+  const [isZh, setIsZh] = useState(true);
+
+  useEffect(() => {
+    const lang = localStorage.getItem('language') || 'zh'
+    setIsZh(lang === 'zh')
+  }, [])
 
   useEffect(() => {
     loadOrder();
@@ -63,7 +69,7 @@ export default function OrderDetail({ params }: { params: { id: string } }) {
 
   async function submitQuestion() {
     if (!questionText.trim() || questionText.trim().length < 10) {
-      alert("请详细描述您的问题（至少10个字）");
+      alert(isZh ? "请详细描述您的问题（至少10个字）" : "Please describe your question in detail (at least 10 characters)");
       return;
     }
     setSaving(true);
@@ -89,13 +95,13 @@ export default function OrderDetail({ params }: { params: { id: string } }) {
       const data = await res.json();
       if (data.success) {
         setOrder(data.order);
-        alert("问题已提交，师傅将在48小时内回复");
+        alert(isZh ? "问题已提交，师傅将在48小时内回复" : "Question submitted. Master will reply within 48 hours.");
       } else {
-        alert(data.error || "提交失败");
+        alert(data.error || (isZh ? "提交失败" : "Submit failed"));
       }
     } catch (err) {
       console.error("Submit error:", err);
-      alert("提交失败，请重试");
+      alert(isZh ? "提交失败，请重试" : "Submit failed, please try again");
     } finally {
       setSaving(false);
     }
@@ -104,7 +110,7 @@ export default function OrderDetail({ params }: { params: { id: string } }) {
   if (loading) {
     return (
       <div className="min-h-screen bg-stone-50 flex items-center justify-center">
-        <div className="text-stone-600">加载中...</div>
+        <div className="text-stone-600">{isZh ? '加载中...' : 'Loading...'}</div>
       </div>
     );
   }
@@ -112,18 +118,42 @@ export default function OrderDetail({ params }: { params: { id: string } }) {
   if (!order) {
     return (
       <div className="min-h-screen bg-stone-50 flex items-center justify-center">
-        <div className="text-stone-500">订单不存在</div>
+        <div className="text-stone-500">{isZh ? '订单不存在' : 'Order not found'}</div>
       </div>
     );
   }
 
-  const statusMap: Record<string, { label: string; color: string; icon: any; desc: string }> = {
-    pending: { label: "待付款", color: "bg-yellow-100 text-yellow-800", icon: Clock, desc: "请完成付款以开始咨询" },
-    paid: { label: "已付款", color: "bg-blue-100 text-blue-800", icon: CheckCircle, desc: "付款成功，请提交您的问题" },
-    assigned: { label: "已分配", color: "bg-orange-100 text-orange-800", icon: AlertCircle, desc: "师傅已收到您的问题，正在准备回复" },
-    "in_progress": { label: "处理中", color: "bg-purple-100 text-purple-800", icon: Clock, desc: "师傅正在回复中" },
-    completed: { label: "已完成", color: "bg-green-100 text-green-800", icon: CheckCircle, desc: "咨询已完成" },
-    cancelled: { label: "已取消", color: "bg-gray-100 text-gray-800", icon: AlertCircle, desc: "订单已取消" },
+  const statusMap: Record<string, { label: string; labelEn: string; color: string; icon: any; desc: string; descEn: string }> = {
+    pending: { 
+      label: "待付款", labelEn: "Pending Payment", 
+      color: "bg-yellow-100 text-yellow-800", icon: Clock, 
+      desc: "请完成付款以开始咨询", descEn: "Please complete payment to start consultation" 
+    },
+    paid: { 
+      label: "已付款", labelEn: "Paid", 
+      color: "bg-blue-100 text-blue-800", icon: CheckCircle, 
+      desc: "付款成功，请提交您的问题", descEn: "Payment successful, please submit your question" 
+    },
+    assigned: { 
+      label: "已分配", labelEn: "Assigned", 
+      color: "bg-orange-100 text-orange-800", icon: AlertCircle, 
+      desc: "师傅已收到您的问题，正在准备回复", descEn: "Master has received your question and is preparing a response" 
+    },
+    "in_progress": { 
+      label: "处理中", labelEn: "In Progress", 
+      color: "bg-purple-100 text-purple-800", icon: Clock, 
+      desc: "师傅正在回复中", descEn: "Master is working on your response" 
+    },
+    completed: { 
+      label: "已完成", labelEn: "Completed", 
+      color: "bg-green-100 text-green-800", icon: CheckCircle, 
+      desc: "咨询已完成", descEn: "Consultation completed" 
+    },
+    cancelled: { 
+      label: "已取消", labelEn: "Cancelled", 
+      color: "bg-gray-100 text-gray-800", icon: AlertCircle, 
+      desc: "订单已取消", descEn: "Order cancelled" 
+    },
   };
 
   const status = statusMap[order.status] || statusMap.pending;
@@ -137,7 +167,7 @@ export default function OrderDetail({ params }: { params: { id: string } }) {
             <ArrowLeft size={20} />
           </Link>
           <div>
-            <h1 className="text-lg font-medium text-stone-800">订单详情</h1>
+            <h1 className="text-lg font-medium text-stone-800">{isZh ? '订单详情' : 'Order Details'}</h1>
           </div>
         </div>
       </header>
@@ -161,17 +191,17 @@ export default function OrderDetail({ params }: { params: { id: string } }) {
             </div>
             <span className={`px-3 py-1 rounded-full text-sm font-medium ${status.color} flex items-center gap-1.5`}>
               <StatusIcon size={14} />
-              {status.label}
+              {isZh ? status.label : status.labelEn}
             </span>
           </div>
 
           <div className="flex items-center gap-4 text-sm text-stone-500">
-            <p>金额：{order.currency} {order.amount}</p>
-            <p>订单号：{order.id.slice(0, 8)}...</p>
+            <p>{isZh ? '金额：' : 'Amount: '}{order.currency} {order.amount}</p>
+            <p>{isZh ? '订单号：' : 'Order #'}{order.id.slice(0, 8)}...</p>
           </div>
 
           <div className="mt-4 p-3 bg-stone-50 rounded-lg text-sm text-stone-600">
-            {status.desc}
+            {isZh ? status.desc : status.descEn}
           </div>
         </div>
 
@@ -179,8 +209,8 @@ export default function OrderDetail({ params }: { params: { id: string } }) {
         {order.status === "pending" && (
           <div className="bg-white rounded-xl border border-stone-200 p-6 mb-6 text-center">
             <Clock size={32} className="text-yellow-500 mx-auto mb-3" />
-            <p className="text-stone-600 mb-4">您的订单正在等待付款</p>
-            <p className="text-sm text-stone-400">付款成功后即可开始咨询</p>
+            <p className="text-stone-600 mb-4">{isZh ? '您的订单正在等待付款' : 'Your order is awaiting payment'}</p>
+            <p className="text-sm text-stone-400">{isZh ? '付款成功后即可开始咨询' : 'Payment is required to start consultation'}</p>
           </div>
         )}
 
@@ -189,21 +219,23 @@ export default function OrderDetail({ params }: { params: { id: string } }) {
           <div className="bg-white rounded-xl border border-stone-200 p-6 mb-6">
             <h3 className="text-lg font-medium text-stone-800 mb-1 flex items-center gap-2">
               <MessageCircle size={20} />
-              提交您的问题
+              {isZh ? '提交您的问题' : 'Submit Your Question'}
             </h3>
-            <p className="text-sm text-stone-500 mb-4">请详细描述您想咨询的问题，师傅将在48小时内回复</p>
+            <p className="text-sm text-stone-500 mb-4">{isZh ? '请详细描述您想咨询的问题，师傅将在48小时内回复' : 'Please describe your question in detail. Master will reply within 48 hours.'}</p>
 
             <div className="space-y-4">
               <textarea
                 value={questionText}
                 onChange={(e) => setQuestionText(e.target.value)}
-                placeholder="请详细描述您的问题，例如：&#10;1. 您想咨询的具体问题&#10;2. 相关背景信息&#10;3. 您希望得到的指引方向..."
+                placeholder={isZh 
+                  ? "请详细描述您的问题，例如：\n1. 您想咨询的具体问题\n2. 相关背景信息\n3. 您希望得到的指引方向..."
+                  : "Please describe your question, e.g.:\n1. Your specific question\n2. Relevant background info\n3. What guidance you seek..."}
                 className="w-full h-40 p-4 border border-stone-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-stone-700"
               />
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm text-stone-500 mb-1">出生日期（可选）</label>
+                  <label className="block text-sm text-stone-500 mb-1">{isZh ? '出生日期（可选）' : 'Birth Date (Optional)'}</label>
                   <input
                     type="date"
                     value={birthDate}
@@ -212,7 +244,7 @@ export default function OrderDetail({ params }: { params: { id: string } }) {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-stone-500 mb-1">出生时间（可选）</label>
+                  <label className="block text-sm text-stone-500 mb-1">{isZh ? '出生时间（可选）' : 'Birth Time (Optional)'}</label>
                   <input
                     type="time"
                     value={birthTime}
@@ -221,12 +253,12 @@ export default function OrderDetail({ params }: { params: { id: string } }) {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-stone-500 mb-1">出生地点（可选）</label>
+                  <label className="block text-sm text-stone-500 mb-1">{isZh ? '出生地点（可选）' : 'Birth Location (Optional)'}</label>
                   <input
                     type="text"
                     value={birthLocation}
                     onChange={(e) => setBirthLocation(e.target.value)}
-                    placeholder="如：北京"
+                    placeholder={isZh ? '如：北京' : 'e.g. Beijing'}
                     className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
                   />
                 </div>
@@ -235,51 +267,12 @@ export default function OrderDetail({ params }: { params: { id: string } }) {
               <button
                 onClick={submitQuestion}
                 disabled={saving}
-                className="w-full py-3 bg-amber-700 text-white rounded-lg font-medium hover:bg-amber-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                className="w-full py-3 bg-amber-700 text-white rounded-lg font-medium hover:bg-amber-800 disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 <Send size={18} />
-                {saving ? "提交中..." : "提交问题"}
+                {saving ? (isZh ? '提交中...' : 'Submitting...') : (isZh ? '提交问题' : 'Submit Question')}
               </button>
             </div>
-          </div>
-        )}
-
-        {/* 已提交问题，等待回复 */}
-        {order.user_question && !order.master_response && (
-          <div className="bg-white rounded-xl border border-stone-200 p-6 mb-6">
-            <h3 className="text-sm font-medium text-stone-500 uppercase tracking-wide mb-3">您的问题</h3>
-            <div className="bg-stone-50 rounded-lg p-4 mb-4">
-              <p className="text-stone-700 whitespace-pre-wrap">{order.user_question}</p>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-orange-600">
-              <Clock size={16} />
-              <p>师傅正在准备回复，预计48小时内完成</p>
-            </div>
-          </div>
-        )}
-
-        {/* 师傅回复 */}
-        {order.master_response && (
-          <div className="bg-white rounded-xl border border-stone-200 p-6 mb-6">
-            <h3 className="text-sm font-medium text-stone-500 uppercase tracking-wide mb-3 flex items-center gap-2">
-              <CheckCircle size={16} />
-              师傅回复
-            </h3>
-            <div className="bg-amber-50 border border-amber-100 rounded-lg p-4">
-              <p className="text-stone-700 whitespace-pre-wrap leading-relaxed">{order.master_response}</p>
-            </div>
-            <p className="text-xs text-stone-400 mt-2">
-              回复于 {new Date(order.master_response_at || order.updated_at).toLocaleString("zh-CN")}
-            </p>
-          </div>
-        )}
-
-        {/* 已完成 */}
-        {order.status === "completed" && (
-          <div className="bg-green-50 border border-green-200 rounded-xl p-6 text-center">
-            <CheckCircle size={32} className="text-green-600 mx-auto mb-2" />
-            <p className="text-green-800 font-medium">此咨询已完成</p>
-            <p className="text-sm text-green-600 mt-1">感谢您的使用，如有需要欢迎再次预约</p>
           </div>
         )}
       </main>

@@ -96,7 +96,9 @@ export async function POST(
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    if (booking.status !== 'completed') {
+    // 允许 completed、confirmed 或 in_progress 的订单被评价
+    //（confirmed 表示已付款，实际咨询可能已结束但状态未更新）
+    if (!['completed', 'confirmed', 'in_progress'].includes(booking.status)) {
       return NextResponse.json({ error: 'Booking is not completed' }, { status: 400 });
     }
 

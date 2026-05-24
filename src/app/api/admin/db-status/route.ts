@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
+export const dynamic = 'force-dynamic';
+
 function getSupabaseClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -18,44 +20,27 @@ export async function GET(request: NextRequest) {
   try {
     const supabase = getSupabaseClient();
     
-    // Check if required tables exist
-    const tablesToCheck = [
-      'profiles',
-      'masters',
-      'orders',
-      'messages',
-      'services',
-      'reviews',
-      'app_configs'
-    ];
-
-    const results: Record<string, boolean> = {};
-
-    for (const table of tablesToCheck) {
-      try {
-        const { error } = await supabase
-          .from(table)
-          .select('count')
-          .limit(1);
-        
-        results[table] = !error || !error.message.includes('does not exist');
-      } catch {
-        results[table] = false;
-      }
+    // 检查数据库连接
+    const { error: dbError } = await supabase.from('bookings').select('id').limit(1);
+    
+    if (dbError) {
+      return NextResponse.json({
+        status: 'error',
+        message: 'Database connection failed',
+        error: dbError.message,
+      }, { status: 500 });
     }
-
-    const allExist = Object.values(results).every(Boolean);
-
+    
     return NextResponse.json({
-      connected: true,
-      initialized: allExist,
-      tables: results,
-      missing: Object.entries(results).filter(([, exists]) => !exists).map(([name]) => name)
+      status: 'ok',
+      message: 'Database connection successful',
     });
   } catch (error: any) {
-    return NextResponse.json(
-      { connected: false, error: error.message },
-      { status: 500 }
-    );
+    console.error('DB status check error:', error);
+    return NextResponse.json({
+      status: 'error',
+      message: 'Internal server error',
+      error: error.message,
+    }, { status: 500 });
   }
 }

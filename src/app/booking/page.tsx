@@ -9,7 +9,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { useTranslation } from 'react-i18next'
-import { ArrowLeft, ArrowRight, Calendar as CalendarIcon, Clock, Sparkles, Compass, Sun, Video, MessageSquare, Loader2, Tag } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Calendar as CalendarIcon, Clock, Sparkles, Compass, Sun, Video, MessageSquare, Loader2, Tag, Image as ImageIcon } from 'lucide-react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
@@ -42,7 +42,7 @@ const CONSULTATION_TYPES = [
   },
 ]
 
-// 师傅（id 必须和数据库 masters.slug + bookings.master_id 保持一致）
+// 师傅（包含更多信息用于卡片展示）
 const MASTERS = [
   { 
     id: 'master-luna', 
@@ -51,6 +51,12 @@ const MASTERS = [
     categories: ['tarot', 'spiritual'],
     pricing: { first: 9.9, basic: 28, deep: 55 },
     timezone: 'America/Los_Angeles',
+    avatar: '/masters/master_luna.jpg',
+    tagline: '看见您内心已知的一切，以及前方的道路',
+    taglineEn: 'Seeing what your heart already knows, and what lies ahead',
+    experience: '10年+',
+    specialties: ['塔罗占卜', '灵性探索'],
+    specialtiesEn: ['Tarot', 'Spiritual'],
   },
   { 
     id: 'zhang-yihua', 
@@ -59,6 +65,12 @@ const MASTERS = [
     categories: ['eastern'],
     pricing: { first: 9.9, basic: 38, deep: 68 },
     timezone: 'Asia/Shanghai',
+    avatar: '/masters/master_zhang_yihua.jpg',
+    tagline: '揭露时空能量学的密码，通过决策学来选择正确的风向',
+    taglineEn: 'Revealing the unseen patterns of timing and destiny',
+    experience: '8年',
+    specialties: ['奇门遁甲', '六爻占卜'],
+    specialtiesEn: ['Qi Men Dun Jia', 'Liu Yao'],
   },
   { 
     id: 'wu-yang', 
@@ -67,14 +79,20 @@ const MASTERS = [
     categories: ['eastern'],
     pricing: { first: 9.9, basic: 48, deep: 78, fengshui: 95 },
     timezone: 'Asia/Shanghai',
+    avatar: '/masters/master_wu_yang.jpg',
+    tagline: '通过八字与环境能量分析，帮助您顺应有利时机行事',
+    taglineEn: 'Align your path with the flow of cosmic energy',
+    experience: '12年+',
+    specialties: ['八字命理', '风水咨询'],
+    specialtiesEn: ['BaZi', 'Feng Shui'],
   },
 ]
 
 // 档位
 const TIERS = [
-  { id: 'first', nameZh: '首单体验', nameEn: 'First-time', durationZh: '20-30 分钟', durationEn: '20-30 min', durationMinutes: 25 },
-  { id: 'basic', nameZh: '基础咨询', nameEn: 'Basic', durationZh: '20-30 分钟', durationEn: '20-30 min', durationMinutes: 25 },
-  { id: 'deep', nameZh: '深度咨询', nameEn: 'Deep', durationZh: '40-60 分钟', durationEn: '40-60 min', durationMinutes: 50 },
+  { id: 'first', nameZh: '首单体验', nameEn: 'First-time', durationZh: '25 分钟', durationEn: '25 min', durationMinutes: 25 },
+  { id: 'basic', nameZh: '基础咨询', nameEn: 'Basic', durationZh: '25 分钟', durationEn: '25 min', durationMinutes: 25 },
+  { id: 'deep', nameZh: '深度咨询', nameEn: 'Deep', durationZh: '50 分钟', durationEn: '50 min', durationMinutes: 50 },
 ]
 
 // 时区标签
@@ -99,6 +117,7 @@ export default function BookingPage() {
   const [consultationType, setConsultationType] = useState('')
   const [selectedMaster, setSelectedMaster] = useState('')
   const [selectedTier, setSelectedTier] = useState('')
+  const [masterAvailability, setMasterAvailability] = useState<string[]>([])
   const [selectedDate, setSelectedDate] = useState<Date>()
   const [selectedTime, setSelectedTime] = useState('')
   const [bookedSlots, setBookedSlots] = useState<string[]>([])
@@ -109,10 +128,26 @@ export default function BookingPage() {
   const [user, setUser] = useState<any>(null)
   const [error, setError] = useState('')
   const [masterStatuses, setMasterStatuses] = useState<Record<string, string>>({})
+  const [questionText, setQuestionText] = useState('')
+  const [questionImages, setQuestionImages] = useState<string[]>([])
+  const [uploadingQuestionImage, setUploadingQuestionImage] = useState(false)
 
   const isZh = i18n.language === 'zh'
 
-  // 检测用户是否首次 + 获取师傅状态
+  // 查询师傅某天可用时段（与师傅后台同步）
+  const fetchMasterAvailability = async (masterId: string, date: Date) => {
+    try {
+      const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+      const res = await fetch(`/api/bookings/occupied-slots?master_id=${masterId}&date=${dateStr}`)
+      if (res.ok) {
+        const data = await res.json()
+        return data.occupiedSlots || []
+      }
+    } catch (err) {
+      console.error('Fetch availability error:', err)
+    }
+    return []
+  }
   useEffect(() => {
     const checkUser = async () => {
       const supabase = createClient()
@@ -214,6 +249,40 @@ export default function BookingPage() {
     if (step > 1) setStep(step - 1)
   }
 
+  // 上传问题图片到 Storage
+  const handleQuestionImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (!file.type.startsWith('image/')) {
+      alert(isZh ? '请上传图片文件' : 'Please upload an image file')
+      return
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert(isZh ? '图片大小不能超过5MB' : 'Image size must be less than 5MB')
+      return
+    }
+    setUploadingQuestionImage(true)
+    try {
+      const supabase = createClient()
+      const fileName = `booking-${Date.now()}-${Math.random().toString(36).slice(2)}.${file.name.split('.').pop()}`
+      const { data, error } = await supabase.storage
+        .from('chat-images')
+        .upload(`questions/${fileName}`, file)
+      if (error) throw error
+      const { data: { publicUrl } } = supabase.storage.from('chat-images').getPublicUrl(`questions/${fileName}`)
+      setQuestionImages(prev => [...prev, publicUrl])
+    } catch (err: any) {
+      console.error('Upload error:', err)
+      alert(isZh ? `上传失败: ${err.message}` : `Upload failed: ${err.message}`)
+    } finally {
+      setUploadingQuestionImage(false)
+    }
+  }
+
+  const removeQuestionImage = (index: number) => {
+    setQuestionImages(prev => prev.filter((_, i) => i !== index))
+  }
+
   // 确认预约
   const handleConfirm = async () => {
     if (!user) {
@@ -284,12 +353,19 @@ export default function BookingPage() {
         bookingData.scheduled_at = scheduledDateTime.toISOString()
         bookingData.scheduled_date = dateStr
         bookingData.scheduled_time = selectedTime
+        // 实时咨询：支付期限10分钟
         bookingData.expires_at = new Date(Date.now() + 10 * 60 * 1000).toISOString()
       }
 
-      // 留言咨询不需要时间
+      // 留言咨询：支付期限10分钟
       if (consultationType === 'message') {
-        bookingData.expires_at = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() // 7天
+        bookingData.expires_at = new Date(Date.now() + 10 * 60 * 1000).toISOString()
+        if (questionText.trim()) {
+          bookingData.question_text = questionText.trim()
+        }
+        if (questionImages.length > 0) {
+          bookingData.question_images = questionImages
+        }
       }
 
       // 通过 API 创建 booking（绕过 RLS）
@@ -324,8 +400,7 @@ export default function BookingPage() {
       case 1: return category !== ''
       case 2: return consultationType !== ''
       case 3: return selectedMaster !== ''
-      case 4: return selectedTier !== ''
-      case 5: return consultationType === 'message' || (selectedDate && selectedTime !== '')
+      case 4: return selectedTier !== '' && (consultationType === 'message' || (selectedDate && selectedTime !== ''))
       default: return true
     }
   }
@@ -378,14 +453,14 @@ export default function BookingPage() {
 
         {/* Progress */}
         <div className="flex items-center justify-between mb-8">
-          {[1, 2, 3, 4, 5].map((s) => (
+          {[1, 2, 3, 4].map((s) => (
             <div key={s} className="flex items-center">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
                 step >= s ? 'bg-violet-600 text-white' : 'bg-stone-200 text-stone-600'
               }`}>
                 {s}
               </div>
-              {s < 5 && (
+              {s < 4 && (
                 <div className={`w-8 sm:w-12 h-1 mx-1 ${step > s ? 'bg-violet-600' : 'bg-stone-200'}`} />
               )}
             </div>
@@ -399,8 +474,7 @@ export default function BookingPage() {
               {step === 1 && (isZh ? '选择咨询类型' : 'Select Consultation Type')}
               {step === 2 && (isZh ? '选择咨询方式' : 'Select Consultation Method')}
               {step === 3 && (isZh ? '选择师傅' : 'Select Master')}
-              {step === 4 && (isZh ? '选择服务档位' : 'Select Service Tier')}
-              {step === 5 && (isZh ? '确认预约' : 'Confirm Booking')}
+              {step === 4 && (isZh ? '确认预约' : 'Confirm Booking')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -451,74 +525,93 @@ export default function BookingPage() {
               </RadioGroup>
             )}
 
-            {/* Step 3: 师傅 */}
             {step === 3 && (
-              <RadioGroup value={selectedMaster} onValueChange={setSelectedMaster} className="space-y-4">
-                {MASTERS
-                  .filter(m => {
-                    // 分类匹配
-                    if (!m.categories.includes(category)) return false
-                    // 状态过滤
-                    const status = masterStatuses[m.id] || 'online'
-                    // 休息中：完全隐藏
-                    if (status === 'rest') return false
-                    // 实时咨询：只显示在线
-                    if (consultationType === 'realtime' && status !== 'online') return false
-                    // 留言咨询：显示在线+离线
-                    return true
-                  })
-                  .map((m) => {
-                    const status = masterStatuses[m.id] || 'online'
-                    const statusColors: Record<string, string> = {
-                      online: 'bg-green-100 text-green-700 border-green-200',
-                      offline: 'bg-gray-100 text-gray-600 border-gray-200',
-                      rest: 'bg-orange-100 text-orange-700 border-orange-200',
-                    }
-                    return (
-                  <div key={m.id}>
-                    <RadioGroupItem value={m.id} id={m.id} className="peer sr-only" />
-                    <Label
-                      htmlFor={m.id}
-                      className="flex items-center p-5 border-2 rounded-xl cursor-pointer transition-all peer-data-[state=checked]:border-violet-600 peer-data-[state=checked]:bg-violet-50 hover:border-violet-300"
-                    >
-                      <div className="w-14 h-14 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg mr-4">
-                        {m.name.charAt(0)}
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold text-lg">{isZh ? m.nameCn : m.name}</h3>
-                          <Badge variant="outline" className={`text-xs ${statusColors[status] || statusColors.online}`}>
-                            {isZh
-                              ? status === 'online' ? '在线' : status === 'offline' ? '离线' : '休息中'
-                              : status === 'online' ? 'Online' : status === 'offline' ? 'Offline' : 'Resting'
-                            }
-                          </Badge>
+              <div className="space-y-6">
+                {/* 已选条件显示 */}
+                <div className="flex items-center gap-2 text-sm text-stone-500 mb-4">
+                  <Badge variant="outline">
+                    {isZh ? CATEGORIES.find(c => c.id === category)?.nameZh : CATEGORIES.find(c => c.id === category)?.nameEn}
+                  </Badge>
+                  <span>·</span>
+                  <Badge variant="outline">
+                    {isZh ? CONSULTATION_TYPES.find(t => t.id === consultationType)?.nameZh : CONSULTATION_TYPES.find(t => t.id === consultationType)?.nameEn}
+                  </Badge>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                  {MASTERS
+                    .filter(m => {
+                      if (!m.categories.includes(category)) return false
+                      const status = masterStatuses[m.id] || 'online'
+                      if (status === 'rest') return false
+                      if (consultationType === 'realtime' && status !== 'online') return false
+                      return true
+                    })
+                    .map((m) => {
+                      const status = masterStatuses[m.id] || 'online'
+                      const statusConfig: Record<string, { label: string; labelEn: string; color: string }> = {
+                        online: { label: '在线', labelEn: 'Online', color: 'bg-green-100 text-green-700 border-green-200' },
+                        offline: { label: '离线', labelEn: 'Offline', color: 'bg-gray-100 text-gray-600 border-gray-200' },
+                        rest: { label: '休息中', labelEn: 'Resting', color: 'bg-orange-100 text-orange-700 border-orange-200' },
+                      }
+                      const s = statusConfig[status] || statusConfig.online
+                      
+                      return (
+                        <div
+                          key={m.id}
+                          onClick={() => {
+                            setSelectedMaster(m.id)
+                            setStep(4)
+                          }}
+                          className="group cursor-pointer bg-white border-2 border-stone-200 rounded-2xl overflow-hidden hover:border-violet-400 hover:shadow-lg transition-all"
+                        >
+                          {/* 头像区域 */}
+                          <div className="aspect-square bg-gradient-to-br from-stone-100 to-stone-200 relative overflow-hidden">
+                            <img
+                              src={m.avatar}
+                              alt={isZh ? m.nameCn : m.name}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                            <div className="absolute top-3 right-3">
+                              <Badge variant="outline" className={`${s.color} bg-white/90 backdrop-blur-sm`}>
+                                {isZh ? s.label : s.labelEn}
+                              </Badge>
+                            </div>
+                          </div>
+                          
+                          {/* 信息区域 */}
+                          <div className="p-5">
+                            <h3 className="font-bold text-lg text-stone-900 mb-1">
+                              {isZh ? m.nameCn : m.name}
+                            </h3>
+                            <p className="text-sm text-stone-500 mb-3 line-clamp-2">
+                              {isZh ? m.tagline : m.taglineEn}
+                            </p>
+                            
+                            {/* 专长标签 */}
+                            <div className="flex flex-wrap gap-1.5 mb-4">
+                              {(isZh ? m.specialties : m.specialtiesEn).map((spec, i) => (
+                                <Badge key={i} variant="secondary" className="text-xs">
+                                  {spec}
+                                </Badge>
+                              ))}
+                            </div>
+                            
+                            {/* 经验和价格 */}
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-stone-500">
+                                {isZh ? `${m.experience}经验` : `${m.experience} exp`}
+                              </span>
+                              <span className="font-semibold text-violet-600">
+                                ${m.pricing.basic} {isZh ? '起' : 'up'}
+                              </span>
+                            </div>
+                          </div>
                         </div>
-                        <p className="text-stone-600 text-sm">
-                          {isZh 
-                            ? `${m.categories.map(c => CATEGORIES.find(cat => cat.id === c)?.nameZh).join(' / ')}` 
-                            : `${m.categories.map(c => CATEGORIES.find(cat => cat.id === c)?.nameEn).join(' / ')}`
-                          }
-                        </p>
-                        <div className="flex gap-2 mt-2">
-                          {m.categories.map(c => (
-                            <Badge key={c} variant="outline" className="text-xs">
-                              {isZh ? CATEGORIES.find(cat => cat.id === c)?.nameZh : CATEGORIES.find(cat => cat.id === c)?.nameEn}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-sm text-stone-500">
-                          {isZh ? '基础' : 'Basic'} ${m.pricing.basic}
-                        </div>
-                        <div className="text-sm text-stone-500">
-                          {isZh ? '深度' : 'Deep'} ${m.pricing.deep}
-                        </div>
-                      </div>
-                    </Label>
-                  </div>
-                )})}
+                      )
+                    })}
+                </div>
+                
                 {MASTERS.filter(m => {
                   if (!m.categories.includes(category)) return false
                   const status = masterStatuses[m.id] || 'online'
@@ -526,228 +619,271 @@ export default function BookingPage() {
                   if (consultationType === 'realtime' && status !== 'online') return false
                   return true
                 }).length === 0 && (
-                  <div className="text-center py-8 text-stone-500">
-                    {isZh 
-                      ? '暂无可用师傅，请尝试其他咨询方式或稍后再试'
-                      : 'No masters available. Please try another consultation type or check back later.'
-                    }
+                  <div className="text-center py-12 text-stone-500">
+                    <p className="text-lg mb-2">
+                      {isZh ? '暂无可用师傅' : 'No masters available'}
+                    </p>
+                    <p className="text-sm">
+                      {isZh ? '请尝试其他咨询方式或稍后再试' : 'Please try another consultation type or check back later'}
+                    </p>
                   </div>
                 )}
-              </RadioGroup>
+              </div>
             )}
 
-            {/* Step 4: 档位 */}
             {step === 4 && master && (
-              <RadioGroup value={selectedTier} onValueChange={setSelectedTier} className="space-y-4">
-                {/* 首单体验（仅首次用户） */}
-                {isFirstTime && (
-                  <div>
-                    <RadioGroupItem value="first" id="tier-first" className="peer sr-only" />
-                    <Label
-                      htmlFor="tier-first"
-                      className="flex items-center p-5 border-2 rounded-xl cursor-pointer transition-all peer-data-[state=checked]:border-violet-600 peer-data-[state=checked]:bg-violet-50 hover:border-violet-300"
-                    >
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-semibold text-lg">
-                            {isZh ? '首单体验' : 'First-time Experience'}
-                          </h3>
-                          <Badge className="bg-violet-100 text-violet-700">{isZh ? '限首次' : 'First only'}</Badge>
-                        </div>
-                        <p className="text-stone-600 text-sm mt-1">
-                          {isZh ? '20-30 分钟 · 适合初次体验' : '20-30 min · Perfect for first-timers'}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-2xl font-bold text-violet-600">${master.pricing.first}</span>
-                      </div>
-                    </Label>
-                  </div>
-                )}
-
-                {/* 基础 */}
-                <div>
-                  <RadioGroupItem value="basic" id="tier-basic" className="peer sr-only" />
-                  <Label
-                    htmlFor="tier-basic"
-                    className="flex items-center p-5 border-2 rounded-xl cursor-pointer transition-all peer-data-[state=checked]:border-violet-600 peer-data-[state=checked]:bg-violet-50 hover:border-violet-300"
-                  >
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-lg">{isZh ? '基础咨询' : 'Basic Consultation'}</h3>
-                      <p className="text-stone-600 text-sm mt-1">
-                        {isZh ? '20-30 分钟 · 针对具体问题' : '20-30 min · For specific questions'}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-2xl font-bold text-violet-600">${master.pricing.basic}</span>
-                    </div>
-                  </Label>
-                </div>
-
-                {/* 深度 */}
-                <div>
-                  <RadioGroupItem value="deep" id="tier-deep" className="peer sr-only" />
-                  <Label
-                    htmlFor="tier-deep"
-                    className="flex items-center p-5 border-2 rounded-xl cursor-pointer transition-all peer-data-[state=checked]:border-violet-600 peer-data-[state=checked]:bg-violet-50 hover:border-violet-300"
-                  >
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-lg">{isZh ? '深度咨询' : 'Deep Consultation'}</h3>
-                      <p className="text-stone-600 text-sm mt-1">
-                        {isZh ? '40-60 分钟 · 全面深入分析' : '40-60 min · Comprehensive analysis'}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-2xl font-bold text-violet-600">${master.pricing.deep}</span>
-                    </div>
-                  </Label>
-                </div>
-
-                {/* 风水专项（仅戊阳） */}
-                {master.id === '94b1582e-5e9e-4835-be8b-1cfbd3ec8d3b' && master.pricing.fengshui && (
-                  <div>
-                    <RadioGroupItem value="fengshui" id="tier-fengshui" className="peer sr-only" />
-                    <Label
-                      htmlFor="tier-fengshui"
-                      className="flex items-center p-5 border-2 rounded-xl cursor-pointer transition-all peer-data-[state=checked]:border-violet-600 peer-data-[state=checked]:bg-violet-50 hover:border-violet-300"
-                    >
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-semibold text-lg">{isZh ? '风水专项' : 'Feng Shui Special'}</h3>
-                          <Badge className="bg-amber-100 text-amber-700">{isZh ? '戊阳专享' : 'Wu Yang Only'}</Badge>
-                        </div>
-                        <p className="text-stone-600 text-sm mt-1">
-                          {isZh ? '60+ 分钟 · 含空间 walkthrough' : '60+ min · Includes space walkthrough'}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-2xl font-bold text-violet-600">${master.pricing.fengshui}</span>
-                      </div>
-                    </Label>
-                  </div>
-                )}
-              </RadioGroup>
-            )}
-
-            {/* Step 5: 确认 + 时间选择 */}
-            {step === 5 && (
               <div className="space-y-6">
-                {/* 实时咨询：选时间 */}
-                {consultationType === 'realtime' && (
-                  <div className="flex flex-col lg:flex-row gap-8 items-start">
-                    <div className="w-fit">
-                      <Label className="mb-3 block font-semibold">{isZh ? '选择日期' : 'Select Date'}</Label>
-                      <Calendar
-                        mode="single"
-                        selected={selectedDate}
-                        onSelect={setSelectedDate}
-                        disabled={(date) => {
-                          const today = new Date()
-                          today.setHours(0, 0, 0, 0)
-                          const d = new Date(date)
-                          d.setHours(0, 0, 0, 0)
-                          return d.getTime() < today.getTime()
-                        }}
-                        className="rounded-md border"
-                      />
+                {/* 师傅头部信息 */}
+                <div className="flex items-start gap-4 pb-6 border-b border-stone-200">
+                  <img
+                    src={master.avatar}
+                    alt={isZh ? master.nameCn : master.name}
+                    className="w-20 h-20 rounded-xl object-cover"
+                  />
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-stone-900">{isZh ? master.nameCn : master.name}</h3>
+                    <p className="text-sm text-stone-500 mt-1">{isZh ? master.tagline : master.taglineEn}</p>
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {(isZh ? master.specialties : master.specialtiesEn).map((spec, i) => (
+                        <Badge key={i} variant="secondary" className="text-xs">{spec}</Badge>
+                      ))}
                     </div>
-                    
-                    <div className="lg:w-[320px] flex flex-col">
-                      <div className="flex items-center justify-between mb-3">
-                        <Label className="font-semibold">{isZh ? '选择时间' : 'Select Time'}</Label>
-                        {master && (
-                          <span className="text-xs text-stone-400">
-                            {TIMEZONE_LABELS[master.timezone]?.[isZh ? 'zh' : 'en']}
-                          </span>
-                        )}
-                      </div>
-                      <div className="border rounded-xl p-4 bg-white max-h-[420px] flex flex-col">
-                        {checkingSlots && (
-                          <div className="flex items-center gap-2 text-sm text-stone-400 mb-3">
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                            {isZh ? '检查可用时间...' : 'Checking availability...'}
-                          </div>
-                        )}
-                        <div className="grid grid-cols-3 gap-2 overflow-y-auto pr-1">
-                          {timeSlots.map((time) => {
-                            const isBooked = bookedSlots.includes(time)
-                            const isPast = (() => {
-                              if (!selectedDate) return false
-                              const now = new Date()
-                              const isToday = selectedDate.toDateString() === now.toDateString()
-                              if (!isToday) return false
-                              const [h, m] = time.split(':').map(Number)
-                              const slot = new Date(now)
-                              slot.setHours(h, m, 0, 0)
-                              return slot.getTime() <= now.getTime()
-                            })()
-                            return (
-                              <Button
-                                key={time}
-                                variant={selectedTime === time ? 'default' : 'outline'}
-                                onClick={() => !isBooked && !isPast && setSelectedTime(time)}
-                                disabled={!selectedDate || isBooked || isPast || checkingSlots}
-                                className={`h-10 text-sm ${
-                                  selectedTime === time ? 'bg-violet-600' : 
-                                  isBooked || isPast ? 'bg-stone-100 text-stone-400 cursor-not-allowed' : ''
-                                }`}
-                              >
-                                {time}
-                                {isBooked && <span className="ml-1 text-[10px]">{isZh ? '已约' : 'Booked'}</span>}
-                              </Button>
-                            )
-                          })}
+                  </div>
+                  <Button variant="outline" size="sm" onClick={() => {setStep(3); setSelectedMaster(''); setSelectedTier(''); setSelectedDate(undefined); setSelectedTime('')}}>
+                    {isZh ? '换师傅' : 'Change'}
+                  </Button>
+                </div>
+
+                {/* 咨询方式（可以切换） */}
+                <div>
+                  <Label className="block font-semibold mb-3">{isZh ? '咨询方式' : 'Consultation Type'}</Label>
+                  <RadioGroup value={consultationType} onValueChange={setConsultationType} className="grid grid-cols-2 gap-3">
+                    {CONSULTATION_TYPES.map((type) => {
+                      const Icon = type.icon
+                      return (
+                        <div key={type.id}>
+                          <RadioGroupItem value={type.id} id={`detail-${type.id}`} className="peer sr-only" />
+                          <Label
+                            htmlFor={`detail-${type.id}`}
+                            className="flex items-center gap-3 p-4 border-2 rounded-xl cursor-pointer transition-all peer-data-[state=checked]:border-violet-600 peer-data-[state=checked]:bg-violet-50 hover:border-violet-300"
+                          >
+                            <Icon className="w-5 h-5 text-violet-600" />
+                            <div>
+                              <h4 className="font-medium">{isZh ? type.nameZh : type.nameEn}</h4>
+                              <p className="text-xs text-stone-500">{isZh ? type.descZh : type.descEn}</p>
+                            </div>
+                          </Label>
                         </div>
-                        {!selectedDate && (
-                          <p className="text-sm text-stone-400 mt-3 text-center">{isZh ? '请先选择日期' : 'Please select a date first'}</p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
+                      )
+                    })}
+                  </RadioGroup>
+                </div>
 
-                {/* 留言咨询：不需要时间 */}
-                {consultationType === 'message' && (
-                  <div className="bg-stone-50 p-4 rounded-xl">
-                    <p className="text-stone-600">{isZh ? '留言咨询无需预约时间，下单后您可以在用户后台提交问题，师傅会在24小时内回复。' : 'Message consultation does not require scheduling. After booking, submit your questions in the dashboard, and the master will reply within 24 hours.'}</p>
-                  </div>
-                )}
-
-                {/* 订单摘要 */}
-                <div className="bg-stone-50 p-5 rounded-xl max-w-md mx-auto">
-                  <h3 className="font-semibold mb-4 text-center">{isZh ? '预约详情' : 'Booking Summary'}</h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-stone-600">{isZh ? '咨询类型' : 'Type'}</span>
-                      <span>{isZh ? CATEGORIES.find(c => c.id === category)?.nameZh : CATEGORIES.find(c => c.id === category)?.nameEn}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-stone-600">{isZh ? '咨询方式' : 'Method'}</span>
-                      <span>{isZh ? CONSULTATION_TYPES.find(t => t.id === consultationType)?.nameZh : CONSULTATION_TYPES.find(t => t.id === consultationType)?.nameEn}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-stone-600">{isZh ? '师傅' : 'Master'}</span>
-                      <span>{isZh ? master?.nameCn : master?.name}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-stone-600">{isZh ? '档位' : 'Tier'}</span>
-                      <span>{isZh ? TIERS.find(t => t.id === selectedTier)?.nameZh : TIERS.find(t => t.id === selectedTier)?.nameEn}</span>
-                    </div>
-                    {consultationType === 'realtime' && selectedDate && selectedTime && (
-                      <div className="flex justify-between">
-                        <span className="text-stone-600">{isZh ? '时间' : 'Time'}</span>
-                        <span>{selectedDate.toLocaleDateString()} {selectedTime}</span>
+                {/* 档位选择 */}
+                <div>
+                  <Label className="block font-semibold mb-3">{isZh ? '选择服务档位' : 'Select Service Tier'}</Label>
+                  <RadioGroup value={selectedTier} onValueChange={setSelectedTier} className="space-y-3">
+                    {isFirstTime && (
+                      <div>
+                        <RadioGroupItem value="first" id="detail-tier-first" className="peer sr-only" />
+                        <Label htmlFor="detail-tier-first" className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all peer-data-[state=checked]:border-violet-600 peer-data-[state=checked]:bg-violet-50 hover:border-violet-300">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <h4 className="font-semibold">{isZh ? '首单体验' : 'First-time'}</h4>
+                              <Badge className="bg-violet-100 text-violet-700 text-xs">{isZh ? '限首次' : 'First only'}</Badge>
+                            </div>
+                            <p className="text-sm text-stone-500">{isZh ? '25 分钟 · 适合初次体验' : '25 min · Perfect for first-timers'}</p>
+                          </div>
+                          <span className="text-xl font-bold text-violet-600">${master.pricing.first}</span>
+                        </Label>
                       </div>
                     )}
-                    <div className="flex justify-between">
-                      <span className="text-stone-600">{isZh ? '时长' : 'Duration'}</span>
-                      <span>{getDuration()}</span>
+                    <div>
+                      <RadioGroupItem value="basic" id="detail-tier-basic" className="peer sr-only" />
+                      <Label htmlFor="detail-tier-basic" className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all peer-data-[state=checked]:border-violet-600 peer-data-[state=checked]:bg-violet-50 hover:border-violet-300">
+                        <div className="flex-1">
+                          <h4 className="font-semibold">{isZh ? '基础咨询' : 'Basic'}</h4>
+                          <p className="text-sm text-stone-500">{isZh ? '25 分钟 · 针对具体问题' : '25 min · For specific questions'}</p>
+                        </div>
+                        <span className="text-xl font-bold text-violet-600">${master.pricing.basic}</span>
+                      </Label>
                     </div>
-                    <div className="border-t pt-2 mt-2 flex justify-between font-bold text-lg">
-                      <span>{isZh ? '总计' : 'Total'}</span>
-                      <span className="text-violet-600">${getPrice()}</span>
+                    <div>
+                      <RadioGroupItem value="deep" id="detail-tier-deep" className="peer sr-only" />
+                      <Label htmlFor="detail-tier-deep" className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all peer-data-[state=checked]:border-violet-600 peer-data-[state=checked]:bg-violet-50 hover:border-violet-300">
+                        <div className="flex-1">
+                          <h4 className="font-semibold">{isZh ? '深度咨询' : 'Deep'}</h4>
+                          <p className="text-sm text-stone-500">{isZh ? '50 分钟 · 全面深入分析' : '50 min · Comprehensive analysis'}</p>
+                        </div>
+                        <span className="text-xl font-bold text-violet-600">${master.pricing.deep}</span>
+                      </Label>
+                    </div>
+                    {master.pricing.fengshui && (
+                      <div>
+                        <RadioGroupItem value="fengshui" id="detail-tier-fengshui" className="peer sr-only" />
+                        <Label htmlFor="detail-tier-fengshui" className="flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all peer-data-[state=checked]:border-violet-600 peer-data-[state=checked]:bg-violet-50 hover:border-violet-300">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <h4 className="font-semibold">{isZh ? '风水专项' : 'Feng Shui'}</h4>
+                              <Badge className="bg-amber-100 text-amber-700 text-xs">{isZh ? '戊阳专享' : 'Wu Yang Only'}</Badge>
+                            </div>
+                            <p className="text-sm text-stone-500">{isZh ? '60+ 分钟 · 含空间分析' : '60+ min · Includes space analysis'}</p>
+                          </div>
+                          <span className="text-xl font-bold text-violet-600">${master.pricing.fengshui}</span>
+                        </Label>
+                      </div>
+                    )}
+                  </RadioGroup>
+                </div>
+
+                {/* 实时咨询：日期时间选择（与师傅可用时段同步） */}
+                {consultationType === 'realtime' && (
+                  <div className="space-y-4">
+                    <Label className="block font-semibold">{isZh ? '选择预约时间' : 'Select Appointment Time'}</Label>
+                    <div className="flex flex-col lg:flex-row gap-6">
+                      <div className="w-fit">
+                        <Calendar
+                          mode="single"
+                          selected={selectedDate}
+                          onSelect={setSelectedDate}
+                          disabled={(date) => {
+                            const today = new Date()
+                            today.setHours(0, 0, 0, 0)
+                            const d = new Date(date)
+                            d.setHours(0, 0, 0, 0)
+                            return d.getTime() < today.getTime()
+                          }}
+                          className="rounded-md border"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm font-medium">{isZh ? '可用时段' : 'Available Slots'}</span>
+                          {master && (
+                            <span className="text-xs text-stone-400">
+                              {TIMEZONE_LABELS[master.timezone]?.[isZh ? 'zh' : 'en']}
+                            </span>
+                          )}
+                        </div>
+                        <div className="border rounded-xl p-4 bg-white">
+                          {checkingSlots && (
+                            <div className="flex items-center gap-2 text-sm text-stone-400 mb-2">
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                              {isZh ? '检查可用时间...' : 'Checking availability...'}
+                            </div>
+                          )}
+                          <div className="grid grid-cols-3 gap-2">
+                            {(() => {
+                              // 2小时缓冲：如果选的是今天，过滤掉当前时间+2小时之前的时段
+                              const now = new Date()
+                              const minBookingTime = new Date(now.getTime() + 2 * 60 * 60 * 1000)
+                              const isToday = selectedDate && (
+                                selectedDate.getFullYear() === now.getFullYear() &&
+                                selectedDate.getMonth() === now.getMonth() &&
+                                selectedDate.getDate() === now.getDate()
+                              )
+                              
+                              const availableSlots = timeSlots.filter((time) => {
+                                if (!isToday) return true
+                                const [hour, minute] = time.split(':').map(Number)
+                                const slotTime = new Date(selectedDate!)
+                                slotTime.setHours(hour, minute, 0, 0)
+                                return slotTime.getTime() >= minBookingTime.getTime()
+                              })
+                              
+                              if (isToday && availableSlots.length === 0) {
+                                return (
+                                  <p className="text-sm text-stone-400 text-center col-span-3 py-4">
+                                    {isZh ? '今天剩余时段不足2小时，请选择明天或之后' : 'Less than 2 hours remain today. Please select tomorrow or later.'}
+                                  </p>
+                                )
+                              }
+                              
+                              return availableSlots.map((time) => {
+                                const isBooked = bookedSlots.includes(time)
+                                return (
+                                  <Button
+                                    key={time}
+                                    variant={selectedTime === time ? 'default' : 'outline'}
+                                    onClick={() => !isBooked && setSelectedTime(time)}
+                                    disabled={!selectedDate || isBooked || checkingSlots}
+                                    className={`h-10 text-sm ${
+                                      selectedTime === time ? 'bg-violet-600' : 
+                                      isBooked ? 'bg-stone-100 text-stone-400 cursor-not-allowed' : ''
+                                    }`}
+                                  >
+                                    {time}
+                                    {isBooked && <span className="ml-1 text-[10px]">{isZh ? '不可约' : 'Unavailable'}</span>}
+                                  </Button>
+                                )
+                              })
+                            })()}
+                          </div>
+                          {!selectedDate && (
+                            <p className="text-sm text-stone-400 mt-2 text-center">{isZh ? '请先选择日期' : 'Please select a date first'}</p>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
+                )}
+
+                {/* 留言咨询：问题输入 */}
+                {consultationType === 'message' && (
+                  <div className="space-y-4">
+                    <Label className="block font-semibold">{isZh ? '您的问题' : 'Your Question'}</Label>
+                    <div className="bg-stone-50 p-4 rounded-xl">
+                      <p className="text-stone-600 text-sm mb-3">
+                        {isZh ? '请描述您想咨询的问题，师傅会在24小时内回复。' : 'Please describe your question. The master will reply within 24 hours.'}
+                      </p>
+                      <textarea
+                        value={questionText}
+                        onChange={(e) => setQuestionText(e.target.value)}
+                        placeholder={isZh ? '例如：我最近在工作上遇到了瓶颈，想问问关于职业发展的建议...' : 'e.g., I have been facing a bottleneck at work...'}
+                        className="w-full border rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 min-h-[120px] resize-y"
+                        maxLength={1000}
+                      />
+                      <p className="text-xs text-stone-400 mt-1 text-right">{questionText.length}/1000</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* 确认按钮 */}
+                <div className="pt-4 border-t border-stone-200">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <p className="text-sm text-stone-500">
+                        {isZh ? '总计' : 'Total'}
+                      </p>
+                      <p className="text-2xl font-bold text-violet-600">
+                        ${getPrice()}
+                      </p>
+                    </div>
+                    <div className="text-right text-sm text-stone-500">
+                      <p>{getDuration()}</p>
+                      <p>{isZh ? '咨询方式：' : 'Type: '}{isZh ? CONSULTATION_TYPES.find(t => t.id === consultationType)?.nameZh : CONSULTATION_TYPES.find(t => t.id === consultationType)?.nameEn}</p>
+                    </div>
+                  </div>
+                  
+                  {error && (
+                    <p className="text-sm text-red-600 mb-3">{error}</p>
+                  )}
+                  
+                  <Button
+                    className="w-full"
+                    size="lg"
+                    onClick={handleConfirm}
+                    disabled={isSubmitting || !selectedTier || (consultationType === 'realtime' && (!selectedDate || !selectedTime))}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        {isZh ? '处理中...' : 'Processing...'}
+                      </>
+                    ) : (
+                      isZh ? '确认预约' : 'Confirm Booking'
+                    )}
+                  </Button>
                 </div>
               </div>
             )}
@@ -760,25 +896,19 @@ export default function BookingPage() {
             <ArrowLeft className="w-4 h-4 mr-2" />
             {isZh ? '上一步' : 'Back'}
           </Button>
-          {step < 5 ? (
+          {step < 4 ? (
             <Button onClick={handleNext} disabled={!canProceed()} className="bg-violet-600 hover:bg-violet-700">
               {isZh ? '下一步' : 'Next'}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           ) : (
             <Button 
-              onClick={handleConfirm} 
-              disabled={isSubmitting || !canProceed()}
-              className="bg-violet-600 hover:bg-violet-700"
+              variant="outline"
+              onClick={() => setStep(1)} 
+              disabled={isSubmitting}
             >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  {isZh ? '处理中...' : 'Processing...'}
-                </>
-              ) : (
-                <>{isZh ? '确认预约' : 'Confirm Booking'}</>
-              )}
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              {isZh ? '返回第一步' : 'Restart'}
             </Button>
           )}
         </div>

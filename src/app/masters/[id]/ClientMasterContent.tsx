@@ -95,6 +95,13 @@ export function ClientMasterContent({ master }: Props) {
 
   async function loadMasterStatus() {
     try {
+      // AI师傅固定显示休息中
+      const aiMasterIds = ['master-lin', 'master-han', 'master-elena'];
+      if (aiMasterIds.includes(master.id)) {
+        setMasterStatus('rest');
+        return;
+      }
+      
       // 通过 /api/masters 获取所有师傅状态
       const res = await fetch('/api/masters');
       if (res.ok) {
@@ -241,8 +248,8 @@ export function ClientMasterContent({ master }: Props) {
             </Link>
             <div className="flex items-center space-x-4">
               <LanguageSwitcher />
-              <Link href="/orders">
-                <Button variant="outline" size="sm">{currentLang === 'zh' ? '我的订单' : 'My Orders'}</Button>
+              <Link href="/">
+                <Button variant="outline" size="sm">{currentLang === 'zh' ? '返回主页' : 'Home'}</Button>
               </Link>
             </div>
           </div>

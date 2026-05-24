@@ -677,8 +677,8 @@ export default function UserDashboard() {
 
           {/* 评价弹窗 */}
           {showReviewModal && reviewTargetBooking && (
-            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-              <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4">
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
+              <div className="bg-white rounded-2xl p-4 sm:p-6 max-w-md w-full max-h-[85vh] overflow-y-auto">
                 <h3 className="text-xl font-bold text-center mb-4">
                   {isZh ? '评价本次咨询' : 'Rate this Consultation'}
                 </h3>

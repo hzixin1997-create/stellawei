@@ -108,6 +108,50 @@ export async function GET() {
       }
     });
 
+    // 5. 用户统计
+    const { count: totalUsers, error: usersCountError } = await supabase
+      .from('profiles')
+      .select('*', { count: 'exact', head: true });
+
+    if (usersCountError) {
+      console.error('Admin stats users count error:', usersCountError);
+    }
+
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const sevenDaysAgoStr = sevenDaysAgo.toISOString();
+
+    const { count: newUsers7d, error: newUsersError } = await supabase
+      .from('profiles')
+      .select('*', { count: 'exact', head: true })
+      .gte('created_at', sevenDaysAgoStr);
+
+    if (newUsersError) {
+      console.error('Admin stats new users error:', newUsersError);
+    }
+
+    // 在线用户：通过 auth.users last_sign_in_at 判断（30分钟内）
+    // 使用 RPC 查询 auth schema，因为 supabase-js 对 auth 表的查询有限制
+    const thirtyMinsAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString();
+    const { data: onlineUsers, error: onlineError } = await supabase
+      .rpc('count_online_users', { since: thirtyMinsAgo });
+
+    // 如果 RPC 不存在，fallback 到用 profiles.updated_at 估算
+    let onlineUserCount = 0;
+    if (!onlineError && onlineUsers !== null) {
+      onlineUserCount = Number(onlineUsers);
+    } else {
+      // Fallback：查最近1小时内有更新的 profiles（不精确但可用）
+      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+      const { count: recentActive, error: activeError } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .gte('updated_at', oneHourAgo);
+      if (!activeError) {
+        onlineUserCount = recentActive || 0;
+      }
+    }
+
     // 5. 师傅统计
     const masterStats = MASTER_WHITELIST.map(master => {
       const masterBookings = bookings.filter(b => b.master_id === master.slug);
@@ -174,6 +218,9 @@ export async function GET() {
           refundFee,
           refundRate,
           activeMasters: activeMasters || MASTER_WHITELIST.length,
+          totalUsers: totalUsers || 0,
+          newUsers7d: newUsers7d || 0,
+          onlineUsers: onlineUserCount,
         },
         masterStats,
         recentOrders,

@@ -22,7 +22,6 @@ export async function GET(request: Request) {
       .order('created_at', { ascending: false });
 
     if (error) {
-      console.error('User bookings fetch error:', error);
       return NextResponse.json(
         { error: 'Failed to fetch bookings', message: error.message },
         { status: 500 }
@@ -31,7 +30,6 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ bookings });
   } catch (error: any) {
-    console.error('User bookings API error:', error);
     return NextResponse.json(
       { error: 'Internal server error', message: error.message },
       { status: 500 }

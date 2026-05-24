@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useTranslation } from 'react-i18next'
@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Sparkles, Mail, Lock, User, ArrowRight, Chrome, Eye, EyeOff } from 'lucide-react'
+import { Sparkles, Mail, Lock, User, ArrowRight, Eye, EyeOff } from 'lucide-react'
 
 // 路由映射：根据邮箱决定登录后跳到哪里
 const ROUTE_MAP: Record<string, string> = {
@@ -34,55 +34,58 @@ export function AuthCard() {
   const [showPassword, setShowPassword] = useState(false)
   const [showRegisterPassword, setShowRegisterPassword] = useState(false)
   
-  const { signIn, signUp, signInWithGoogle } = useAuth()
+  const { signIn, signUp } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
   const { t, i18n } = useTranslation()
   const redirect = searchParams.get('redirect') || '/user/dashboard'
   const isZh = i18n.language === 'zh'
 
+  // 真正防连点：ref 同步阻止并发提交（state 有延迟）
+  const submittingRef = useRef(false)
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (submittingRef.current) return
+    submittingRef.current = true
     setIsLoading(true)
     setError('')
 
-    const { error } = await signIn(email, password)
-    
-    if (error) {
-      setError(error.message)
+    try {
+      const { error } = await signIn(email, password)
+      
+      if (error) {
+        setError(error.message)
+      } else {
+        const target = getRedirectByEmail(email)
+        router.push(target)
+        router.refresh()
+      }
+    } finally {
       setIsLoading(false)
-    } else {
-      const target = getRedirectByEmail(email)
-      router.push(target)
-      router.refresh()
+      submittingRef.current = false
     }
   }
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (submittingRef.current) return
+    submittingRef.current = true
     setIsLoading(true)
     setError('')
+    setMessage('')
 
-    const { error } = await signUp(email, password, { full_name: fullName })
-    
-    if (error) {
-      setError(error.message)
+    try {
+      const { error } = await signUp(email, password, { full_name: fullName })
+      
+      if (error) {
+        setError(error.message)
+      } else {
+        setMessage(isZh ? '请查收邮件确认您的账户！如果1-2分钟内未收到，请检查垃圾邮件文件夹。' : 'Check your email to confirm your account! If not received in 1-2 minutes, check your spam folder.')
+      }
+    } finally {
       setIsLoading(false)
-    } else {
-      setMessage(isZh ? '请查收邮件确认您的账户！' : 'Check your email to confirm your account!')
-      setIsLoading(false)
-    }
-  }
-
-  const handleGoogleSignIn = async () => {
-    setIsLoading(true)
-    setError('')
-
-    const { error } = await signInWithGoogle()
-    
-    if (error) {
-      setError(error.message)
-      setIsLoading(false)
+      submittingRef.current = false
     }
   }
 
@@ -284,29 +287,6 @@ export function AuthCard() {
             </form>
           </TabsContent>
         </Tabs>
-
-        {/* Divider */}
-        <div className="relative my-6">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-stone-200" />
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-4 bg-white text-stone-500">
-              {isZh ? '或使用' : 'Or continue with'}
-            </span>
-          </div>
-        </div>
-
-        {/* Google Sign In */}
-        <Button
-          variant="outline"
-          onClick={handleGoogleSignIn}
-          disabled={isLoading}
-          className="w-full h-12 border-stone-200 hover:bg-stone-50 text-stone-700 font-medium rounded-xl"
-        >
-          <Chrome className="mr-2 w-5 h-5" />
-          {isZh ? '使用 Google 登录' : 'Sign in with Google'}
-        </Button>
 
         {/* Footer */}
         <p className="mt-6 text-center text-sm text-stone-500">

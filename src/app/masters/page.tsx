@@ -10,13 +10,13 @@ import Link from "next/link"
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
-const specialtyLabels: Record<string, string> = {
-  tarot: "Tarot",
-  astrology: "Astrology",
-  bazi: "Bazi / 八字命理",
-  fengshui: "Feng Shui / 风水",
-  qimen: "Qi Men Dun Jia / 奇门遁甲",
-  liuyao: "Liu Yao / 六爻占卜",
+const specialtyLabels: Record<string, { zh: string; en: string }> = {
+  tarot: { zh: "塔罗", en: "Tarot" },
+  astrology: { zh: "占星", en: "Astrology" },
+  bazi: { zh: "八字命理", en: "BaZi" },
+  fengshui: { zh: "风水", en: "Feng Shui" },
+  qimen: { zh: "奇门遁甲", en: "Qi Men Dun Jia" },
+  liuyao: { zh: "六爻占卜", en: "Liu Yao" },
 }
 
 const statusConfig: Record<string, { label: string; labelEn: string; color: string }> = {
@@ -37,8 +37,14 @@ export default function MastersPage() {
         if (res.ok) {
           const data = await res.json();
           const map: Record<string, string> = {};
+          const aiMasterIds = ['master-lin', 'master-han', 'master-elena'];
           (data.masters || []).forEach((m: any) => {
-            map[m.id] = m.status || 'online';
+            // AI师傅强制显示休息中
+            if (aiMasterIds.includes(m.id)) {
+              map[m.id] = 'rest';
+            } else {
+              map[m.id] = m.status || 'online';
+            }
           });
           setMasterStatuses(map);
         }
@@ -62,7 +68,7 @@ export default function MastersPage() {
             <div className="flex items-center space-x-4">
               <LanguageSwitcher />
               <Link href="/services">
-                <Button variant="outline" size="sm">View Services</Button>
+                <Button variant="outline" size="sm">{currentLang === 'zh' ? '查看服务' : 'View Services'}</Button>
               </Link>
             </div>
           </div>
@@ -75,7 +81,7 @@ export default function MastersPage() {
           <div className="text-center max-w-3xl mx-auto">
             <div className="inline-flex items-center space-x-2 bg-stellawei-purple/10 text-stellawei-purple px-4 py-2 rounded-full text-sm font-medium mb-6">
               <CheckCircle className="w-4 h-4" />
-              <span>All Masters Verified & Certified</span>
+              <span>{currentLang === 'zh' ? '所有师傅均通过认证' : 'All Masters Verified & Certified'}</span>
             </div>
             
             <h1 className="text-4xl md:text-5xl font-serif font-bold mb-6">{t('masters.title')}</h1>
@@ -91,7 +97,9 @@ export default function MastersPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {masters.map((master) => {
-              const status = masterStatuses[master.id] || 'online';
+              const aiMasterIds = ['master-lin', 'master-han', 'master-elena'];
+              const rawStatus = aiMasterIds.includes(master.id) ? 'rest' : (masterStatuses[master.id] || 'online');
+              const status = rawStatus;
               const statusInfo = statusConfig[status] || statusConfig.online;
               return (
                 <Link key={master.id} href={`/masters/${master.id}`}>
@@ -132,7 +140,7 @@ export default function MastersPage() {
                       <div className="flex flex-wrap gap-2">
                         {master.specialties.map(specialty => (
                           <Badge key={specialty} variant="secondary" className="text-xs">
-                            {specialtyLabels[specialty] || specialty}
+                            {(specialtyLabels as Record<string, { zh: string; en: string }>)[specialty]?.[currentLang as 'zh' | 'en'] || specialty}
                           </Badge>
                         ))}
                       </div>
@@ -140,7 +148,7 @@ export default function MastersPage() {
                       <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center space-x-1 text-muted-foreground">
                           <Clock className="w-4 h-4" />
-                          <span>{master.experience_years}+ years</span>
+                          <span>{master.experience_years}+ {currentLang === 'zh' ? '年经验' : 'years'}</span>
                         </div>
                         
                         <span className="text-muted-foreground">{master.rating_count} {t('masters.reviews')}</span>

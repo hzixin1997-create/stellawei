@@ -82,7 +82,6 @@ export async function GET(request: Request) {
           .eq('id', booking.user_id)
           .single();
 
-        console.log(`[reminder] Booking ${booking.id}: userData=`, userData);
 
         if (!userData || !userData.email) {
           console.warn('Missing user data for booking:', booking.id);
@@ -99,7 +98,6 @@ export async function GET(request: Request) {
           .eq('slug', booking.master_id)
           .single();
         
-        console.log(`[reminder] Booking ${booking.id}: dbMaster=`, dbMaster);
 
         if (dbMaster && dbMaster.email) {
           masterData = {
@@ -119,7 +117,6 @@ export async function GET(request: Request) {
         const chatUrl = `https://stellawei.org/chat/${booking.id}`;
 
         // 给用户发邮件
-        console.log(`[reminder] Sending user email to: ${userData.email}`);
         const userEmailResult = await sendConsultationReminder({
           to: userData.email,
           userName: userData.full_name || 'User',
@@ -131,10 +128,8 @@ export async function GET(request: Request) {
           isMaster: false,
           chatUrl,
         });
-        console.log(`[reminder] User email result:`, userEmailResult);
 
         // 给师傅发邮件
-        console.log(`[reminder] Sending master email to: ${masterData.email}`);
         const masterEmailResult = await sendConsultationReminder({
           to: masterData.email,
           userName: userData.full_name || 'User',
@@ -146,7 +141,6 @@ export async function GET(request: Request) {
           isMaster: true,
           chatUrl,
         });
-        console.log(`[reminder] Master email result:`, masterEmailResult);
 
         // 标记已发送
         if (userEmailResult.success || masterEmailResult.success) {

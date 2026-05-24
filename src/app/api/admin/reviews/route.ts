@@ -31,21 +31,35 @@ export async function GET(request: Request) {
 
     const supabase = createServiceClient();
 
+    // 简化查询，先查reviews，再手动关联用户和师傅信息
     const { data: reviews, error } = await supabase
       .from('reviews')
-      .select(`
-        id,
-        rating,
-        content,
-        status,
-        created_at,
-        master_id,
-        booking_id,
-        user:profiles(full_name, email),
-        master:masters(display_name)
-      `)
+      .select('*')
       .eq('status', status)
       .order('created_at', { ascending: false });
+
+    // 获取所有相关的用户和师傅信息
+    const enrichedReviews = await Promise.all((reviews || []).map(async (review) => {
+      // 查询用户信息
+      const { data: userData } = await supabase
+        .from('profiles')
+        .select('full_name, email')
+        .eq('id', review.user_id)
+        .single();
+      
+      // 查询师傅信息
+      const { data: masterData } = await supabase
+        .from('masters')
+        .select('display_name')
+        .eq('id', review.master_id)
+        .single();
+
+      return {
+        ...review,
+        user: userData ? [userData] : [],
+        master: masterData ? [masterData] : [],
+      };
+    }));
 
     if (error) {
       console.error('Admin reviews fetch error:', error);
@@ -55,7 +69,7 @@ export async function GET(request: Request) {
       );
     }
 
-    return NextResponse.json({ reviews: reviews || [] });
+    return NextResponse.json({ reviews: enrichedReviews || [] });
   } catch (error: any) {
     console.error('Admin reviews API error:', error);
     return NextResponse.json(

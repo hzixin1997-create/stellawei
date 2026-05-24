@@ -26,6 +26,7 @@ const mastersMap: Record<string, string> = {
 
 const statusLabels: Record<string, { text: string; color: string }> = {
   pending: { text: '待付款', color: 'bg-yellow-100 text-yellow-800' },
+  expired: { text: '已过期', color: 'bg-gray-100 text-gray-500' },
   paid: { text: '已付款', color: 'bg-green-100 text-green-800' },
   confirmed: { text: '已确认', color: 'bg-blue-100 text-blue-800' },
   in_progress: { text: '服务中', color: 'bg-violet-100 text-violet-800' },
@@ -303,9 +304,15 @@ export default function AdminOrders() {
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
                             <span className="font-medium">{mastersMap[order.master_id] || order.master_id}</span>
-                            <Badge className={statusLabels[order.payment_status]?.color || 'bg-gray-100'}>
-                              {statusLabels[order.payment_status]?.text || order.payment_status}
-                            </Badge>
+                            {(() => {
+                              const isExpiredOrder = order.status === 'pending' && order.payment_status === 'pending' && order.expires_at && Date.now() > new Date(order.expires_at).getTime();
+                              const displayStatus = isExpiredOrder ? 'expired' : order.payment_status;
+                              return (
+                                <Badge className={statusLabels[displayStatus]?.color || 'bg-gray-100'}>
+                                  {statusLabels[displayStatus]?.text || displayStatus}
+                                </Badge>
+                              );
+                            })()}
                             <span className="text-xs text-stone-400">{order.id.slice(0, 8)}</span>
                           </div>
                           <p className="text-sm text-stone-600">

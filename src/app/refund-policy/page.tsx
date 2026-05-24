@@ -4,7 +4,7 @@ import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, Shield, Clock, CreditCard, AlertCircle } from 'lucide-react'
+import { ArrowLeft, Shield, Clock, CreditCard, AlertCircle, CheckCircle, ClipboardList } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
@@ -58,9 +58,9 @@ function RefundPolicyContent() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-50 to-stone-100 py-8 px-4">
       <div className="max-w-2xl mx-auto">
-        <Link href="/user/dashboard" className="inline-flex items-center text-stone-600 hover:text-stone-900 mb-4">
+        <Link href={bookingId ? '/user/dashboard' : '/'} className="inline-flex items-center text-stone-600 hover:text-stone-900 mb-4">
           <ArrowLeft className="w-4 h-4 mr-2" />
-          {isZh ? '返回订单' : 'Back to Orders'}
+          {bookingId ? (isZh ? '返回订单' : 'Back to Orders') : (isZh ? '返回首页' : 'Back to Home')}
         </Link>
 
         <Card>
@@ -101,6 +101,18 @@ function RefundPolicyContent() {
               </div>
 
               <div className="flex gap-3">
+                <CheckCircle className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h3 className="font-semibold mb-1">{isZh ? '可退款情形' : 'Eligible for Refund'}</h3>
+                  <ul className="text-sm text-stone-600 space-y-1 list-disc list-inside">
+                    <li>{isZh ? '咨询开始前 24 小时以上取消，可申请全额退款' : 'Cancellation made more than 24 hours before the scheduled consultation qualifies for a full refund'}</li>
+                    <li>{isZh ? '因平台或师傅原因导致咨询无法正常进行' : 'Consultation unable to proceed due to platform or master-related issues'}</li>
+                    <li>{isZh ? '订单处于待支付（pending）状态且未超时自动取消' : 'Orders in pending status that have not timed out or been auto-cancelled'}</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
                 <AlertCircle className="w-5 h-5 text-violet-600 flex-shrink-0 mt-0.5" />
                 <div>
                   <h3 className="font-semibold mb-1">{isZh ? '不可退款情形' : 'Non-Refundable Cases'}</h3>
@@ -109,6 +121,18 @@ function RefundPolicyContent() {
                     <li>{isZh ? '超过预约时间24小时后申请退款' : 'Refund requested more than 24 hours after scheduled time'}</li>
                     <li>{isZh ? '用户主动取消后再次预约的订单' : 'Orders rebooked after user cancellation'}</li>
                   </ul>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <ClipboardList className="w-5 h-5 text-violet-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h3 className="font-semibold mb-1">{isZh ? '退款审核流程' : 'Refund Review Process'}</h3>
+                  <p className="text-sm text-stone-600">
+                    {isZh 
+                      ? '退款申请提交后，管理员将在 1-2 个工作日内审核。审核通过后，款项将按上述时效原路退回。审核不通过时，您将收到邮件通知并说明具体原因。'
+                      : 'After submission, our admin team will review your request within 1-2 business days. Once approved, the refund will be returned to your original payment method within the timeframe stated above. If declined, you will receive an email notification with the reason.'}
+                  </p>
                 </div>
               </div>
 
@@ -121,41 +145,46 @@ function RefundPolicyContent() {
               </div>
             </div>
 
-            {/* 确认勾选 */}
-            <div className="flex items-start gap-3 pt-4 border-t">
-              <input
-                type="checkbox"
-                id="agree"
-                checked={agreed}
-                onChange={(e) => setAgreed(e.target.checked)}
-                className="mt-1 w-4 h-4 text-violet-600 rounded border-stone-300 focus:ring-violet-500"
-              />
-              <label htmlFor="agree" className="text-sm text-stone-600 cursor-pointer">
-                {isZh 
-                  ? '我已阅读并理解上述退款政策，确认申请退款。'
-                  : 'I have read and understood the refund policy above and confirm to request a refund.'}
-              </label>
-            </div>
+            {/* 仅当有 bookingId 时显示申请退款按钮 */}
+            {bookingId && (
+              <>
+                {/* 确认勾选 */}
+                <div className="flex items-start gap-3 pt-4 border-t">
+                  <input
+                    type="checkbox"
+                    id="agree"
+                    checked={agreed}
+                    onChange={(e) => setAgreed(e.target.checked)}
+                    className="mt-1 w-4 h-4 text-violet-600 rounded border-stone-300 focus:ring-violet-500"
+                  />
+                  <label htmlFor="agree" className="text-sm text-stone-600 cursor-pointer">
+                    {isZh 
+                      ? '我已阅读并理解上述退款政策，确认申请退款。'
+                      : 'I have read and understood the refund policy above and confirm to request a refund.'}
+                  </label>
+                </div>
 
-            {/* 按钮 */}
-            <div className="flex gap-4">
-              <Button
-                variant="outline"
-                className="flex-1"
-                onClick={() => router.push('/user/dashboard')}
-              >
-                {isZh ? '取消' : 'Cancel'}
-              </Button>
-              <Button
-                className="flex-1 bg-orange-600 hover:bg-orange-700"
-                onClick={handleRefund}
-                disabled={submitting || !agreed}
-              >
-                {submitting 
-                  ? (isZh ? '处理中...' : 'Processing...') 
-                  : (isZh ? '确认申请退款' : 'Confirm Refund')}
-              </Button>
-            </div>
+                {/* 按钮 */}
+                <div className="flex gap-4">
+                  <Button
+                    variant="outline"
+                    className="flex-1"
+                    onClick={() => router.push('/user/dashboard')}
+                  >
+                    {isZh ? '取消' : 'Cancel'}
+                  </Button>
+                  <Button
+                    className="flex-1 bg-orange-600 hover:bg-orange-700"
+                    onClick={handleRefund}
+                    disabled={submitting || !agreed}
+                  >
+                    {submitting 
+                      ? (isZh ? '处理中...' : 'Processing...') 
+                      : (isZh ? '确认申请退款' : 'Confirm Refund')}
+                  </Button>
+                </div>
+              </>
+            )}
           </CardContent>
         </Card>
       </div>

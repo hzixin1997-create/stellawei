@@ -29,7 +29,7 @@ export async function GET(
     // 验证 booking 存在且当前用户有权访问
     const { data: booking, error: bookingError } = await supabase
       .from('bookings')
-      .select('id, user_id, master_id, status, payment_status, scheduled_at, scheduled_date, scheduled_time, duration_minutes, timezone, service_id, total_amount, currency, is_first_time')
+      .select('id, user_id, master_id, status, payment_status, scheduled_at, scheduled_date, scheduled_time, duration_minutes, timezone, service_id, total_amount, currency, is_first_time, user_typing_until, master_typing_until')
       .eq('id', bookingId)
       .single();
 
@@ -62,14 +62,39 @@ export async function GET(
       .order('created_at', { ascending: true });
 
     if (error) {
-      console.error('Fetch messages error:', error);
       return NextResponse.json(
         { error: 'Failed to fetch messages', message: error.message },
         { status: 500 }
       );
     }
 
-    return NextResponse.json({ messages: messages || [], booking });
+    // 标记对方消息为已读（当前用户查看时，将对方发送的未读消息标记为已读）
+    const oppositeSenderType = isMaster ? 'user' : 'master';
+    const unreadMessages = (messages || []).filter(
+      (m) => m.sender_type === oppositeSenderType && !m.read_at
+    );
+
+    if (unreadMessages.length > 0) {
+      const unreadIds = unreadMessages.map((m) => m.id);
+      await supabase
+        .from('messages')
+        .update({ read_at: new Date().toISOString() })
+        .in('id', unreadIds);
+    }
+
+    // 返回 typing 状态
+    const now = new Date().toISOString();
+    const isUserTyping = booking.user_typing_until && booking.user_typing_until > now;
+    const isMasterTyping = booking.master_typing_until && booking.master_typing_until > now;
+
+    return NextResponse.json({
+      messages: messages || [],
+      booking,
+      typing: {
+        user: isUserTyping,
+        master: isMasterTyping,
+      },
+    });
   } catch (error: any) {
     console.error('Chat messages API error:', error);
     return NextResponse.json(
@@ -90,11 +115,11 @@ export async function POST(
   try {
     const { bookingId } = params;
     const body = await request.json();
-    const { content, image_url } = body;
+    const { content, image_url, audio_url, audio_duration } = body;
 
-    if (!content && !image_url) {
+    if (!content && !image_url && !audio_url) {
       return NextResponse.json(
-        { error: 'Message must have content or image' },
+        { error: 'Message must have content, image, or audio' },
         { status: 400 }
       );
     }
@@ -130,24 +155,26 @@ export async function POST(
     }
 
     // 检查订单状态是否允许发送消息
-    // 允许状态：confirmed（已接单）, in_progress（进行中）
-    if (!['confirmed', 'in_progress'].includes(booking.status)) {
-      return NextResponse.json(
-        { error: 'Booking is not ready for chat', currentStatus: booking.status },
-        { status: 400 }
-      );
+    // 用户端：只允许 confirmed / in_progress，且不能超时
+    // 师傅端：只要不是 cancelled/refunded，随时可以发
+    if (isUser) {
+      if (!['confirmed', 'in_progress'].includes(booking.status)) {
+        return NextResponse.json(
+          { error: 'Booking is not ready for chat', currentStatus: booking.status },
+          { status: 400 }
+        );
+      }
+      // 检查是否已超时（咨询时间结束）
+      if (booking.scheduled_at && booking.duration_minutes) {
+        const endTime = new Date(booking.scheduled_at).getTime() + booking.duration_minutes * 60 * 1000;
+        if (Date.now() > endTime) {
+          return NextResponse.json({ error: 'Consultation time has ended' }, { status: 400 });
+        }
+      }
     }
 
     if (booking.payment_status !== 'paid') {
       return NextResponse.json({ error: 'Booking not paid' }, { status: 400 });
-    }
-
-    // 检查是否已超时（咨询时间结束）
-    if (booking.scheduled_at && booking.duration_minutes) {
-      const endTime = new Date(booking.scheduled_at).getTime() + booking.duration_minutes * 60 * 1000;
-      if (Date.now() > endTime) {
-        return NextResponse.json({ error: 'Consultation time has ended' }, { status: 400 });
-      }
     }
 
     // 状态由时间驱动，不在发消息时自动变更
@@ -168,6 +195,9 @@ export async function POST(
         sender_name: senderName,
         content: content || null,
         image_url: image_url || null,
+        audio_url: audio_url || null,
+        audio_duration: audio_duration != null ? audio_duration : null,
+        source: 'chat',
       })
       .select()
       .single();
@@ -182,7 +212,6 @@ export async function POST(
 
     return NextResponse.json({ success: true, message });
   } catch (error: any) {
-    console.error('Send message API error:', error);
     return NextResponse.json(
       { error: 'Internal server error', message: error.message },
       { status: 500 }

@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Star, Shield, Clock, Sparkles, Moon, Sun, Users, Heart, Briefcase, Coins, Sparkles as SparklesIcon, User, X, MessageCircle, Video, Compass } from "lucide-react"
+import { Star, Shield, Clock, Sparkles, Moon, Sun, Users, Heart, Briefcase, Coins, Sparkles as SparklesIcon, User, X, Menu, MessageCircle, Video, Compass } from "lucide-react"
 import Link from "next/link"
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -159,6 +159,7 @@ export default function Home() {
   const { t, i18n } = useTranslation();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [user, setUser] = useState<any>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isZh = i18n.language === 'zh';
 
   // 轮播效果
@@ -185,6 +186,17 @@ export default function Home() {
     return () => subscription.unsubscribe();
   }, []);
 
+  const router = useRouter();
+
+  // 未登录时跳转注册/登录页，已登录时跳转booking
+  const handleBookingClick = () => {
+    if (!user) {
+      router.push('/auth/login');
+    } else {
+      router.push('/booking');
+    }
+  };
+
   const currentLang = i18n.language || 'en';
   const displayQuestion = currentLang === 'zh' 
     ? carouselQuestions[currentQuestion].zh 
@@ -205,17 +217,25 @@ export default function Home() {
               <a href="#masters" className="text-foreground/70 hover:text-stellawei-purple transition-colors">{t('nav.masters')}</a>
               <a href="#trust" className="text-foreground/70 hover:text-stellawei-purple transition-colors">{t('nav.trust')}</a>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 md:space-x-4">
               <LanguageSwitcher />
+              {/* 移动端汉堡菜单按钮 */}
+              <button
+                className="md:hidden p-2 rounded-lg hover:bg-stone-100"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label="Toggle menu"
+              >
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
               {user ? (
-                <Link href={user?.email ? getDashboardRoute(user.email) : '/auth/login'} className="flex items-center space-x-2 text-sm text-foreground/70 hover:text-stellawei-purple transition-colors">
+                <Link href={user?.email ? getDashboardRoute(user.email) : '/auth/login'} className="hidden sm:flex items-center space-x-2 text-sm text-foreground/70 hover:text-stellawei-purple transition-colors">
                   <User className="w-4 h-4" />
                   <span className="hidden sm:inline">{user.email}</span>
                 </Link>
               ) : (
                 <>
-                  <Link href="/auth/login">
-                    <Button variant="ghost" className="hidden sm:inline-flex">{t('nav.signIn')}</Button>
+                  <Link href="/auth/login" className="hidden sm:inline-flex">
+                    <Button variant="ghost">{t('nav.signIn')}</Button>
                   </Link>
                   <Link href="/auth/login">
                     <Button>{t('nav.getStarted')}</Button>
@@ -226,6 +246,33 @@ export default function Home() {
           </div>
         </div>
       </nav>
+
+      {/* 移动端菜单 */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-[60] md:hidden">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setMobileMenuOpen(false)} />
+          <div className="absolute right-0 top-0 bottom-0 w-64 bg-white p-6 flex flex-col gap-4 shadow-xl">
+            <div className="flex justify-between items-center mb-4">
+              <span className="font-serif font-bold text-stellawei-purple">{t('brand')}</span>
+              <button onClick={() => setMobileMenuOpen(false)} className="p-1">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <a href="#services" className="text-foreground/70 hover:text-stellawei-purple py-2 border-b border-stone-100" onClick={() => setMobileMenuOpen(false)}>{t('nav.services')}</a>
+            <a href="#masters" className="text-foreground/70 hover:text-stellawei-purple py-2 border-b border-stone-100" onClick={() => setMobileMenuOpen(false)}>{t('nav.masters')}</a>
+            <a href="#trust" className="text-foreground/70 hover:text-stellawei-purple py-2 border-b border-stone-100" onClick={() => setMobileMenuOpen(false)}>{t('nav.trust')}</a>
+            {user ? (
+              <Link href={user?.email ? getDashboardRoute(user.email) : '/auth/login'} className="text-foreground/70 hover:text-stellawei-purple py-2" onClick={() => setMobileMenuOpen(false)}>
+                {isZh ? '我的账户' : 'My Account'}
+              </Link>
+            ) : (
+              <Link href="/auth/login" className="text-foreground/70 hover:text-stellawei-purple py-2" onClick={() => setMobileMenuOpen(false)}>
+                {t('nav.signIn')}
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* 热门问题轮播 - 首页最顶部 */}
       <div className="fixed top-16 left-0 right-0 z-40 bg-stellawei-purple py-3 overflow-hidden">
@@ -240,25 +287,23 @@ export default function Home() {
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold mb-6 leading-[1.2]">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-serif font-bold mb-4 sm:mb-6 leading-[1.15] sm:leading-[1.2]">
               {t('hero.title')}
-              <span className="safe-gradient-text block mt-2">{t('hero.titleHighlight')}</span>
+              <span className="safe-gradient-text block mt-1 sm:mt-2">{t('hero.titleHighlight')}</span>
             </h1>
             
-            <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
+            <p className="text-base sm:text-xl text-muted-foreground mb-6 sm:mb-10 max-w-2xl mx-auto px-2 sm:px-0">
               {t('hero.subtitle')}
             </p>
             
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/booking">
-                <Button size="lg" className="text-lg px-8">
-                  {t('hero.ctaPrimary')}
-                </Button>
-              </Link>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+              <Button size="lg" className="text-sm sm:text-lg px-4 sm:px-8 w-full sm:w-auto max-w-[200px] sm:max-w-none" onClick={handleBookingClick}>
+                {t('hero.ctaPrimary')}
+              </Button>
               <Button 
                 variant="outline" 
                 size="lg" 
-                className="text-lg px-8"
+                className="text-sm sm:text-lg px-4 sm:px-8 w-full sm:w-auto max-w-[200px] sm:max-w-none"
                 onClick={() => {
                   const servicesSection = document.getElementById('services');
                   if (servicesSection) {
@@ -270,7 +315,7 @@ export default function Home() {
               </Button>
             </div>
             
-            <div className="mt-12 flex items-center justify-center space-x-8 text-sm text-muted-foreground">
+            <div className="mt-8 sm:mt-12 flex flex-wrap items-center justify-center gap-x-4 sm:gap-x-8 gap-y-2 text-sm text-muted-foreground">
               <div className="flex items-center space-x-2">
                 <Star className="w-4 h-4 text-stellawei-gold fill-stellawei-gold" />
                 <span>{t('hero.rating')}</span>
@@ -292,7 +337,7 @@ export default function Home() {
       <section id="services" className="py-20 bg-white/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-serif font-bold mb-4">{t('services.title')}</h2>
+            <h2 className="text-2xl sm:text-4xl font-serif font-bold mb-4">{t('services.title')}</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               {t('services.subtitle')}
             </p>
@@ -325,7 +370,7 @@ export default function Home() {
       <section id="masters" className="py-20 bg-white/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-serif font-bold mb-4">{t('masters.title')}</h2>
+            <h2 className="text-2xl sm:text-4xl font-serif font-bold mb-4">{t('masters.title')}</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               {t('masters.subtitle')}
             </p>
@@ -439,14 +484,12 @@ export default function Home() {
       {/* CTA Section */}
       <section className="py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-serif font-bold mb-6">{t('cta.title')}</h2>
+          <h2 className="text-2xl sm:text-4xl font-serif font-bold mb-4 sm:mb-6">{t('cta.title')}</h2>
           {/* subtitle 已移除 */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/booking">
-              <Button size="lg" className="text-lg px-8">
-                {t('cta.claim')}
-              </Button>
-            </Link>
+            <Button size="lg" className="text-lg px-8" onClick={handleBookingClick}>
+              {t('cta.claim')}
+            </Button>
             <Button 
               variant="outline" 
               size="lg" 
@@ -481,10 +524,10 @@ export default function Home() {
             <div>
               <h4 className="font-semibold mb-4">{t('footer.services')}</h4>
               <ul className="space-y-2 text-sm text-white/70">
-                <li><a href="#" className="hover:text-white">{t('services.tarot.name')}</a></li>
-                <li><a href="#" className="hover:text-white">{t('services.astrology.name')}</a></li>
-                <li><a href="#" className="hover:text-white">{t('services.bazi.name')}</a></li>
-                <li><a href="#" className="hover:text-white">{t('services.fengshui.name')}</a></li>
+                <li><a href="/services/tarot" className="hover:text-white">{t('services.tarot.name')}</a></li>
+                <li><a href="/services/bazi" className="hover:text-white">{t('services.eastern.name')}</a></li>
+                <li><a href="/services/spiritual" className="hover:text-white">{t('services.spiritual.name')}</a></li>
+                <li><span className="text-white/40 cursor-default">{isZh ? '社区服务' : 'Community Services'}</span></li>
               </ul>
             </div>
             
@@ -501,10 +544,10 @@ export default function Home() {
             <div>
               <h4 className="font-semibold mb-4">{t('footer.support')}</h4>
               <ul className="space-y-2 text-sm text-white/70">
-                <li><a href="#" className="hover:text-white">{t('footer.helpCenter')}</a></li>
-                <li><a href="#" className="hover:text-white">{t('footer.refundPolicy')}</a></li>
-                <li><a href="#" className="hover:text-white">{t('footer.privacyPolicy')}</a></li>
-                <li><a href="#" className="hover:text-white">{t('footer.termsOfService')}</a></li>
+                <li><a href="/help" className="hover:text-white">{t('footer.helpCenter')}</a></li>
+                <li><a href="/refund-policy" className="hover:text-white">{t('footer.refundPolicy')}</a></li>
+                <li><a href="/privacy" className="hover:text-white">{t('footer.privacyPolicy')}</a></li>
+                <li><a href="/terms" className="hover:text-white">{t('footer.termsOfService')}</a></li>
               </ul>
             </div>
           </div>
