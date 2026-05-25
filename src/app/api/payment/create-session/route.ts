@@ -96,7 +96,7 @@ export async function POST(request: Request) {
 
     const bookingTimeDescription = scheduledDate && scheduledTime
       ? `Scheduled for ${scheduledDate} at ${scheduledTime}`
-      : ''
+      : null
 
     const stripeAmount = convertToStripeAmount(amount, currency)
 
@@ -104,16 +104,20 @@ export async function POST(request: Request) {
     const cancelUrl = `${appUrl}/payment/cancel?booking_id=${bookingId}`
 
     // 创建 Stripe Checkout Session
+    const productData: any = {
+      name: serviceDescription,
+    }
+    if (bookingTimeDescription) {
+      productData.description = bookingTimeDescription
+    }
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       payment_method_types: ['card', 'alipay'],
       line_items: [{
         price_data: {
           currency: currency.toLowerCase(),
-          product_data: {
-            name: serviceDescription,
-            description: bookingTimeDescription,
-          },
+          product_data: productData,
           unit_amount: stripeAmount,
         },
         quantity: 1,
