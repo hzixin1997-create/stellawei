@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/client'
-import { ShoppingBag, MessageSquare, ArrowRight, Clock, User, Home, LogOut, MessageCircle, AlertTriangle, Star } from 'lucide-react'
+import { ShoppingBag, MessageSquare, ArrowRight, Clock, User, Home, LogOut, MessageCircle, AlertTriangle, Star, Calendar } from 'lucide-react'
 import Link from 'next/link'
 
 import { isConsultationExpired, getConsultationDisplayStatus } from '@/lib/utils'
@@ -43,6 +43,7 @@ interface Booking {
   created_at: string
   expires_at: string | null
   deleted_at?: string | null
+  consultation_type?: string
 }
 
 // 格式化倒计时
@@ -70,6 +71,15 @@ export default function UserDashboard() {
   const [reviewText, setReviewText] = useState('')
   const [isSubmittingReview, setIsSubmittingReview] = useState(false)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+
+  // 修改预约时间弹窗状态
+  const [showRescheduleModal, setShowRescheduleModal] = useState(false)
+  const [rescheduleBooking, setRescheduleBooking] = useState<Booking | null>(null)
+  const [rescheduleDate, setRescheduleDate] = useState('')
+  const [rescheduleSlots, setRescheduleSlots] = useState<string[]>([])
+  const [rescheduleLoading, setRescheduleLoading] = useState(false)
+  const [rescheduleSelectedTime, setRescheduleSelectedTime] = useState('')
+  const [rescheduleSubmitting, setRescheduleSubmitting] = useState(false)
 
   // 倒计时状态：booking_id -> remaining_seconds
   const [countdowns, setCountdowns] = useState<Record<string, number>>({})
@@ -267,6 +277,91 @@ export default function UserDashboard() {
     }
   }
 
+  // 打开修改时间弹窗
+  const openRescheduleModal = async (booking: Booking) => {
+    setRescheduleBooking(booking)
+    setShowRescheduleModal(true)
+    setRescheduleDate(booking.scheduled_date)
+    setRescheduleSelectedTime('')
+    setRescheduleSlots([])
+    setRescheduleLoading(true)
+    try {
+      const masterSlug = booking.master_id
+      const res = await fetch(`/api/bookings/occupied-slots?master_id=${masterSlug}&date=${booking.scheduled_date}`)
+      const json = await res.json()
+      if (res.ok) {
+        setRescheduleSlots(json.available_slots || [])
+      } else {
+        console.error('Fetch slots error:', json.error)
+      }
+    } catch (err) {
+      console.error('Reschedule modal error:', err)
+    } finally {
+      setRescheduleLoading(false)
+    }
+  }
+
+  // 日期改变时拉取新时段
+  const handleRescheduleDateChange = async (date: string) => {
+    setRescheduleDate(date)
+    setRescheduleSelectedTime('')
+    setRescheduleLoading(true)
+    try {
+      if (!rescheduleBooking) return
+      const masterSlug = rescheduleBooking.master_id
+      const res = await fetch(`/api/bookings/occupied-slots?master_id=${masterSlug}&date=${date}`)
+      const json = await res.json()
+      if (res.ok) {
+        setRescheduleSlots(json.available_slots || [])
+      } else {
+        console.error('Fetch slots error:', json.error)
+      }
+    } catch (err) {
+      console.error('Reschedule date change error:', err)
+    } finally {
+      setRescheduleLoading(false)
+    }
+  }
+
+  // 提交修改预约时间
+  const handleRescheduleSubmit = async () => {
+    if (!rescheduleBooking || !rescheduleDate || !rescheduleSelectedTime) {
+      alert(isZh ? '请选择日期和时段' : 'Please select date and time')
+      return
+    }
+    setRescheduleSubmitting(true)
+    try {
+      const supabase = createClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch(`/api/bookings/${rescheduleBooking.id}/reschedule`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${session?.access_token || ''}`,
+        },
+        body: JSON.stringify({
+          scheduled_date: rescheduleDate,
+          scheduled_time: rescheduleSelectedTime,
+        }),
+      })
+      if (res.ok) {
+        const json = await res.json()
+        alert(isZh ? '预约时间修改成功！' : 'Booking rescheduled successfully!')
+        setBookings(prev => prev.map(b => b.id === rescheduleBooking.id ? { ...b, scheduled_date: rescheduleDate, scheduled_time: rescheduleSelectedTime } : b))
+        setShowRescheduleModal(false)
+        setRescheduleBooking(null)
+      } else {
+        const err = await res.json()
+        alert(err.error || 'Reschedule failed')
+      }
+    } catch (err: any) {
+      console.error('Reschedule submit error:', err)
+      alert(isZh ? `修改失败: ${err.message}` : `Reschedule failed: ${err.message}`)
+    } finally {
+      setRescheduleSubmitting(false)
+    }
+  }
+
   // 打开评价弹窗
   const openReviewModal = async (booking: Booking) => {
     setReviewTargetBooking(booking)
@@ -391,21 +486,21 @@ export default function UserDashboard() {
       {/* 顶部导航 */}
       <div className="bg-white border-b border-stone-200 px-4 py-3">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Link href="/" className="flex items-center text-stone-600 hover:text-stone-900">
-            <Home className="w-5 h-5 mr-2" />
-            <span className="font-medium">{isZh ? '返回首页' : 'Back to Home'}</span>
+          <Link href="/" className="flex items-center text-stone-600 hover:text-stone-900 shrink-0">
+            <Home className="w-5 h-5 mr-1 sm:mr-2" />
+            <span className="font-medium text-sm sm:text-base">{isZh ? '返回首页' : 'Back to Home'}</span>
           </Link>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 text-sm text-stone-500">
-              <User className="w-4 h-4" />
-              {user?.email}
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+            <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-stone-500 truncate">
+              <User className="w-4 h-4 shrink-0" />
+              <span className="truncate hidden sm:inline">{user?.email}</span>
             </div>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-1 text-sm text-stone-500 hover:text-red-600 transition-colors"
+              className="flex items-center gap-1 text-xs sm:text-sm text-stone-500 hover:text-red-600 transition-colors shrink-0"
             >
               <LogOut className="w-4 h-4" />
-              {isZh ? '退出登录' : 'Logout'}
+              <span className="hidden sm:inline">{isZh ? '退出登录' : 'Logout'}</span>
             </button>
           </div>
         </div>
@@ -493,20 +588,27 @@ export default function UserDashboard() {
                     const isUrgent = remainingSeconds > 0 && remainingSeconds <= 180 // 3分钟内
                     return (
                       <div key={booking.id} className="border rounded-lg p-4 hover:bg-stone-50 transition-colors">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
+                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                          <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-2">
-                              <span className="font-semibold">{isZh ? master.nameCn : master.name}</span>
+                              <span className="font-semibold text-sm sm:text-base truncate">{isZh ? master.nameCn : master.name}</span>
                               {getStatusBadge(booking)}
                             </div>
                             <p className="text-sm text-stone-600 mb-1">
                               {isZh ? service.nameCn : service.name}
                             </p>
-                            <div className="flex items-center gap-4 text-sm text-stone-500">
-                              <span className="flex items-center gap-1">
-                                <Clock className="w-3.5 h-3.5" />
-                                {booking.scheduled_date} {booking.scheduled_time}
-                              </span>
+                            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm text-stone-500">
+                              {booking.consultation_type !== 'message' && (
+                                <span className="flex items-center gap-1">
+                                  <Clock className="w-3.5 h-3.5" />
+                                  {booking.scheduled_date || '-'} {booking.scheduled_time || ''}
+                                </span>
+                              )}
+                              {booking.consultation_type === 'message' && (
+                                <span className="px-2 py-0.5 rounded bg-stone-100 text-stone-500 text-xs">
+                                  {isZh ? '留言咨询' : 'Message'}
+                                </span>
+                              )}
                               <span>{booking.duration_minutes} min</span>
                             </div>
                             <p className="text-sm font-medium text-violet-600 mt-2">
@@ -536,24 +638,26 @@ export default function UserDashboard() {
                               </p>
                             )}
                           </div>
-                          <div className="flex flex-col gap-2 ml-4 min-w-[80px]">
-                            {/* 已完成订单 - 查看历史对话 */}
+                          <div className="flex flex-row sm:flex-col gap-2 sm:min-w-[80px]">
+                            {/* 已完成订单 */}
                             {booking.payment_status === 'paid' && !canEnterChat(booking) && (
                               <>
-                                <Link href={`/chat/${booking.id}`} className="inline-flex">
+                                <Link href={`/chat/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
                                   <Button
                                     size="sm"
                                     variant="outline"
                                     className="text-stone-600 border-stone-300 hover:bg-stone-100 w-full"
                                   >
                                     <MessageCircle className="w-4 h-4 mr-1" />
-                                    {isZh ? '查看历史' : 'View History'}
+                                    {booking.consultation_type === 'message'
+                                      ? (isZh ? '查看留言' : 'View Message')
+                                      : (isZh ? '查看历史' : 'View History')}
                                   </Button>
                                 </Link>
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="text-amber-600 border-amber-200 hover:bg-amber-50 hover:text-amber-700 w-full"
+                                  className="text-amber-600 border-amber-200 hover:bg-amber-50 hover:text-amber-700 flex-1 sm:flex-none"
                                   onClick={() => openReviewModal(booking)}
                                 >
                                   <Star className="w-4 h-4 mr-1" />
@@ -561,30 +665,62 @@ export default function UserDashboard() {
                                 </Button>
                               </>
                             )}
-                            {/* 进行中订单 - 进入咨询 */}
-                            {canEnterChat(booking) && (
-                              <Link href={`/chat/${booking.id}`} className="inline-flex">
+                            {/* 已支付且未结束 - 实时咨询 */}
+                            {canEnterChat(booking) && booking.consultation_type !== 'message' && (
+                              <>
+                                <Link href={`/chat/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="text-violet-600 border-violet-200 hover:bg-violet-50 hover:text-violet-700 w-full"
+                                  >
+                                    <MessageCircle className="w-4 h-4 mr-1" />
+                                    {isZh ? '进入咨询' : 'Enter Chat'}
+                                  </Button>
+                                </Link>
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="text-violet-600 border-violet-200 hover:bg-violet-50 hover:text-violet-700 w-full"
+                                  className="text-blue-600 border-blue-200 hover:bg-blue-50 hover:text-blue-700 flex-1 sm:flex-none"
+                                  onClick={() => openRescheduleModal(booking)}
                                 >
-                                  <MessageCircle className="w-4 h-4 mr-1" />
-                                  {isZh ? '进入咨询' : 'Enter Chat'}
+                                  <Calendar className="w-4 h-4 mr-1" />
+                                  {isZh ? '修改时间' : 'Reschedule'}
                                 </Button>
-                              </Link>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-orange-600 border-orange-200 hover:bg-orange-50 hover:text-orange-700 flex-1 sm:flex-none"
+                                  onClick={() => handleRefund(booking.id)}
+                                  disabled={refundingId === booking.id}
+                                >
+                                  {refundingId === booking.id ? (isZh ? '处理中...' : 'Processing...') : (isZh ? '申请退款' : 'Refund')}
+                                </Button>
+                              </>
                             )}
-                            {/* 已支付但非已完成/进行中 - 申请退款 */}
-                            {booking.payment_status === 'paid' && canEnterChat(booking) && (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="text-orange-600 border-orange-200 hover:bg-orange-50 hover:text-orange-700 w-full"
-                                onClick={() => handleRefund(booking.id)}
-                                disabled={refundingId === booking.id}
-                              >
-                                {refundingId === booking.id ? (isZh ? '处理中...' : 'Processing...') : (isZh ? '申请退款' : 'Refund')}
-                              </Button>
+                            {/* 已支付且未结束 - 留言咨询 */}
+                            {booking.payment_status === 'paid' && booking.consultation_type === 'message' && canEnterChat(booking) && (
+                              <>
+                                <Link href={`/chat/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="text-violet-600 border-violet-200 hover:bg-violet-50 hover:text-violet-700 w-full"
+                                  >
+                                    <MessageCircle className="w-4 h-4 mr-1" />
+                                    {isZh ? '查看留言' : 'View Message'}
+                                  </Button>
+                                </Link>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-orange-600 border-orange-200 hover:bg-orange-50 hover:text-orange-700 flex-1 sm:flex-none"
+                                  onClick={() => handleRefund(booking.id)}
+                                  disabled={refundingId === booking.id}
+                                >
+                                  {refundingId === booking.id ? (isZh ? '处理中...' : 'Processing...') : (isZh ? '申请退款' : 'Refund')}
+                                </Button>
+                              </>
                             )}
 
                             {(booking.payment_status === 'pending' || booking.payment_status === 'pending_payment') && !expired && (
@@ -592,7 +728,7 @@ export default function UserDashboard() {
                                 <Button
                                   size="sm"
                                   variant="default"
-                                  className="bg-amber-500 hover:bg-amber-600 text-white w-full"
+                                  className="bg-amber-500 hover:bg-amber-600 text-white flex-1 sm:flex-none"
                                   onClick={() => handlePay(booking)}
                                   disabled={payingId === booking.id}
                                 >
@@ -601,7 +737,7 @@ export default function UserDashboard() {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600 w-full"
+                                  className="text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600 flex-1 sm:flex-none"
                                   onClick={() => handleCancel(booking.id)}
                                   disabled={cancellingId === booking.id}
                                 >
@@ -611,7 +747,7 @@ export default function UserDashboard() {
                             )}
                             {expired && (
                               <>
-                                <Link href="/booking" className="inline-flex">
+                                <Link href="/booking" className="inline-flex flex-1 sm:flex-none">
                                   <Button size="sm" variant="outline" className="w-full">
                                     {isZh ? '重新预约' : 'Rebook'}
                                   </Button>
@@ -619,7 +755,7 @@ export default function UserDashboard() {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="text-stone-500 border-stone-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200 w-full"
+                                  className="text-stone-500 border-stone-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200 flex-1 sm:flex-none"
                                   onClick={() => handleDelete(booking.id)}
                                   disabled={deletingId === booking.id}
                                 >
@@ -628,7 +764,7 @@ export default function UserDashboard() {
                               </>
                             )}
                             {booking.payment_status === 'failed' && (
-                              <Link href={`/order/${booking.id}`} className="inline-flex">
+                              <Link href={`/order/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
                                 <Button size="sm" variant="outline" className="w-full">
                                   {isZh ? '重试' : 'Retry'}
                                 </Button>
@@ -638,7 +774,7 @@ export default function UserDashboard() {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                className="text-stone-500 border-stone-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200 w-full"
+                                className="text-stone-500 border-stone-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200 flex-1 sm:flex-none"
                                 onClick={() => handleDelete(booking.id)}
                                 disabled={deletingId === booking.id}
                               >
@@ -751,6 +887,91 @@ export default function UserDashboard() {
                     </div>
                   </>
                 )}
+              </div>
+            </div>
+          )}
+
+          {/* 修改预约时间弹窗 */}
+          {showRescheduleModal && rescheduleBooking && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
+              <div className="bg-white rounded-2xl p-4 sm:p-6 max-w-md w-full max-h-[85vh] overflow-y-auto">
+                <h3 className="text-xl font-bold text-center mb-4">
+                  {isZh ? '修改预约时间' : 'Reschedule Booking'}
+                </h3>
+                <p className="text-stone-500 text-center mb-6 text-sm">
+                  {isZh
+                    ? `当前预约：${rescheduleBooking.scheduled_date} ${rescheduleBooking.scheduled_time}`
+                    : `Current: ${rescheduleBooking.scheduled_date} ${rescheduleBooking.scheduled_time}`}
+                </p>
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-stone-700 mb-2">
+                    {isZh ? '选择日期' : 'Select Date'}
+                  </label>
+                  <input
+                    type="date"
+                    value={rescheduleDate}
+                    onChange={(e) => handleRescheduleDateChange(e.target.value)}
+                    min={new Date().toISOString().split('T')[0]}
+                    className="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  />
+                </div>
+
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-stone-700 mb-2">
+                    {isZh ? '选择时段' : 'Select Time Slot'}
+                  </label>
+                  {rescheduleLoading ? (
+                    <div className="flex justify-center py-4">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-violet-600" />
+                    </div>
+                  ) : rescheduleSlots.length === 0 ? (
+                    <p className="text-sm text-stone-400 text-center py-4">
+                      {isZh ? '该日期暂无可用时段' : 'No available slots for this date'}
+                    </p>
+                  ) : (
+                    <div className="grid grid-cols-3 gap-2">
+                      {rescheduleSlots.map((slot) => (
+                        <button
+                          key={slot}
+                          onClick={() => setRescheduleSelectedTime(slot)}
+                          className={`text-xs py-2 px-1 rounded-lg border transition-colors ${
+                            rescheduleSelectedTime === slot
+                              ? 'bg-violet-600 text-white border-violet-600'
+                              : 'bg-white text-stone-700 border-stone-200 hover:border-violet-400 hover:text-violet-600'
+                          }`}
+                        >
+                          {slot}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex gap-3">
+                  <Button
+                    variant="outline"
+                    className="flex-1"
+                    onClick={() => {
+                      setShowRescheduleModal(false)
+                      setRescheduleBooking(null)
+                      setRescheduleSelectedTime('')
+                    }}
+                  >
+                    {isZh ? '取消' : 'Cancel'}
+                  </Button>
+                  <Button
+                    className="flex-1 bg-violet-600 hover:bg-violet-700"
+                    onClick={handleRescheduleSubmit}
+                    disabled={rescheduleSubmitting || !rescheduleSelectedTime}
+                  >
+                    {rescheduleSubmitting ? (
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                    ) : (
+                      isZh ? '确认修改' : 'Confirm'
+                    )}
+                  </Button>
+                </div>
               </div>
             </div>
           )}
