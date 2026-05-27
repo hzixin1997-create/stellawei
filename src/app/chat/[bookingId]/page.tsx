@@ -1,5 +1,5 @@
 'use client'
-// cache-bust: 2026-05-27-review-feature-v1
+// cache-bust: 2026-05-27-review-feature-v3
 
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
@@ -479,6 +479,14 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       channel.unsubscribe()
     }
   }, [bookingId, supabase, isMaster])
+
+  // 用户端：booking 数据加载后，若师傅已邀请评价且未评价，自动弹出评价窗
+  useEffect(() => {
+    if (!isMaster && booking?.review_requested && !booking?.review_data && !showReview) {
+      setShowReview(true)
+      setReviewMode('edit')
+    }
+  }, [booking?.review_requested, booking?.review_data])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
