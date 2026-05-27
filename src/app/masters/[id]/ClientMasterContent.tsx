@@ -153,12 +153,6 @@ export function ClientMasterContent({ master }: Props) {
       const data = await res.json();
 
       if (data.success && data.checkoutUrl) {
-        // 微信浏览器检测 — 前置拦截
-        if (isWeChatBrowser() && !isInCooldown()) {
-          setShowWeChatModal(true);
-          setCreatingOrder(null);
-          return;
-        }
         // 跳转到 Stripe Checkout
         window.location.href = data.checkoutUrl;
       } else if (data.error) {
