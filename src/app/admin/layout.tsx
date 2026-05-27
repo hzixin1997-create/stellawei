@@ -22,7 +22,6 @@ import { useState } from 'react';
 const navItems = [
   { label: '概览', href: '/admin/dashboard', icon: LayoutDashboard },
   { label: '订单管理', href: '/admin/orders', icon: ShoppingCart },
-  { label: '预约管理', href: '/admin/bookings', icon: Calendar },
   { label: '师傅管理', href: '/admin/masters', icon: Users },
   { label: '评价审核', href: '/admin/reviews', icon: Star },
   { label: '财务管理', href: '/admin/finance', icon: Crown },

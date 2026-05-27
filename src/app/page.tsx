@@ -299,13 +299,13 @@ export default function Home() {
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-              <Button size="lg" className="text-sm sm:text-lg px-4 sm:px-8 w-full sm:w-auto max-w-[200px] sm:max-w-none" onClick={handleBookingClick}>
+              <Button size="lg" className="text-sm sm:text-lg px-4 sm:px-8 w-full sm:w-auto max-w-[280px] sm:max-w-none whitespace-normal break-words leading-tight py-2 h-auto sm:h-11" onClick={handleBookingClick}>
                 {t('hero.ctaPrimary')}
               </Button>
               <Button 
                 variant="outline" 
                 size="lg" 
-                className="text-sm sm:text-lg px-4 sm:px-8 w-full sm:w-auto max-w-[200px] sm:max-w-none"
+                className="text-sm sm:text-lg px-4 sm:px-8 w-full sm:w-auto max-w-[280px] sm:max-w-none whitespace-normal break-words leading-tight py-2 h-auto sm:h-11"
                 onClick={() => {
                   const servicesSection = document.getElementById('services');
                   if (servicesSection) {
