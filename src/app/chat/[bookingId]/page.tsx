@@ -119,6 +119,14 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   const bookingRef = useRef<BookingInfo | null>(null)
   useEffect(() => { bookingRef.current = booking }, [booking])
 
+  // 标准化时间戳格式（Supabase返回的+00需要转成+00:00或Z，否则JS解析失败）
+  const normalizeTimestamp = (str: string | null | undefined): string | null => {
+    if (!str) return null
+    return str
+      .replace(' ', 'T')
+      .replace(/([+-]\d{2})$/, '$1:00')
+  }
+
   const PRE_CONSULT_LIMIT = 5
 
   // 从 messages 派生咨询前消息计数，避免竞态
@@ -220,10 +228,11 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
             setConsultStatus('ended')
           } else {
             // 用 scheduled_at 或 scheduled_date+scheduled_time 计算时间
-            const scheduledAtStr = bookingData.scheduled_at
+            const rawScheduledAt = bookingData.scheduled_at
               || (bookingData.scheduled_date && bookingData.scheduled_time
                 ? `${bookingData.scheduled_date}T${bookingData.scheduled_time}`
                 : null)
+            const scheduledAtStr = normalizeTimestamp(rawScheduledAt)
             if (scheduledAtStr && bookingData.duration_minutes) {
               const scheduledTime = new Date(scheduledAtStr).getTime()
               const endTime = scheduledTime + bookingData.duration_minutes * 60 * 1000
@@ -259,10 +268,11 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
     const tick = () => {
       // 用 scheduled_at 或 scheduled_date+scheduled_time 计算时间
-      const scheduledAtStr = booking.scheduled_at
+      const rawScheduledAt = booking.scheduled_at
         || (booking.scheduled_date && booking.scheduled_time
           ? `${booking.scheduled_date}T${booking.scheduled_time}`
           : null)
+      const scheduledAtStr = normalizeTimestamp(rawScheduledAt)
 
       if (!scheduledAtStr || !booking.duration_minutes) {
         console.log('[chat] tick: missing scheduled_at or duration', { scheduledAtStr, duration: booking.duration_minutes })
