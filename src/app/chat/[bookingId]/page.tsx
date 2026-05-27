@@ -1008,12 +1008,12 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
             </p>
           </div>
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-            <div className={`flex items-center gap-1 px-1.5 sm:px-2 py-1 rounded text-xs font-medium ${
+            <div className={`flex items-center gap-1 px-1.5 sm:px-2 py-1 rounded text-xs font-medium whitespace-nowrap ${
               countdownSeconds <= 300 && consultStatus === 'in_progress'
                 ? 'bg-red-100 text-red-700'
                 : 'bg-stone-100 text-stone-600'
             }`}>
-              <Clock className="w-3 h-3" />
+              <Clock className="w-3 h-3 shrink-0" />
               <span className="hidden sm:inline">
                 {isCompleted
                   ? (isZh ? '已结束' : 'Ended')
@@ -1026,7 +1026,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
                 {isCompleted
                   ? (isZh ? '结束' : 'End')
                   : consultStatus === 'not_started'
-                    ? (isZh ? '待' : 'Wait')
+                    ? (isZh ? '未开始' : 'Wait')
                     : formatCountdownShort(countdownSeconds)
                 }
               </span>
