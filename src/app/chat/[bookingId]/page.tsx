@@ -1079,8 +1079,10 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         <div className="max-w-3xl mx-auto space-y-4">
           {/* 咨询状态提示 — sticky 固定在消息区顶部 */}
           {booking && (
-            <div className={`sticky top-0 z-10 border rounded-lg px-3 py-2 text-xs sm:text-sm text-center shadow-sm break-words leading-relaxed ${getConsultStatusBanner().bgColor}`}>
-              {getConsultStatusBanner().text}
+            <div className="sticky top-0 z-10 w-full">
+              <div className={`border rounded-lg px-3 py-2 text-xs sm:text-sm text-center shadow-sm break-words leading-relaxed ${getConsultStatusBanner().bgColor}`}>
+                {getConsultStatusBanner().text}
+              </div>
             </div>
           )}
           {messages.length === 0 && (

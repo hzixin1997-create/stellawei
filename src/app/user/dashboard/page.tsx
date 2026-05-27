@@ -728,7 +728,7 @@ export default function UserDashboard() {
                               </p>
                             )}
                           </div>
-                          <div className="flex flex-row sm:flex-col gap-2 sm:min-w-[80px]">
+                          <div className="flex flex-wrap sm:flex-nowrap sm:flex-col gap-2 sm:min-w-[80px]">
                             {/* 已完成订单 */}
                             {booking.payment_status === 'paid' && !canEnterChat(booking) && (
                               <>
