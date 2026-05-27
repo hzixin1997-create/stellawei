@@ -10,11 +10,6 @@ import Link from "next/link"
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { createClient } from "@/lib/supabase/client";
-import {
-  WeChatBrowserModal,
-  isWeChatBrowser,
-  isInCooldown,
-} from "@/components/stripe/wechat-browser-modal";
 
 interface MasterService {
   id: string;
@@ -445,7 +440,6 @@ export function ClientMasterContent({ master }: Props) {
         </div>
       </div>
 
-      <WeChatBrowserModal open={showWeChatModal} onClose={() => setShowWeChatModal(false)} />
     </div>
   )
 }
