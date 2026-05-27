@@ -47,6 +47,7 @@ export default function AdminOrders() {
   const [processingRefund, setProcessingRefund] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [deleting, setDeleting] = useState(false);
+  const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
 
   const handleProcessRefund = async (orderId: string) => {
     if (!confirm(isZh ? '确认处理此退款申请？款项将原路退回用户。' : 'Confirm processing this refund? The amount will be returned to the user.')) {
@@ -121,8 +122,62 @@ export default function AdminOrders() {
     }
   };
 
-  // 切换选中状态
-  const toggleSelect = (id: string) => {
+  // 手动修改订单状态
+  const handleUpdateStatus = async (orderId: string, newStatus: string, newPaymentStatus?: string) => {
+    if (!confirm(isZh ? `确认将订单状态改为: ${newStatus}?` : `Confirm changing order status to: ${newStatus}?`)) {
+      return;
+    }
+    setUpdatingStatus(orderId);
+    try {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        alert(isZh ? '请先登录' : 'Please login');
+        return;
+      }
+
+      const body: Record<string, string> = { bookingId: orderId, status: newStatus };
+      if (newPaymentStatus) body.payment_status = newPaymentStatus;
+
+      const res = await fetch('/api/admin/update-order-status', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify(body),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Update failed');
+      }
+
+      // 更新本地订单状态
+      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus, ...(newPaymentStatus ? { payment_status: newPaymentStatus } : {}) } : o));
+      alert(isZh ? '状态更新成功' : 'Status updated successfully');
+    } catch (err: any) {
+      console.error('Update status error:', err);
+      alert(isZh ? `更新失败: ${err.message}` : `Update failed: ${err.message}`);
+    } finally {
+      setUpdatingStatus(null);
+    }
+  };
+
+  // 可用的状态选项
+  const statusOptions = [
+    { value: 'pending', label: '待付款', labelEn: 'Pending' },
+    { value: 'confirmed', label: '已确认', labelEn: 'Confirmed' },
+    { value: 'in_progress', label: '进行中', labelEn: 'In Progress' },
+    { value: 'completed', label: '已完成', labelEn: 'Completed' },
+    { value: 'cancelled', label: '已取消', labelEn: 'Cancelled' },
+  ];
+
+  const paymentStatusOptions = [
+    { value: 'pending', label: '待支付', labelEn: 'Pending' },
+    { value: 'paid', label: '已支付', labelEn: 'Paid' },
+    { value: 'refunded', label: '已退款', labelEn: 'Refunded' },
+  ];
     setSelectedIds(prev => {
       const next = new Set(prev);
       if (next.has(id)) {
@@ -382,6 +437,29 @@ export default function AdminOrders() {
                         </div>
                       </div>
                       <div className="flex sm:flex-col gap-2 sm:ml-4 sm:justify-start pl-7 sm:pl-0">
+                        {/* 状态修改下拉菜单 */}
+                        <div className="flex gap-2">
+                          <select
+                            value={order.status}
+                            onChange={(e) => handleUpdateStatus(order.id, e.target.value)}
+                            disabled={updatingStatus === order.id}
+                            className="text-xs border border-stone-200 rounded-md px-2 py-1.5 bg-white text-stone-700 focus:outline-none focus:ring-2 focus:ring-violet-500/20"
+                          >
+                            {statusOptions.map(s => (
+                              <option key={s.value} value={s.value}>{isZh ? s.label : s.labelEn}</option>
+                            ))}
+                          </select>
+                          <select
+                            value={order.payment_status}
+                            onChange={(e) => handleUpdateStatus(order.id, order.status, e.target.value)}
+                            disabled={updatingStatus === order.id}
+                            className="text-xs border border-stone-200 rounded-md px-2 py-1.5 bg-white text-stone-700 focus:outline-none focus:ring-2 focus:ring-violet-500/20"
+                          >
+                            {paymentStatusOptions.map(s => (
+                              <option key={s.value} value={s.value}>{isZh ? s.label : s.labelEn}</option>
+                            ))}
+                          </select>
+                        </div>
                         {(order.status === 'refund_requested' || order.payment_status === 'refund_requested') && (
                           <Button
                             size="sm"
