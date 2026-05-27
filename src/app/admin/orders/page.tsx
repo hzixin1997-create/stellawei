@@ -178,6 +178,9 @@ export default function AdminOrders() {
     { value: 'paid', label: '已支付', labelEn: 'Paid' },
     { value: 'refunded', label: '已退款', labelEn: 'Refunded' },
   ];
+
+  // 切换选中状态
+  const toggleSelect = (id: string) => {
     setSelectedIds(prev => {
       const next = new Set(prev);
       if (next.has(id)) {
