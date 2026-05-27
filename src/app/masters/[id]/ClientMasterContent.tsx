@@ -53,7 +53,6 @@ export function ClientMasterContent({ master }: Props) {
   
   const [services, setServices] = useState<MasterService[]>([]);
   const [loadingServices, setLoadingServices] = useState(true);
-  const [creatingOrder, setCreatingOrder] = useState<string | null>(null);
   const [authError, setAuthError] = useState(false);
   const [masterStatus, setMasterStatus] = useState<string>('online');
   const [masterReviews, setMasterReviews] = useState<any[]>([]);
@@ -113,51 +112,6 @@ export function ClientMasterContent({ master }: Props) {
       }
     } catch (err) {
       console.error("Failed to load master status:", err);
-    }
-  }
-
-  async function createOrder(serviceId: string) {
-    setCreatingOrder(serviceId);
-    setAuthError(false);
-
-    try {
-      const supabase = createClient();
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        setAuthError(true);
-        setCreatingOrder(null);
-        return;
-      }
-
-      const service = services.find(s => s.id === serviceId);
-      if (!service) return;
-
-      const res = await fetch("/api/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({
-          master_id: master.id,
-          master_service_id: serviceId,
-          type: service.type,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (data.success && data.checkoutUrl) {
-        // 跳转到 Stripe Checkout
-        window.location.href = data.checkoutUrl;
-      } else if (data.error) {
-        alert(data.error);
-        setCreatingOrder(null);
-      }
-    } catch (err) {
-      console.error("Create order error:", err);
-      alert("创建订单失败，请重试");
-      setCreatingOrder(null);
     }
   }
 

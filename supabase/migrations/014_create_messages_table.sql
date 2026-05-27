@@ -35,5 +35,4 @@ SELECT 'messages table created' as status;
 
 -- 创建 chat_images Storage bucket（用于聊天图片）
 -- 注意：bucket 需要通过 Supabase Dashboard 或 API 创建，这里只做记录
--- bucket 名称: chat-images
--- 权限: public read, authenticated write
+-- 这里只做记录

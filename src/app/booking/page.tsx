@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
@@ -133,6 +133,15 @@ export default function BookingPage() {
   const [uploadingQuestionImage, setUploadingQuestionImage] = useState(false)
 
   const isZh = i18n.language === 'zh'
+  const searchParams = useSearchParams()
+
+  // 从 URL 参数读取预选择的师傅
+  useEffect(() => {
+    const masterFromUrl = searchParams.get('master')
+    if (masterFromUrl && MASTERS.some(m => m.id === masterFromUrl)) {
+      setSelectedMaster(masterFromUrl)
+    }
+  }, [searchParams])
 
   // 查询师傅某天可用时段（与师傅后台同步）
   const fetchMasterAvailability = async (masterId: string, date: Date) => {

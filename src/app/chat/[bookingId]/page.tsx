@@ -766,6 +766,11 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
             if (prev.some((m) => m.id === json.message.id)) return prev
             return prev.map((m) => m.id === tempId ? json.message : m)
           })
+        } else {
+          // 后端返回200但message为null，移除临时消息并提示
+          console.error('[chat] API returned 200 but no message:', json)
+          setMessages((prev) => prev.filter((m) => m.id !== tempId))
+          alert(isZh ? '发送失败，请重试' : 'Send failed, please retry')
         }
       } else {
         const err = await res.json()
@@ -1064,7 +1069,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         <div className="max-w-3xl mx-auto space-y-4">
           {/* 咨询状态提示 — sticky 固定在消息区顶部 */}
           {booking && (
-            <div className={`sticky top-0 z-10 border rounded-lg px-4 py-3 text-sm text-center shadow-sm ${getConsultStatusBanner().bgColor}`}>
+            <div className={`sticky top-0 z-10 border rounded-lg px-3 py-2 text-xs sm:text-sm text-center shadow-sm break-words leading-relaxed ${getConsultStatusBanner().bgColor}`}>
               {getConsultStatusBanner().text}
             </div>
           )}

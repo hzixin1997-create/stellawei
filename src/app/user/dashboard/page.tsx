@@ -854,9 +854,9 @@ export default function UserDashboard() {
                               </>
                             )}
                             {booking.payment_status === 'failed' && (
-                              <Link href={`/order/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
+                              <Link href="/booking" className="inline-flex flex-1 sm:flex-none">
                                 <Button size="sm" variant="outline" className="w-full">
-                                  {isZh ? '重试' : 'Retry'}
+                                  {isZh ? '重新预约' : 'Re-book'}
                                 </Button>
                               </Link>
                             )}
