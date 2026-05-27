@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
-import { createClient } from '@/lib/supabase/server';
 import { getMasterByEmail } from '@/lib/master-auth';
 
 export const dynamic = 'force-dynamic';
@@ -16,20 +15,22 @@ export async function GET(
   try {
     const { bookingId } = params;
 
-    // 鉴权
-    const authSupabase = await createClient();
-    const { data: { user } } = await authSupabase.auth.getUser();
-
-    if (!user) {
+    // 鉴权（用 service client 直接验证 token，减少一次 client 创建）
+    const supabase = createServiceClient();
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-
-    const supabase = createServiceClient();
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     // 验证 booking 存在且当前用户有权访问
     const { data: booking, error: bookingError } = await supabase
       .from('bookings')
-      .select('id, user_id, master_id, status, payment_status, scheduled_at, scheduled_date, scheduled_time, duration_minutes, timezone, service_id, total_amount, currency, is_first_time, user_typing_until, master_typing_until')
+      .select('id, user_id, master_id, status, payment_status, scheduled_at, scheduled_date, scheduled_time, duration_minutes, timezone, service_id, total_amount, currency, is_first_time, user_typing_until, master_typing_until, review_requested, review_data')
       .eq('id', bookingId)
       .single();
 
@@ -124,15 +125,17 @@ export async function POST(
       );
     }
 
-    // 鉴权
-    const authSupabase = await createClient();
-    const { data: { user } } = await authSupabase.auth.getUser();
-
-    if (!user) {
+    // 鉴权（用 service client 直接验证 token，减少一次 client 创建）
+    const supabase = createServiceClient();
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-
-    const supabase = createServiceClient();
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     // 验证 booking 存在
     const { data: booking, error: bookingError } = await supabase

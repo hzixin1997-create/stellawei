@@ -124,7 +124,7 @@ export async function POST(request: Request) {
     let customerId = profile?.stripe_customer_id
     if (!customerId) {
       const customer = await stripe.customers.create({
-        email: userEmail || '',
+        email: userEmail || undefined,
         metadata: { user_id: userId },
       })
       customerId = customer.id

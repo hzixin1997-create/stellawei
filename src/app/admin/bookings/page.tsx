@@ -102,6 +102,22 @@ export default function AdminBookings() {
     ? bookings 
     : bookings.filter((b) => b.master_id === masterFilter);
 
+  // 状态筛选
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const statusFilterConfig = [
+    { key: 'all', label: '全部' },
+    { key: 'pending', label: '待付款' },
+    { key: 'paid', label: '已付款' },
+    { key: 'confirmed', label: '已确认' },
+    { key: 'in_progress', label: '进行中' },
+    { key: 'completed', label: '已完成' },
+    { key: 'cancelled', label: '已取消' },
+  ];
+
+  const finalBookings = statusFilter === 'all'
+    ? filteredBookings
+    : filteredBookings.filter((b) => b.status === statusFilter || b.payment_status === statusFilter);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -152,15 +168,35 @@ export default function AdminBookings() {
         </CardContent>
       </Card>
 
+      {/* 状态筛选标签 */}
+      <div className="flex flex-wrap gap-2 mb-4">
+        {statusFilterConfig.map((s) => (
+          <button
+            key={s.key}
+            onClick={() => setStatusFilter(s.key)}
+            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors border ${
+              statusFilter === s.key
+                ? 'bg-violet-100 text-violet-700 border-violet-300'
+                : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
+            }`}
+          >
+            {s.label}
+            <span className={`ml-1.5 text-xs ${statusFilter === s.key ? 'text-violet-500' : 'text-stone-400'}`}>
+              ({s.key === 'all' ? filteredBookings.length : filteredBookings.filter((b) => b.status === s.key || b.payment_status === s.key).length})
+            </span>
+          </button>
+        ))}
+      </div>
+
       {/* 订单列表 */}
-      {filteredBookings.length === 0 ? (
+      {finalBookings.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-xl border border-stone-200">
           <Calendar className="w-12 h-12 text-stone-300 mx-auto mb-3" />
           <p className="text-stone-500">暂无预约记录</p>
         </div>
       ) : (
         <div className="space-y-3">
-          {filteredBookings.map((booking) => {
+          {finalBookings.map((booking) => {
             const master = getMasterInfo(booking.master_id);
             const service = getServiceInfo(booking.service_id);
             const status = statusConfig[booking.status] || statusConfig.pending;
@@ -205,11 +241,12 @@ export default function AdminBookings() {
                     </div>
                     
                     <div className="flex flex-col gap-2 ml-4">
-                      <Link href={`/order/${booking.id}`}>
-                        <Button size="sm" variant="outline" className="text-violet-600 border-violet-200 hover:bg-violet-50">
-                          查看
-                        </Button>
-                      </Link>
+                      <span className="text-xs text-stone-400 whitespace-nowrap">
+                        {isMessage 
+                          ? '留言咨询'
+                          : `${booking.scheduled_date || '-'} ${booking.scheduled_time || ''}`
+                        }
+                      </span>
                     </div>
                   </div>
                 </CardContent>

@@ -87,10 +87,10 @@ function QuestionsMarqueeTop() {
         {[...hotQuestions, ...hotQuestions, ...hotQuestions].map((q, idx) => (
           <div 
             key={idx}
-            className="flex-shrink-0 bg-white/10 backdrop-blur-sm rounded-full px-5 py-2 flex items-center gap-2"
+            className="flex-shrink-0 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5 sm:px-5 sm:py-2 flex items-center gap-2"
           >
-            <q.icon className="w-4 h-4 text-stellawei-gold" />
-            <span className="text-white text-sm whitespace-nowrap">
+            <q.icon className="w-3 h-3 sm:w-4 sm:h-4 text-stellawei-gold" />
+            <span className="text-white text-xs sm:text-sm whitespace-nowrap">
               {isZh ? q.textZh : q.text}
             </span>
           </div>
@@ -205,40 +205,42 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-cream/80 backdrop-blur-md border-b border-stellawei-purple/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-stellawei-purple to-stellawei-gold"></div>
-              <span className="text-xl font-serif font-bold text-stellawei-purple">{t('brand')}</span>
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-cream/80 backdrop-blur-md border-b border-stellawei-purple/10 w-full">
+        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 min-w-0">
+            <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0 min-w-0">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-stellawei-purple to-stellawei-gold shrink-0"></div>
+              <span className="text-base sm:text-xl font-serif font-bold text-stellawei-purple truncate">{t('brand')}</span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
               <a href="#services" className="text-foreground/70 hover:text-stellawei-purple transition-colors">{t('nav.services')}</a>
               <a href="#masters" className="text-foreground/70 hover:text-stellawei-purple transition-colors">{t('nav.masters')}</a>
               <a href="#trust" className="text-foreground/70 hover:text-stellawei-purple transition-colors">{t('nav.trust')}</a>
             </div>
-            <div className="flex items-center space-x-2 md:space-x-4">
-              <LanguageSwitcher />
+            <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-4 shrink-0">
+              <div className="scale-90 sm:scale-100 origin-right">
+                <LanguageSwitcher />
+              </div>
               {/* 移动端汉堡菜单按钮 */}
               <button
-                className="md:hidden p-2 rounded-lg hover:bg-stone-100"
+                className="md:hidden p-1.5 rounded-lg hover:bg-stone-100 shrink-0"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label="Toggle menu"
               >
-                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
               {user ? (
-                <Link href={user?.email ? getDashboardRoute(user.email) : '/auth/login'} className="hidden sm:flex items-center space-x-2 text-sm text-foreground/70 hover:text-stellawei-purple transition-colors">
+                <Link href={user?.email ? getDashboardRoute(user.email) : '/auth/login'} className="hidden sm:flex items-center space-x-2 text-sm text-foreground/70 hover:text-stellawei-purple transition-colors shrink-0">
                   <User className="w-4 h-4" />
-                  <span className="hidden sm:inline">{user.email}</span>
+                  <span className="hidden lg:inline">{user.email}</span>
                 </Link>
               ) : (
                 <>
-                  <Link href="/auth/login" className="hidden sm:inline-flex">
-                    <Button variant="ghost">{t('nav.signIn')}</Button>
+                  <Link href="/auth/login" className="hidden sm:inline-flex shrink-0">
+                    <Button variant="ghost" size="sm" className="text-xs sm:text-sm px-2 h-8">{t('nav.signIn')}</Button>
                   </Link>
-                  <Link href="/auth/login">
-                    <Button>{t('nav.getStarted')}</Button>
+                  <Link href="/auth/login" className="shrink-0">
+                    <Button size="sm" className="text-xs px-2 sm:px-3 h-8">{t('nav.getStarted')}</Button>
                   </Link>
                 </>
               )}
@@ -275,12 +277,12 @@ export default function Home() {
       )}
 
       {/* 热门问题轮播 - 首页最顶部 */}
-      <div className="fixed top-16 left-0 right-0 z-40 bg-stellawei-purple py-3 overflow-hidden">
+      <div className="fixed top-16 left-0 right-0 z-40 bg-stellawei-purple py-3 overflow-hidden w-full">
         <QuestionsMarqueeTop />
       </div>
 
       {/* Hero Section */}
-      <section className="relative pt-48 pb-20 lg:pt-56 lg:pb-32 overflow-hidden">
+      <section className="relative pt-48 pb-20 lg:pt-56 lg:pb-32 overflow-hidden w-full">
         <div className="absolute inset-0 bg-gradient-to-br from-stellawei-purple/5 via-transparent to-stellawei-gold/5"></div>
         <div className="absolute top-20 right-10 w-72 h-72 bg-stellawei-purple/20 rounded-full blur-3xl"></div>
         <div className="absolute bottom-20 left-10 w-96 h-96 bg-stellawei-gold/10 rounded-full blur-3xl"></div>
@@ -334,32 +336,33 @@ export default function Home() {
       </section>
 
       {/* Services Section */}
-      <section id="services" className="py-20 bg-white/50">
+      <section id="services" className="py-20 bg-white/50 overflow-hidden w-full">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-2xl sm:text-4xl font-serif font-bold mb-4">{t('services.title')}</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto px-4 sm:px-0">
               {t('services.subtitle')}
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-4 sm:gap-8">
             {services.map((service) => (
-              <Card key={service.id} className="group hover:shadow-lg transition-shadow border-stellawei-purple/10">
-                <CardHeader>
-                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${service.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                    <service.icon className="w-7 h-7 text-white" />
+              <Card key={service.id} className="group hover:shadow-lg transition-shadow border-stellawei-purple/10 p-4 sm:p-6">
+                <div className="flex items-start gap-4 sm:block">
+                  <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br ${service.color} flex items-center justify-center shrink-0 sm:mb-4 group-hover:scale-110 transition-transform`}>
+                    <service.icon className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
                   </div>
-                  <CardTitle className="font-serif">{t(service.nameKey)}</CardTitle>
-                  <CardDescription>{t(service.descriptionKey)}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-end">
-                    <Link href={service.id === 'eastern' ? '/services/bazi' : `/services/${service.id}`}>
-                      <Button variant="outline" size="sm">{t('services.learnMore')}</Button>
-                    </Link>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-serif text-lg sm:text-xl font-semibold mb-1 sm:mb-2">{t(service.nameKey)}</h3>
+                    <p className="text-sm text-muted-foreground mb-3 sm:mb-4">{t(service.descriptionKey)}</p>
+                    <div className="flex items-center justify-between sm:justify-end">
+                      <span className="text-sm font-medium text-stellawei-purple sm:hidden">{service.price}</span>
+                      <Link href={service.id === 'eastern' ? '/services/bazi' : `/services/${service.id}`}>
+                        <Button variant="outline" size="sm" className="w-full sm:w-auto">{t('services.learnMore')}</Button>
+                      </Link>
+                    </div>
                   </div>
-                </CardContent>
+                </div>
               </Card>
             ))}
           </div>
@@ -367,11 +370,11 @@ export default function Home() {
       </section>
 
       {/* Masters Section */}
-      <section id="masters" className="py-20 bg-white/50">
+      <section id="masters" className="py-20 bg-white/50 overflow-hidden w-full">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-2xl sm:text-4xl font-serif font-bold mb-4">{t('masters.title')}</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto px-4 sm:px-0">
               {t('masters.subtitle')}
             </p>
           </div>
@@ -389,44 +392,48 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-4 sm:gap-8">
             {masters.map((master) => (
-              <Card key={master.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="aspect-square bg-gradient-to-br from-stellawei-purple/20 to-stellawei-gold/20 relative">
-                  <img
-                    src={master.image}
-                    alt={currentLang === 'zh' ? master.nameCn : master.name}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center space-x-1">
-                    <Star className="w-4 h-4 text-stellawei-gold fill-stellawei-gold" />
-                    <span className="text-sm font-semibold">{master.rating}</span>
+              <Card key={master.id} className="overflow-hidden hover:shadow-lg transition-shadow flex flex-col">
+                <div className="h-48 sm:h-64 bg-gradient-to-br from-stellawei-purple/20 to-stellawei-gold/20 relative shrink-0">
+                  <picture>
+                    <source srcSet={master.image.replace('.jpg', '.webp')} type="image/webp" />
+                    <img
+                      src={master.image}
+                      alt={currentLang === 'zh' ? master.nameCn : master.name}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </picture>
+                  <div className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-white/90 backdrop-blur-sm px-2 py-0.5 sm:px-3 sm:py-1 rounded-full flex items-center space-x-1">
+                    <Star className="w-3 h-3 sm:w-4 sm:h-4 text-stellawei-gold fill-stellawei-gold" />
+                    <span className="text-xs sm:text-sm font-semibold">{master.rating}</span>
                   </div>
                 </div>
                 
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-xl">{currentLang === 'zh' ? master.nameCn : master.name}</CardTitle>
-                  <CardDescription className="line-clamp-2 min-h-[2.5rem]">
+                <CardHeader className="pb-2 px-4 sm:px-6 pt-4 shrink-0">
+                  <CardTitle className="text-lg sm:text-xl">{currentLang === 'zh' ? master.nameCn : master.name}</CardTitle>
+                  <CardDescription className="text-xs sm:text-sm line-clamp-2 min-h-[2.5rem]">
                     {currentLang === 'zh' ? master.taglineCn : master.tagline}
                   </CardDescription>
                 </CardHeader>
                 
-                <CardContent className="space-y-3 pt-0">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">{t('masters.specialty')}</span>
-                    <span className="font-medium text-right">{currentLang === 'zh' ? master.specialtyCn : master.specialty}</span>
+                <CardContent className="space-y-2 pt-0 px-4 sm:px-6 pb-4 flex-1 flex flex-col justify-end">
+                  <div className="flex items-center justify-between text-xs sm:text-sm min-w-0">
+                    <span className="text-muted-foreground shrink-0 mr-2">{t('masters.specialty')}</span>
+                    <span className="font-medium text-right truncate">{currentLang === 'zh' ? master.specialtyCn : master.specialty}</span>
                   </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">{t('masters.experience')}</span>
+                  <div className="flex items-center justify-between text-xs sm:text-sm min-w-0">
+                    <span className="text-muted-foreground shrink-0 mr-2">{t('masters.experience')}</span>
                     <span className="font-medium">{currentLang === 'zh' ? master.experienceCn : master.experience}</span>
                   </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">{t('masters.reviews')}</span>
+                  <div className="flex items-center justify-between text-xs sm:text-sm min-w-0">
+                    <span className="text-muted-foreground shrink-0 mr-2">{t('masters.reviews')}</span>
                     <span className="font-medium">{master.reviews}</span>
                   </div>
                   
                   <Link href={`/masters/${master.id}`}>
-                    <Button className="w-full mt-4">{currentLang === 'zh' ? '点击了解' : 'Learn More'}</Button>
+                    <Button className="w-full mt-2 text-sm">{currentLang === 'zh' ? '点击了解' : 'Learn More'}</Button>
                   </Link>
                 </CardContent>
               </Card>
@@ -436,45 +443,45 @@ export default function Home() {
       </section>
 
       {/* Trust Section */}
-      <section id="trust" className="py-20">
+      <section id="trust" className="py-20 overflow-hidden w-full">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-br from-stellawei-purple to-stellawei-purple-dark rounded-3xl p-8 md:p-12 text-white">
-            <div className="text-center mb-12">
-              <Shield className="w-16 h-16 mx-auto mb-6 text-stellawei-gold" />
-              <h2 className="text-4xl font-serif font-bold mb-4">{t('trust.title')}</h2>
-              <p className="text-lg text-white/80 max-w-2xl mx-auto">
+          <div className="bg-gradient-to-br from-stellawei-purple to-stellawei-purple-dark rounded-3xl p-6 sm:p-8 md:p-12 text-white">
+            <div className="text-center mb-8 sm:mb-12">
+              <Shield className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 text-stellawei-gold" />
+              <h2 className="text-2xl sm:text-4xl font-serif font-bold mb-3 sm:mb-4">{t('trust.title')}</h2>
+              <p className="text-sm sm:text-lg text-white/80 max-w-2xl mx-auto px-2 sm:px-0">
                 {t('trust.subtitle')}
               </p>
             </div>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
               <div className="text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/10 flex items-center justify-center">
-                  <Shield className="w-8 h-8 text-stellawei-gold" />
+                <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-full bg-white/10 flex items-center justify-center">
+                  <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-stellawei-gold" />
                 </div>
-                <h3 className="font-semibold text-lg mb-2 leading-snug">{t('trust.antiFraud.title')}</h3>
-                <p className="text-sm text-white/70 leading-relaxed">{t('trust.antiFraud.description')}</p>
+                <h3 className="font-semibold text-base sm:text-lg mb-1 sm:mb-2 leading-snug">{t('trust.antiFraud.title')}</h3>
+                <p className="text-xs sm:text-sm text-white/70 leading-relaxed">{t('trust.antiFraud.description')}</p>
               </div>
               <div className="text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/10 flex items-center justify-center">
-                  <Coins className="w-8 h-8 text-stellawei-gold" />
+                <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-full bg-white/10 flex items-center justify-center">
+                  <Coins className="w-6 h-6 sm:w-8 sm:h-8 text-stellawei-gold" />
                 </div>
-                <h3 className="font-semibold text-lg mb-2 leading-snug">{t('trust.pricing.title')}</h3>
-                <p className="text-sm text-white/70 leading-relaxed">{t('trust.pricing.description')}</p>
+                <h3 className="font-semibold text-base sm:text-lg mb-1 sm:mb-2 leading-snug">{t('trust.pricing.title')}</h3>
+                <p className="text-xs sm:text-sm text-white/70 leading-relaxed">{t('trust.pricing.description')}</p>
               </div>
               <div className="text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/10 flex items-center justify-center">
-                  <Star className="w-8 h-8 text-stellawei-gold" />
+                <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-full bg-white/10 flex items-center justify-center">
+                  <Star className="w-6 h-6 sm:w-8 sm:h-8 text-stellawei-gold" />
                 </div>
-                <h3 className="font-semibold text-lg mb-2 leading-snug">{t('trust.refund.title')}</h3>
-                <p className="text-sm text-white/70 leading-relaxed">{t('trust.refund.description')}</p>
+                <h3 className="font-semibold text-base sm:text-lg mb-1 sm:mb-2 leading-snug">{t('trust.refund.title')}</h3>
+                <p className="text-xs sm:text-sm text-white/70 leading-relaxed">{t('trust.refund.description')}</p>
               </div>
               <div className="text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/10 flex items-center justify-center">
-                  <Users className="w-8 h-8 text-stellawei-gold" />
+                <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-full bg-white/10 flex items-center justify-center">
+                  <Users className="w-6 h-6 sm:w-8 sm:h-8 text-stellawei-gold" />
                 </div>
-                <h3 className="font-semibold text-lg mb-2 leading-snug">{t('trust.verified.title')}</h3>
-                <p className="text-sm text-white/70 leading-relaxed">{t('trust.verified.description')}</p>
+                <h3 className="font-semibold text-base sm:text-lg mb-1 sm:mb-2 leading-snug">{t('trust.verified.title')}</h3>
+                <p className="text-xs sm:text-sm text-white/70 leading-relaxed">{t('trust.verified.description')}</p>
               </div>
             </div>
           </div>
@@ -482,7 +489,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20">
+      <section className="py-20 overflow-hidden w-full">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-2xl sm:text-4xl font-serif font-bold mb-4 sm:mb-6">{t('cta.title')}</h2>
           {/* subtitle 已移除 */}
@@ -508,22 +515,22 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-stellawei-purple text-white py-12">
+      <footer className="bg-stellawei-purple text-white py-8 sm:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            <div className="mb-2 sm:mb-0">
+              <div className="flex items-center space-x-2 mb-3 sm:mb-4">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-stellawei-gold to-stellawei-gold-light"></div>
-                <span className="text-xl font-serif font-bold">{t('brand')}</span>
+                <span className="text-lg sm:text-xl font-serif font-bold">{t('brand')}</span>
               </div>
-              <p className="text-white/70 text-sm">
+              <p className="text-white/70 text-xs sm:text-sm">
                 {t('footer.tagline')}
               </p>
             </div>
             
             <div>
-              <h4 className="font-semibold mb-4">{t('footer.services')}</h4>
-              <ul className="space-y-2 text-sm text-white/70">
+              <h4 className="font-semibold mb-3 sm:mb-4 text-sm sm:text-base">{t('footer.services')}</h4>
+              <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-white/70">
                 <li><a href="/services/tarot" className="hover:text-white">{t('services.tarot.name')}</a></li>
                 <li><a href="/services/bazi" className="hover:text-white">{t('services.eastern.name')}</a></li>
                 <li><a href="/services/spiritual" className="hover:text-white">{t('services.spiritual.name')}</a></li>
@@ -532,8 +539,8 @@ export default function Home() {
             </div>
             
             <div>
-              <h4 className="font-semibold mb-4">{t('footer.company')}</h4>
-              <ul className="space-y-2 text-sm text-white/70">
+              <h4 className="font-semibold mb-3 sm:mb-4 text-sm sm:text-base">{t('footer.company')}</h4>
+              <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-white/70">
                 <li><a href="#" className="hover:text-white">{t('footer.aboutUs')}</a></li>
                 <li><a href="#" className="hover:text-white">{t('footer.trustSafety')}</a></li>
                 <li><a href="#" className="hover:text-white">{t('footer.careers')}</a></li>
@@ -542,8 +549,8 @@ export default function Home() {
             </div>
             
             <div>
-              <h4 className="font-semibold mb-4">{t('footer.support')}</h4>
-              <ul className="space-y-2 text-sm text-white/70">
+              <h4 className="font-semibold mb-3 sm:mb-4 text-sm sm:text-base">{t('footer.support')}</h4>
+              <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-white/70">
                 <li><a href="/help" className="hover:text-white">{t('footer.helpCenter')}</a></li>
                 <li><a href="/refund-policy" className="hover:text-white">{t('footer.refundPolicy')}</a></li>
                 <li><a href="/privacy" className="hover:text-white">{t('footer.privacyPolicy')}</a></li>
@@ -552,7 +559,7 @@ export default function Home() {
             </div>
           </div>
           
-          <div className="border-t border-white/20 mt-12 pt-8 text-center text-sm text-white/60">
+          <div className="border-t border-white/20 mt-8 sm:mt-12 pt-6 sm:pt-8 text-center text-xs sm:text-sm text-white/60">
             <p>{t('footer.copyright')}</p>
           </div>
         </div>

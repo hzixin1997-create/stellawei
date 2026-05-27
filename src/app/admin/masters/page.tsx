@@ -145,25 +145,25 @@ export default function MastersManagement() {
               return (
                 <Card key={master.id} className="overflow-hidden">
                   <CardHeader className="pb-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                      <div className="flex items-center gap-3 sm:gap-4">
+                        <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg sm:text-xl shrink-0">
                           {master.name.charAt(0)}
                         </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h2 className="text-xl font-bold">{isZh ? master.name : master.nameEn}</h2>
-                            <Badge variant="outline" className={status.color}>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <h2 className="text-lg sm:text-xl font-bold">{isZh ? master.name : master.nameEn}</h2>
+                            <Badge variant="outline" className={`${status.color} text-xs sm:text-sm whitespace-nowrap`}>
                               {isZh ? status.label : status.labelEn}
                             </Badge>
                           </div>
-                          <p className="text-sm text-stone-500">
+                          <p className="text-sm text-stone-500 truncate">
                             {isZh ? master.specialty : master.specialtyEn}
                           </p>
-                          <p className="text-xs text-stone-400">{master.email}</p>
+                          <p className="text-xs text-stone-400 truncate">{master.email}</p>
                         </div>
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 sm:shrink-0">
                         {(Object.keys(statusConfig) as Array<'online' | 'offline' | 'rest'>).map((s) => {
                           const config = statusConfig[s];
                           const isActive = master.status === s;
@@ -172,7 +172,7 @@ export default function MastersManagement() {
                               key={s}
                               onClick={() => updateStatus(master.id, s)}
                               disabled={updatingId === master.id}
-                              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors border ${
+                              className={`flex-1 sm:flex-none px-2 sm:px-3 py-2 rounded-lg text-sm font-medium transition-colors border whitespace-nowrap ${
                                 isActive
                                   ? `${config.color} border-current`
                                   : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'

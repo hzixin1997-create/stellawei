@@ -4,6 +4,12 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Sparkles, Mail, MessageSquare, MessageCircle, ChevronRight, Loader2 } from 'lucide-react'
 
+import {
+  WeChatBrowserModal,
+  isWeChatBrowser,
+  isInCooldown,
+} from "@/components/stripe/wechat-browser-modal";
+
 const MASTERS = [
   {
     slug: 'zhang-yihua',
@@ -49,9 +55,17 @@ export default function OrderPage() {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [showWeChatModal, setShowWeChatModal] = useState(false)
 
   const handleSubmit = async () => {
     if (!selectedMaster || !selectedService || !email) return
+
+    // 微信浏览器检测 + 冷却期拦截
+    if (isWeChatBrowser() && !isInCooldown()) {
+      setShowWeChatModal(true)
+      return
+    }
+
     setLoading(true)
     setError('')
 
@@ -158,6 +172,7 @@ export default function OrderPage() {
                           src={master.avatar}
                           alt={master.name}
                           className="w-full h-full object-cover"
+                          loading="lazy"
                         />
                       ) : (
                         <div className="w-full h-full bg-stone-300" />
@@ -319,6 +334,8 @@ export default function OrderPage() {
           </div>
         )}
       </main>
+
+      <WeChatBrowserModal open={showWeChatModal} onClose={() => setShowWeChatModal(false)} />
     </div>
   )
 }

@@ -10,6 +10,11 @@ import { ShoppingBag, MessageSquare, ArrowRight, Clock, User, Home, LogOut, Mess
 import Link from 'next/link'
 
 import { isConsultationExpired, getConsultationDisplayStatus } from '@/lib/utils'
+import {
+  WeChatBrowserModal,
+  isWeChatBrowser,
+  isInCooldown,
+} from '@/components/stripe/wechat-browser-modal'
 const masters: Record<string, { name: string; nameCn: string; specialty: string }> = {
   'master-luna': { name: 'Master Luna', nameCn: '卢娜师傅', specialty: 'Tarot' },
   'zhang-yihua': { name: 'Master Zhang Yihua', nameCn: '张易桦', specialty: 'Qi Men Dun Jia' },
@@ -44,6 +49,8 @@ interface Booking {
   expires_at: string | null
   deleted_at?: string | null
   consultation_type?: string
+  reschedule_notice?: string | null
+  reschedule_notice_read?: boolean
 }
 
 // 格式化倒计时
@@ -76,13 +83,26 @@ export default function UserDashboard() {
   const [showRescheduleModal, setShowRescheduleModal] = useState(false)
   const [rescheduleBooking, setRescheduleBooking] = useState<Booking | null>(null)
   const [rescheduleDate, setRescheduleDate] = useState('')
+  const [showWeChatModal, setShowWeChatModal] = useState(false)
   const [rescheduleSlots, setRescheduleSlots] = useState<string[]>([])
   const [rescheduleLoading, setRescheduleLoading] = useState(false)
   const [rescheduleSelectedTime, setRescheduleSelectedTime] = useState('')
   const [rescheduleSubmitting, setRescheduleSubmitting] = useState(false)
 
+  // Reschedule 通知弹窗
+  const [showNoticeModal, setShowNoticeModal] = useState(false)
+  const [noticeBooking, setNoticeBooking] = useState<Booking | null>(null)
+
   // 倒计时状态：booking_id -> remaining_seconds
   const [countdowns, setCountdowns] = useState<Record<string, number>>({})
+
+  // 我的留言
+  const [userMessages, setUserMessages] = useState<any[]>([])
+  const [messagesLoading, setMessagesLoading] = useState(true)
+  const [showMessageModal, setShowMessageModal] = useState(false)
+  const [selectedMessageBooking, setSelectedMessageBooking] = useState<any>(null)
+  const [selectedMessageHistory, setSelectedMessageHistory] = useState<any[]>([])
+  const [historyLoading, setHistoryLoading] = useState(false)
 
   const handleLogout = async () => {
     const supabase = createClient()
@@ -138,6 +158,28 @@ export default function UserDashboard() {
           }
         })
         setCountdowns(initialCountdowns)
+
+        // 检查是否有未读的 reschedule 通知
+        const unreadNotice = visibleBookings.find((b: Booking) => b.reschedule_notice && !b.reschedule_notice_read)
+        if (unreadNotice) {
+          setNoticeBooking(unreadNotice)
+          setShowNoticeModal(true)
+        }
+      }
+
+      // 3. 拉取我的留言（师傅发来的消息）
+      try {
+        const msgRes = await fetch('/api/user/messages', {
+          headers: { authorization: `Bearer ${session?.access_token || ''}` },
+        })
+        const msgJson = await msgRes.json()
+        if (msgRes.ok && msgJson.messages) {
+          setUserMessages(msgJson.messages)
+        }
+      } catch (err) {
+        console.error('Fetch messages error:', err)
+      } finally {
+        setMessagesLoading(false)
       }
 
       setIsLoading(false)
@@ -146,7 +188,50 @@ export default function UserDashboard() {
     getUserAndBookings()
   }, [router])
 
-  // 倒计时 tick
+  // 获取当前 session token
+  const getSessionToken = async () => {
+    const supabase = createClient()
+    const { data: { session } } = await supabase.auth.getSession()
+    return session?.access_token || ''
+  }
+
+  // 打开消息历史弹窗
+  const openMessageModal = async (bookingId: string) => {
+    const relatedBooking = bookings.find((b: Booking) => b.id === bookingId)
+    setSelectedMessageBooking(relatedBooking || { id: bookingId })
+    setShowMessageModal(true)
+    setHistoryLoading(true)
+    try {
+      const token = await getSessionToken()
+      const res = await fetch(`/api/chat/${bookingId}/messages`, {
+        headers: { authorization: `Bearer ${token}` },
+      })
+      const data = await res.json()
+      if (data.messages) setSelectedMessageHistory(data.messages)
+    } catch (err) {
+      console.error('Fetch message history error:', err)
+    } finally {
+      setHistoryLoading(false)
+    }
+  }
+
+  // 标记 reschedule 通知为已读
+  const handleReadNotice = async (bookingId: string) => {
+    try {
+      const token = await getSessionToken()
+      await fetch(`/api/bookings/${bookingId}/read-notice`, {
+        method: 'POST',
+        headers: { authorization: `Bearer ${token}` },
+      })
+      setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, reschedule_notice_read: true } : b))
+    } catch (err) {
+      console.error('Read notice error:', err)
+    } finally {
+      setShowNoticeModal(false)
+      setNoticeBooking(null)
+    }
+  }
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCountdowns(prev => {
@@ -427,6 +512,11 @@ export default function UserDashboard() {
   const handlePay = async (booking: Booking) => {
     if (isExpired(booking)) {
       alert(isZh ? '该订单已过期，请重新预约' : 'This order has expired. Please book again.')
+      return
+    }
+    // 微信浏览器检测 — 前置拦截
+    if (isWeChatBrowser() && !isInCooldown()) {
+      setShowWeChatModal(true)
       return
     }
     setPayingId(booking.id)
@@ -800,14 +890,45 @@ export default function UserDashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8">
-                <p className="text-stone-500 mb-4">{isZh ? '暂无留言' : 'No messages yet'}</p>
-                <Link href="/consultation-type">
-                  <Button variant="outline" size="sm">
-                    {isZh ? '去留言' : 'Leave Message'}
-                  </Button>
-                </Link>
-              </div>
+              {messagesLoading ? (
+                <div className="flex justify-center py-8">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-violet-600" />
+                </div>
+              ) : userMessages.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-stone-500 mb-4">{isZh ? '暂无留言' : 'No messages yet'}</p>
+                  <Link href="/consultation-type">
+                    <Button variant="outline" size="sm">
+                      {isZh ? '去留言' : 'Leave Message'}
+                    </Button>
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-3 max-h-[400px] overflow-y-auto">
+                  {userMessages.slice(0, 10).map((msg: any) => {
+                    const relatedBooking = bookings.find((b: Booking) => b.id === msg.booking_id)
+                    const masterName = relatedBooking ? (masters[relatedBooking.master_id]?.nameCn || relatedBooking.master_id) : ''
+                    return (
+                      <div
+                        key={msg.id}
+                        className="border rounded-lg p-3 hover:bg-stone-50 transition-colors cursor-pointer"
+                        onClick={() => openMessageModal(msg.booking_id)}
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs font-medium text-violet-600">{masterName || msg.sender_name}</span>
+                          <span className="text-xs text-stone-400">{new Date(msg.created_at).toLocaleDateString('zh-CN')}</span>
+                        </div>
+                        <p className="text-sm text-stone-700 line-clamp-2">{msg.content || (msg.image_url ? '[图片]' : '[语音]')}</p>
+                      </div>
+                    )
+                  })}
+                  {userMessages.length > 10 && (
+                    <p className="text-center text-xs text-stone-400 py-2">
+                      {isZh ? `还有 ${userMessages.length - 10} 条消息` : `${userMessages.length - 10} more messages`}
+                    </p>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -975,8 +1096,112 @@ export default function UserDashboard() {
               </div>
             </div>
           )}
+          {/* Reschedule 通知弹窗 */}
+          {showNoticeModal && noticeBooking && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
+              <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-amber-600" />
+                  </div>
+                  <h3 className="text-lg font-bold text-stone-900">
+                    {isZh ? '预约时间变更' : 'Booking Time Changed'}
+                  </h3>
+                </div>
+                <p className="text-stone-600 mb-2">
+                  {isZh
+                    ? `${masters[noticeBooking.master_id]?.nameCn || noticeBooking.master_id} 师傅调整了您的预约时间：`
+                    : `${masters[noticeBooking.master_id]?.name || noticeBooking.master_id} has changed your appointment time:`}
+                </p>
+                <p className="text-sm text-violet-700 font-medium bg-violet-50 rounded-lg p-3 mb-6">
+                  {noticeBooking.reschedule_notice}
+                </p>
+                <Button
+                  className="w-full bg-violet-600 hover:bg-violet-700"
+                  onClick={() => handleReadNotice(noticeBooking.id)}
+                >
+                  {isZh ? '知道了' : 'Got it'}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* 查看留言历史弹窗 */}
+          {showMessageModal && selectedMessageBooking && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
+              <div className="bg-white rounded-2xl p-4 sm:p-6 max-w-md w-full max-h-[85vh] overflow-y-auto">
+                <h3 className="text-lg font-bold text-center mb-4">
+                  {isZh ? '留言记录' : 'Message History'}
+                </h3>
+                <p className="text-sm text-stone-500 text-center mb-4">
+                  {isZh
+                    ? `${masters[selectedMessageBooking.master_id]?.nameCn || selectedMessageBooking.master_id || '师傅'} 的回复`
+                    : `Replies from ${masters[selectedMessageBooking.master_id]?.name || selectedMessageBooking.master_id || 'Master'}`}
+                </p>
+
+                {historyLoading ? (
+                  <div className="flex justify-center py-8">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-violet-600" />
+                  </div>
+                ) : selectedMessageHistory.length === 0 ? (
+                  <div className="text-center py-8">
+                    <MessageSquare className="w-8 h-8 text-stone-300 mx-auto mb-2" />
+                    <p className="text-stone-500 text-sm">{isZh ? '暂无留言记录' : 'No messages yet'}</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3 mb-4 max-h-[50vh] overflow-y-auto">
+                    {selectedMessageHistory.map((msg: any) => (
+                      <div
+                        key={msg.id}
+                        className={`flex ${msg.sender_type === 'master' ? 'justify-start' : 'justify-end'}`}
+                      >
+                        <div
+                          className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm ${
+                            msg.sender_type === 'master'
+                              ? 'bg-stone-100 text-stone-800 rounded-tl-none'
+                              : 'bg-violet-100 text-violet-800 rounded-tr-none'
+                          }`}
+                        >
+                          {msg.image_url ? (
+                            <img src={msg.image_url} alt="" className="max-w-full rounded-lg" loading="lazy" />
+                          ) : msg.audio_url ? (
+                            <audio src={msg.audio_url} controls className="w-full" />
+                          ) : (
+                            <p>{msg.content}</p>
+                          )}
+                          <p className="text-xs text-stone-400 mt-1 text-right">
+                            {new Date(msg.created_at).toLocaleString('zh-CN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="border-t pt-4">
+                  <p className="text-xs text-stone-400 text-center mb-3">
+                    {isZh ? '如需继续咨询，请重新下单' : 'To continue consulting, please place a new order'}
+                  </p>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => {
+                      setShowMessageModal(false)
+                      setSelectedMessageBooking(null)
+                      setSelectedMessageHistory([])
+                    }}
+                  >
+                    {isZh ? '关闭' : 'Close'}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
+
+      {/* 微信浏览器支付拦截弹窗 */}
+      <WeChatBrowserModal open={showWeChatModal} onClose={() => setShowWeChatModal(false)} />
     </div>
   )
 }

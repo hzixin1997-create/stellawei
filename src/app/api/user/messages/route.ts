@@ -6,10 +6,11 @@ export const dynamic = 'force-dynamic';
 
 /**
  * GET /api/user/messages
- * 获取当前用户收到的师傅消息（按 booking 分组）
+ * 获取当前用户收到的所有师傅消息（跨所有 booking）
  */
 export async function GET(request: Request) {
   try {
+    // 鉴权
     const authSupabase = await createClient();
     const { data: { user } } = await authSupabase.auth.getUser();
 
@@ -19,58 +20,46 @@ export async function GET(request: Request) {
 
     const supabase = createServiceClient();
 
-    // 1. 获取用户的所有 bookings（留言咨询 + 实时咨询）
+    // 1. 获取用户的所有 bookings id
     const { data: bookings, error: bookingsError } = await supabase
       .from('bookings')
-      .select('id, master_id, service_id, consultation_type, status, payment_status, order_number, created_at')
+      .select('id, master_id, service_id, scheduled_date, scheduled_time, status, payment_status, total_amount, duration_minutes, is_first_time')
       .eq('user_id', user.id)
-      .in('payment_status', ['paid', 'confirmed'])
+      .in('payment_status', ['paid', 'confirmed', 'completed'])
       .order('created_at', { ascending: false });
 
     if (bookingsError) {
+      console.error('User messages fetch bookings error:', bookingsError);
       return NextResponse.json({ error: 'Failed to fetch bookings' }, { status: 500 });
     }
 
     const bookingIds = (bookings || []).map((b: any) => b.id);
     if (bookingIds.length === 0) {
-      return NextResponse.json({ messages: [] });
+      return NextResponse.json({ messages: [], bookings: [] });
     }
 
-    // 2. 只获取师傅主动跟进的消息（follow_up），不查订单回复（order_reply）
+    // 2. 获取师傅发的所有消息
     const { data: messages, error: messagesError } = await supabase
       .from('messages')
       .select('*')
       .in('booking_id', bookingIds)
       .eq('sender_type', 'master')
-      .eq('source', 'follow_up')
       .order('created_at', { ascending: false });
 
     if (messagesError) {
-      console.error('Messages fetch error:', messagesError);
+      console.error('User messages fetch error:', messagesError);
       return NextResponse.json({ error: 'Failed to fetch messages' }, { status: 500 });
     }
 
-    // 3. 按 booking 分组
-    const messagesByBooking: Record<string, any[]> = {};
-    (messages || []).forEach((msg: any) => {
-      if (!messagesByBooking[msg.booking_id]) {
-        messagesByBooking[msg.booking_id] = [];
-      }
-      messagesByBooking[msg.booking_id].push(msg);
+    return NextResponse.json({
+      messages: messages || [],
+      bookings: bookings || [],
     });
-
-    // 4. 组装结果（所有师傅发过 follow_up 消息的 booking）
-    const bookingIdsWithMessages = Object.keys(messagesByBooking);
-    const result = (bookings || [])
-      .filter((b: any) => bookingIdsWithMessages.includes(b.id))
-      .map((booking: any) => ({
-        booking,
-        messages: messagesByBooking[booking.id] || [],
-        hasNewMessage: (messagesByBooking[booking.id] || []).length > 0,
-      }));
-
-    return NextResponse.json({ messages: result });
   } catch (error: any) {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error('User messages API error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error', message: error.message },
+      { status: 500 }
+    );
   }
 }

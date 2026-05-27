@@ -10,6 +10,11 @@ import { useTranslation } from 'react-i18next'
 import { ArrowLeft, ArrowRight, User, MessageSquare, Check, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import {
+  WeChatBrowserModal,
+  isWeChatBrowser,
+  isInCooldown,
+} from '@/components/stripe/wechat-browser-modal';
 
 // 师傅数据
 const masters = [
@@ -30,6 +35,7 @@ export default function ConsultationPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const [showWeChatModal, setShowWeChatModal] = useState(false)
   const isZh = i18n.language === 'zh'
 
   // 检测用户登录状态
@@ -85,6 +91,13 @@ export default function ConsultationPage() {
 
       if (!response.ok) {
         throw new Error(data.error || 'Failed to create order')
+      }
+
+      // 微信浏览器检测 — 前置拦截
+      if (isWeChatBrowser() && !isInCooldown()) {
+        setShowWeChatModal(true)
+        setIsSubmitting(false)
+        return
       }
 
       // 跳转到 Stripe Checkout
@@ -306,6 +319,8 @@ export default function ConsultationPage() {
           )}
         </div>
       </div>
+
+      <WeChatBrowserModal open={showWeChatModal} onClose={() => setShowWeChatModal(false)} />
     </div>
   )
 }

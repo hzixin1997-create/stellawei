@@ -82,6 +82,8 @@ export default function MasterOrdersPage() {
   const [historyBooking, setHistoryBooking] = useState<any>(null);
   const [historyMessages, setHistoryMessages] = useState<any[]>([]);
   const [historyLoading, setHistoryLoading] = useState(false);
+  // 申请退款
+  const [requestingRefundId, setRequestingRefundId] = useState<string | null>(null);
 
   useEffect(() => {
     loadOrders();
@@ -141,6 +143,39 @@ export default function MasterOrdersPage() {
       alert(`接单失败: ${err.message}`);
     } finally {
       setAcceptingId(null);
+    }
+  };
+
+  // 师傅申请退款
+  const handleRequestRefund = async (bookingId: string) => {
+    const reason = prompt('请填写退款原因（可选）：', '师傅未及时接单，申请退款');
+    if (reason === null) return; // 用户点击取消
+
+    if (!confirm('确认申请退款？此订单将标记为退款申请，等待总裁审批。')) return;
+
+    setRequestingRefundId(bookingId);
+    try {
+      const res = await fetch('/api/master/request-refund', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookingId, reason: reason || undefined }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || '申请退款失败');
+      }
+      // 更新本地状态
+      const updateOrder = (b: BookingOrder) =>
+        b.id === bookingId
+          ? { ...b, status: 'refund_requested', payment_status: 'refund_requested' }
+          : b;
+      setRealtimeOrders(prev => prev.map(updateOrder));
+      setMessageOrders(prev => prev.map(updateOrder));
+      alert('退款申请已提交，等待总裁审批。');
+    } catch (err: any) {
+      alert(`申请退款失败: ${err.message}`);
+    } finally {
+      setRequestingRefundId(null);
     }
   };
 
@@ -288,6 +323,20 @@ export default function MasterOrdersPage() {
                         >
                           查看历史
                         </button>
+                        {order.payment_status === 'paid' && order.status !== 'refund_requested' && order.status !== 'refunded' && order.status !== 'cancelled' && (
+                          <button
+                            onClick={() => handleRequestRefund(order.id)}
+                            disabled={requestingRefundId === order.id}
+                            className="px-4 py-2 text-sm border border-stone-300 text-stone-600 rounded-lg hover:bg-stone-100 transition-colors disabled:opacity-50"
+                          >
+                            {requestingRefundId === order.id ? '处理中...' : '申请退款'}
+                          </button>
+                        )}
+                        {(order.status === 'refund_requested' || order.payment_status === 'refund_requested') && (
+                          <span className="px-4 py-2 text-sm bg-orange-50 text-orange-600 rounded-lg text-center">
+                            退款申请中
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -366,14 +415,23 @@ export default function MasterOrdersPage() {
                           </>
                         )}
                         {canAccept && (
-                          <button
-                            onClick={() => handleAccept(order.id)}
-                            disabled={acceptingId === order.id}
-                            className="px-4 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-1 disabled:opacity-50"
-                          >
-                            <UserCheck size={16} />
-                            {acceptingId === order.id ? '处理中...' : '接单'}
-                          </button>
+                          <>
+                            <button
+                              onClick={() => handleAccept(order.id)}
+                              disabled={acceptingId === order.id}
+                              className="px-4 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-1 disabled:opacity-50"
+                            >
+                              <UserCheck size={16} />
+                              {acceptingId === order.id ? '处理中...' : '接单'}
+                            </button>
+                            <button
+                              onClick={() => handleRequestRefund(order.id)}
+                              disabled={requestingRefundId === order.id}
+                              className="px-4 py-2 text-sm border border-stone-300 text-stone-600 rounded-lg hover:bg-stone-100 transition-colors disabled:opacity-50"
+                            >
+                              {requestingRefundId === order.id ? '处理中...' : '申请退款'}
+                            </button>
+                          </>
                         )}
                         {isConfirmed && (
                           <Link href={`/chat/${order.id}`}>
@@ -441,6 +499,7 @@ export default function MasterOrdersPage() {
                         src={url}
                         alt={`Question image ${index + 1}`}
                         className="w-24 h-24 object-cover rounded-lg cursor-pointer border"
+                        loading="lazy"
                         onClick={() => window.open(url, '_blank')}
                       />
                     ))}
@@ -475,6 +534,7 @@ export default function MasterOrdersPage() {
                             src={msg.image_url}
                             alt="Reply image"
                             className="mt-2 max-w-full rounded-lg cursor-pointer"
+                            loading="lazy"
                             onClick={() => window.open(msg.image_url, '_blank')}
                           />
                         )}

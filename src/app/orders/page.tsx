@@ -107,6 +107,7 @@ export default function OrdersPage() {
                         src={order.master.avatar_url}
                         alt={order.master.display_name}
                         className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                        loading="lazy"
                       />
                     )}
                     <div className="flex-1 min-w-0">

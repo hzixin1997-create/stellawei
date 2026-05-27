@@ -3,6 +3,11 @@
 import { loadStripe } from "@stripe/stripe-js";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  WeChatBrowserModal,
+  isWeChatBrowser,
+  isInCooldown,
+} from "./wechat-browser-modal";
 
 // Stripe.js 加载（前端 publishable key）
 const stripePromise = loadStripe(
@@ -21,8 +26,15 @@ export function CheckoutButton({
   label = "Proceed to Payment",
 }: CheckoutButtonProps) {
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const handleCheckout = async () => {
+    // 微信浏览器检测 — 前置拦截
+    if (isWeChatBrowser() && !isInCooldown()) {
+      setShowModal(true);
+      return;
+    }
+
     setLoading(true);
     try {
       // 调用后端 API 创建 Checkout Session
@@ -45,8 +57,12 @@ export function CheckoutButton({
   };
 
   return (
-    <Button onClick={handleCheckout} disabled={loading} className="w-full">
-      {loading ? "Redirecting..." : label}
-    </Button>
+    <>
+      <Button onClick={handleCheckout} disabled={loading} className="w-full">
+        {loading ? "Redirecting..." : label}
+      </Button>
+
+      <WeChatBrowserModal open={showModal} onClose={() => setShowModal(false)} />
+    </>
   );
 }

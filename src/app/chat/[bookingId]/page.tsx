@@ -1,4 +1,5 @@
 'use client'
+// cache-bust: 2026-05-27-review-feature-v1
 
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
@@ -44,6 +45,12 @@ interface BookingInfo {
   scheduled_at: string
   total_amount: number
   duration_minutes: number
+  review_requested?: boolean
+  review_data?: {
+    rating: number
+    content?: string | null
+    created_at: string
+  } | null
 }
 
 const services: Record<string, { name: string; nameCn: string }> = {
@@ -116,14 +123,40 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
   // 从 messages 派生咨询前消息计数，避免竞态
   const preConsultMsgCount = useMemo(() => {
+    // 如果 booking 状态已经是 confirmed/in_progress，不算 pre-consult
+    if (booking?.status === 'confirmed' || booking?.status === 'in_progress') return 0
     if (consultStatus !== 'not_started') return 0
     return messages.filter((m: Message) => m.sender_type === 'user').length
-  }, [messages, consultStatus])
+  }, [messages, consultStatus, booking])
 
   const [showReview, setShowReview] = useState(false)
   const [reviewRating, setReviewRating] = useState(0)
   const [reviewText, setReviewText] = useState('')
   const [isSubmittingReview, setIsSubmittingReview] = useState(false)
+
+  // 评价弹窗模式：edit=可编辑填写，readonly=只读展示
+  const [reviewMode, setReviewMode] = useState<'edit' | 'readonly'>('edit')
+  // 师傅端：邀请评价按钮 loading 状态
+  const [isRequestingReview, setIsRequestingReview] = useState(false)
+  // 当前订单是否已有评价（防止重复弹窗）
+  const [hasReview, setHasReview] = useState(false)
+  // 师傅是否已发送过邀请
+  const [reviewRequested, setReviewRequested] = useState(false)
+
+  // 防连点 / stale closure：用 ref 配合 Realtime 监听
+  const showReviewRef = useRef(false)
+  const hasReviewRef = useRef(false)
+  // 弹窗锁：同一时刻只弹一个评价窗，防止堆叠
+  const reviewLockRef = useRef(false)
+
+  useEffect(() => { showReviewRef.current = showReview }, [showReview])
+  useEffect(() => { hasReviewRef.current = hasReview }, [hasReview])
+  // 弹窗关闭时释放锁
+  useEffect(() => {
+    if (!showReview) {
+      reviewLockRef.current = false
+    }
+  }, [showReview])
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -174,21 +207,41 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         console.log('[chat] API booking:', JSON.stringify(bookingData))
         if (bookingData) {
           setBooking(bookingData)
+          // 初始化评价相关状态
+          setReviewRequested(!!bookingData.review_requested)
+          if (bookingData.review_data) {
+            setHasReview(true)
+            setReviewRating(bookingData.review_data.rating || 0)
+            setReviewText(bookingData.review_data.content || '')
+          }
           if (bookingData.status === 'completed') {
             console.log('[chat] init: status=completed → ended')
             setCountdownSeconds(0)
             setConsultStatus('ended')
-          } else if (bookingData.scheduled_at && bookingData.duration_minutes) {
-            const scheduledTime = new Date(bookingData.scheduled_at).getTime()
-            const endTime = scheduledTime + bookingData.duration_minutes * 60 * 1000
-            const now = Date.now()
-            console.log('[chat] init time check:', { scheduled_at: bookingData.scheduled_at, scheduledTime, endTime, now, isPast: now > endTime })
-            if (now > endTime) {
-              console.log('[chat] init: past endTime → ended')
-              setCountdownSeconds(0)
-              setConsultStatus('ended')
-            } else {
-              console.log('[chat] init: within time window')
+          } else {
+            // 用 scheduled_at 或 scheduled_date+scheduled_time 计算时间
+            const scheduledAtStr = bookingData.scheduled_at
+              || (bookingData.scheduled_date && bookingData.scheduled_time
+                ? `${bookingData.scheduled_date}T${bookingData.scheduled_time}`
+                : null)
+            if (scheduledAtStr && bookingData.duration_minutes) {
+              const scheduledTime = new Date(scheduledAtStr).getTime()
+              const endTime = scheduledTime + bookingData.duration_minutes * 60 * 1000
+              const now = Date.now()
+              const remaining = Math.max(0, Math.floor((endTime - now) / 1000))
+              console.log('[chat] init time check:', { scheduledAtStr, scheduledTime, endTime, now, remaining, status: bookingData.status })
+              if (now > endTime) {
+                console.log('[chat] init: past endTime → ended')
+                setCountdownSeconds(0)
+                setConsultStatus('ended')
+              } else if (now >= scheduledTime) {
+                console.log('[chat] init: within time window → in_progress')
+                setCountdownSeconds(remaining)
+                setConsultStatus('in_progress')
+              } else {
+                console.log('[chat] init: before start time → not_started')
+                setCountdownSeconds(Math.max(0, Math.floor((scheduledTime - now) / 1000)))
+              }
             }
           }
         }
@@ -205,15 +258,21 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     if (!booking || booking.status === 'completed') return
 
     const tick = () => {
-      if (!booking.scheduled_at || !booking.duration_minutes) {
-        console.log('[chat] tick: missing scheduled_at or duration')
+      // 用 scheduled_at 或 scheduled_date+scheduled_time 计算时间
+      const scheduledAtStr = booking.scheduled_at
+        || (booking.scheduled_date && booking.scheduled_time
+          ? `${booking.scheduled_date}T${booking.scheduled_time}`
+          : null)
+
+      if (!scheduledAtStr || !booking.duration_minutes) {
+        console.log('[chat] tick: missing scheduled_at or duration', { scheduledAtStr, duration: booking.duration_minutes })
         setCountdownSeconds(0)
         return
       }
 
-      const scheduledTime = new Date(booking.scheduled_at).getTime()
+      const scheduledTime = new Date(scheduledAtStr).getTime()
       if (isNaN(scheduledTime)) {
-        console.log('[chat] tick: invalid scheduled_at', booking.scheduled_at)
+        console.log('[chat] tick: invalid scheduled_at', scheduledAtStr)
         setCountdownSeconds(0)
         return
       }
@@ -236,15 +295,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
       if (booking.status === 'completed') {
         newStatus = 'ended'
-      } else if (booking.status === 'confirmed') {
-        if (now < scheduledTime) {
-          newStatus = 'not_started'
-        } else if (now >= scheduledTime && now < endTime) {
-          newStatus = 'in_progress'
-        } else {
-          newStatus = 'ended'
-        }
-      } else if (booking.status === 'in_progress') {
+      } else if (booking.status === 'confirmed' || booking.status === 'in_progress') {
         if (now < scheduledTime) {
           newStatus = 'not_started'
         } else if (now >= scheduledTime && now < endTime) {
@@ -253,6 +304,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
           newStatus = 'ended'
         }
       } else {
+        // 其他状态（如 paid）
         if (now < scheduledTime) {
           newStatus = 'not_started'
         } else if (now >= scheduledTime && now < endTime) {
@@ -371,6 +423,52 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
     return () => clearInterval(interval)
   }, [bookingId, supabase, consultStatus])
+
+  // Supabase Realtime 监听：用户端按 bookingId 精确监听 bookings 表
+  // 检测到 review_requested=true 时自动弹出评价弹窗
+  useEffect(() => {
+    if (!bookingId || isMaster) return
+
+    const channel = supabase
+      .channel(`booking-review-${bookingId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'bookings',
+          filter: `id=eq.${bookingId}`,
+        },
+        (payload: any) => {
+          const newRecord = payload.new
+          console.log('[chat] realtime update:', newRecord)
+          // 更新本地 booking 状态
+          setBooking(prev => prev ? { ...prev, ...newRecord } : null)
+          // 检测到师傅邀请评价
+          if (newRecord.review_requested) {
+            setReviewRequested(true)
+            // 如果已有评价数据，切换到只读模式
+            if (newRecord.review_data) {
+              setHasReview(true)
+              setReviewRating(newRecord.review_data.rating || 0)
+              setReviewText(newRecord.review_data.content || '')
+              setReviewMode('readonly')
+            }
+            // 防堆叠：只有未弹窗、未评价时才弹出
+            if (!showReviewRef.current && !hasReviewRef.current && !reviewLockRef.current) {
+              reviewLockRef.current = true
+              setShowReview(true)
+              setReviewMode(newRecord.review_data ? 'readonly' : 'edit')
+            }
+          }
+        }
+      )
+      .subscribe()
+
+    return () => {
+      channel.unsubscribe()
+    }
+  }, [bookingId, supabase, isMaster])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -612,9 +710,11 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   }
 
   const [previewImage, setPreviewImage] = useState<string | null>(null)
+  // Force rebuild: chat countdown fix v4
 
   const handleSend = async () => {
-    if (!inputValue.trim() || isSending || consultStatus === 'ended') return
+    const content = inputValue.trim()
+    if (!content || isSending || consultStatus === 'ended') return
 
     // 前端：咨询未开始时检查5条限制
     if (consultStatus === 'not_started' && !isMaster && preConsultMsgCount >= PRE_CONSULT_LIMIT) {
@@ -625,7 +725,28 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       return
     }
 
+    // 乐观更新：立即显示消息
+    const tempId = `temp-${Date.now()}`
+    const optimisticMsg: Message = {
+      id: tempId,
+      booking_id: bookingId,
+      sender_id: user?.id || '',
+      sender_type: isMaster ? 'master' : 'user',
+      sender_name: isMaster ? 'Master' : (user?.user_metadata?.full_name || user?.email || 'User'),
+      content,
+      image_url: null,
+      audio_url: null,
+      audio_duration: null,
+      created_at: new Date().toISOString(),
+      read_at: null,
+      source: 'chat',
+    }
+
+    setMessages((prev) => [...prev, optimisticMsg])
+    setInputValue('')
+    inputRef.current?.focus()
     setIsSending(true)
+
     try {
       const { data: { session } } = await supabase.auth.getSession()
       const res = await fetch(`/api/chat/${bookingId}/messages`, {
@@ -634,26 +755,28 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
           'Content-Type': 'application/json',
           authorization: `Bearer ${session?.access_token || ''}`,
         },
-        body: JSON.stringify({ content: inputValue.trim() }),
+        body: JSON.stringify({ content }),
       })
 
       if (res.ok) {
-        setInputValue('')
-        inputRef.current?.focus()
         const json = await res.json()
         if (json.message) {
+          // 用服务端返回的真实消息替换临时消息
           setMessages((prev) => {
             if (prev.some((m) => m.id === json.message.id)) return prev
-            return [...prev, json.message]
+            return prev.map((m) => m.id === tempId ? json.message : m)
           })
-          // preConsultMsgCount 已从 messages 派生，无需乐观更新
         }
       } else {
         const err = await res.json()
+        // 发送失败，移除乐观更新的消息
+        setMessages((prev) => prev.filter((m) => m.id !== tempId))
         alert(err.error || 'Send failed')
       }
     } catch (err) {
       console.error('Send error:', err)
+      setMessages((prev) => prev.filter((m) => m.id !== tempId))
+      alert(isZh ? '发送失败，请重试' : 'Send failed, please retry')
     } finally {
       setIsSending(false)
     }
@@ -719,6 +842,38 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     }
   }
 
+  const handleRequestReview = async () => {
+    if (!isMaster || !booking) return
+    setIsRequestingReview(true)
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch(`/api/bookings/${bookingId}/request-review`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${session?.access_token || ''}`,
+        },
+      })
+      const json = await res.json()
+      if (res.ok) {
+        setReviewRequested(true)
+        // 如果已有评价，提示师傅
+        if (json.hasReview) {
+          alert(isZh ? '该订单已有评价，用户将看到只读评价详情' : 'This order already has a review. The user will see a read-only view.')
+        } else {
+          alert(isZh ? '已邀请用户评价' : 'Review request sent')
+        }
+      } else {
+        alert(json.error || (isZh ? '邀请失败' : 'Request failed'))
+      }
+    } catch (err: any) {
+      console.error('Request review error:', err)
+      alert(isZh ? '邀请失败，请重试' : 'Request failed, please retry')
+    } finally {
+      setIsRequestingReview(false)
+    }
+  }
+
   const handleComplete = async () => {
     if (!confirm(isZh ? '确定要结束这次咨询吗？' : 'Are you sure you want to complete this consultation?')) {
       return
@@ -737,9 +892,9 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       if (res.ok) {
         setBooking(prev => prev ? { ...prev, status: 'completed' } : null)
         setCountdownSeconds(0)
-        if (!isMaster) {
-          setShowReview(true)
-        } else {
+        // 旧逻辑已删除：用户点击结束不再自动弹出评价窗口
+        // 评价改由师傅触发（邀请评价按钮 + Realtime 监听）
+        if (isMaster) {
           router.push('/master/dashboard')
         }
       } else {
@@ -776,6 +931,10 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
       if (res.ok) {
         setShowReview(false)
+        setHasReview(true)
+        reviewLockRef.current = false
+        // 更新本地 booking 的 review_data，避免再次弹窗
+        setBooking(prev => prev ? { ...prev, review_data: { rating: reviewRating, content: reviewText, created_at: new Date().toISOString() } } : null)
         router.push('/user/dashboard')
       } else {
         const err = await res.json()
@@ -808,6 +967,8 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   const service = booking ? services[booking.service_id] : null
   const canComplete = booking?.status === 'in_progress' && consultStatus !== 'ended'
   const isCompleted = booking?.status === 'completed' || consultStatus === 'ended'
+  // 师傅可邀请评价：订单已完成/已结束，且是师傅身份
+  const canRequestReview = isMaster && isCompleted
 
   console.log('[chat] render:', { status: booking?.status, consultStatus, isCompleted, countdownSeconds })
 
@@ -873,6 +1034,27 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
                 )}
               </Button>
             )}
+            {/* 师傅端：邀请评价按钮 */}
+            {canRequestReview && (
+              <Button
+                size="sm"
+                variant="outline"
+                className={`px-2 sm:px-3 ${reviewRequested || hasReview ? 'text-stone-400 border-stone-200 bg-stone-50 cursor-not-allowed' : 'text-amber-600 border-amber-200 hover:bg-amber-50'}`}
+                onClick={handleRequestReview}
+                disabled={isRequestingReview || reviewRequested || hasReview}
+              >
+                {isRequestingReview ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <>
+                    <Star className="w-4 h-4 mr-0 sm:mr-1" />
+                    <span className="hidden sm:inline">
+                      {hasReview ? (isZh ? '已评价' : 'Reviewed') : reviewRequested ? (isZh ? '已邀请' : 'Invited') : (isZh ? '邀请评价' : 'Request Review')}
+                    </span>
+                  </>
+                )}
+              </Button>
+            )}
           </div>
         </div>
       </div>
@@ -928,6 +1110,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
                       src={msg.image_url}
                       alt="Chat image"
                       className="mt-2 max-w-full rounded-lg cursor-pointer"
+                      loading="lazy"
                       onClick={() => setPreviewImage(msg.image_url!)}
                     />
                   )}
@@ -1004,18 +1187,8 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
           {isCompleted && (
             <div className="flex items-center justify-center gap-2 py-2">
               <p className="text-stone-400 text-sm">
-                {isZh ? '✅ 咨询已结束，真心希望能帮助到您，别忘了留下评价哦~' : '✅ Consultation ended. We hope it was helpful. Please leave a review!'}
+                {isZh ? '✅ 咨询已结束，真心希望能帮助到您' : '✅ Consultation ended. We hope it was helpful.'}
               </p>
-              {!isMaster && !showReview && (
-                <Button
-                  size="sm"
-                  className="bg-violet-600 hover:bg-violet-700"
-                  onClick={() => setShowReview(true)}
-                >
-                  <Star className="w-4 h-4 mr-1" />
-                  {isZh ? '评价' : 'Rate'}
-                </Button>
-              )}
             </div>
           )}
 
@@ -1104,7 +1277,9 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
           <div className="bg-white rounded-2xl p-4 sm:p-6 max-w-md w-full max-h-[85vh] overflow-y-auto">
             <h3 className="text-xl font-bold text-center mb-4">
-              {isZh ? '评价本次咨询' : 'Rate this Consultation'}
+              {reviewMode === 'readonly'
+                ? (isZh ? '评价详情' : 'Review Details')
+                : (isZh ? '评价本次咨询' : 'Rate this Consultation')}
             </h3>
             <p className="text-stone-500 text-center mb-6">
               {isZh ? `您对 ${master?.nameCn} 师傅的服务满意吗？` : `How was your experience with ${master?.name}?`}
@@ -1114,51 +1289,74 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
                   key={star}
-                  onClick={() => setReviewRating(star)}
+                  onClick={() => reviewMode === 'edit' && setReviewRating(star)}
                   className="focus:outline-none p-1 sm:p-0"
+                  disabled={reviewMode === 'readonly'}
                 >
                   <Star
                     className={`w-11 h-11 sm:w-8 sm:h-8 ${
                       star <= reviewRating
                         ? 'text-amber-400 fill-amber-400'
                         : 'text-stone-300'
-                    }`}
+                    } ${reviewMode === 'readonly' ? 'cursor-default' : 'cursor-pointer'}`}
                   />
                 </button>
               ))}
             </div>
 
-            <textarea
-              value={reviewText}
-              onChange={(e) => setReviewText(e.target.value)}
-              placeholder={isZh ? '写下您的评价（可选）' : 'Write your review (optional)'}
-              className="w-full border rounded-lg p-3 text-base sm:text-sm mb-4 resize-none"
-              rows={4}
-              maxLength={500}
-            />
+            {reviewMode === 'edit' ? (
+              <textarea
+                value={reviewText}
+                onChange={(e) => setReviewText(e.target.value)}
+                placeholder={isZh ? '写下您的评价（可选）' : 'Write your review (optional)'}
+                className="w-full border rounded-lg p-3 text-base sm:text-sm mb-4 resize-none"
+                rows={4}
+                maxLength={500}
+              />
+            ) : (
+              <div className="w-full border rounded-lg p-3 text-base sm:text-sm mb-4 bg-stone-50 text-stone-700 min-h-[80px]">
+                {reviewText || (isZh ? '（无文字评价）' : '(No written review)')}
+              </div>
+            )}
 
             <div className="flex gap-3">
-              <Button
-                variant="outline"
-                className="flex-1"
-                onClick={() => {
-                  setShowReview(false)
-                  router.push('/user/dashboard')
-                }}
-              >
-                {isZh ? '跳过' : 'Skip'}
-              </Button>
-              <Button
-                className="flex-1 bg-violet-600 hover:bg-violet-700"
-                onClick={handleSubmitReview}
-                disabled={isSubmittingReview}
-              >
-                {isSubmittingReview ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  isZh ? '提交评价' : 'Submit'
-                )}
-              </Button>
+              {reviewMode === 'edit' ? (
+                <>
+                  <Button
+                    variant="outline"
+                    className="flex-1"
+                    onClick={() => {
+                      setShowReview(false)
+                      reviewLockRef.current = false
+                      router.push('/user/dashboard')
+                    }}
+                  >
+                    {isZh ? '跳过' : 'Skip'}
+                  </Button>
+                  <Button
+                    className="flex-1 bg-violet-600 hover:bg-violet-700"
+                    onClick={handleSubmitReview}
+                    disabled={isSubmittingReview}
+                  >
+                    {isSubmittingReview ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      isZh ? '提交评价' : 'Submit'
+                    )}
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => {
+                    setShowReview(false)
+                    reviewLockRef.current = false
+                  }}
+                >
+                  {isZh ? '关闭' : 'Close'}
+                </Button>
+              )}
             </div>
           </div>
         </div>

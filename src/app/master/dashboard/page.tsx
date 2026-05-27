@@ -25,6 +25,7 @@ import {
   Loader2,
   X,
   Crown,
+  Calendar,
 } from 'lucide-react'
 import Link from 'next/link'
 import { SimpleCalendar } from '@/components/SimpleCalendar'
@@ -91,6 +92,10 @@ export default function MasterDashboard() {
   const [sendingReply, setSendingReply] = useState(false)
   const [customers, setCustomers] = useState<any[]>([])
   const [customersLoading, setCustomersLoading] = useState(false)
+  const [bookingsPage, setBookingsPage] = useState(1)
+  const [bookingsLimit] = useState(10)
+  const [hasMoreBookings, setHasMoreBookings] = useState(false)
+  const [loadingMore, setLoadingMore] = useState(false)
   const [showCustomerMessageModal, setShowCustomerMessageModal] = useState(false)
   const [selectedCustomer, setSelectedCustomer] = useState<any>(null)
   const [customerMessageText, setCustomerMessageText] = useState('')
@@ -109,6 +114,15 @@ export default function MasterDashboard() {
   const [cancelReason, setCancelReason] = useState('')
   const [cancelling, setCancelling] = useState(false)
 
+  // 修改时间
+  const [showRescheduleModal, setShowRescheduleModal] = useState(false)
+  const [rescheduleBooking, setRescheduleBooking] = useState<any>(null)
+  const [rescheduleDate, setRescheduleDate] = useState('')
+  const [rescheduleSlots, setRescheduleSlots] = useState<string[]>([])
+  const [rescheduleLoading, setRescheduleLoading] = useState(false)
+  const [rescheduleSelectedTime, setRescheduleSelectedTime] = useState('')
+  const [rescheduleSubmitting, setRescheduleSubmitting] = useState(false)
+
   // 可用时段设置
   const [availableSlots, setAvailableSlots] = useState<string[] | null>(null)
   const [loadingSlots, setLoadingSlots] = useState(false)
@@ -119,6 +133,9 @@ export default function MasterDashboard() {
     tomorrow.setDate(tomorrow.getDate() + 1)
     return tomorrow
   })
+
+  // 订单状态筛选
+  const [orderFilter, setOrderFilter] = useState<'all' | 'pending' | 'processing' | 'completed' | 'message'>('all')
 
   const ALL_TIME_SLOTS = [
     '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
@@ -204,10 +221,51 @@ export default function MasterDashboard() {
     saveAvailabilityForDate(selectedAvailabilityDate, newSlots)
   }
 
-  useEffect(() => {
-    const getUserAndBookings = async () => {
+  // 加载更多订单
+  const loadMoreBookings = async () => {
+    if (!user || loadingMore) return
+    const nextPage = bookingsPage + 1
+    setLoadingMore(true)
+    try {
       const supabase = createClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch(`/api/master/dashboard?page=${nextPage}&limit=${bookingsLimit}`, {
+        headers: { authorization: `Bearer ${session?.access_token || ''}` },
+      })
+      const data = await res.json()
+      if (res.ok) {
+        setBookings(prev => [...prev, ...(data.bookings || [])])
+        setBookingsPage(nextPage)
+        setHasMoreBookings(data.bookingsPagination?.hasMore || false)
+      }
+    } catch (err) {
+      console.error('Load more bookings error:', err)
+    } finally {
+      setLoadingMore(false)
+    }
+  }
 
+  // 刷新可用时段
+  const refreshAvailability = async () => {
+    if (!masterInfo) return
+    const supabase = createClient()
+    const { data: { session } } = await supabase.auth.getSession()
+    const tomorrow = new Date()
+    tomorrow.setDate(tomorrow.getDate() + 1)
+    const dateStr = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`
+    const res = await fetch(`/api/master/availability?date=${dateStr}`, {
+      headers: { authorization: `Bearer ${session?.access_token || ''}` },
+    })
+    if (res.ok) {
+      const data = await res.json()
+      setAvailableSlots(data.available_slots || [])
+    }
+  }
+
+  useEffect(() => {
+    const getDashboardData = async () => {
+      const supabase = createClient()
+      
       // 1. 获取用户
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
@@ -216,58 +274,37 @@ export default function MasterDashboard() {
       }
       setUser(user)
 
-      // 2. 获取师傅信息（含状态）
+      // 2. 用合并API一次性获取所有数据
       const { data: { session } } = await supabase.auth.getSession()
-      const masterRes = await fetch('/api/master/profile', {
+      const res = await fetch(`/api/master/dashboard?page=1&limit=${bookingsLimit}`, {
         headers: { authorization: `Bearer ${session?.access_token || ''}` },
       })
-      if (masterRes.ok) {
-        const masterJson = await masterRes.json()
-        if (masterJson.master) {
-          setMasterInfo(masterJson.master)
+      const data = await res.json()
+
+      if (res.ok) {
+        if (data.master) {
+          setMasterInfo(data.master)
         }
-      }
-
-      // 3,4. 并行获取 bookings 和 customers（不互相依赖）
-      const bookingsPromise = fetch('/api/master/bookings', {
-        headers: { authorization: `Bearer ${session?.access_token || ''}` },
-      }).then(r => r.json())
-
-      setCustomersLoading(true)
-      const customersPromise = fetch('/api/master/customers', {
-        headers: { authorization: `Bearer ${session?.access_token || ''}` },
-      }).then(r => r.json()).catch(() => ({ customers: [] })).finally(() => setCustomersLoading(false))
-
-      // 5. 并行执行 availability（不依赖 bookings/customers）
-      const tomorrow = new Date()
-      tomorrow.setDate(tomorrow.getDate() + 1)
-      const dateStr = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth() + 1).padStart(2, '0')}-${String(tomorrow.getDate()).padStart(2, '0')}`
-      const availabilityPromise = fetch(`/api/master/availability?date=${dateStr}`, {
-        headers: { authorization: `Bearer ${session?.access_token || ''}` },
-      }).then(r => r.json()).catch(() => ({ available_slots: [] }))
-
-      // 等待并行请求完成
-      const [bookingsJson, customersJson, availabilityJson] = await Promise.all([
-        bookingsPromise,
-        customersPromise,
-        availabilityPromise,
-      ])
-
-      if (bookingsJson.bookings) {
-        setBookings(bookingsJson.bookings.filter((b: any) => !b.deleted_at))
-      }
-      if (customersJson.customers) {
-        setCustomers(customersJson.customers)
-      }
-      if (availabilityJson.available_slots) {
-        setAvailableSlots(availabilityJson.available_slots)
+        if (data.bookings) {
+          setBookings(data.bookings)
+          setHasMoreBookings(data.bookingsPagination?.hasMore || false)
+          setBookingsPage(1)
+        }
+        if (data.customers) {
+          setCustomers(data.customers)
+        }
+        if (data.availability?.available_slots !== undefined) {
+          setAvailableSlots(data.availability.available_slots)
+        }
+      } else {
+        console.error('Dashboard API error:', data.error)
       }
 
       setIsLoading(false)
     }
 
-    getUserAndBookings()
-  }, [router])
+    getDashboardData()
+  }, [router, bookingsLimit])
 
   // 更新师傅状态
   const updateStatus = async (newStatus: 'online' | 'offline' | 'rest') => {
@@ -382,6 +419,18 @@ export default function MasterDashboard() {
   }
 
   const visibleBookings = bookings.filter((b) => !b.deleted_at && b.status !== 'cancelled' && b.payment_status !== 'cancelled' && b.payment_status !== 'refunded')
+
+  // 根据筛选条件过滤订单
+  const filteredBookings = visibleBookings.filter((b) => {
+    if (orderFilter === 'all') return true
+    const displayStatus = getDisplayStatus(b)
+    if (orderFilter === 'pending') return b.payment_status === 'paid' && displayStatus === 'pending'
+    if (orderFilter === 'processing') return b.payment_status === 'paid' && (displayStatus === 'confirmed' || displayStatus === 'in_progress')
+    if (orderFilter === 'completed') return displayStatus === 'completed'
+    if (orderFilter === 'message') return b.consultation_type === 'message'
+    return true
+  })
+
   const totalOrders = visibleBookings.length
   const pendingOrders = visibleBookings.filter(
     (b) => b.payment_status === 'paid' && getDisplayStatus(b) === 'pending'
@@ -394,6 +443,14 @@ export default function MasterDashboard() {
   const completedOrders = visibleBookings.filter(
     (b) => getDisplayStatus(b) === 'completed'
   ).length
+
+  const filterConfig = [
+    { key: 'all', label: '全部', labelEn: 'All', count: visibleBookings.length },
+    { key: 'pending', label: '待接单', labelEn: 'Pending', count: pendingOrders },
+    { key: 'processing', label: '进行中', labelEn: 'In Progress', count: processingOrders },
+    { key: 'completed', label: '已完成', labelEn: 'Completed', count: completedOrders },
+    { key: 'message', label: '留言', labelEn: 'Message', count: visibleBookings.filter((b) => b.consultation_type === 'message').length },
+  ]
 
   // 状态标签样式（基于 displayStatus）
   const getStatusBadge = (displayStatus: string, paymentStatus: string) => {
@@ -482,6 +539,84 @@ export default function MasterDashboard() {
       alert(isZh ? `接单失败: ${err.message}` : `Accept failed: ${err.message}`)
     } finally {
       setAcceptingId(null)
+    }
+  }
+
+  // 修改预约时间
+  const openRescheduleModal = async (booking: any) => {
+    setRescheduleBooking(booking)
+    setShowRescheduleModal(true)
+    setRescheduleDate(booking.scheduled_date || new Date().toISOString().split('T')[0])
+    setRescheduleSelectedTime('')
+    setRescheduleSlots([])
+    setRescheduleLoading(true)
+    try {
+      const res = await fetch(`/api/bookings/occupied-slots?master_id=${booking.master_id}&date=${booking.scheduled_date || new Date().toISOString().split('T')[0]}`)
+      const json = await res.json()
+      if (res.ok) {
+        setRescheduleSlots(json.available_slots || [])
+      }
+    } catch (err) {
+      console.error('Reschedule modal error:', err)
+    } finally {
+      setRescheduleLoading(false)
+    }
+  }
+
+  const handleRescheduleDateChange = async (date: string) => {
+    setRescheduleDate(date)
+    setRescheduleSelectedTime('')
+    setRescheduleLoading(true)
+    try {
+      if (!rescheduleBooking) return
+      const res = await fetch(`/api/bookings/occupied-slots?master_id=${rescheduleBooking.master_id}&date=${date}`)
+      const json = await res.json()
+      if (res.ok) {
+        setRescheduleSlots(json.available_slots || [])
+      }
+    } catch (err) {
+      console.error('Reschedule date change error:', err)
+    } finally {
+      setRescheduleLoading(false)
+    }
+  }
+
+  const handleRescheduleSubmit = async () => {
+    if (!rescheduleBooking || !rescheduleDate || !rescheduleSelectedTime) {
+      alert(isZh ? '请选择日期和时段' : 'Please select date and time')
+      return
+    }
+    setRescheduleSubmitting(true)
+    try {
+      const res = await fetch('/api/master/reschedule', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          bookingId: rescheduleBooking.id,
+          scheduled_date: rescheduleDate,
+          scheduled_time: rescheduleSelectedTime,
+        }),
+      })
+      if (res.ok) {
+        alert(isZh ? '预约时间修改成功！已通知用户。' : 'Booking rescheduled successfully! User has been notified.')
+        setBookings((prev) =>
+          prev.map((b) =>
+            b.id === rescheduleBooking.id
+              ? { ...b, scheduled_date: rescheduleDate, scheduled_time: rescheduleSelectedTime }
+              : b
+          )
+        )
+        setShowRescheduleModal(false)
+        setRescheduleBooking(null)
+      } else {
+        const err = await res.json()
+        alert(err.error || 'Reschedule failed')
+      }
+    } catch (err: any) {
+      console.error('Reschedule submit error:', err)
+      alert(isZh ? `修改失败: ${err.message}` : `Reschedule failed: ${err.message}`)
+    } finally {
+      setRescheduleSubmitting(false)
     }
   }
 
@@ -590,33 +725,33 @@ export default function MasterDashboard() {
       {/* 顶部导航 */}
       <div className="bg-white border-b border-stone-200 px-4 py-3">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Link href="/" className="flex items-center text-stone-600 hover:text-stone-900">
-            <Home className="w-5 h-5 mr-2" />
-            <span className="font-medium">{isZh ? '返回首页' : 'Back to Home'}</span>
+          <Link href="/" className="flex items-center text-stone-600 hover:text-stone-900 shrink-0">
+            <Home className="w-5 h-5 mr-1 sm:mr-2" />
+            <span className="font-medium text-sm sm:text-base">{isZh ? '返回首页' : 'Back to Home'}</span>
           </Link>
-          <h1 className="text-lg font-bold text-stone-900 absolute left-1/2 -translate-x-1/2">
+          <h1 className="text-sm sm:text-lg font-bold text-stone-900 absolute left-1/2 -translate-x-1/2 hidden sm:block">
             {isZh ? '师傅后台' : 'Master Dashboard'}
           </h1>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
             <button
               onClick={() => setIsZh(!isZh)}
-              className="flex items-center gap-1 text-sm text-stone-500 hover:text-stone-900 transition-colors"
+              className="flex items-center gap-1 text-xs sm:text-sm text-stone-500 hover:text-stone-900 transition-colors shrink-0"
             >
               <span className="w-5 h-5 rounded-full border border-stone-300 flex items-center justify-center text-xs">
                 {isZh ? '中' : 'EN'}
               </span>
-              {isZh ? 'EN / 中' : 'EN / 中'}
+              <span className="hidden sm:inline">{isZh ? 'EN / 中' : 'EN / 中'}</span>
             </button>
-            <div className="flex items-center gap-2 text-sm text-stone-500">
-              <User className="w-4 h-4" />
-              {user?.email}
+            <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-stone-500 truncate">
+              <User className="w-4 h-4 shrink-0" />
+              <span className="truncate hidden sm:inline">{user?.email}</span>
             </div>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-1 text-sm text-stone-500 hover:text-red-600 transition-colors"
+              className="flex items-center gap-1 text-xs sm:text-sm text-stone-500 hover:text-red-600 transition-colors shrink-0"
             >
               <LogOut className="w-4 h-4" />
-              {isZh ? '退出登录' : 'Logout'}
+              <span className="hidden sm:inline">{isZh ? '退出登录' : 'Logout'}</span>
             </button>
           </div>
         </div>
@@ -626,24 +761,27 @@ export default function MasterDashboard() {
         <div className="max-w-4xl mx-auto">
           {/* 欢迎语 + 状态控制 + 钱包 */}
           <div className="mb-6">
-            <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-3xl font-serif font-bold text-stone-900">
-                {isZh
-                  ? `欢迎回来，${masterInfo?.name || ''}师傅`
-                  : `Welcome Back, ${masterInfo?.name || ''}`}
-              </h1>
-              <Badge variant="outline" className={`flex items-center gap-1 ${statusInfo.color}`}>
-                <StatusIcon className="w-3.5 h-3.5" />
-                {isZh ? statusInfo.label : statusInfo.labelEn}
-              </Badge>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <h1 className="text-xl sm:text-3xl font-serif font-bold text-stone-900 truncate">
+                  {isZh
+                    ? `欢迎回来，${masterInfo?.name || ''}师傅`
+                    : `Welcome Back, ${masterInfo?.name || ''}`}
+                </h1>
+                <Badge variant="outline" className={`flex items-center gap-1 shrink-0 text-xs sm:text-sm ${statusInfo.color}`}>
+                  <StatusIcon className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                  <span className="hidden sm:inline">{isZh ? statusInfo.label : statusInfo.labelEn}</span>
+                  <span className="sm:hidden">{isZh ? statusInfo.label : statusInfo.labelEn}</span>
+                </Badge>
+              </div>
               {/* 钱包图标 + 累计收入 */}
-              <div className="ml-auto flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-1.5">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-600">
+              <div className="sm:ml-auto flex items-center gap-1.5 sm:gap-2 bg-amber-50 border border-amber-200 rounded-lg px-2 sm:px-3 py-1 sm:py-1.5 shrink-0 self-start sm:self-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-600">
                   <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/>
                   <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/>
                   <path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>
                 </svg>
-                <span className="text-sm font-medium text-amber-700">
+                <span className="text-xs sm:text-sm font-medium text-amber-700">
                   ${bookings
                     .filter(b => ['completed', 'confirmed', 'in_progress'].includes(b.status) && b.payment_status === 'paid')
                     .reduce((sum, b) => sum + (b.total_amount || 0) * 0.7, 0)
@@ -663,12 +801,12 @@ export default function MasterDashboard() {
           {/* 状态切换栏 */}
           <Card className="mb-6">
             <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="min-w-0">
                   <p className="text-sm text-stone-500 mb-1">
                     {isZh ? '当前工作状态' : 'Current Work Status'}
                   </p>
-                  <p className="text-sm text-stone-700">
+                  <p className="text-xs sm:text-sm text-stone-700">
                     {isZh
                       ? currentStatus === 'online'
                         ? '用户可以看到您并预约实时咨询'
@@ -682,7 +820,7 @@ export default function MasterDashboard() {
                           : 'Users cannot see you or book any consultations'}
                   </p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 w-full sm:w-auto">
                   {(Object.keys(statusConfig) as Array<'online' | 'offline' | 'rest'>).map((s) => {
                     const config = statusConfig[s]
                     const Icon = config.icon
@@ -903,7 +1041,7 @@ export default function MasterDashboard() {
 
           {/* 最近订单 */}
           <Card className="mb-6">
-            <CardHeader className="flex flex-row items-center justify-between">
+            <CardHeader className="flex flex-row items-center justify-between flex-wrap gap-3">
               <CardTitle className="flex items-center gap-2">
                 <ShoppingBag className="w-5 h-5" />
                 {isZh ? '最近订单' : 'Recent Orders'}
@@ -915,15 +1053,36 @@ export default function MasterDashboard() {
                 </span>
               </Link>
             </CardHeader>
+            {/* 订单状态筛选 */}
+            <div className="px-6 pb-2">
+              <div className="flex flex-wrap gap-2">
+                {filterConfig.map((f) => (
+                  <button
+                    key={f.key}
+                    onClick={() => setOrderFilter(f.key as any)}
+                    className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors border ${
+                      orderFilter === f.key
+                        ? 'bg-violet-100 text-violet-700 border-violet-300'
+                        : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
+                    }`}
+                  >
+                    {isZh ? f.label : f.labelEn}
+                    <span className={`ml-1.5 text-xs ${orderFilter === f.key ? 'text-violet-500' : 'text-stone-400'}`}>
+                      ({f.count})
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
             <CardContent>
-              {visibleBookings.length === 0 ? (
+              {filteredBookings.length === 0 ? (
                 <div className="text-center py-12">
                   <Package className="w-12 h-12 text-stone-300 mx-auto mb-3" />
                   <p className="text-stone-500">{isZh ? '暂无订单' : 'No orders yet'}</p>
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {visibleBookings.slice(0, 5).map((booking) => {
+                  {filteredBookings.map((booking) => {
                     const service = services[booking.service_id] || {
                       name: booking.service_id,
                       nameCn: booking.service_id,
@@ -941,10 +1100,10 @@ export default function MasterDashboard() {
                         key={booking.id}
                         className="border rounded-lg p-4 hover:bg-stone-50 transition-colors"
                       >
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
+                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                          <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-2">
-                              <span className="font-semibold">
+                              <span className="font-semibold text-sm sm:text-base truncate">
                                 {isZh ? service.nameCn : service.name}
                               </span>
                               {getStatusBadge(displayStatus, booking.payment_status)}
@@ -952,7 +1111,7 @@ export default function MasterDashboard() {
                             <div className="text-xs text-stone-400 mb-1.5">
                               {isZh ? '订单号' : 'Order'}: {booking.order_number || booking.id.slice(0, 8)}
                             </div>
-                            <div className="flex items-center gap-4 text-sm text-stone-500">
+                            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm text-stone-500">
                               <span className="flex items-center gap-1">
                                 <Clock className="w-3.5 h-3.5" />
                                 {booking.scheduled_date} {booking.scheduled_time}
@@ -963,7 +1122,7 @@ export default function MasterDashboard() {
                               ${booking.total_amount}
                             </p>
                           </div>
-                          <div className="flex flex-col gap-2 ml-4 min-w-[100px]">
+                          <div className="flex flex-row sm:flex-col gap-2 sm:min-w-[100px]">
                             {isPendingAccept && (
                               <Button
                                 size="sm"
@@ -1012,16 +1171,27 @@ export default function MasterDashboard() {
                                     {isZh ? '查看留言' : 'View Message'}
                                   </Button>
                                 ) : (
-                                  <Link href={`/chat/${booking.id}`} className="inline-flex">
+                                  <>
+                                    <Link href={`/chat/${booking.id}`} className="inline-flex">
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        className="text-violet-600 border-violet-200 hover:bg-violet-50 w-full"
+                                      >
+                                        <MessageCircle className="w-4 h-4 mr-1" />
+                                        {isZh ? '进入咨询' : 'Enter Chat'}
+                                      </Button>
+                                    </Link>
                                     <Button
                                       size="sm"
                                       variant="outline"
-                                      className="text-violet-600 border-violet-200 hover:bg-violet-50 w-full"
+                                      className="text-blue-600 border-blue-200 hover:bg-blue-50 hover:text-blue-700 w-full"
+                                      onClick={() => openRescheduleModal(booking)}
                                     >
-                                      <MessageCircle className="w-4 h-4 mr-1" />
-                                      {isZh ? '进入咨询' : 'Enter Chat'}
+                                      <Calendar className="w-4 h-4 mr-1" />
+                                      {isZh ? '修改时间' : 'Reschedule'}
                                     </Button>
-                                  </Link>
+                                  </>
                                 )}
                               </>
                             )}
@@ -1080,6 +1250,30 @@ export default function MasterDashboard() {
                       </div>
                     )
                   })}
+                  
+                  {/* 加载更多 */}
+                  {hasMoreBookings && (
+                    <div className="text-center pt-4">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={loadMoreBookings}
+                        disabled={loadingMore}
+                        className="w-full sm:w-auto"
+                      >
+                        {loadingMore ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                            {isZh ? '加载中...' : 'Loading...'}
+                          </>
+                        ) : (
+                          <>
+                            {isZh ? '加载更多订单' : 'Load More Orders'}
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  )}
                 </div>
               )}
             </CardContent>
@@ -1113,10 +1307,10 @@ export default function MasterDashboard() {
                       key={customer.user.id}
                       className="border rounded-lg p-4 hover:bg-stone-50 transition-colors"
                     >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
+                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                        <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="font-semibold">
+                            <span className="font-semibold text-sm sm:text-base truncate">
                               {customer.user.full_name || customer.user.email}
                             </span>
                             <Badge variant="outline" className="text-xs">
@@ -1137,7 +1331,7 @@ export default function MasterDashboard() {
                             ))}
                           </div>
                         </div>
-                        <div className="flex flex-col gap-2 flex-shrink-0">
+                        <div className="flex flex-row sm:flex-col gap-2 flex-shrink-0">
                           <Button
                             size="sm"
                             variant="outline"
@@ -1222,6 +1416,7 @@ export default function MasterDashboard() {
                         src={msg.image_url}
                         alt="Message image"
                         className="mt-2 max-w-full rounded-lg cursor-pointer"
+                        loading="lazy"
                         onClick={() => window.open(msg.image_url, '_blank')}
                       />
                     )}
@@ -1352,6 +1547,7 @@ export default function MasterDashboard() {
                       src={url}
                       alt={`Question image ${index + 1}`}
                       className="w-24 h-24 object-cover rounded-lg cursor-pointer border"
+                      loading="lazy"
                       onClick={() => window.open(url, '_blank')}
                     />
                   ))}
@@ -1391,6 +1587,7 @@ export default function MasterDashboard() {
                           src={msg.image_url}
                           alt="Reply image"
                           className="mt-2 max-w-full rounded-lg cursor-pointer"
+                          loading="lazy"
                           onClick={() => window.open(msg.image_url, '_blank')}
                         />
                       )}
@@ -1455,6 +1652,7 @@ export default function MasterDashboard() {
                       src={url}
                       alt={`Question image ${index + 1}`}
                       className="w-24 h-24 object-cover rounded-lg cursor-pointer border"
+                      loading="lazy"
                       onClick={() => window.open(url, '_blank')}
                     />
                   ))}
@@ -1613,6 +1811,91 @@ export default function MasterDashboard() {
                   <>
                     {isZh ? '确认取消并退款' : 'Confirm Cancel'}
                   </>
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 修改预约时间弹窗 */}
+      {showRescheduleModal && rescheduleBooking && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
+          <div className="bg-white rounded-2xl p-4 sm:p-6 max-w-md w-full max-h-[85vh] overflow-y-auto">
+            <h3 className="text-xl font-bold text-center mb-4">
+              {isZh ? '修改预约时间' : 'Reschedule Booking'}
+            </h3>
+            <p className="text-stone-500 text-center mb-6 text-sm">
+              {isZh
+                ? `当前预约：${rescheduleBooking.scheduled_date || '-'} ${rescheduleBooking.scheduled_time || ''}`
+                : `Current: ${rescheduleBooking.scheduled_date || '-'} ${rescheduleBooking.scheduled_time || ''}`}
+            </p>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-stone-700 mb-2">
+                {isZh ? '选择日期' : 'Select Date'}
+              </label>
+              <input
+                type="date"
+                value={rescheduleDate}
+                onChange={(e) => handleRescheduleDateChange(e.target.value)}
+                min={new Date().toISOString().split('T')[0]}
+                className="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+              />
+            </div>
+
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-stone-700 mb-2">
+                {isZh ? '选择时段' : 'Select Time Slot'}
+              </label>
+              {rescheduleLoading ? (
+                <div className="flex justify-center py-4">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-violet-600" />
+                </div>
+              ) : rescheduleSlots.length === 0 ? (
+                <p className="text-sm text-stone-400 text-center py-4">
+                  {isZh ? '该日期暂无可用时段' : 'No available slots for this date'}
+                </p>
+              ) : (
+                <div className="grid grid-cols-3 gap-2">
+                  {rescheduleSlots.map((slot) => (
+                    <button
+                      key={slot}
+                      onClick={() => setRescheduleSelectedTime(slot)}
+                      className={`text-xs py-2 px-1 rounded-lg border transition-colors ${
+                        rescheduleSelectedTime === slot
+                          ? 'bg-violet-600 text-white border-violet-600'
+                          : 'bg-white text-stone-700 border-stone-200 hover:border-violet-400 hover:text-violet-600'
+                      }`}
+                    >
+                      {slot}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => {
+                  setShowRescheduleModal(false)
+                  setRescheduleBooking(null)
+                  setRescheduleSelectedTime('')
+                }}
+              >
+                {isZh ? '取消' : 'Cancel'}
+              </Button>
+              <Button
+                className="flex-1 bg-violet-600 hover:bg-violet-700"
+                onClick={handleRescheduleSubmit}
+                disabled={rescheduleSubmitting || !rescheduleSelectedTime}
+              >
+                {rescheduleSubmitting ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                ) : (
+                  isZh ? '确认修改' : 'Confirm'
                 )}
               </Button>
             </div>

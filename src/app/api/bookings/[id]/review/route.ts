@@ -124,6 +124,19 @@ export async function POST(
       );
     }
 
+    // 同时更新 bookings.review_data，方便后续只读展示
+    await supabase
+      .from('bookings')
+      .update({
+        review_data: {
+          rating,
+          content: content || null,
+          created_at: new Date().toISOString(),
+        },
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', id);
+
     return NextResponse.json({ success: true, review });
   } catch (error: any) {
     console.error('Review API error:', error);

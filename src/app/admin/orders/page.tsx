@@ -182,10 +182,43 @@ export default function AdminOrders() {
     return matchQuery && matchMaster && matchStatus;
   });
 
+  // 状态筛选计数
+  const statusCounts = {
+    all: orders.length,
+    pending: orders.filter(o => o.payment_status === 'pending').length,
+    paid: orders.filter(o => o.payment_status === 'paid' && o.status !== 'refund_requested').length,
+    confirmed: orders.filter(o => o.status === 'confirmed').length,
+    completed: orders.filter(o => o.status === 'completed').length,
+    refund_requested: orders.filter(o => o.status === 'refund_requested' || o.payment_status === 'refund_requested').length,
+    refunded: orders.filter(o => o.payment_status === 'refunded').length,
+  };
+
+  const statusFilterConfig = [
+    { key: 'all', label: '全部', labelEn: 'All' },
+    { key: 'pending', label: '待付款', labelEn: 'Pending' },
+    { key: 'paid', label: '已付款', labelEn: 'Paid' },
+    { key: 'confirmed', label: '已确认', labelEn: 'Confirmed' },
+    { key: 'completed', label: '已完成', labelEn: 'Completed' },
+    { key: 'refund_requested', label: '退款申请', labelEn: 'Refund' },
+    { key: 'refunded', label: '已退款', labelEn: 'Refunded' },
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-50 to-stone-100">
-      {/* 顶部导航 */}
-      <div className="bg-white border-b border-stone-200 px-4 py-3">
+      {/* 顶部导航 — 手机端精简 */}
+      <div className="bg-white border-b border-stone-200 px-2 sm:px-4 py-3 md:hidden">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <Link href="/" className="flex items-center text-stone-600 hover:text-stone-900 gap-2">
+            <Home className="w-5 h-5" />
+            <span className="font-medium">{isZh ? '返回首页' : 'Back to Home'}</span>
+          </Link>
+          <h1 className="text-lg font-bold text-stone-900">{isZh ? '订单管理' : 'Orders'}</h1>
+          <div className="w-20" />
+        </div>
+      </div>
+
+      {/* 桌面端导航 */}
+      <div className="hidden md:block bg-white border-b border-stone-200 px-4 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center text-stone-600 hover:text-stone-900 gap-2">
             <Home className="w-5 h-5" />
@@ -196,25 +229,25 @@ export default function AdminOrders() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-6 sm:py-8">
         {/* 筛选栏 */}
-        <Card className="mb-6">
-          <CardContent className="p-4 flex flex-col sm:flex-row gap-3">
-            <div className="relative flex-1 max-w-md">
+        <Card className="mb-4 sm:mb-6">
+          <CardContent className="p-3 sm:p-4 flex flex-col gap-3">
+            <div className="relative flex-1 w-full sm:max-w-md">
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
               <Input
                 placeholder={isZh ? '搜索订单ID或用户ID...' : 'Search order ID or user ID...'}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="pl-9 bg-stone-50 border-stone-200"
+                className="pl-9 bg-stone-50 border-stone-200 w-full"
               />
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <Filter size={16} className="text-stone-400" />
               <select
                 value={masterFilter}
                 onChange={(e) => setMasterFilter(e.target.value)}
-                className="text-sm border border-stone-200 rounded-md px-3 py-2 bg-white text-stone-700 focus:outline-none focus:ring-2 focus:ring-violet-500/20"
+                className="text-sm border border-stone-200 rounded-md px-3 py-2 bg-white text-stone-700 focus:outline-none focus:ring-2 focus:ring-violet-500/20 flex-1 min-w-[120px] sm:flex-none"
               >
                 <option value="all">{isZh ? '全部师傅' : 'All Masters'}</option>
                 <option value="master-luna">{isZh ? '卢娜师傅' : 'Master Luna'}</option>
@@ -224,7 +257,7 @@ export default function AdminOrders() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="text-sm border border-stone-200 rounded-md px-3 py-2 bg-white text-stone-700 focus:outline-none focus:ring-2 focus:ring-violet-500/20"
+                className="text-sm border border-stone-200 rounded-md px-3 py-2 bg-white text-stone-700 focus:outline-none focus:ring-2 focus:ring-violet-500/20 flex-1 min-w-[120px] sm:flex-none"
               >
                 <option value="all">{isZh ? '全部状态' : 'All Status'}</option>
                 <option value="pending">{isZh ? '待付款' : 'Pending'}</option>
@@ -240,7 +273,7 @@ export default function AdminOrders() {
               <Button
                 size="sm"
                 variant="outline"
-                className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 w-full sm:w-auto"
                 onClick={handleBatchDelete}
                 disabled={deleting}
               >
@@ -253,16 +286,36 @@ export default function AdminOrders() {
           </CardContent>
         </Card>
 
+        {/* 状态筛选标签 */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          {statusFilterConfig.map((s) => (
+            <button
+              key={s.key}
+              onClick={() => setStatusFilter(s.key)}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors border ${
+                statusFilter === s.key
+                  ? 'bg-violet-100 text-violet-700 border-violet-300'
+                  : 'bg-white text-stone-600 border-stone-200 hover:bg-stone-50'
+              }`}
+            >
+              {isZh ? s.label : s.labelEn}
+              <span className={`ml-1.5 text-xs ${statusFilter === s.key ? 'text-violet-500' : 'text-stone-400'}`}>
+                ({statusCounts[s.key as keyof typeof statusCounts]})
+              </span>
+            </button>
+          ))}
+        </div>
+
         {/* 订单列表 */}
         <Card>
-          <CardHeader className="pb-3">
+          <CardHeader className="pb-3 px-3 sm:px-6 pt-3 sm:pt-6">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-base font-sans font-semibold">
+              <CardTitle className="text-sm sm:text-base font-sans font-semibold">
                 {isZh ? '订单列表' : 'Orders'} ({filteredOrders.length})
               </CardTitle>
               {/* 全选 */}
               {filteredOrders.length > 0 && (
-                <label className="flex items-center gap-2 text-sm text-stone-600 cursor-pointer">
+                <label className="flex items-center gap-2 text-xs sm:text-sm text-stone-600 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={selectedIds.size === filteredOrders.length && filteredOrders.length > 0}
@@ -274,7 +327,7 @@ export default function AdminOrders() {
               )}
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-3 sm:px-6 pb-3 sm:pb-6">
             {loading ? (
               <div className="flex items-center justify-center py-16 gap-2 text-stone-500">
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -290,19 +343,19 @@ export default function AdminOrders() {
                 {filteredOrders.map((order) => (
                   <div
                     key={order.id}
-                    className="border rounded-lg p-4 hover:bg-stone-50 transition-colors"
+                    className="border rounded-lg p-3 sm:p-4 hover:bg-stone-50 transition-colors"
                   >
-                    <div className="flex items-start justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-0">
                       <div className="flex items-start gap-3 flex-1">
                         {/* 复选框 */}
                         <input
                           type="checkbox"
                           checked={selectedIds.has(order.id)}
                           onChange={() => toggleSelect(order.id)}
-                          className="mt-1 w-4 h-4 rounded border-stone-300 text-violet-600 focus:ring-violet-500"
+                          className="mt-1 w-4 h-4 rounded border-stone-300 text-violet-600 focus:ring-violet-500 flex-shrink-0"
                         />
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex flex-wrap items-center gap-2 mb-1">
                             <span className="font-medium">{mastersMap[order.master_id] || order.master_id}</span>
                             {(() => {
                               const isExpiredOrder = order.status === 'pending' && order.payment_status === 'pending' && order.expires_at && Date.now() > new Date(order.expires_at).getTime();
@@ -316,18 +369,23 @@ export default function AdminOrders() {
                             <span className="text-xs text-stone-400">{order.id.slice(0, 8)}</span>
                           </div>
                           <p className="text-sm text-stone-600">
-                            {order.service_id} · ${order.total_amount} · {order.scheduled_date} {order.scheduled_time}
+                            {order.service_id} · ${order.total_amount}
+                            {order.scheduled_date && order.scheduled_time
+                              ? ` · ${order.scheduled_date} ${order.scheduled_time}`
+                              : order.consultation_type === 'message'
+                                ? ' · 留言咨询'
+                                : ' · 未预约时间'}
                           </p>
                           <p className="text-xs text-stone-400 mt-1">
                             User: {order.user_id?.slice(0, 12)}... · {new Date(order.created_at).toLocaleString()}
                           </p>
                         </div>
                       </div>
-                      <div className="flex flex-col gap-2 ml-4">
+                      <div className="flex sm:flex-col gap-2 sm:ml-4 sm:justify-start pl-7 sm:pl-0">
                         {(order.status === 'refund_requested' || order.payment_status === 'refund_requested') && (
                           <Button
                             size="sm"
-                            className="bg-orange-600 hover:bg-orange-700 text-white"
+                            className="bg-orange-600 hover:bg-orange-700 text-white flex-1 sm:flex-none"
                             onClick={() => handleProcessRefund(order.id)}
                             disabled={processingRefund === order.id}
                           >
@@ -337,11 +395,13 @@ export default function AdminOrders() {
                           </Button>
                         )}
                         {order.status !== 'refund_requested' && order.payment_status !== 'refund_requested' && (
-                          <Link href={`/order/${order.id}`}>
-                            <Button size="sm" variant="outline">
-                              {isZh ? '查看' : 'View'}
-                            </Button>
-                          </Link>
+                          <span className="text-xs text-stone-400 whitespace-nowrap">
+                            {order.scheduled_date && order.scheduled_time
+                              ? `${order.scheduled_date} ${order.scheduled_time}`
+                              : order.consultation_type === 'message'
+                                ? '留言咨询'
+                                : '-'}
+                          </span>
                         )}
                       </div>
                     </div>

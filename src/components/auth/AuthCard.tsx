@@ -58,8 +58,8 @@ export function AuthCard() {
         setError(error.message)
       } else {
         const target = getRedirectByEmail(email)
-        router.push(target)
-        router.refresh()
+        // 使用硬跳转避免客户端路由卡顿
+        window.location.href = target
       }
     } finally {
       setIsLoading(false)
@@ -76,13 +76,24 @@ export function AuthCard() {
     setMessage('')
 
     try {
-      const { error } = await signUp(email, password, { full_name: fullName })
+      const { error: signUpError } = await signUp(email, password, { full_name: fullName })
       
-      if (error) {
-        setError(error.message)
-      } else {
-        setMessage(isZh ? '请查收邮件确认您的账户！如果1-2分钟内未收到，请检查垃圾邮件文件夹。' : 'Check your email to confirm your account! If not received in 1-2 minutes, check your spam folder.')
+      if (signUpError) {
+        setError(signUpError.message)
+        return
       }
+
+      // 注册成功后直接自动登录
+      const { error: signInError } = await signIn(email, password)
+      
+      if (signInError) {
+        setError(signInError.message)
+        return
+      }
+
+      // 登录成功，直接跳转
+      const target = getRedirectByEmail(email)
+      window.location.href = target
     } finally {
       setIsLoading(false)
       submittingRef.current = false

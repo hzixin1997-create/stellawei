@@ -182,6 +182,7 @@ export default function OrderDetail({ params }: { params: { id: string } }) {
                   src={order.master.avatar_url}
                   alt={order.master.display_name}
                   className="w-12 h-12 rounded-full object-cover"
+                  loading="lazy"
                 />
               )}
               <div>

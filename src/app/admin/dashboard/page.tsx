@@ -14,6 +14,7 @@ import {
   Loader2,
   RotateCcw,
   AlertTriangle,
+  Mail,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -50,6 +51,9 @@ interface StatsData {
     service_id: string;
     payment_status: string;
     total_amount: number;
+    scheduled_date: string | null;
+    scheduled_time: string | null;
+    consultation_type?: string;
     created_at: string;
   }>;
 }
@@ -76,6 +80,8 @@ export default function AdminDashboard() {
   const isZh = i18n.language === 'zh';
   const [stats, setStats] = useState<StatsData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [confirmingEmails, setConfirmingEmails] = useState(false);
+  const [confirmResult, setConfirmResult] = useState<string>('');
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -103,6 +109,30 @@ export default function AdminDashboard() {
     };
     fetchStats();
   }, []);
+
+  const handleConfirmAllEmails = async () => {
+    if (!confirm(isZh ? '确认要批量验证所有未确认邮箱的用户吗？' : 'Confirm all unverified emails?')) return;
+    setConfirmingEmails(true);
+    setConfirmResult('');
+    try {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch('/api/admin/confirm-all-emails', {
+        method: 'POST',
+        headers: { authorization: `Bearer ${session?.access_token || ''}` },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setConfirmResult(isZh ? `成功确认 ${data.confirmed} 个用户${data.failed > 0 ? `，${data.failed} 个失败` : ''}` : `Confirmed ${data.confirmed} users${data.failed > 0 ? `, ${data.failed} failed` : ''}`);
+      } else {
+        setConfirmResult(isZh ? `失败: ${data.error}` : `Failed: ${data.error}`);
+      }
+    } catch (err: any) {
+      setConfirmResult(isZh ? `错误: ${err.message}` : `Error: ${err.message}`);
+    } finally {
+      setConfirmingEmails(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -176,6 +206,42 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
         </div>
+
+        {/* 一键确认未验证邮箱 */}
+        <Card className="mb-8 border-amber-200 bg-amber-50">
+          <CardContent className="p-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
+                  <Mail className="w-5 h-5 text-amber-600" />
+                </div>
+                <div>
+                  <p className="font-medium text-stone-800">{isZh ? '批量确认未验证邮箱' : 'Confirm Unverified Emails'}</p>
+                  <p className="text-sm text-stone-500">{isZh ? '解决关闭邮件验证后已有用户无法登录的问题' : 'Fix users stuck after disabling email confirmation'}</p>
+                </div>
+              </div>
+              <button
+                onClick={handleConfirmAllEmails}
+                disabled={confirmingEmails}
+                className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+              >
+                {confirmingEmails ? (
+                  <span className="flex items-center gap-1">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    {isZh ? '处理中...' : 'Processing...'}
+                  </span>
+                ) : (
+                  isZh ? '一键确认全部' : 'Confirm All'
+                )}
+              </button>
+            </div>
+            {confirmResult && (
+              <p className={`mt-3 text-sm ${confirmResult.includes('成功') || confirmResult.includes('Confirmed') ? 'text-green-600' : 'text-red-600'}`}>
+                {confirmResult}
+              </p>
+            )}
+          </CardContent>
+        </Card>
 
         {/* 订单统计卡片 */}
         <h2 className="text-lg font-semibold text-stone-800 mb-4">{isZh ? '订单 & 财务' : 'Orders & Finance'}</h2>
@@ -283,7 +349,14 @@ export default function AdminDashboard() {
                     <div className="flex items-center gap-3">
                       <div>
                         <p className="font-medium">{mastersMap[order.master_id] || order.master_id}</p>
-                        <p className="text-sm text-stone-500">{order.service_id} · ${order.total_amount}</p>
+                        <p className="text-sm text-stone-500">
+                          {order.service_id} · ${order.total_amount}
+                          {order.scheduled_date && order.scheduled_time
+                            ? ` · ${order.scheduled_date} ${order.scheduled_time}`
+                            : order.consultation_type === 'message'
+                              ? ' · 留言咨询'
+                              : ' · 未预约时间'}
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">

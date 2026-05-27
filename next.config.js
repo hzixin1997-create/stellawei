@@ -5,6 +5,9 @@ const nextConfig = {
     domains: ['localhost', 'images.unsplash.com', 'i.pravatar.cc'],
     unoptimized: true,
   },
+  generateBuildId: async () => {
+    return 'build-' + Date.now();
+  },
 };
 
 module.exports = nextConfig;

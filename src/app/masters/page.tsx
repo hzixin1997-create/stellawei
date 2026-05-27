@@ -109,6 +109,7 @@ export default function MastersPage() {
                         src={master.avatar_url}
                         alt={master.display_name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
                       />
                       
                       <div className="absolute top-4 right-4 flex gap-2">

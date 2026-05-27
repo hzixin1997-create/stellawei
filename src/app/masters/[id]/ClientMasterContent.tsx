@@ -10,6 +10,11 @@ import Link from "next/link"
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { createClient } from "@/lib/supabase/client";
+import {
+  WeChatBrowserModal,
+  isWeChatBrowser,
+  isInCooldown,
+} from "@/components/stripe/wechat-browser-modal";
 
 interface MasterService {
   id: string;
@@ -148,6 +153,12 @@ export function ClientMasterContent({ master }: Props) {
       const data = await res.json();
 
       if (data.success && data.checkoutUrl) {
+        // 微信浏览器检测 — 前置拦截
+        if (isWeChatBrowser() && !isInCooldown()) {
+          setShowWeChatModal(true);
+          setCreatingOrder(null);
+          return;
+        }
         // 跳转到 Stripe Checkout
         window.location.href = data.checkoutUrl;
       } else if (data.error) {
@@ -267,6 +278,7 @@ export function ClientMasterContent({ master }: Props) {
                     src={master.avatar_url}
                     alt={displayName}
                     className="w-full h-full object-cover"
+                    loading="lazy"
                   />
                   {master.is_verified && (
                     <div className="absolute top-4 right-4 bg-stellawei-gold text-stellawei-purple-dark px-3 py-1 rounded-full text-xs font-semibold flex items-center space-x-1">
@@ -438,6 +450,8 @@ export function ClientMasterContent({ master }: Props) {
           </div>
         </div>
       </div>
+
+      <WeChatBrowserModal open={showWeChatModal} onClose={() => setShowWeChatModal(false)} />
     </div>
   )
 }
