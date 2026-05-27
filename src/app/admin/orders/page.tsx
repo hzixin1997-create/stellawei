@@ -236,7 +236,11 @@ export default function AdminOrders() {
       order.id?.toLowerCase().includes(query.toLowerCase()) ||
       order.user_id?.toLowerCase().includes(query.toLowerCase());
     const matchMaster = masterFilter === 'all' || order.master_id === masterFilter;
-    const matchStatus = statusFilter === 'all' || order.payment_status === statusFilter || order.status === statusFilter;
+    const matchStatus = statusFilter === 'all' ||
+      (statusFilter === 'ready' && order.payment_status === 'paid' && order.status === 'confirmed') ||
+      (statusFilter === 'in_progress' && order.status === 'in_progress') ||
+      order.payment_status === statusFilter ||
+      order.status === statusFilter;
     return matchQuery && matchMaster && matchStatus;
   });
 
@@ -246,6 +250,8 @@ export default function AdminOrders() {
     pending: orders.filter(o => o.payment_status === 'pending').length,
     paid: orders.filter(o => o.payment_status === 'paid' && o.status !== 'refund_requested').length,
     confirmed: orders.filter(o => o.status === 'confirmed').length,
+    ready: orders.filter(o => o.payment_status === 'paid' && o.status === 'confirmed').length, // 待服务：已支付+已确认
+    in_progress: orders.filter(o => o.status === 'in_progress').length,
     completed: orders.filter(o => o.status === 'completed').length,
     refund_requested: orders.filter(o => o.status === 'refund_requested' || o.payment_status === 'refund_requested').length,
     refunded: orders.filter(o => o.payment_status === 'refunded').length,
@@ -254,8 +260,8 @@ export default function AdminOrders() {
   const statusFilterConfig = [
     { key: 'all', label: '全部', labelEn: 'All' },
     { key: 'pending', label: '待付款', labelEn: 'Pending' },
-    { key: 'paid', label: '已付款', labelEn: 'Paid' },
-    { key: 'confirmed', label: '已确认', labelEn: 'Confirmed' },
+    { key: 'ready', label: '待服务', labelEn: 'Ready' }, // 新增：已支付但未开始
+    { key: 'in_progress', label: '进行中', labelEn: 'In Progress' }, // 新增
     { key: 'completed', label: '已完成', labelEn: 'Completed' },
     { key: 'refund_requested', label: '退款申请', labelEn: 'Refund' },
     { key: 'refunded', label: '已退款', labelEn: 'Refunded' },
