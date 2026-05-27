@@ -237,7 +237,7 @@ export default function AdminOrders() {
       order.user_id?.toLowerCase().includes(query.toLowerCase());
     const matchMaster = masterFilter === 'all' || order.master_id === masterFilter;
     const matchStatus = statusFilter === 'all' ||
-      (statusFilter === 'ready' && order.payment_status === 'paid' && order.status === 'confirmed') ||
+      (statusFilter === 'ready' && order.payment_status === 'paid' && order.status === 'confirmed' && order.scheduled_date >= new Date().toISOString().split('T')[0]) ||
       (statusFilter === 'in_progress' && order.status === 'in_progress') ||
       order.payment_status === statusFilter ||
       order.status === statusFilter;
@@ -250,7 +250,7 @@ export default function AdminOrders() {
     pending: orders.filter(o => o.payment_status === 'pending').length,
     paid: orders.filter(o => o.payment_status === 'paid' && o.status !== 'refund_requested').length,
     confirmed: orders.filter(o => o.status === 'confirmed').length,
-    ready: orders.filter(o => o.payment_status === 'paid' && o.status === 'confirmed').length, // 待服务：已支付+已确认
+    ready: orders.filter(o => o.payment_status === 'paid' && o.status === 'confirmed' && o.scheduled_date >= new Date().toISOString().split('T')[0]).length, // 待服务：已支付+已确认+未来日期
     in_progress: orders.filter(o => o.status === 'in_progress').length,
     completed: orders.filter(o => o.status === 'completed').length,
     refund_requested: orders.filter(o => o.status === 'refund_requested' || o.payment_status === 'refund_requested').length,
