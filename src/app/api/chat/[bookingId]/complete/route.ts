@@ -46,8 +46,8 @@ export async function POST(
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    // 检查订单状态
-    if (booking.status !== 'in_progress') {
+    // 检查订单状态（confirmed 或 in_progress 均可标记为 completed）
+    if (booking.status !== 'in_progress' && booking.status !== 'confirmed') {
       return NextResponse.json(
         { error: 'Booking is not in progress', currentStatus: booking.status },
         { status: 400 }

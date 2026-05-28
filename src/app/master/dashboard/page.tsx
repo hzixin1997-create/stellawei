@@ -405,14 +405,10 @@ export default function MasterDashboard() {
 
   // 统计（使用 displayStatus 统一判断超时）
   const getDisplayStatus = (b: Booking) => {
-    const scheduledAt = b.scheduled_at
-      ? b.scheduled_at
-      : b.scheduled_date && b.scheduled_time
-        ? `${b.scheduled_date}T${b.scheduled_time}`
-        : null
+    // 只用 scheduled_at（数据库 timestamp with timezone），不用拼接 fallback
     return getConsultationDisplayStatus({
       status: b.status,
-      scheduled_at: scheduledAt,
+      scheduled_at: b.scheduled_at || null,
       duration_minutes: b.duration_minutes || 30,
       expires_at: b.expires_at,
     })

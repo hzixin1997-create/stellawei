@@ -267,6 +267,12 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   // 倒计时 + 状态同步（每秒更新）
   useEffect(() => {
     if (!booking || booking.status === 'completed') return
+    // 已取消/已退款的订单停止倒计时，避免自动完成
+    if (booking.status === 'cancelled' || booking.status === 'refunded' || booking.payment_status === 'cancelled') {
+      setCountdownSeconds(0)
+      setConsultStatus('ended')
+      return
+    }
 
     const tick = () => {
       // 正规做法：倒计时只用 scheduled_at

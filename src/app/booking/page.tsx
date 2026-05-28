@@ -809,13 +809,13 @@ export default function BookingPage() {
                                     variant={selectedTime === time ? 'default' : 'outline'}
                                     onClick={() => !isBooked && setSelectedTime(time)}
                                     disabled={!selectedDate || isBooked || checkingSlots}
-                                    className={`h-10 text-sm ${
+                                    className={`text-sm ${
                                       selectedTime === time ? 'bg-violet-600' : 
-                                      isBooked ? 'bg-stone-100 text-stone-400 cursor-not-allowed' : ''
+                                      isBooked ? 'bg-stone-100 text-stone-400 cursor-not-allowed h-auto py-1.5 flex-col gap-0' : 'h-10'
                                     }`}
                                   >
-                                    {time}
-                                    {isBooked && <span className="ml-1 text-[10px]">{isZh ? '不可约' : 'Unavailable'}</span>}
+                                    <span>{time}</span>
+                                    {isBooked && <span className="text-[10px] leading-tight">{isZh ? '不可约' : 'Unavailable'}</span>}
                                   </Button>
                                 )
                               })

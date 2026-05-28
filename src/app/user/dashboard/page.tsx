@@ -120,6 +120,10 @@ export default function UserDashboard() {
 
   // 判断订单是否已过期（payment_status=expired 或 expires_at超时的pending订单）
   const isExpired = (booking: Booking): boolean => {
+    // 已取消/已退款的订单不算过期
+    if (booking.status === 'cancelled' || booking.status === 'refunded' || booking.payment_status === 'cancelled') {
+      return false
+    }
     if (booking.payment_status === 'expired') return true
     if (booking.payment_status !== 'pending' && booking.payment_status !== 'pending_payment') {
       return false
@@ -770,8 +774,40 @@ export default function UserDashboard() {
                             )}
                           </div>
                           <div className="flex flex-wrap sm:flex-nowrap sm:flex-col gap-2 sm:min-w-[80px]">
+                            {/* 已支付但未接单 */}
+                            {booking.payment_status === 'paid' && booking.status === 'pending' && (
+                              <>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  disabled
+                                  className="text-stone-400 border-stone-200 bg-stone-50 flex-1 sm:flex-none"
+                                >
+                                  <Clock className="w-4 h-4 mr-1" />
+                                  {isZh ? '等待师傅接单' : 'Waiting for Master'}
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600 flex-1 sm:flex-none"
+                                  onClick={() => handleCancel(booking.id)}
+                                  disabled={cancellingId === booking.id}
+                                >
+                                  {cancellingId === booking.id ? (isZh ? '取消中...' : 'Cancelling...') : (isZh ? '取消' : 'Cancel')}
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-orange-600 border-orange-200 hover:bg-orange-50 hover:text-orange-700 flex-1 sm:flex-none"
+                                  onClick={() => handleRefund(booking.id)}
+                                  disabled={refundingId === booking.id}
+                                >
+                                  {refundingId === booking.id ? (isZh ? '处理中...' : 'Processing...') : (isZh ? '申请退款' : 'Refund')}
+                                </Button>
+                              </>
+                            )}
                             {/* 已完成订单 */}
-                            {booking.payment_status === 'paid' && !canEnterChat(booking) && (
+                            {booking.payment_status === 'paid' && !canEnterChat(booking) && booking.status !== 'pending' && (
                               <>
                                 <Link href={`/chat/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
                                   <Button
