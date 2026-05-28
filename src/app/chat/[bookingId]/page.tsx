@@ -418,14 +418,14 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
             
             // 服务端消息中存在与临时消息相同内容+发送者+时间的，视为已确认
             // 保留尚未确认的临时消息，避免消息"消失"
-            const serverMsgMap = new Map<string, any>()
-            serverMessages.forEach(m => {
+            const serverMsgMap = new Map<string, Message>()
+            serverMessages.forEach((m: Message) => {
               // 用 content + sender_type + 时间戳(精确到秒) 作为匹配键
               const key = `${m.content || ''}|${m.sender_type}|${m.created_at?.slice(0, 19)}`
               serverMsgMap.set(key, m)
             })
             
-            const stillPending = tempMessages.filter(temp => {
+            const stillPending = tempMessages.filter((temp: Message) => {
               const key = `${temp.content || ''}|${temp.sender_type}|${temp.created_at?.slice(0, 19)}`
               return !serverMsgMap.has(key)
             })
