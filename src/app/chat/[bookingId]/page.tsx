@@ -119,51 +119,16 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   const bookingRef = useRef<BookingInfo | null>(null)
   useEffect(() => { bookingRef.current = booking }, [booking])
 
-  // ⚠️ 关键修复：优先用 scheduled_at（含完整时区信息），fallback 到 scheduled_date+time
-  // Supabase 返回的 date/time 格式可能带 T00:00:00+00，需要清理
+  // 倒计时状态机：只使用 scheduled_at（数据库 timestamp with timezone）
+  // scheduled_date / scheduled_time 仅用于 UI 显示，不参与任何计算
   const getScheduledTime = (bookingData: BookingInfo): number | null => {
-    // 1. 优先使用 scheduled_at（数据库 timestamp with timezone，最可靠）
-    if (bookingData.scheduled_at) {
-      const t = new Date(bookingData.scheduled_at).getTime()
-      if (!isNaN(t)) {
-        console.log('[chat] getScheduledTime via scheduled_at:', bookingData.scheduled_at, '→', t)
-        return t
-      }
-    }
-    
-    // 2. Fallback: scheduled_date + scheduled_time
-    if (!bookingData.scheduled_date || !bookingData.scheduled_time) return null
-    
-    // 清理 Supabase 返回格式：date 可能带 "T00:00:00+00"，time 可能带 "+00"
-    const datePart = bookingData.scheduled_date.split('T')[0]
-    const timePart = bookingData.scheduled_time.split('+')[0].split('.')[0]
-    
-    const [year, month, day] = datePart.split('-').map(Number)
-    const timeComponents = timePart.split(':').map(Number)
-    const hour = timeComponents[0]
-    const minute = timeComponents[1]
-    
-    if ([year, month, day, hour, minute].some(v => isNaN(v))) {
-      console.error('[chat] Invalid date/time components:', { 
-        rawDate: bookingData.scheduled_date, 
-        rawTime: bookingData.scheduled_time,
-        datePart, timePart, year, month, day, hour, minute 
-      })
+    if (!bookingData.scheduled_at) return null
+    const t = new Date(bookingData.scheduled_at).getTime()
+    if (isNaN(t)) {
+      console.error('[chat] Invalid scheduled_at:', bookingData.scheduled_at)
       return null
     }
-    
-    // 按浏览器本地时区构造（与预约页面一致）
-    const d = new Date(year, month - 1, day, hour, minute)
-    if (isNaN(d.getTime())) return null
-    
-    console.log('[chat] getScheduledTime via date+time:', {
-      datePart, timePart, year, month, day, hour, minute,
-      localTimestamp: d.toISOString(),
-      localTimeMs: d.getTime(),
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    })
-    
-    return d.getTime()
+    return t
   }
 
   const PRE_CONSULT_LIMIT = 5
@@ -266,9 +231,9 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
             setCountdownSeconds(0)
             setConsultStatus('ended')
           } else {
-            // ⚠️ 关键修复：统一用 getScheduledTime 计算本地时间，避免 scheduled_at 时区偏差
-            const scheduledTime = getScheduledTime(bookingData)
-            if (scheduledTime && bookingData.duration_minutes) {
+            // 正规做法：倒计时只用 scheduled_at
+            const scheduledTime = bookingData.scheduled_at ? new Date(bookingData.scheduled_at).getTime() : null
+            if (scheduledTime && !isNaN(scheduledTime) && bookingData.duration_minutes) {
               const endTime = scheduledTime + bookingData.duration_minutes * 60 * 1000
               const now = Date.now()
               const remaining = Math.max(0, Math.floor((endTime - now) / 1000))
@@ -287,7 +252,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
                 setConsultStatus('not_started')
               }
             } else {
-              console.warn('[chat] init: missing scheduled time or duration', { scheduled_date: bookingData.scheduled_date, scheduled_time: bookingData.scheduled_time, duration: bookingData.duration_minutes })
+              console.warn('[chat] init: missing scheduled_at or duration', { scheduled_at: bookingData.scheduled_at, duration: bookingData.duration_minutes })
             }
           }
         }
@@ -304,11 +269,11 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     if (!booking || booking.status === 'completed') return
 
     const tick = () => {
-      // ⚠️ 关键修复：统一用 getScheduledTime 计算本地时间，避免 scheduled_at 时区偏差
-      const scheduledTime = getScheduledTime(booking)
+      // 正规做法：倒计时只用 scheduled_at
+      const scheduledTime = booking.scheduled_at ? new Date(booking.scheduled_at).getTime() : null
 
-      if (!scheduledTime || !booking.duration_minutes) {
-        console.warn('[chat] tick: missing scheduled time or duration', { scheduled_date: booking.scheduled_date, scheduled_time: booking.scheduled_time, duration: booking.duration_minutes })
+      if (!scheduledTime || isNaN(scheduledTime) || !booking.duration_minutes) {
+        console.warn('[chat] tick: missing scheduled_at or duration', { scheduled_at: booking.scheduled_at, duration: booking.duration_minutes })
         setCountdownSeconds(0)
         return
       }
@@ -428,7 +393,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
         if (res.ok) {
           const json = await res.json()
-          const newMessages = json.messages || []
+          const serverMessages = json.messages || []
           const newBooking = json.booking
           const typing = json.typing || { user: false, master: false }
 
@@ -440,9 +405,32 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
             })
           }
 
+          // ⚠️ 关键修复：消息合并逻辑
+          // 服务端消息 + 本地乐观更新的临时消息（尚未收到服务端确认）
           setMessages((prev) => {
-            if (newMessages.length === prev.length) return prev
-            return newMessages
+            // 识别本地临时消息（以 'temp-' 开头）
+            const tempMessages = prev.filter(m => m.id.startsWith('temp-'))
+            
+            // 如果本地没有临时消息，直接替换为服务端消息
+            if (tempMessages.length === 0) {
+              return serverMessages
+            }
+            
+            // 服务端消息中存在与临时消息相同内容+发送者+时间的，视为已确认
+            // 保留尚未确认的临时消息，避免消息"消失"
+            const serverMsgMap = new Map<string, any>()
+            serverMessages.forEach(m => {
+              // 用 content + sender_type + 时间戳(精确到秒) 作为匹配键
+              const key = `${m.content || ''}|${m.sender_type}|${m.created_at?.slice(0, 19)}`
+              serverMsgMap.set(key, m)
+            })
+            
+            const stillPending = tempMessages.filter(temp => {
+              const key = `${temp.content || ''}|${temp.sender_type}|${temp.created_at?.slice(0, 19)}`
+              return !serverMsgMap.has(key)
+            })
+            
+            return [...serverMessages, ...stillPending]
           })
 
           // 更新对方 typing 状态
@@ -754,7 +742,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   }
 
   const [previewImage, setPreviewImage] = useState<string | null>(null)
-  // Force rebuild: chat countdown fix v5 - timezone fix + message debug
+  // Force rebuild: chat core fix v6 - countdown via scheduled_at + message merge
 
   const handleSend = async () => {
     const content = inputValue.trim()
@@ -807,24 +795,23 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         if (json.message) {
           // 用服务端返回的真实消息替换临时消息
           setMessages((prev) => {
+            // 如果服务端消息已经通过轮询进入数组，避免重复
             if (prev.some((m) => m.id === json.message.id)) return prev
             return prev.map((m) => m.id === tempId ? json.message : m)
           })
         } else {
-          // 后端返回200但message为null，移除临时消息并提示
+          // 后端返回200但message为null — 保留临时消息，标记为"发送中"失败
           console.error('[chat] API returned 200 but no message:', json)
-          setMessages((prev) => prev.filter((m) => m.id !== tempId))
           alert(isZh ? '发送失败，请重试' : 'Send failed, please retry')
         }
       } else {
         const err = await res.json()
-        // 发送失败，移除乐观更新的消息
-        setMessages((prev) => prev.filter((m) => m.id !== tempId))
+        // 发送失败 — 保留临时消息（带错误标记），让用户知道失败
+        console.error('[chat] Send failed:', err)
         alert(err.error || 'Send failed')
       }
     } catch (err) {
       console.error('Send error:', err)
-      setMessages((prev) => prev.filter((m) => m.id !== tempId))
       alert(isZh ? '发送失败，请重试' : 'Send failed, please retry')
     } finally {
       setIsSending(false)

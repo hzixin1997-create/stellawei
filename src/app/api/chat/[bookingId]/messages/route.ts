@@ -183,9 +183,6 @@ export async function POST(
       return NextResponse.json({ error: 'Booking not paid' }, { status: 400 });
     }
 
-    // 状态由时间驱动，不在发消息时自动变更
-    // confirmed / in_progress 均可发消息，前端根据时间显示正确状态
-
     // 获取发送者名称
     const senderName = isMaster
       ? masterInfo?.name || 'Master'
