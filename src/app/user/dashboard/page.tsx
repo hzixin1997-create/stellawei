@@ -876,7 +876,8 @@ export default function UserDashboard() {
                                 </Button>
                               </>
                             )}
-                            {expired && (
+                            {/* 已过期或已取消订单：只显示一个删除按钮 */}
+                            {(expired || booking.status === 'cancelled' || booking.payment_status === 'cancelled') && (
                               <>
                                 <Link href="/booking" className="inline-flex flex-1 sm:flex-none">
                                   <Button size="sm" variant="outline" className="w-full">
@@ -893,24 +894,6 @@ export default function UserDashboard() {
                                   {deletingId === booking.id ? (isZh ? '删除中...' : 'Deleting...') : (isZh ? '删除' : 'Delete')}
                                 </Button>
                               </>
-                            )}
-                            {booking.payment_status === 'failed' && (
-                              <Link href="/booking" className="inline-flex flex-1 sm:flex-none">
-                                <Button size="sm" variant="outline" className="w-full">
-                                  {isZh ? '重新预约' : 'Re-book'}
-                                </Button>
-                              </Link>
-                            )}
-                            {(booking.status === 'cancelled' || booking.payment_status === 'cancelled') && (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="text-stone-500 border-stone-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200 flex-1 sm:flex-none"
-                                onClick={() => handleDelete(booking.id)}
-                                disabled={deletingId === booking.id}
-                              >
-                                {deletingId === booking.id ? (isZh ? '删除中...' : 'Deleting...') : (isZh ? '删除' : 'Delete')}
-                              </Button>
                             )}
                           </div>
                         </div>

@@ -90,9 +90,26 @@ export function getConsultationDisplayStatus(
   if (!booking.scheduled_at || !booking.duration_minutes) {
     return booking.status
   }
+  
+  // 正规做法：scheduled_at 是 ISO 格式（含时区信息），直接解析为 UTC 时间戳
   const scheduledTime = new Date(booking.scheduled_at).getTime()
+  if (isNaN(scheduledTime)) {
+    console.error('[utils] Invalid scheduled_at:', booking.scheduled_at)
+    return booking.status
+  }
+  
   const endTime = scheduledTime + booking.duration_minutes * 60 * 1000
   const now = Date.now()
+
+  console.log('[utils] getConsultationDisplayStatus:', {
+    scheduled_at: booking.scheduled_at,
+    scheduledTime: new Date(scheduledTime).toISOString(),
+    endTime: new Date(endTime).toISOString(),
+    now: new Date(now).toISOString(),
+    duration: booking.duration_minutes,
+    status: booking.status,
+    result: now < scheduledTime ? 'confirmed' : now < endTime ? 'in_progress' : 'completed'
+  })
 
   if (now < scheduledTime) {
     return 'confirmed' // 还没到预约时间
