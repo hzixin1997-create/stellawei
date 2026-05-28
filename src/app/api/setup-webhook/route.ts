@@ -4,20 +4,12 @@ import { getStripe } from '@/lib/stripe';
 export const dynamic = 'force-dynamic';
 
 /**
- * GET /api/setup-webhook?key=REMINDER_API_KEY
+ * GET /api/setup-webhook
  * 自动在 Stripe 创建 Webhook endpoint
- * 仅需执行一次，执行后记录 webhook signing secret 并配置到 Vercel
+ * 无需 API Key（仅首次配置使用，创建后建议删除或加保护）
  */
 export async function GET(request: Request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const apiKey = searchParams.get('key');
-    const expectedKey = process.env.REMINDER_API_KEY;
-
-    if (apiKey !== expectedKey) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
     const stripe = getStripe();
     const endpointUrl = 'https://stellawei.org/api/webhooks/stripe';
 
@@ -32,7 +24,7 @@ export async function GET(request: Request) {
         success: true,
         message: 'Webhook endpoint already exists',
         url: endpointUrl,
-        note: 'If payments are still not updating, the STRIPE_WEBHOOK_SECRET env variable may be missing or incorrect.',
+        note: 'If payments are still not updating, check that STRIPE_WEBHOOK_SECRET is correct in Vercel env.',
       });
     }
 
