@@ -142,12 +142,15 @@ export async function GET(request: Request) {
           chatUrl,
         });
 
-        // 标记已发送
-        if (userEmailResult.success || masterEmailResult.success) {
+        // 标记已发送：用户和师傅都必须收到才标记
+        if (userEmailResult.success && masterEmailResult.success) {
           await supabase
             .from('bookings')
             .update({ reminder_sent: true })
             .eq('id', booking.id);
+        } else {
+          // 记录失败，不重试（下次 cron 仍会命中这个 booking）
+          console.warn(`[reminders] Partial failure for booking ${booking.id}: user=${userEmailResult.success}, master=${masterEmailResult.success}`);
         }
 
         results.push({

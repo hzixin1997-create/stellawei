@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { sendEmailViaSendGrid } from './sendgrid';
 
 function getResend() {
   const apiKey = process.env.RESEND_API_KEY;
@@ -31,13 +32,6 @@ export async function sendConsultationReminder({
   isMaster,
   chatUrl,
 }: ReminderEmailProps) {
-  const resend = getResend();
-
-  if (!resend) {
-    console.error('RESEND_API_KEY not configured');
-    return { success: false, error: 'RESEND_API_KEY not configured' };
-  }
-
   const subject = isMaster
     ? `⏰ 提醒：您有咨询即将开始（10分钟后）`
     : `⏰ Reminder: Your consultation starts in 10 minutes`;
@@ -73,6 +67,22 @@ export async function sendConsultationReminder({
     </div>
     `;
 
+  // ===== 双发机制：SendGrid 主 + Resend 备 =====
+  // 1. 先尝试 SendGrid（对 QQ/163 送达率更好）
+  const sgResult = await sendEmailViaSendGrid({ to, subject, html });
+  if (sgResult.success) {
+    console.log('[email] SendGrid success →', to, sgResult.id);
+    return { success: true, id: sgResult.id, provider: 'sendgrid' };
+  }
+
+  // 2. SendGrid 失败，fallback 到 Resend
+  console.warn('[email] SendGrid failed, fallback to Resend:', sgResult.error);
+  const resend = getResend();
+  if (!resend) {
+    console.error('RESEND_API_KEY not configured');
+    return { success: false, error: `SendGrid: ${sgResult.error}; Resend: API_KEY not configured` };
+  }
+
   try {
     const { data, error } = await resend.emails.send({
       from: 'Stellawei <noreply@stellawei.org>',
@@ -83,13 +93,13 @@ export async function sendConsultationReminder({
 
     if (error) {
       console.error('Resend send error:', error);
-      return { success: false, error: error.message };
+      return { success: false, error: `SendGrid: ${sgResult.error}; Resend: ${error.message}` };
     }
 
-    console.log('Resend send success:', data?.id);
-    return { success: true, id: data?.id };
+    console.log('[email] Resend fallback success →', to, data?.id);
+    return { success: true, id: data?.id, provider: 'resend' };
   } catch (err: any) {
     console.error('Send email exception:', err);
-    return { success: false, error: err.message };
+    return { success: false, error: `SendGrid: ${sgResult.error}; Resend: ${err.message}` };
   }
 }
