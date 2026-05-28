@@ -164,20 +164,46 @@ export default function AdminOrders() {
     }
   };
 
-  // 可用的状态选项
-  const statusOptions = [
-    { value: 'pending', label: '待付款', labelEn: 'Pending' },
-    { value: 'confirmed', label: '已确认', labelEn: 'Confirmed' },
-    { value: 'in_progress', label: '进行中', labelEn: 'In Progress' },
-    { value: 'completed', label: '已完成', labelEn: 'Completed' },
-    { value: 'cancelled', label: '已取消', labelEn: 'Cancelled' },
-  ];
+  // 取消订单
+  const handleCancelOrder = async (orderId: string) => {
+    if (!confirm(isZh ? '确定要取消该订单吗？' : 'Are you sure you want to cancel this order?')) {
+      return;
+    }
+    setUpdatingStatus(orderId);
+    try {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        alert(isZh ? '请先登录' : 'Please login');
+        return;
+      }
 
-  const paymentStatusOptions = [
-    { value: 'pending', label: '待支付', labelEn: 'Pending' },
-    { value: 'paid', label: '已支付', labelEn: 'Paid' },
-    { value: 'refunded', label: '已退款', labelEn: 'Refunded' },
-  ];
+      const res = await fetch('/api/admin/update-order-status', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          bookingId: orderId,
+          action: 'cancel',
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Cancel failed');
+      }
+
+      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: 'cancelled', payment_status: 'cancelled' } : o));
+      alert(isZh ? '订单已取消' : 'Order cancelled');
+    } catch (err: any) {
+      console.error('Cancel order error:', err);
+      alert(isZh ? `取消失败: ${err.message}` : `Cancel failed: ${err.message}`);
+    } finally {
+      setUpdatingStatus(null);
+    }
+  };
 
   // 切换选中状态
   const toggleSelect = (id: string) => {
@@ -446,33 +472,23 @@ export default function AdminOrders() {
                         </div>
                       </div>
                       <div className="flex sm:flex-col gap-2 sm:ml-4 sm:justify-start pl-7 sm:pl-0">
-                        {/* 状态修改下拉菜单 */}
-                        <div className="flex gap-2">
-                          <select
-                            value={order.status}
-                            onChange={(e) => handleUpdateStatus(order.id, e.target.value)}
-                            disabled={updatingStatus === order.id}
-                            className="text-xs border border-stone-200 rounded-md px-2 py-1.5 bg-white text-stone-700 focus:outline-none focus:ring-2 focus:ring-violet-500/20"
-                          >
-                            {statusOptions.map(s => (
-                              <option key={s.value} value={s.value}>{isZh ? s.label : s.labelEn}</option>
-                            ))}
-                          </select>
-                          <select
-                            value={order.payment_status}
-                            onChange={(e) => handleUpdateStatus(order.id, order.status, e.target.value)}
-                            disabled={updatingStatus === order.id}
-                            className="text-xs border border-stone-200 rounded-md px-2 py-1.5 bg-white text-stone-700 focus:outline-none focus:ring-2 focus:ring-violet-500/20"
-                          >
-                            {paymentStatusOptions.map(s => (
-                              <option key={s.value} value={s.value}>{isZh ? s.label : s.labelEn}</option>
-                            ))}
-                          </select>
-                        </div>
-                        {(order.status === 'refund_requested' || order.payment_status === 'refund_requested') && (
+                        {/* 操作按钮（取消订单 / 处理退款） */}
+                        {(order.status !== 'completed' && order.status !== 'cancelled' && order.status !== 'refunded' && order.payment_status !== 'refunded') && (
                           <Button
                             size="sm"
-                            className="bg-orange-600 hover:bg-orange-700 text-white flex-1 sm:flex-none"
+                            variant="outline"
+                            className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                            onClick={() => handleCancelOrder(order.id)}
+                            disabled={updatingStatus === order.id}
+                          >
+                            {updatingStatus === order.id ? (isZh ? '处理中...' : 'Processing...') : (isZh ? '取消订单' : 'Cancel Order')}
+                          </Button>
+                        )}
+                        {(order.payment_status === 'paid') && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="text-orange-600 border-orange-200 hover:bg-orange-50 hover:text-orange-700"
                             onClick={() => handleProcessRefund(order.id)}
                             disabled={processingRefund === order.id}
                           >
@@ -480,15 +496,6 @@ export default function AdminOrders() {
                               ? (isZh ? '处理中...' : 'Processing...')
                               : (isZh ? '处理退款' : 'Process Refund')}
                           </Button>
-                        )}
-                        {order.status !== 'refund_requested' && order.payment_status !== 'refund_requested' && (
-                          <span className="text-xs text-stone-400 whitespace-nowrap">
-                            {order.scheduled_date && order.scheduled_time
-                              ? `${order.scheduled_date} ${order.scheduled_time}`
-                              : order.consultation_type === 'message'
-                                ? '留言咨询'
-                                : '-'}
-                          </span>
                         )}
                       </div>
                     </div>

@@ -150,9 +150,8 @@ export async function POST(
       );
     }
 
-    // 生成新的 scheduled_at
-    const [year, month, day] = scheduled_date.split('-').map(Number);
-    const scheduledAt = new Date(year, month - 1, day, hour, minute).toISOString();
+    // 生成新的 scheduled_at（带北京时间时区）
+    const scheduledAt = `${scheduled_date}T${scheduled_time}:00+08:00`;
 
     // 更新订单时间
     const { data: updatedBooking, error: updateError } = await supabase

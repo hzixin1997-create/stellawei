@@ -40,8 +40,8 @@ interface BookingInfo {
   service_id: string
   status: string
   payment_status: string
-  scheduled_date: string
-  scheduled_time: string
+  scheduled_date: string  // Supabase camelCase transform: actually scheduledDate
+  scheduled_time: string  // Supabase camelCase transform: actually scheduledTime
   scheduled_at: string
   total_amount: number
   duration_minutes: number
@@ -66,6 +66,14 @@ const masters: Record<string, { name: string; nameCn: string }> = {
   'master-luna': { name: 'Master Luna', nameCn: '卢娜师傅' },
   'zhang-yihua': { name: 'Master Zhang Yihua', nameCn: '张易桦' },
   'wu-yang': { name: 'Master Wu Yang', nameCn: '戊阳' },
+}
+
+function normalizeBooking(bookingData: any): BookingInfo {
+  return {
+    ...bookingData,
+    scheduled_date: bookingData.scheduledDate || bookingData.scheduled_date || '',
+    scheduled_time: bookingData.scheduledTime || bookingData.scheduled_time || '',
+  }
 }
 
 function formatCountdown(seconds: number): string {
@@ -218,7 +226,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         const bookingData = json.booking
         console.log('[chat] API booking:', JSON.stringify(bookingData))
         if (bookingData) {
-          setBooking(bookingData)
+          setBooking(normalizeBooking(bookingData))
           // 初始化评价相关状态
           setReviewRequested(!!bookingData.review_requested)
           if (bookingData.review_data) {
@@ -263,6 +271,41 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
     loadData()
   }, [bookingId, router, supabase])
+
+  // 轮询刷新 booking 数据（每 30 秒），reschedule 后实时感知新时间
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session) return
+        const res = await fetch(`/api/chat/${bookingId}/messages`, {
+          headers: { authorization: `Bearer ${session.access_token}` },
+        })
+        if (res.ok) {
+          const json = await res.json()
+          if (json.booking) {
+            setBooking(prev => {
+              if (!prev) return normalizeBooking(json.booking)
+              // 只在 scheduled_at 或 status 变化时才更新，避免不必要的重渲染
+              if (prev.scheduled_at !== json.booking.scheduled_at || prev.status !== json.booking.status) {
+                console.log('[chat] polling: booking updated', {
+                  old_scheduled_at: prev.scheduled_at,
+                  new_scheduled_at: json.booking.scheduled_at,
+                  old_status: prev.status,
+                  new_status: json.booking.status,
+                })
+                return normalizeBooking(json.booking)
+              }
+              return prev
+            })
+          }
+        }
+      } catch (err) {
+        console.error('[chat] polling refresh error:', err)
+      }
+    }, 30000)
+    return () => clearInterval(interval)
+  }, [bookingId, supabase])
 
   // 倒计时 + 状态同步（每秒更新）
   useEffect(() => {
@@ -351,11 +394,17 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       }
     }
     switch (consultStatus) {
-      case 'not_started':
+      case 'not_started': {
+        const scheduledTimeStr = booking?.scheduled_time
+          ? booking.scheduled_time.split(':').slice(0, 2).join(':')
+          : ''
         return {
-          text: isZh ? '⏰ 咨询未开始，您可以提前向师傅发送背景信息或问题' : '⏰ Consultation not started yet. You can send background info or questions in advance.',
-          bgColor: 'bg-amber-50 border-amber-200 text-amber-800',
+          text: isZh
+            ? `⏰ 咨询将于 ${scheduledTimeStr} 开始`
+            : `⏰ Starts at ${scheduledTimeStr}`,
+          bgColor: 'bg-amber-50 border-amber-100 text-amber-900',
         }
+      }
       case 'in_progress':
         return {
           text: isZh ? '🔴 咨询进行中' : '🔴 Consultation in progress',
@@ -365,6 +414,11 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         return {
           text: isZh ? '✅ 咨询已结束' : '✅ Consultation ended',
           bgColor: 'bg-stone-200 border-stone-300 text-stone-700',
+        }
+      default:
+        return {
+          text: isZh ? `⏰ 咨询将于 ${booking?.scheduled_date || ''} ${booking?.scheduled_time?.split(':').slice(0, 2).join(':') || ''} 开始` : `⏰ Consultation upcoming`,
+          bgColor: 'bg-amber-200 border-amber-400 text-amber-900 font-bold',
         }
     }
   }
@@ -407,7 +461,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
           if (newBooking && newBooking.id) {
             setBooking(prev => {
               if (prev && prev.status === newBooking.status) return prev
-              return newBooking
+              return normalizeBooking(newBooking)
             })
           }
 
@@ -473,7 +527,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
           const newRecord = payload.new
           console.log('[chat] realtime update:', newRecord)
           // 更新本地 booking 状态
-          setBooking(prev => prev ? { ...prev, ...newRecord } : null)
+          setBooking(prev => prev ? normalizeBooking({ ...prev, ...newRecord }) : null)
           // 检测到师傅邀请评价
           if (newRecord.review_requested) {
             setReviewRequested(true)
@@ -1031,7 +1085,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
               {isZh ? service?.nameCn : service?.name}
             </h1>
             <p className="text-xs text-stone-500 hidden sm:block truncate">
-              {isZh ? master?.nameCn : master?.name} · {booking?.scheduled_date} {booking?.scheduled_time}
+              {isZh ? master?.nameCn : master?.name} · {booking?.scheduled_date} {booking?.scheduled_time ? booking.scheduled_time.split(':').slice(0, 2).join(':') : ''}
             </p>
           </div>
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
@@ -1101,21 +1155,28 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         </div>
       </div>
 
-      {/* 消息区域 */}
-      <div className="flex-1 overflow-y-auto py-4 px-4 relative">
-        {/* 咨询状态提示 — sticky 固定在消息区顶部，放在max-w外面 */}
-        {booking && (
-          <div className="sticky top-0 z-10 px-4 -mx-4 mb-4">
-            <div className={`border rounded-lg px-3 py-2 text-xs sm:text-sm text-center shadow-sm break-words leading-relaxed ${getConsultStatusBanner().bgColor}`}>
-              {getConsultStatusBanner().text}
+      {(() => {
+        const banner = getConsultStatusBanner()
+        if (!banner) return null
+        return (
+          <div className="flex-shrink-0 px-4 py-4 bg-amber-50 border-b border-amber-200">
+            <div className="max-w-3xl mx-auto text-sm sm:text-base text-amber-900 font-semibold text-center leading-relaxed">
+              {banner.text}
             </div>
           </div>
-        )}
+        )
+      })()}
+
+      {/* 消息区域 */}
+      <div className="flex-1 overflow-y-auto pt-6 pb-4 px-4 relative">
         <div className="max-w-3xl mx-auto space-y-4">
           {messages.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-stone-400">
-                {isZh ? '咨询即将开始，请先向师傅描述您的问题' : 'Consultation will begin soon. Please describe your question.'}
+            <div className="text-center py-16">
+              <p className="text-stone-500 text-base sm:text-lg font-medium">
+                {isMaster
+                  ? (isZh ? '请向顾客询问需要了解的问题' : 'Please ask the customer for details.')
+                  : (isZh ? '请先向师傅描述您的问题' : 'Please describe your question.')
+                }
               </p>
             </div>
           )}

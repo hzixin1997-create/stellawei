@@ -7,29 +7,63 @@ export const dynamic = 'force-dynamic';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { bookingId, status, payment_status } = body;
+    const { bookingId, action } = body;
 
     if (!bookingId) {
       return NextResponse.json({ error: 'Missing bookingId' }, { status: 400 });
+    }
+    if (!action || !['cancel', 'refund'].includes(action)) {
+      return NextResponse.json({ error: 'Invalid action. Use "cancel" or "refund"' }, { status: 400 });
+    }
+
+    if (body.status !== undefined) {
+      return NextResponse.json({ error: 'Direct status modification is not allowed. Use action instead.' }, { status: 400 });
     }
 
     const authSupabase = await createClient();
     const { data: { user } } = await authSupabase.auth.getUser();
 
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    // 已登录即可操作（admin 页面已做路由级身份验证）
-    if (!user?.email) {
+    if (!user || !user.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const supabase = createServiceClient();
 
+    // 查询当前订单状态
+    const { data: booking, error: fetchError } = await supabase
+      .from('bookings')
+      .select('id, status, payment_status')
+      .eq('id', bookingId)
+      .single();
+
+    if (fetchError || !booking) {
+      return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
+    }
+
     const updateData: Record<string, any> = { updated_at: new Date().toISOString() };
-    if (status !== undefined) updateData.status = status;
-    if (payment_status !== undefined) updateData.payment_status = payment_status;
+
+    if (action === 'cancel') {
+      // 取消订单：只允许 pending/confirmed/in_progress
+      if (!['pending', 'confirmed', 'in_progress'].includes(booking.status)) {
+        return NextResponse.json(
+          { error: 'Cannot cancel booking with status: ' + booking.status },
+          { status: 400 }
+        );
+      }
+      updateData.status = 'cancelled';
+      updateData.payment_status = 'cancelled';
+    }
+
+    if (action === 'refund') {
+      // 退款：只允许已支付的订单
+      if (booking.payment_status !== 'paid') {
+        return NextResponse.json(
+          { error: 'Cannot refund unpaid booking', payment_status: booking.payment_status },
+          { status: 400 }
+        );
+      }
+      updateData.payment_status = 'refunded';
+    }
 
     const { data, error } = await supabase
       .from('bookings')

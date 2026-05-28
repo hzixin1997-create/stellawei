@@ -6,7 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/client'
-import { ShoppingBag, MessageSquare, ArrowRight, Clock, User, Home, LogOut, MessageCircle, AlertTriangle, Star, Calendar } from 'lucide-react'
+import { ShoppingBag, MessageSquare, ArrowRight, Clock, User, Home, LogOut, MessageCircle, AlertTriangle, Star, Calendar as CalendarIcon } from 'lucide-react'
+import { Calendar } from '@/components/ui/calendar'
 import Link from 'next/link'
 
 import { isConsultationExpired, getConsultationDisplayStatus } from '@/lib/utils'
@@ -774,7 +775,99 @@ export default function UserDashboard() {
                             )}
                           </div>
                           <div className="flex flex-wrap sm:flex-nowrap sm:flex-col gap-2 sm:min-w-[80px]">
-                            {/* 已支付但未接单 */}
+                            {/* 已完成订单：查看历史/留言 + 查看评价 + 删除 */}
+                            {booking.status === 'completed' && (
+                              <>
+                                <Link href={`/chat/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="text-stone-600 border-stone-300 hover:bg-stone-100 w-full"
+                                  >
+                                    <MessageCircle className="w-4 h-4 mr-1" />
+                                    {booking.consultation_type === 'message'
+                                      ? (isZh ? '查看留言' : 'View Message')
+                                      : (isZh ? '查看历史' : 'View History')}
+                                  </Button>
+                                </Link>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-amber-600 border-amber-200 hover:bg-amber-50 hover:text-amber-700 flex-1 sm:flex-none"
+                                  onClick={() => openReviewModal(booking)}
+                                >
+                                  <Star className="w-4 h-4 mr-1" />
+                                  {isZh ? '查看评价' : 'Review'}
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-stone-500 border-stone-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200 flex-1 sm:flex-none"
+                                  onClick={() => handleDelete(booking.id)}
+                                  disabled={deletingId === booking.id}
+                                >
+                                  {deletingId === booking.id ? (isZh ? '删除中...' : 'Deleting...') : (isZh ? '删除' : 'Delete')}
+                                </Button>
+                              </>
+                            )}
+                            {/* 已确认/进行中：实时咨询 */}
+                            {(booking.status === 'confirmed' || booking.status === 'in_progress') && booking.consultation_type !== 'message' && (
+                              <>
+                                <Link href={`/chat/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="text-violet-600 border-violet-200 hover:bg-violet-50 hover:text-violet-700 w-full"
+                                  >
+                                    <MessageCircle className="w-4 h-4 mr-1" />
+                                    {isZh ? '进入咨询' : 'Enter Chat'}
+                                  </Button>
+                                </Link>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-blue-600 border-blue-200 hover:bg-blue-50 hover:text-blue-700 flex-1 sm:flex-none"
+                                  onClick={() => openRescheduleModal(booking)}
+                                >
+                                  <CalendarIcon className="w-4 h-4 mr-1" />
+                                  {isZh ? '修改时间' : 'Reschedule'}
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-orange-600 border-orange-200 hover:bg-orange-50 hover:text-orange-700 flex-1 sm:flex-none"
+                                  onClick={() => handleRefund(booking.id)}
+                                  disabled={refundingId === booking.id}
+                                >
+                                  {refundingId === booking.id ? (isZh ? '处理中...' : 'Processing...') : (isZh ? '申请退款' : 'Refund')}
+                                </Button>
+                              </>
+                            )}
+                            {/* 已确认/进行中：留言咨询 */}
+                            {(booking.status === 'confirmed' || booking.status === 'in_progress') && booking.consultation_type === 'message' && (
+                              <>
+                                <Link href={`/chat/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="text-violet-600 border-violet-200 hover:bg-violet-50 hover:text-violet-700 w-full"
+                                  >
+                                    <MessageCircle className="w-4 h-4 mr-1" />
+                                    {isZh ? '查看留言' : 'View Message'}
+                                  </Button>
+                                </Link>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-orange-600 border-orange-200 hover:bg-orange-50 hover:text-orange-700 flex-1 sm:flex-none"
+                                  onClick={() => handleRefund(booking.id)}
+                                  disabled={refundingId === booking.id}
+                                >
+                                  {refundingId === booking.id ? (isZh ? '处理中...' : 'Processing...') : (isZh ? '申请退款' : 'Refund')}
+                                </Button>
+                              </>
+                            )}
+                            {/* 已支付但未接单（兜底，旧数据或异常） */}
                             {booking.payment_status === 'paid' && booking.status === 'pending' && (
                               <>
                                 <Button
@@ -806,91 +899,8 @@ export default function UserDashboard() {
                                 </Button>
                               </>
                             )}
-                            {/* 已完成订单 */}
-                            {booking.payment_status === 'paid' && !canEnterChat(booking) && booking.status !== 'pending' && (
-                              <>
-                                <Link href={`/chat/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    className="text-stone-600 border-stone-300 hover:bg-stone-100 w-full"
-                                  >
-                                    <MessageCircle className="w-4 h-4 mr-1" />
-                                    {booking.consultation_type === 'message'
-                                      ? (isZh ? '查看留言' : 'View Message')
-                                      : (isZh ? '查看历史' : 'View History')}
-                                  </Button>
-                                </Link>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className="text-amber-600 border-amber-200 hover:bg-amber-50 hover:text-amber-700 flex-1 sm:flex-none"
-                                  onClick={() => openReviewModal(booking)}
-                                >
-                                  <Star className="w-4 h-4 mr-1" />
-                                  {isZh ? '查看评价' : 'Review'}
-                                </Button>
-                              </>
-                            )}
-                            {/* 已支付且未结束 - 实时咨询 */}
-                            {canEnterChat(booking) && booking.consultation_type !== 'message' && (
-                              <>
-                                <Link href={`/chat/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    className="text-violet-600 border-violet-200 hover:bg-violet-50 hover:text-violet-700 w-full"
-                                  >
-                                    <MessageCircle className="w-4 h-4 mr-1" />
-                                    {isZh ? '进入咨询' : 'Enter Chat'}
-                                  </Button>
-                                </Link>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className="text-blue-600 border-blue-200 hover:bg-blue-50 hover:text-blue-700 flex-1 sm:flex-none"
-                                  onClick={() => openRescheduleModal(booking)}
-                                >
-                                  <Calendar className="w-4 h-4 mr-1" />
-                                  {isZh ? '修改时间' : 'Reschedule'}
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className="text-orange-600 border-orange-200 hover:bg-orange-50 hover:text-orange-700 flex-1 sm:flex-none"
-                                  onClick={() => handleRefund(booking.id)}
-                                  disabled={refundingId === booking.id}
-                                >
-                                  {refundingId === booking.id ? (isZh ? '处理中...' : 'Processing...') : (isZh ? '申请退款' : 'Refund')}
-                                </Button>
-                              </>
-                            )}
-                            {/* 已支付且未结束 - 留言咨询 */}
-                            {booking.payment_status === 'paid' && booking.consultation_type === 'message' && canEnterChat(booking) && (
-                              <>
-                                <Link href={`/chat/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    className="text-violet-600 border-violet-200 hover:bg-violet-50 hover:text-violet-700 w-full"
-                                  >
-                                    <MessageCircle className="w-4 h-4 mr-1" />
-                                    {isZh ? '查看留言' : 'View Message'}
-                                  </Button>
-                                </Link>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className="text-orange-600 border-orange-200 hover:bg-orange-50 hover:text-orange-700 flex-1 sm:flex-none"
-                                  onClick={() => handleRefund(booking.id)}
-                                  disabled={refundingId === booking.id}
-                                >
-                                  {refundingId === booking.id ? (isZh ? '处理中...' : 'Processing...') : (isZh ? '申请退款' : 'Refund')}
-                                </Button>
-                              </>
-                            )}
-
-                            {(booking.payment_status === 'pending' || booking.payment_status === 'pending_payment') && !expired && (
+                            {/* 待支付（排除已取消，避免与下方已取消分支同时显示） */}
+                            {(booking.payment_status === 'pending' || booking.payment_status === 'pending_payment') && !expired && booking.status !== 'cancelled' && (
                               <>
                                 <Button
                                   size="sm"
@@ -912,7 +922,7 @@ export default function UserDashboard() {
                                 </Button>
                               </>
                             )}
-                            {/* 已过期或已取消订单：只显示一个删除按钮 */}
+                            {/* 已过期或已取消订单 */}
                             {(expired || booking.status === 'cancelled' || booking.payment_status === 'cancelled') && (
                               <>
                                 <Link href="/booking" className="inline-flex flex-1 sm:flex-none">
@@ -1089,13 +1099,28 @@ export default function UserDashboard() {
                   <label className="block text-sm font-medium text-stone-700 mb-2">
                     {isZh ? '选择日期' : 'Select Date'}
                   </label>
-                  <input
-                    type="date"
-                    value={rescheduleDate}
-                    onChange={(e) => handleRescheduleDateChange(e.target.value)}
-                    min={new Date().toISOString().split('T')[0]}
-                    className="w-full border border-stone-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
-                  />
+                  <div className="border border-stone-300 rounded-lg p-2 inline-block">
+                    <Calendar
+                      mode="single"
+                      selected={rescheduleDate ? new Date(rescheduleDate) : undefined}
+                      onSelect={(date) => {
+                        if (date) {
+                          const year = date.getFullYear()
+                          const month = String(date.getMonth() + 1).padStart(2, '0')
+                          const day = String(date.getDate()).padStart(2, '0')
+                          handleRescheduleDateChange(`${year}-${month}-${day}`)
+                        }
+                      }}
+                      disabled={(date) => {
+                        const today = new Date()
+                        today.setHours(0, 0, 0, 0)
+                        const d = new Date(date)
+                        d.setHours(0, 0, 0, 0)
+                        return d.getTime() < today.getTime()
+                      }}
+                      className="rounded-md"
+                    />
+                  </div>
                 </div>
 
                 <div className="mb-6">
