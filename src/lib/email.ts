@@ -1,5 +1,5 @@
 import { Resend } from 'resend';
-import { sendEmailViaSendGrid } from './sendgrid';
+import { sendEmailViaBrevo } from './brevo';
 
 function getResend() {
   const apiKey = process.env.RESEND_API_KEY;
@@ -67,20 +67,20 @@ export async function sendConsultationReminder({
     </div>
     `;
 
-  // ===== 双发机制：SendGrid 主 + Resend 备 =====
-  // 1. 先尝试 SendGrid（对 QQ/163 送达率更好）
-  const sgResult = await sendEmailViaSendGrid({ to, subject, html });
-  if (sgResult.success) {
-    console.log('[email] SendGrid success →', to, sgResult.id);
-    return { success: true, id: sgResult.id, provider: 'sendgrid' };
+  // ===== 双发机制：Brevo 主 + Resend 备 =====
+  // 1. 先尝试 Brevo（对 QQ/163 送达率更好）
+  const brevoResult = await sendEmailViaBrevo({ to, subject, html });
+  if (brevoResult.success) {
+    console.log('[email] Brevo success →', to, brevoResult.id);
+    return { success: true, id: brevoResult.id, provider: 'brevo' };
   }
 
-  // 2. SendGrid 失败，fallback 到 Resend
-  console.warn('[email] SendGrid failed, fallback to Resend:', sgResult.error);
+  // 2. Brevo 失败，fallback 到 Resend
+  console.warn('[email] Brevo failed, fallback to Resend:', brevoResult.error);
   const resend = getResend();
   if (!resend) {
     console.error('RESEND_API_KEY not configured');
-    return { success: false, error: `SendGrid: ${sgResult.error}; Resend: API_KEY not configured` };
+    return { success: false, error: `Brevo: ${brevoResult.error}; Resend: API_KEY not configured` };
   }
 
   try {
@@ -93,13 +93,13 @@ export async function sendConsultationReminder({
 
     if (error) {
       console.error('Resend send error:', error);
-      return { success: false, error: `SendGrid: ${sgResult.error}; Resend: ${error.message}` };
+      return { success: false, error: `Brevo: ${brevoResult.error}; Resend: ${error.message}` };
     }
 
     console.log('[email] Resend fallback success →', to, data?.id);
     return { success: true, id: data?.id, provider: 'resend' };
   } catch (err: any) {
     console.error('Send email exception:', err);
-    return { success: false, error: `SendGrid: ${sgResult.error}; Resend: ${err.message}` };
+    return { success: false, error: `Brevo: ${brevoResult.error}; Resend: ${err.message}` };
   }
 }
