@@ -1,5 +1,5 @@
 'use client'
-// cache-bust: 2026-05-27-review-feature-v3
+// cache-bust: 2026-05-28-debug-v1
 
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
@@ -273,6 +273,8 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
           ? `${booking.scheduled_date}T${booking.scheduled_time}`
           : null)
       const scheduledAtStr = normalizeTimestamp(rawScheduledAt)
+
+      console.log('[chat] tick raw:', { rawScheduledAt, scheduledAtStr, scheduled_date: booking.scheduled_date, scheduled_time: booking.scheduled_time, scheduled_at: booking.scheduled_at, duration: booking.duration_minutes, tz: Intl.DateTimeFormat().resolvedOptions().timeZone })
 
       if (!scheduledAtStr || !booking.duration_minutes) {
         console.log('[chat] tick: missing scheduled_at or duration', { scheduledAtStr, duration: booking.duration_minutes })

@@ -6,7 +6,7 @@ const nextConfig = {
     unoptimized: true,
   },
   generateBuildId: async () => {
-    return 'build-' + Date.now();
+    return 'build-' + Date.now() + '-v05028';
   },
 };
 

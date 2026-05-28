@@ -56,11 +56,14 @@ export async function GET(
     }
 
     // 查询消息
+    console.log('[chat:GET] querying messages for booking:', bookingId);
     const { data: messages, error } = await supabase
       .from('messages')
       .select('*')
       .eq('booking_id', bookingId)
       .order('created_at', { ascending: true });
+
+    console.log('[chat:GET] query result:', { count: messages?.length || 0, error: error?.message || null });
 
     if (error) {
       return NextResponse.json(
@@ -189,30 +192,46 @@ export async function POST(
       : user.user_metadata?.full_name || user.email || 'User';
 
     // 插入消息
-    const { data: message, error: insertError } = await supabase
+    const insertPayload: any = {
+      booking_id: bookingId,
+      sender_id: user.id,
+      sender_type: isMaster ? 'master' : 'user',
+      sender_name: senderName,
+      content: content || null,
+      image_url: image_url || null,
+      audio_url: audio_url || null,
+      audio_duration: audio_duration != null ? audio_duration : null,
+      source: 'chat',
+    };
+
+    console.log('[chat:POST] insert payload:', JSON.stringify(insertPayload));
+
+    const { data: insertedRows, error: insertError } = await supabase
       .from('messages')
-      .insert({
-        booking_id: bookingId,
-        sender_id: user.id,
-        sender_type: isMaster ? 'master' : 'user',
-        sender_name: senderName,
-        content: content || null,
-        image_url: image_url || null,
-        audio_url: audio_url || null,
-        audio_duration: audio_duration != null ? audio_duration : null,
-        source: 'chat',
-      })
-      .select()
-      .single();
+      .insert(insertPayload)
+      .select();
+
+    console.log('[chat:POST] insert result:', { rowsCount: insertedRows?.length || 0, error: insertError?.message || null });
 
     if (insertError) {
-      console.error('Insert message error:', insertError);
+      console.error('[chat:POST] Insert message error:', insertError);
       return NextResponse.json(
         { error: 'Failed to send message', message: insertError.message },
         { status: 500 }
       );
     }
 
+    const message = insertedRows && insertedRows.length > 0 ? insertedRows[0] : null;
+
+    if (!message) {
+      console.error('[chat:POST] Insert succeeded but no row returned. Payload:', JSON.stringify(insertPayload));
+      return NextResponse.json(
+        { error: 'Failed to send message', message: 'Insert succeeded but no row returned' },
+        { status: 500 }
+      );
+    }
+
+    console.log('[chat:POST] returning message:', JSON.stringify({ id: message.id, created_at: message.created_at }));
     return NextResponse.json({ success: true, message });
   } catch (error: any) {
     return NextResponse.json(
