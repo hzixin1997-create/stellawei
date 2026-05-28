@@ -119,23 +119,45 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   const bookingRef = useRef<BookingInfo | null>(null)
   useEffect(() => { bookingRef.current = booking }, [booking])
 
-  // 标准化时间戳格式（Supabase返回的+00需要转成+00:00或Z，否则JS解析失败）
-  // ⚠️ 关键修复：统一用 scheduled_date + scheduled_time 构造本地时间，避免 scheduled_at 时区偏差
+  // ⚠️ 关键修复：优先用 scheduled_at（含完整时区信息），fallback 到 scheduled_date+time
+  // Supabase 返回的 date/time 格式可能带 T00:00:00+00，需要清理
   const getScheduledTime = (bookingData: BookingInfo): number | null => {
+    // 1. 优先使用 scheduled_at（数据库 timestamp with timezone，最可靠）
+    if (bookingData.scheduled_at) {
+      const t = new Date(bookingData.scheduled_at).getTime()
+      if (!isNaN(t)) {
+        console.log('[chat] getScheduledTime via scheduled_at:', bookingData.scheduled_at, '→', t)
+        return t
+      }
+    }
+    
+    // 2. Fallback: scheduled_date + scheduled_time
     if (!bookingData.scheduled_date || !bookingData.scheduled_time) return null
     
-    // 将 scheduled_date + scheduled_time 作为本地时间处理
-    // 格式：YYYY-MM-DDTHH:mm，无timezone后缀，new Date() 自动按浏览器本地时区解析
-    const [year, month, day] = bookingData.scheduled_date.split('-').map(Number)
-    const [hour, minute] = bookingData.scheduled_time.split(':').map(Number)
+    // 清理 Supabase 返回格式：date 可能带 "T00:00:00+00"，time 可能带 "+00"
+    const datePart = bookingData.scheduled_date.split('T')[0]
+    const timePart = bookingData.scheduled_time.split('+')[0].split('.')[0]
     
-    // 使用本地时间构造，确保与UI显示的时间一致
+    const [year, month, day] = datePart.split('-').map(Number)
+    const timeComponents = timePart.split(':').map(Number)
+    const hour = timeComponents[0]
+    const minute = timeComponents[1]
+    
+    if ([year, month, day, hour, minute].some(v => isNaN(v))) {
+      console.error('[chat] Invalid date/time components:', { 
+        rawDate: bookingData.scheduled_date, 
+        rawTime: bookingData.scheduled_time,
+        datePart, timePart, year, month, day, hour, minute 
+      })
+      return null
+    }
+    
+    // 按浏览器本地时区构造（与预约页面一致）
     const d = new Date(year, month - 1, day, hour, minute)
     if (isNaN(d.getTime())) return null
     
-    console.log('[chat] getScheduledTime:', {
-      scheduled_date: bookingData.scheduled_date,
-      scheduled_time: bookingData.scheduled_time,
+    console.log('[chat] getScheduledTime via date+time:', {
+      datePart, timePart, year, month, day, hour, minute,
       localTimestamp: d.toISOString(),
       localTimeMs: d.getTime(),
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
