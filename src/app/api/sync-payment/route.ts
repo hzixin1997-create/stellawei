@@ -60,7 +60,7 @@ export async function POST(request: Request) {
 
     // 3. 查找已支付的 session
     const paidSession = sessions.data.find(
-      (s) => s.payment_status === 'paid' && s.status === 'complete'
+      (s: any) => s.payment_status === 'paid' && s.status === 'complete'
     );
 
     if (!paidSession) {
