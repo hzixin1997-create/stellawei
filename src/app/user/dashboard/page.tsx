@@ -148,7 +148,48 @@ export default function UserDashboard() {
       const bookingsJson = await bookingsRes.json()
 
       if (bookingsRes.ok && bookingsJson.bookings) {
-        const visibleBookings = bookingsJson.bookings.filter((b: any) => !b.deleted_at)
+        let visibleBookings = bookingsJson.bookings.filter((b: any) => !b.deleted_at)
+
+        // 自动同步 pending 订单的 Stripe 支付状态
+        const syncPromises = visibleBookings
+          .filter((b: Booking) => b.payment_status === 'pending' || b.payment_status === 'pending_payment')
+          .map(async (b: Booking) => {
+            try {
+              const syncRes = await fetch('/api/sync-payment', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  authorization: `Bearer ${session?.access_token || ''}`,
+                },
+                body: JSON.stringify({ bookingId: b.id }),
+              })
+              if (syncRes.ok) {
+                const syncJson = await syncRes.json()
+                if (syncJson.synced) {
+                  console.log('[dashboard] auto-synced booking to paid:', b.id)
+                  return { id: b.id, updated: true, payment_status: 'paid', status: 'confirmed' }
+                }
+              }
+            } catch (err) {
+              console.error('[dashboard] sync error for booking', b.id, err)
+            }
+            return null
+          })
+
+        const syncResults = await Promise.all(syncPromises)
+        const syncedMap = new Map<string, any>()
+        syncResults.forEach(r => { if (r) syncedMap.set(r.id, r) })
+
+        // 更新已同步的 booking 状态
+        if (syncedMap.size > 0) {
+          visibleBookings = visibleBookings.map((b: Booking) => {
+            if (syncedMap.has(b.id)) {
+              return { ...b, payment_status: 'paid', status: 'confirmed' }
+            }
+            return b
+          })
+        }
+
         setBookings(visibleBookings)
         // 初始化倒计时
         const initialCountdowns: Record<string, number> = {}
