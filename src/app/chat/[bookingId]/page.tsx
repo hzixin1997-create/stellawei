@@ -120,11 +120,28 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   useEffect(() => { bookingRef.current = booking }, [booking])
 
   // 标准化时间戳格式（Supabase返回的+00需要转成+00:00或Z，否则JS解析失败）
-  const normalizeTimestamp = (str: string | null | undefined): string | null => {
-    if (!str) return null
-    return str
-      .replace(' ', 'T')
-      .replace(/([+-]\d{2})$/, '$1:00')
+  // ⚠️ 关键修复：统一用 scheduled_date + scheduled_time 构造本地时间，避免 scheduled_at 时区偏差
+  const getScheduledTime = (bookingData: BookingInfo): number | null => {
+    if (!bookingData.scheduled_date || !bookingData.scheduled_time) return null
+    
+    // 将 scheduled_date + scheduled_time 作为本地时间处理
+    // 格式：YYYY-MM-DDTHH:mm，无timezone后缀，new Date() 自动按浏览器本地时区解析
+    const [year, month, day] = bookingData.scheduled_date.split('-').map(Number)
+    const [hour, minute] = bookingData.scheduled_time.split(':').map(Number)
+    
+    // 使用本地时间构造，确保与UI显示的时间一致
+    const d = new Date(year, month - 1, day, hour, minute)
+    if (isNaN(d.getTime())) return null
+    
+    console.log('[chat] getScheduledTime:', {
+      scheduled_date: bookingData.scheduled_date,
+      scheduled_time: bookingData.scheduled_time,
+      localTimestamp: d.toISOString(),
+      localTimeMs: d.getTime(),
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    })
+    
+    return d.getTime()
   }
 
   const PRE_CONSULT_LIMIT = 5
@@ -227,18 +244,13 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
             setCountdownSeconds(0)
             setConsultStatus('ended')
           } else {
-            // 用 scheduled_at 或 scheduled_date+scheduled_time 计算时间
-            const rawScheduledAt = bookingData.scheduled_at
-              || (bookingData.scheduled_date && bookingData.scheduled_time
-                ? `${bookingData.scheduled_date}T${bookingData.scheduled_time}`
-                : null)
-            const scheduledAtStr = normalizeTimestamp(rawScheduledAt)
-            if (scheduledAtStr && bookingData.duration_minutes) {
-              const scheduledTime = new Date(scheduledAtStr).getTime()
+            // ⚠️ 关键修复：统一用 getScheduledTime 计算本地时间，避免 scheduled_at 时区偏差
+            const scheduledTime = getScheduledTime(bookingData)
+            if (scheduledTime && bookingData.duration_minutes) {
               const endTime = scheduledTime + bookingData.duration_minutes * 60 * 1000
               const now = Date.now()
               const remaining = Math.max(0, Math.floor((endTime - now) / 1000))
-              console.log('[chat] init time check:', { scheduledAtStr, scheduledTime, endTime, now, remaining, status: bookingData.status })
+              console.log('[chat] init time check:', { scheduledTime, endTime, now, remaining, status: bookingData.status, duration: bookingData.duration_minutes })
               if (now > endTime) {
                 console.log('[chat] init: past endTime → ended')
                 setCountdownSeconds(0)
@@ -250,7 +262,10 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
               } else {
                 console.log('[chat] init: before start time → not_started')
                 setCountdownSeconds(Math.max(0, Math.floor((scheduledTime - now) / 1000)))
+                setConsultStatus('not_started')
               }
+            } else {
+              console.warn('[chat] init: missing scheduled time or duration', { scheduled_date: bookingData.scheduled_date, scheduled_time: bookingData.scheduled_time, duration: bookingData.duration_minutes })
             }
           }
         }
@@ -267,24 +282,11 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     if (!booking || booking.status === 'completed') return
 
     const tick = () => {
-      // 用 scheduled_at 或 scheduled_date+scheduled_time 计算时间
-      const rawScheduledAt = booking.scheduled_at
-        || (booking.scheduled_date && booking.scheduled_time
-          ? `${booking.scheduled_date}T${booking.scheduled_time}`
-          : null)
-      const scheduledAtStr = normalizeTimestamp(rawScheduledAt)
+      // ⚠️ 关键修复：统一用 getScheduledTime 计算本地时间，避免 scheduled_at 时区偏差
+      const scheduledTime = getScheduledTime(booking)
 
-      console.log('[chat] tick raw:', { rawScheduledAt, scheduledAtStr, scheduled_date: booking.scheduled_date, scheduled_time: booking.scheduled_time, scheduled_at: booking.scheduled_at, duration: booking.duration_minutes, tz: Intl.DateTimeFormat().resolvedOptions().timeZone })
-
-      if (!scheduledAtStr || !booking.duration_minutes) {
-        console.log('[chat] tick: missing scheduled_at or duration', { scheduledAtStr, duration: booking.duration_minutes })
-        setCountdownSeconds(0)
-        return
-      }
-
-      const scheduledTime = new Date(scheduledAtStr).getTime()
-      if (isNaN(scheduledTime)) {
-        console.log('[chat] tick: invalid scheduled_at', scheduledAtStr)
+      if (!scheduledTime || !booking.duration_minutes) {
+        console.warn('[chat] tick: missing scheduled time or duration', { scheduled_date: booking.scheduled_date, scheduled_time: booking.scheduled_time, duration: booking.duration_minutes })
         setCountdownSeconds(0)
         return
       }
@@ -326,7 +328,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         }
       }
 
-      console.log('[chat] tick:', { now, scheduledTime, endTime, remaining, status: booking.status, newStatus })
+      console.log('[chat] tick:', { now, scheduledTime, endTime, remaining, status: booking.status, newStatus, tz: Intl.DateTimeFormat().resolvedOptions().timeZone })
 
       setConsultStatus(prev => {
         if (prev !== newStatus) {
@@ -730,7 +732,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   }
 
   const [previewImage, setPreviewImage] = useState<string | null>(null)
-  // Force rebuild: chat countdown fix v4
+  // Force rebuild: chat countdown fix v5 - timezone fix + message debug
 
   const handleSend = async () => {
     const content = inputValue.trim()
