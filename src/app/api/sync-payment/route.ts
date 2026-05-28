@@ -53,10 +53,8 @@ export async function POST(request: Request) {
 
     // 2. 查询 Stripe 该 booking 对应的 checkout session
     const stripe = getStripe();
-    const sessions = await stripe.checkout.sessions.list({
+    const sessions = await (stripe.checkout.sessions.list as any)({
       limit: 10,
-      // Stripe API 支持按 metadata 过滤
-      // @ts-ignore - stripe types may not include this
       metadata: { booking_id: bookingId },
     });
 
