@@ -967,9 +967,9 @@ export default function UserDashboard() {
               ) : userMessages.length === 0 ? (
                 <div className="text-center py-8">
                   <p className="text-stone-500 mb-4">{isZh ? '暂无留言' : 'No messages yet'}</p>
-                  <Link href="/consultation-type">
+                  <Link href="/booking">
                     <Button variant="outline" size="sm">
-                      {isZh ? '去留言' : 'Leave Message'}
+                      {isZh ? '去预约' : 'Book Now'}
                     </Button>
                   </Link>
                 </div>

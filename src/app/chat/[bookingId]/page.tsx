@@ -245,14 +245,23 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       }
       setUser(user)
 
+      // 判断是否是师傅身份：调用 master/profile，403 表示不是师傅（正常）
+      const { data: { session: masterSession } } = await supabase.auth.getSession()
       const masterRes = await fetch('/api/master/profile', {
-        headers: { authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token || ''}` },
+        headers: { authorization: `Bearer ${masterSession?.access_token || ''}` },
+        credentials: 'include',
       })
       if (masterRes.ok) {
         const masterJson = await masterRes.json()
         if (masterJson.master) {
           setIsMaster(true)
+          console.log('[chat] User is master:', masterJson.master.name)
         }
+      } else if (masterRes.status === 403) {
+        // 403 = 不是师傅，这是正常情况，静默处理
+        console.log('[chat] User is not a master (expected for regular users)')
+      } else {
+        console.error('[chat] master/profile error:', masterRes.status, await masterRes.text())
       }
 
       // 通过 API 获取 booking + messages（不受 RLS 限制）
