@@ -99,11 +99,6 @@ function normalizeBooking(bookingData: any): BookingInfo {
         if (!scheduledTime) {
           scheduledTime = `${getPart(timeParts, 'hour')}:${getPart(timeParts, 'minute')}`
         }
-        console.log('[chat] normalizeBooking patched from scheduled_at:', {
-          scheduled_at: scheduledAt,
-          scheduled_date: scheduledDate,
-          scheduled_time: scheduledTime,
-        })
       }
     } catch (e) {
       console.error('[chat] normalizeBooking failed to parse scheduled_at:', scheduledAt, e)
@@ -239,13 +234,9 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
   useEffect(() => {
     const loadData = async () => {
-      console.log('[chat] === loadData START ===')
-      
       // Step 1: 获取当前用户
       const { data: { user }, error: userError } = await supabase.auth.getUser()
-      console.log('[chat] Step 1 - User:', { userId: user?.id, email: user?.email, error: userError?.message })
       if (!user) {
-        console.log('[chat] No user, redirecting to login')
         router.push('/auth/login')
         return
       }
@@ -253,92 +244,53 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
       // Step 2: 获取 session
       const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-      console.log('[chat] Step 2 - Session:', { 
-        hasSession: !!session, 
-        hasAccessToken: !!session?.access_token,
-        tokenPrefix: session?.access_token ? session.access_token.substring(0, 20) + '...' : 'none',
-        error: sessionError?.message 
-      })
-      
       if (!session?.access_token) {
-        console.error('[chat] Step 2 FAILED: No session found, redirecting to login')
         router.push('/auth/login?redirect=' + encodeURIComponent(`/chat/${bookingId}`))
         return
       }
 
       // Step 3: 判断是否是师傅身份（只有师傅邮箱才请求，避免普通用户403）
       const isMasterUser = isMasterEmail(user.email || '')
-      console.log('[chat] Step 3 - isMasterEmail:', isMasterUser, 'email:', user.email)
       if (isMasterUser) {
         const masterRes = await fetch('/api/master/profile', {
           headers: { authorization: `Bearer ${session.access_token}` },
           credentials: 'include',
         })
-        console.log('[chat] Step 3 - Master profile:', { status: masterRes.status, ok: masterRes.ok })
         if (masterRes.ok) {
           const masterJson = await masterRes.json()
-          console.log('[chat] Step 3 - Master data:', masterJson)
           if (masterJson.master) {
             setIsMaster(true)
           }
         }
-      } else {
-        console.log('[chat] Step 3 - Regular user, skip master/profile')
       }
 
       // Step 4: 获取 booking + messages（核心数据）
-      console.log('[chat] Step 4 - Fetching /api/chat/${bookingId}/messages')
       const bookingRes = await fetch(`/api/chat/${bookingId}/messages`, {
         headers: { authorization: `Bearer ${session.access_token}` },
         credentials: 'include',
       })
-      console.log('[chat] Step 4 - API response:', { status: bookingRes.status, ok: bookingRes.ok })
       
       if (bookingRes.ok) {
         const json = await bookingRes.json()
-        console.log('[chat] Step 4 - API JSON keys:', Object.keys(json))
-        console.log('[chat] Step 4 - booking raw:', JSON.stringify(json.booking))
-        console.log('[chat] Step 4 - messages count:', json.messages?.length)
         
         const msgs = json.messages || []
         setMessages(msgs)
 
         const bookingData = json.booking
         if (bookingData) {
-          console.log('[chat] Step 4 - booking scheduled_at:', bookingData.scheduled_at)
-          console.log('[chat] Step 4 - booking scheduled_date:', bookingData.scheduled_date)
-          console.log('[chat] Step 4 - booking scheduled_time:', bookingData.scheduled_time)
-          
           const normalized = normalizeBooking(bookingData)
-          console.log('[chat] Step 4 - normalized booking:', JSON.stringify({
-            scheduled_date: normalized.scheduled_date,
-            scheduled_time: normalized.scheduled_time,
-            scheduled_at: normalized.scheduled_at,
-          }))
-          
           setBooking(normalized)
-          
-          // 初始化评价相关状态
-          setReviewRequested(!!bookingData.review_requested)
-          if (bookingData.review_data) {
-            setHasReview(true)
-            setReviewRating(bookingData.review_data.rating || 0)
-            setReviewText(bookingData.review_data.content || '')
-          }
           
           // 初始化倒计时状态
           if (bookingData.status === 'completed') {
-            console.log('[chat] Step 4 - Status completed')
             setCountdownSeconds(0)
             setConsultStatus('ended')
           } else {
             const scheduledTime = bookingData.scheduled_at ? new Date(bookingData.scheduled_at).getTime() : null
-            console.log('[chat] Step 4 - scheduledTime parsed:', scheduledTime)
             if (scheduledTime && !isNaN(scheduledTime) && bookingData.duration_minutes) {
               const endTime = scheduledTime + bookingData.duration_minutes * 60 * 1000
               const now = Date.now()
               const remaining = Math.max(0, Math.floor((endTime - now) / 1000))
-              console.log('[chat] Step 4 - time check:', { now, scheduledTime, endTime, remaining, duration: bookingData.duration_minutes })
               if (now > endTime) {
                 setCountdownSeconds(0)
                 setConsultStatus('ended')
@@ -349,20 +301,17 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
                 setCountdownSeconds(Math.max(0, Math.floor((scheduledTime - now) / 1000)))
                 setConsultStatus('not_started')
               }
-            } else {
-              console.warn('[chat] Step 4 - Missing scheduled_at or duration', { scheduled_at: bookingData.scheduled_at, duration: bookingData.duration_minutes })
             }
           }
         } else {
-          console.error('[chat] Step 4 FAILED: bookingData is null/undefined')
+          console.error('[chat] bookingData is null')
         }
       } else {
         const errorText = await bookingRes.text()
-        console.error('[chat] Step 4 FAILED: API error', bookingRes.status, errorText)
+        console.error('[chat] API error', bookingRes.status, errorText)
       }
 
       setIsLoading(false)
-      console.log('[chat] === loadData END ===')
     }
 
     loadData()
@@ -374,7 +323,6 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       try {
         const { data: { session }, error: sessionError } = await supabase.auth.getSession()
         if (!session?.access_token) {
-          console.log('[chat] poll: no session, skipping')
           return
         }
         const res = await fetch(`/api/chat/${bookingId}/messages`, {
@@ -388,12 +336,6 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
               if (!prev) return normalizeBooking(json.booking)
               // 只在 scheduled_at 或 status 变化时才更新，避免不必要的重渲染
               if (prev.scheduled_at !== json.booking.scheduled_at || prev.status !== json.booking.status) {
-                console.log('[chat] polling: booking updated', {
-                  old_scheduled_at: prev.scheduled_at,
-                  new_scheduled_at: json.booking.scheduled_at,
-                  old_status: prev.status,
-                  new_status: json.booking.status,
-                })
                 return normalizeBooking(json.booking)
               }
               return prev
@@ -422,7 +364,6 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       const scheduledTime = booking.scheduled_at ? new Date(booking.scheduled_at).getTime() : null
 
       if (!scheduledTime || isNaN(scheduledTime) || !booking.duration_minutes) {
-        console.warn('[chat] tick: missing scheduled_at or duration', { scheduled_at: booking.scheduled_at, duration: booking.duration_minutes })
         setCountdownSeconds(0)
         return
       }
@@ -464,17 +405,11 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         }
       }
 
-      console.log('[chat] tick:', { now, scheduledTime, endTime, remaining, status: booking.status, newStatus, tz: Intl.DateTimeFormat().resolvedOptions().timeZone })
-
       setConsultStatus(prev => {
-        if (prev !== newStatus) {
-          console.log('[chat] status change:', prev, '→', newStatus)
-        }
         return newStatus
       })
 
       if (remaining <= 0) {
-        console.log('[chat] auto-completing: remaining<=0')
         handleAutoComplete()
       }
     }
@@ -627,7 +562,6 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
             // 这防止 API 查询异常或数据延迟导致消息"消失"
             const realMessages = prev.filter(m => !m.id.startsWith('temp-'))
             if (serverMessages.length === 0 && realMessages.length > 0) {
-              console.log('[chat] poll: server returned empty, preserving local messages:', realMessages.length)
               return [...realMessages, ...tempMessages]
             }
             
@@ -694,7 +628,6 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         },
         (payload: any) => {
           const newRecord = payload.new
-          console.log('[chat] realtime update:', newRecord)
           // 更新本地 booking 状态
           setBooking(prev => prev ? normalizeBooking({ ...prev, ...newRecord }) : null)
           // 检测到师傅邀请评价
@@ -1263,8 +1196,6 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   const isCompleted = booking?.status === 'completed' || consultStatus === 'ended'
   // 师傅可邀请评价：订单已完成/已结束，且是师傅身份
   const canRequestReview = isMaster && isCompleted
-
-  console.log('[chat] render:', { status: booking?.status, consultStatus, isCompleted, countdownSeconds })
 
   return (
     <div className="min-h-[100dvh] h-[100dvh] bg-gradient-to-br from-stone-50 to-stone-100 flex flex-col overflow-hidden">
