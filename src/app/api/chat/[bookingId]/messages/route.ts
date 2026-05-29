@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createServiceClient } from '@/lib/supabase';
+import { createClient } from '@supabase/supabase-js';
 import { getMasterByEmail } from '@/lib/master-auth';
 
 export const dynamic = 'force-dynamic';
@@ -16,7 +16,10 @@ export async function GET(
     const { bookingId } = params;
 
     // 鉴权（用 service client 直接验证 token，减少一次 client 创建）
-    const supabase = createServiceClient();
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
     const authHeader = request.headers.get('authorization');
     if (!authHeader) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -129,7 +132,10 @@ export async function POST(
     }
 
     // 鉴权（用 service client 直接验证 token，减少一次 client 创建）
-    const supabase = createServiceClient();
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
     const authHeader = request.headers.get('authorization');
     if (!authHeader) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
