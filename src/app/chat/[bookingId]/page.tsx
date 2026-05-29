@@ -18,6 +18,7 @@ import {
   Star,
 } from 'lucide-react'
 import Link from 'next/link'
+import { isMasterEmail } from '@/lib/master-auth'
 
 interface Message {
   id: string
@@ -265,20 +266,24 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         return
       }
 
-      // Step 3: 判断是否是师傅身份
-      const masterRes = await fetch('/api/master/profile', {
-        headers: { authorization: `Bearer ${session.access_token}` },
-        credentials: 'include',
-      })
-      console.log('[chat] Step 3 - Master profile:', { status: masterRes.status, ok: masterRes.ok })
-      if (masterRes.ok) {
-        const masterJson = await masterRes.json()
-        console.log('[chat] Step 3 - Master data:', masterJson)
-        if (masterJson.master) {
-          setIsMaster(true)
+      // Step 3: 判断是否是师傅身份（只有师傅邮箱才请求，避免普通用户403）
+      const isMasterUser = isMasterEmail(user.email || '')
+      console.log('[chat] Step 3 - isMasterEmail:', isMasterUser, 'email:', user.email)
+      if (isMasterUser) {
+        const masterRes = await fetch('/api/master/profile', {
+          headers: { authorization: `Bearer ${session.access_token}` },
+          credentials: 'include',
+        })
+        console.log('[chat] Step 3 - Master profile:', { status: masterRes.status, ok: masterRes.ok })
+        if (masterRes.ok) {
+          const masterJson = await masterRes.json()
+          console.log('[chat] Step 3 - Master data:', masterJson)
+          if (masterJson.master) {
+            setIsMaster(true)
+          }
         }
-      } else if (masterRes.status === 403) {
-        console.log('[chat] Step 3 - User is not master (expected)')
+      } else {
+        console.log('[chat] Step 3 - Regular user, skip master/profile')
       }
 
       // Step 4: 获取 booking + messages（核心数据）
