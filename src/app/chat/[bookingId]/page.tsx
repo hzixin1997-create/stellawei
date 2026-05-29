@@ -1,5 +1,5 @@
 'use client'
-// cache-bust: 2026-05-29-chat-time-fix-v3
+// cache-bust: 2026-05-29-chat-api-v4
 
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'

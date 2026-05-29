@@ -6,7 +6,7 @@ const nextConfig = {
     unoptimized: true,
   },
   generateBuildId: async () => {
-    return 'build-' + Date.now() + '-v05028';
+    return 'build-' + Date.now() + '-v05029-chat-fix';
   },
 };
 
