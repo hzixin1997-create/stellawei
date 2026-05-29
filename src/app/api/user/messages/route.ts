@@ -20,11 +20,12 @@ export async function GET(request: Request) {
 
     const supabase = createServiceClient();
 
-    // 1. 获取用户的所有 bookings id
+    // 1. 获取用户的所有留言咨询 bookings id
     const { data: bookings, error: bookingsError } = await supabase
       .from('bookings')
       .select('id, master_id, service_id, scheduled_date, scheduled_time, status, payment_status, total_amount, duration_minutes, is_first_time')
       .eq('user_id', user.id)
+      .eq('consultation_type', 'message')
       .in('payment_status', ['paid', 'confirmed', 'completed'])
       .order('created_at', { ascending: false });
 

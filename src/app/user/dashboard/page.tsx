@@ -722,6 +722,7 @@ export default function UserDashboard() {
                     const expired = isExpired(booking)
                     const remainingSeconds = countdowns[booking.id] || 0
                     const isUrgent = remainingSeconds > 0 && remainingSeconds <= 180 // 3分钟内
+                    const displayStatus = getConsultationDisplayStatus(booking)
                     return (
                       <div key={booking.id} className="border rounded-lg p-4 hover:bg-stone-50 transition-colors">
                         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
@@ -776,7 +777,7 @@ export default function UserDashboard() {
                           </div>
                           <div className="flex flex-wrap sm:flex-nowrap sm:flex-col gap-2 sm:min-w-[80px]">
                             {/* 已完成订单：查看历史/留言 + 查看评价 + 删除 */}
-                            {booking.status === 'completed' && (
+                            {displayStatus === 'completed' && (
                               <>
                                 <Link href={`/chat/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
                                   <Button
@@ -811,7 +812,7 @@ export default function UserDashboard() {
                               </>
                             )}
                             {/* 已确认/进行中：实时咨询 */}
-                            {(booking.status === 'confirmed' || booking.status === 'in_progress') && booking.consultation_type !== 'message' && (
+                            {(displayStatus === 'confirmed' || displayStatus === 'in_progress') && booking.consultation_type !== 'message' && (
                               <>
                                 <Link href={`/chat/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
                                   <Button
@@ -844,7 +845,7 @@ export default function UserDashboard() {
                               </>
                             )}
                             {/* 已确认/进行中：留言咨询 */}
-                            {(booking.status === 'confirmed' || booking.status === 'in_progress') && booking.consultation_type === 'message' && (
+                            {(displayStatus === 'confirmed' || displayStatus === 'in_progress') && booking.consultation_type === 'message' && (
                               <>
                                 <Link href={`/chat/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
                                   <Button
