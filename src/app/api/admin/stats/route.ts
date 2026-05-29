@@ -190,6 +190,8 @@ export async function GET() {
       total_amount: b.total_amount,
       scheduled_date: b.scheduled_date,
       scheduled_time: b.scheduled_time,
+      scheduled_at: b.scheduled_at,
+      consultation_type: b.consultation_type,
       created_at: b.created_at,
     }));
 

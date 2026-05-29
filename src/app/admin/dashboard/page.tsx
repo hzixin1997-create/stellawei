@@ -53,6 +53,7 @@ interface StatsData {
     total_amount: number;
     scheduled_date: string | null;
     scheduled_time: string | null;
+    scheduled_at: string | null;
     consultation_type?: string;
     created_at: string;
   }>;
@@ -351,11 +352,23 @@ export default function AdminDashboard() {
                         <p className="font-medium">{mastersMap[order.master_id] || order.master_id}</p>
                         <p className="text-sm text-stone-500">
                           {order.service_id} · ${order.total_amount}
-                          {order.scheduled_date && order.scheduled_time
-                            ? ` · ${order.scheduled_date} ${order.scheduled_time}`
-                            : order.consultation_type === 'message'
-                              ? ' · 留言咨询'
-                              : ' · 未预约时间'}
+                          {(() => {
+                            // 优先用 scheduled_date + scheduled_time（新数据）
+                            if (order.scheduled_date && order.scheduled_time) {
+                              return ` · ${order.scheduled_date} ${order.scheduled_time}`;
+                            }
+                            // 兜底：从 scheduled_at 解析（老数据兼容）
+                            if (order.scheduled_at) {
+                              const d = new Date(order.scheduled_at);
+                              const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                              const timeStr = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+                              return ` · ${dateStr} ${timeStr}`;
+                            }
+                            if (order.consultation_type === 'message') {
+                              return ' · 留言咨询';
+                            }
+                            return ' · 未预约时间';
+                          })()}
                         </p>
                       </div>
                     </div>

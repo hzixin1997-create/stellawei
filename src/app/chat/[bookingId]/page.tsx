@@ -1,5 +1,5 @@
 'use client'
-// cache-bust: 2026-05-28-debug-v1
+// cache-bust: 2026-05-29-chat-time-fix-v3
 
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
@@ -69,10 +69,51 @@ const masters: Record<string, { name: string; nameCn: string }> = {
 }
 
 function normalizeBooking(bookingData: any): BookingInfo {
+  // Supabase 可能返回 camelCase 或 snake_case，全部尝试
+  let scheduledDate = bookingData.scheduledDate || bookingData.scheduled_date || ''
+  let scheduledTime = bookingData.scheduledTime || bookingData.scheduled_time || ''
+  const scheduledAt = bookingData.scheduledAt || bookingData.scheduled_at || ''
+
+  // 兜底：从 scheduled_at 解析，明确使用东八区 Intl API（不受浏览器本地时区影响）
+  if ((!scheduledDate || !scheduledTime) && scheduledAt) {
+    try {
+      const d = new Date(scheduledAt)
+      if (!isNaN(d.getTime())) {
+        const fmtDate = new Intl.DateTimeFormat('zh-CN', {
+          timeZone: 'Asia/Shanghai',
+          year: 'numeric', month: '2-digit', day: '2-digit'
+        })
+        const fmtTime = new Intl.DateTimeFormat('zh-CN', {
+          timeZone: 'Asia/Shanghai',
+          hour: '2-digit', minute: '2-digit', hour12: false
+        })
+        const dateParts = fmtDate.formatToParts(d)
+        const timeParts = fmtTime.formatToParts(d)
+        const getPart = (parts: Intl.DateTimeFormatPart[], type: string) =>
+          parts.find((p) => p.type === type)?.value || ''
+
+        if (!scheduledDate) {
+          scheduledDate = `${getPart(dateParts, 'year')}-${getPart(dateParts, 'month')}-${getPart(dateParts, 'day')}`
+        }
+        if (!scheduledTime) {
+          scheduledTime = `${getPart(timeParts, 'hour')}:${getPart(timeParts, 'minute')}`
+        }
+        console.log('[chat] normalizeBooking patched from scheduled_at:', {
+          scheduled_at: scheduledAt,
+          scheduled_date: scheduledDate,
+          scheduled_time: scheduledTime,
+        })
+      }
+    } catch (e) {
+      console.error('[chat] normalizeBooking failed to parse scheduled_at:', scheduledAt, e)
+    }
+  }
+
   return {
     ...bookingData,
-    scheduled_date: bookingData.scheduledDate || bookingData.scheduled_date || '',
-    scheduled_time: bookingData.scheduledTime || bookingData.scheduled_time || '',
+    scheduled_date: scheduledDate,
+    scheduled_time: scheduledTime,
+    scheduled_at: scheduledAt,
   }
 }
 
@@ -385,6 +426,24 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     return () => clearInterval(interval)
   }, [booking])
 
+  // 从 scheduled_at 解析显示时间（东八区），不依赖 scheduled_time 字段
+  const formatDisplayTime = (isoString: string): string => {
+    if (!isoString) return ''
+    try {
+      const d = new Date(isoString)
+      if (isNaN(d.getTime())) return ''
+      const fmt = new Intl.DateTimeFormat('zh-CN', {
+        timeZone: 'Asia/Shanghai',
+        hour: '2-digit', minute: '2-digit', hour12: false
+      })
+      const parts = fmt.formatToParts(d)
+      const getPart = (type: string) => parts.find((p) => p.type === type)?.value || ''
+      return `${getPart('hour')}:${getPart('minute')}`
+    } catch (e) {
+      return ''
+    }
+  }
+
   const getConsultStatusBanner = () => {
     // 咨询前消息已达上限
     if (consultStatus === 'not_started' && preConsultMsgCount >= PRE_CONSULT_LIMIT && !isMaster) {
@@ -395,13 +454,24 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     }
     switch (consultStatus) {
       case 'not_started': {
-        const scheduledTimeStr = booking?.scheduled_time
+        // 优先用 scheduled_time，没有则从 scheduled_at 解析（双保险）
+        let displayTime = booking?.scheduled_time
           ? booking.scheduled_time.split(':').slice(0, 2).join(':')
           : ''
+        if (!displayTime && booking?.scheduled_at) {
+          displayTime = formatDisplayTime(booking.scheduled_at)
+        }
+        // 根治兜底：时间字段全空时显示明确提示，避免空白
+        if (!displayTime) {
+          displayTime = isZh ? '时间未设置' : 'Time not set'
+        }
+        const hint = isMaster
+          ? (isZh ? '请向顾客询问需要了解的问题' : 'Please ask the customer for details.')
+          : (isZh ? '请先向师傅描述您的问题' : 'Please describe your question.')
         return {
           text: isZh
-            ? `⏰ 咨询将于 ${scheduledTimeStr} 开始`
-            : `⏰ Starts at ${scheduledTimeStr}`,
+            ? `⏰ 咨询将于 ${displayTime} 开始 · ${hint}`
+            : `⏰ Starts at ${displayTime} · ${hint}`,
           bgColor: 'bg-amber-50 border-amber-100 text-amber-900',
         }
       }
@@ -471,8 +541,16 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
             // 识别本地临时消息（以 'temp-' 开头）
             const tempMessages = prev.filter(m => m.id.startsWith('temp-'))
             
-            // 如果本地没有临时消息，直接替换为服务端消息
-            if (tempMessages.length === 0) {
+            // 根治兜底：服务端消息为空但本地有真实消息时，保留本地消息
+            // 这防止 API 查询异常或数据延迟导致消息"消失"
+            const realMessages = prev.filter(m => !m.id.startsWith('temp-'))
+            if (serverMessages.length === 0 && realMessages.length > 0) {
+              console.log('[chat] poll: server returned empty, preserving local messages:', realMessages.length)
+              return [...realMessages, ...tempMessages]
+            }
+            
+            // 如果本地没有临时消息且服务端有数据，直接替换为服务端消息
+            if (tempMessages.length === 0 && serverMessages.length > 0) {
               return serverMessages
             }
             
@@ -490,7 +568,16 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
               return !serverMsgMap.has(key)
             })
             
-            return [...serverMessages, ...stillPending]
+            // 合并服务端消息和本地真实消息，避免服务端返回部分数据时丢失本地消息
+            const localMsgMap = new Map<string, Message>()
+            realMessages.forEach((m: Message) => {
+              localMsgMap.set(m.id, m)
+            })
+            serverMessages.forEach((m: Message) => {
+              localMsgMap.set(m.id, m) // 服务端消息优先
+            })
+            
+            return [...Array.from(localMsgMap.values()), ...stillPending]
           })
 
           // 更新对方 typing 状态
@@ -1085,7 +1172,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
               {isZh ? service?.nameCn : service?.name}
             </h1>
             <p className="text-xs text-stone-500 hidden sm:block truncate">
-              {isZh ? master?.nameCn : master?.name} · {booking?.scheduled_date} {booking?.scheduled_time ? booking.scheduled_time.split(':').slice(0, 2).join(':') : ''}
+              {isZh ? master?.nameCn : master?.name} · {booking?.scheduled_date} {booking?.scheduled_time ? booking.scheduled_time.split(':').slice(0, 2).join(':') : formatDisplayTime(booking?.scheduled_at || '')}
             </p>
           </div>
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
@@ -1170,16 +1257,6 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       {/* 消息区域 */}
       <div className="flex-1 overflow-y-auto pt-6 pb-4 px-4 relative">
         <div className="max-w-3xl mx-auto space-y-4">
-          {messages.length === 0 && (
-            <div className="text-center py-16">
-              <p className="text-stone-500 text-base sm:text-lg font-medium">
-                {isMaster
-                  ? (isZh ? '请向顾客询问需要了解的问题' : 'Please ask the customer for details.')
-                  : (isZh ? '请先向师傅描述您的问题' : 'Please describe your question.')
-                }
-              </p>
-            </div>
-          )}
           {messages.map((msg) => {
             const isMe =
               (msg.sender_type === 'user' && !isMaster) ||

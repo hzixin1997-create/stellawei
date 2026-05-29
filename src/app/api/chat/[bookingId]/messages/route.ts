@@ -51,7 +51,7 @@ export async function GET(
     if (booking.status === 'cancelled' || booking.status === 'refunded') {
       return NextResponse.json({ error: 'Booking is cancelled' }, { status: 400 });
     }
-    if (booking.payment_status !== 'paid') {
+    if (booking.payment_status !== 'paid' && booking.payment_status !== 'refund_requested') {
       return NextResponse.json({ error: 'Booking not paid' }, { status: 400 });
     }
 
