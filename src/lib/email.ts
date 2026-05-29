@@ -1,15 +1,14 @@
 import { Resend } from 'resend';
 import { sendEmailViaBrevo } from './brevo';
+import { getEmailContent, type EmailRole } from './email-templates';
 
 function getResend() {
   const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    return null;
-  }
+  if (!apiKey) return null;
   return new Resend(apiKey);
 }
 
-interface ReminderEmailProps {
+interface SendEmailParams {
   to: string;
   userName: string;
   masterName: string;
@@ -19,6 +18,8 @@ interface ReminderEmailProps {
   timezone: string;
   isMaster: boolean;
   chatUrl: string;
+  language?: string;
+  bookingId?: string;
 }
 
 export async function sendConsultationReminder({
@@ -31,56 +32,69 @@ export async function sendConsultationReminder({
   timezone,
   isMaster,
   chatUrl,
-}: ReminderEmailProps) {
-  const subject = isMaster
-    ? `⏰ 提醒：您有咨询即将开始（15分钟后）`
-    : `⏰ Reminder: Your consultation starts in 15 minutes`;
+  language = 'zh',
+  bookingId,
+}: SendEmailParams): Promise<{ success: boolean; id?: string; provider?: string; error?: string }> {
+  const role: EmailRole = isMaster ? 'master' : 'user';
+  const lang = (language === 'en' ? 'en' : 'zh') as 'zh' | 'en';
 
-  const html = isMaster
-    ? `
-    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-      <h2 style="color: #7c3aed;">🔔 咨询即将开始 | Consultation Reminder</h2>
-      <p>您好 ${masterName} 师傅，</p>
-      <p>您有一个咨询将在 <strong>15分钟后</strong>开始：</p>
-      <ul>
-        <li><strong>服务 Service：</strong> ${serviceName}</li>
-        <li><strong>时间 Time：</strong> ${scheduledDate} ${scheduledTime} (${timezone})</li>
-        <li><strong>用户 User：</strong> ${userName}</li>
-      </ul>
-      <p>请提前进入聊天室准备：</p>
-      <a href="${chatUrl}" style="display: inline-block; background: #7c3aed; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px;">进入聊天室 Enter Chat Room</a>
-      <p style="color: #666; font-size: 12px; margin-top: 20px;">Stellawei 命理咨询平台 | Divination Platform</p>
-    </div>
-    `
-    : `
-    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-      <h2 style="color: #7c3aed;">🔔 咨询即将开始 | Consultation Reminder</h2>
-      <p>Hi ${userName}，您好</p>
-      <p>您与 <strong>${masterName}</strong> 师傅的咨询将在 <strong>15分钟后</strong>开始。</p>
-      <p>Your consultation with <strong>${masterName}</strong> will begin in <strong>15 minutes</strong>:</p>
-      <ul>
-        <li><strong>服务 Service：</strong> ${serviceName}</li>
-        <li><strong>时间 Time：</strong> ${scheduledDate} ${scheduledTime} (${timezone})</li>
-      </ul>
-      <p>请进入聊天室 / Please join the chat room:</p>
-      <a href="${chatUrl}" style="display: inline-block; background: #7c3aed; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px;">进入聊天室 Enter Chat Room</a>
-      <p style="color: #666; font-size: 12px; margin-top: 20px;">Stellawei 命理咨询平台 | Divination Platform</p>
-    </div>
-    `;
+  // 1. 统一生成邮件内容
+  const { subject, html } = getEmailContent({
+    role,
+    language: lang,
+    userName,
+    masterName,
+    serviceName,
+    scheduledDate,
+    scheduledTime,
+    timezone,
+    chatUrl,
+  });
 
-  // ===== 双发机制：Brevo 主（5秒超时）+ Resend 备 =====
-  // 1. 先尝试 Brevo（对 QQ/163 送达率更好）
+  // 2. 发送前日志
+  console.log('[email:send]', JSON.stringify({
+    bookingId: bookingId || 'unknown',
+    role,
+    to,
+    language: lang,
+    isMaster,
+    provider: 'brevo', // 先尝试 Brevo
+    timestamp: new Date().toISOString(),
+  }));
+
+  // 3. Brevo 主发（5秒超时）
   const brevoResult = await sendEmailViaBrevo({ to, subject, html });
   if (brevoResult.success) {
-    console.log('[email] Brevo success →', to, brevoResult.id);
+    console.log('[email:send]', JSON.stringify({
+      bookingId: bookingId || 'unknown',
+      role,
+      to,
+      result: 'success',
+      provider: 'brevo',
+      messageId: brevoResult.id,
+    }));
     return { success: true, id: brevoResult.id, provider: 'brevo' };
   }
 
-  // 2. Brevo 失败（超时或错误），fallback 到 Resend
-  console.warn('[email] Brevo failed, fallback to Resend:', brevoResult.error);
+  // 4. Brevo 失败，fallback Resend
+  console.warn('[email:send]', JSON.stringify({
+    bookingId: bookingId || 'unknown',
+    role,
+    to,
+    result: 'brevo_failed',
+    error: brevoResult.error,
+    fallback: 'resend',
+  }));
+
   const resend = getResend();
   if (!resend) {
-    console.error('RESEND_API_KEY not configured');
+    console.error('[email:send]', JSON.stringify({
+      bookingId: bookingId || 'unknown',
+      role,
+      to,
+      result: 'failed',
+      error: 'RESEND_API_KEY not configured',
+    }));
     return { success: false, error: `Brevo: ${brevoResult.error}; Resend: API_KEY not configured`, provider: 'none' };
   }
 
@@ -93,14 +107,33 @@ export async function sendConsultationReminder({
     });
 
     if (error) {
-      console.error('Resend send error:', error);
+      console.error('[email:send]', JSON.stringify({
+        bookingId: bookingId || 'unknown',
+        role,
+        to,
+        result: 'resend_failed',
+        error: error.message,
+      }));
       return { success: false, error: `Brevo: ${brevoResult.error}; Resend: ${error.message}`, provider: 'resend' };
     }
 
-    console.log('[email] Resend fallback success →', to, data?.id);
+    console.log('[email:send]', JSON.stringify({
+      bookingId: bookingId || 'unknown',
+      role,
+      to,
+      result: 'success',
+      provider: 'resend',
+      messageId: data?.id,
+    }));
     return { success: true, id: data?.id, provider: 'resend' };
   } catch (err: any) {
-    console.error('Send email exception:', err);
+    console.error('[email:send]', JSON.stringify({
+      bookingId: bookingId || 'unknown',
+      role,
+      to,
+      result: 'exception',
+      error: err.message,
+    }));
     return { success: false, error: `Brevo: ${brevoResult.error}; Resend: ${err.message}`, provider: 'resend' };
   }
 }

@@ -109,10 +109,10 @@ export async function POST(request: Request) {
           continue;
         }
 
-        // 获取用户信息
+        // 获取用户信息 + 语言偏好
         const { data: userData } = await supabase
           .from('profiles')
-          .select('full_name, email')
+          .select('full_name, email, language')
           .eq('id', booking.user_id)
           .single();
 
@@ -122,6 +122,19 @@ export async function POST(request: Request) {
           results.push({ bookingId: booking.id, error: 'Missing user email' });
           continue;
         }
+
+        // 语言优先级：booking.language > user profile.language > 默认 zh
+        const userLanguage = userData.language || 'zh';
+        console.log('[reminders] MASTER FLOW ENTRY CHECK', JSON.stringify({
+          bookingId: booking.id,
+          user_reminder_sent: locked.user_reminder_sent,
+          master_reminder_sent: locked.master_reminder_sent,
+          reminder_retry_count: booking.reminder_retry_count,
+          status: booking.status,
+          payment_status: booking.payment_status,
+          userLanguage,
+          master_id: booking.master_id,
+        }));
 
         // 获取师傅信息
         let masterData: { display_name: string; email: string } | null = null;
@@ -149,7 +162,7 @@ export async function POST(request: Request) {
 
         // === 给用户发邮件（如果未发送）===
         let userEmailResult: { success: boolean; id?: string; provider?: string; error?: string } = { success: true, provider: 'skipped' };
-        if (!booking.user_reminder_sent) {
+        if (!locked.user_reminder_sent) {
           userEmailResult = await sendConsultationReminder({
             to: userData.email,
             userName: userData.full_name || 'User',
@@ -160,12 +173,14 @@ export async function POST(request: Request) {
             timezone: booking.timezone || 'Asia/Shanghai',
             isMaster: false,
             chatUrl,
+            language: userLanguage,
+            bookingId: booking.id,
           });
         }
 
         // === 给师傅发邮件（如果未发送）===
         let masterEmailResult: { success: boolean; id?: string; provider?: string; error?: string } = { success: true, provider: 'skipped' };
-        if (!booking.master_reminder_sent) {
+        if (!locked.master_reminder_sent) {
           masterEmailResult = await sendConsultationReminder({
             to: masterData.email,
             userName: userData.full_name || 'User',
@@ -176,6 +191,8 @@ export async function POST(request: Request) {
             timezone: booking.timezone || 'Asia/Shanghai',
             isMaster: true,
             chatUrl,
+            language: userLanguage,
+            bookingId: booking.id,
           });
         }
 
@@ -187,22 +204,22 @@ export async function POST(request: Request) {
         };
 
         // 只更新用户维度（如果这次处理了）
-        if (!booking.user_reminder_sent && userEmailResult.success) {
+        if (!locked.user_reminder_sent && userEmailResult.success) {
           updatePayload.user_reminder_sent = true;
           updatePayload.user_reminder_sent_at = attemptAt;
         }
         // 只更新师傅维度（如果这次处理了）
-        if (!booking.master_reminder_sent && masterEmailResult.success) {
+        if (!locked.master_reminder_sent && masterEmailResult.success) {
           updatePayload.master_reminder_sent = true;
           updatePayload.master_reminder_sent_at = attemptAt;
         }
 
         // 记录错误（如果有失败）
         const errors = [];
-        if (!booking.user_reminder_sent && !userEmailResult.success) {
+        if (!locked.user_reminder_sent && !userEmailResult.success) {
           errors.push(`user: ${userEmailResult.error}`);
         }
-        if (!booking.master_reminder_sent && !masterEmailResult.success) {
+        if (!locked.master_reminder_sent && !masterEmailResult.success) {
           errors.push(`master: ${masterEmailResult.error}`);
         }
         if (errors.length > 0) {
