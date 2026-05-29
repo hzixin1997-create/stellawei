@@ -38,6 +38,10 @@ export async function POST(request: Request) {
     const now = new Date();
     const fifteenMinutesLater = new Date(now.getTime() + 15 * 60 * 1000);
 
+    // 查询未来15分钟内即将开始的咨询
+    // 防死锁：reminder_processing 超过10分钟视为已超时，允许重新处理
+    const tenMinutesAgo = new Date(now.getTime() - 10 * 60 * 1000).toISOString();
+
     const { data: upcomingBookings, error } = await supabase
       .from('bookings')
       .select(`
@@ -59,10 +63,11 @@ export async function POST(request: Request) {
       `)
       .eq('payment_status', 'paid')
       .eq('status', 'confirmed')
-      .eq('reminder_processing', false)
+      .or(`reminder_processing.eq.false,reminder_processing_at.lt.${tenMinutesAgo}`)
       .gte('scheduled_at', now.toISOString())
       .lte('scheduled_at', fifteenMinutesLater.toISOString())
-      .or('user_reminder_sent.eq.false,master_reminder_sent.eq.false');
+      .or('user_reminder_sent.eq.false,master_reminder_sent.eq.false')
+      .lte('reminder_retry_count', 3);
 
     if (error) {
       console.error('[reminders/check] Query error:', error);
@@ -84,7 +89,7 @@ export async function POST(request: Request) {
 
     for (const booking of upcomingBookings) {
       try {
-        // === 原子锁定：防止并发重复发送 ===
+        // === 原子锁定：防止并发重复发送 + 防死锁（10分钟超时） + 重试上限 ===
         const { data: locked, error: lockError } = await supabase
           .from('bookings')
           .update({
@@ -92,7 +97,8 @@ export async function POST(request: Request) {
             reminder_processing_at: new Date().toISOString(),
           })
           .eq('id', booking.id)
-          .eq('reminder_processing', false)
+          .lte('reminder_retry_count', 3)
+          .or(`reminder_processing.eq.false,reminder_processing_at.lt.${tenMinutesAgo}`)
           .or('user_reminder_sent.eq.false,master_reminder_sent.eq.false')
           .select('id, user_reminder_sent, master_reminder_sent')
           .single();
@@ -142,7 +148,7 @@ export async function POST(request: Request) {
         const attemptAt = new Date().toISOString();
 
         // === 给用户发邮件（如果未发送）===
-        let userEmailResult: { success: boolean; id?: string; provider?: string; error?: string } = { success: true };
+        let userEmailResult: { success: boolean; id?: string; provider?: string; error?: string } = { success: true, provider: 'skipped' };
         if (!booking.user_reminder_sent) {
           userEmailResult = await sendConsultationReminder({
             to: userData.email,
@@ -158,7 +164,7 @@ export async function POST(request: Request) {
         }
 
         // === 给师傅发邮件（如果未发送）===
-        let masterEmailResult: { success: boolean; id?: string; provider?: string; error?: string } = { success: true };
+        let masterEmailResult: { success: boolean; id?: string; provider?: string; error?: string } = { success: true, provider: 'skipped' };
         if (!booking.master_reminder_sent) {
           masterEmailResult = await sendConsultationReminder({
             to: masterData.email,
@@ -173,26 +179,32 @@ export async function POST(request: Request) {
           });
         }
 
-        // === 更新发送状态 ===
+        // === 更新发送状态（只更新本次处理的维度）===
         const updatePayload: any = {
           reminder_processing: false,
           last_reminder_attempt_at: attemptAt,
           reminder_retry_count: (booking.reminder_retry_count || 0) + 1,
         };
 
-        if (userEmailResult.success && !booking.user_reminder_sent) {
+        // 只更新用户维度（如果这次处理了）
+        if (!booking.user_reminder_sent && userEmailResult.success) {
           updatePayload.user_reminder_sent = true;
           updatePayload.user_reminder_sent_at = attemptAt;
         }
-        if (masterEmailResult.success && !booking.master_reminder_sent) {
+        // 只更新师傅维度（如果这次处理了）
+        if (!booking.master_reminder_sent && masterEmailResult.success) {
           updatePayload.master_reminder_sent = true;
           updatePayload.master_reminder_sent_at = attemptAt;
         }
 
         // 记录错误（如果有失败）
         const errors = [];
-        if (!userEmailResult.success) errors.push(`user: ${userEmailResult.error}`);
-        if (!masterEmailResult.success) errors.push(`master: ${masterEmailResult.error}`);
+        if (!booking.user_reminder_sent && !userEmailResult.success) {
+          errors.push(`user: ${userEmailResult.error}`);
+        }
+        if (!booking.master_reminder_sent && !masterEmailResult.success) {
+          errors.push(`master: ${masterEmailResult.error}`);
+        }
         if (errors.length > 0) {
           updatePayload.reminder_error = errors.join('; ');
         }
