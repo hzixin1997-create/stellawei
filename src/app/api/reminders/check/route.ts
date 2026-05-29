@@ -53,6 +53,7 @@ export async function POST(request: Request) {
         master_reminder_sent,
         reminder_processing,
         reminder_processing_at,
+        reminder_retry_count,
         payment_status,
         status
       `)
@@ -141,7 +142,7 @@ export async function POST(request: Request) {
         const attemptAt = new Date().toISOString();
 
         // === 给用户发邮件（如果未发送）===
-        let userEmailResult = { success: true, id: undefined, provider: 'skipped' };
+        let userEmailResult: { success: boolean; id?: string; provider?: string; error?: string } = { success: true };
         if (!booking.user_reminder_sent) {
           userEmailResult = await sendConsultationReminder({
             to: userData.email,
@@ -157,7 +158,7 @@ export async function POST(request: Request) {
         }
 
         // === 给师傅发邮件（如果未发送）===
-        let masterEmailResult = { success: true, id: undefined, provider: 'skipped' };
+        let masterEmailResult: { success: boolean; id?: string; provider?: string; error?: string } = { success: true };
         if (!booking.master_reminder_sent) {
           masterEmailResult = await sendConsultationReminder({
             to: masterData.email,

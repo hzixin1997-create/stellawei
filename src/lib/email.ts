@@ -80,7 +80,7 @@ export async function sendConsultationReminder({
   const resend = getResend();
   if (!resend) {
     console.error('RESEND_API_KEY not configured');
-    return { success: false, error: `Brevo: ${brevoResult.error}; Resend: API_KEY not configured` };
+    return { success: false, error: `Brevo: ${brevoResult.error}; Resend: API_KEY not configured`, provider: 'none' };
   }
 
   try {
@@ -93,13 +93,13 @@ export async function sendConsultationReminder({
 
     if (error) {
       console.error('Resend send error:', error);
-      return { success: false, error: `Brevo: ${brevoResult.error}; Resend: ${error.message}` };
+      return { success: false, error: `Brevo: ${brevoResult.error}; Resend: ${error.message}`, provider: 'resend' };
     }
 
     console.log('[email] Resend fallback success →', to, data?.id);
     return { success: true, id: data?.id, provider: 'resend' };
   } catch (err: any) {
     console.error('Send email exception:', err);
-    return { success: false, error: `Brevo: ${brevoResult.error}; Resend: ${err.message}` };
+    return { success: false, error: `Brevo: ${brevoResult.error}; Resend: ${err.message}`, provider: 'resend' };
   }
 }
