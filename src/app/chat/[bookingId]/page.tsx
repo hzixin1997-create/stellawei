@@ -410,6 +410,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       })
 
       if (remaining <= 0) {
+        console.log('[chat:debug] auto-complete triggered!', { remaining, scheduledTime, endTime, now, duration: booking.duration_minutes, status: booking.status })
         handleAutoComplete()
       }
     }
@@ -512,6 +513,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
   const handleAutoComplete = async () => {
     const currentBooking = bookingRef.current
+    console.log('[chat:debug] handleAutoComplete called', { status: currentBooking?.status, id: bookingId })
     if (!currentBooking || currentBooking.status === 'completed') return
     try {
       const { data: { session } } = await supabase.auth.getSession()
