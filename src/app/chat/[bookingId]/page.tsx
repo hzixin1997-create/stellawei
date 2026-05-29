@@ -238,35 +238,21 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
   useEffect(() => {
     const loadData = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
+      console.log('[chat] === loadData START ===')
+      
+      // Step 1: 获取当前用户
+      const { data: { user }, error: userError } = await supabase.auth.getUser()
+      console.log('[chat] Step 1 - User:', { userId: user?.id, email: user?.email, error: userError?.message })
       if (!user) {
+        console.log('[chat] No user, redirecting to login')
         router.push('/auth/login')
         return
       }
       setUser(user)
 
-      // 判断是否是师傅身份：调用 master/profile，403 表示不是师傅（正常）
-      const { data: { session: masterSession } } = await supabase.auth.getSession()
-      const masterRes = await fetch('/api/master/profile', {
-        headers: { authorization: `Bearer ${masterSession?.access_token || ''}` },
-        credentials: 'include',
-      })
-      if (masterRes.ok) {
-        const masterJson = await masterRes.json()
-        if (masterJson.master) {
-          setIsMaster(true)
-          console.log('[chat] User is master:', masterJson.master.name)
-        }
-      } else if (masterRes.status === 403) {
-        // 403 = 不是师傅，这是正常情况，静默处理
-        console.log('[chat] User is not a master (expected for regular users)')
-      } else {
-        console.error('[chat] master/profile error:', masterRes.status, await masterRes.text())
-      }
-
-      // 通过 API 获取 booking + messages（不受 RLS 限制）
+      // Step 2: 获取 session
       const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-      console.log('[chat] loadData session:', { 
+      console.log('[chat] Step 2 - Session:', { 
         hasSession: !!session, 
         hasAccessToken: !!session?.access_token,
         tokenPrefix: session?.access_token ? session.access_token.substring(0, 20) + '...' : 'none',
@@ -274,25 +260,59 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       })
       
       if (!session?.access_token) {
-        console.error('[chat] No session found, redirecting to login')
+        console.error('[chat] Step 2 FAILED: No session found, redirecting to login')
         router.push('/auth/login?redirect=' + encodeURIComponent(`/chat/${bookingId}`))
         return
       }
-      
+
+      // Step 3: 判断是否是师傅身份
+      const masterRes = await fetch('/api/master/profile', {
+        headers: { authorization: `Bearer ${session.access_token}` },
+        credentials: 'include',
+      })
+      console.log('[chat] Step 3 - Master profile:', { status: masterRes.status, ok: masterRes.ok })
+      if (masterRes.ok) {
+        const masterJson = await masterRes.json()
+        console.log('[chat] Step 3 - Master data:', masterJson)
+        if (masterJson.master) {
+          setIsMaster(true)
+        }
+      } else if (masterRes.status === 403) {
+        console.log('[chat] Step 3 - User is not master (expected)')
+      }
+
+      // Step 4: 获取 booking + messages（核心数据）
+      console.log('[chat] Step 4 - Fetching /api/chat/${bookingId}/messages')
       const bookingRes = await fetch(`/api/chat/${bookingId}/messages`, {
         headers: { authorization: `Bearer ${session.access_token}` },
         credentials: 'include',
       })
+      console.log('[chat] Step 4 - API response:', { status: bookingRes.status, ok: bookingRes.ok })
+      
       if (bookingRes.ok) {
         const json = await bookingRes.json()
+        console.log('[chat] Step 4 - API JSON keys:', Object.keys(json))
+        console.log('[chat] Step 4 - booking raw:', JSON.stringify(json.booking))
+        console.log('[chat] Step 4 - messages count:', json.messages?.length)
+        
         const msgs = json.messages || []
         setMessages(msgs)
 
-        // 从 API 响应获取 booking 数据
         const bookingData = json.booking
-        console.log('[chat] API booking:', JSON.stringify(bookingData))
         if (bookingData) {
-          setBooking(normalizeBooking(bookingData))
+          console.log('[chat] Step 4 - booking scheduled_at:', bookingData.scheduled_at)
+          console.log('[chat] Step 4 - booking scheduled_date:', bookingData.scheduled_date)
+          console.log('[chat] Step 4 - booking scheduled_time:', bookingData.scheduled_time)
+          
+          const normalized = normalizeBooking(bookingData)
+          console.log('[chat] Step 4 - normalized booking:', JSON.stringify({
+            scheduled_date: normalized.scheduled_date,
+            scheduled_time: normalized.scheduled_time,
+            scheduled_at: normalized.scheduled_at,
+          }))
+          
+          setBooking(normalized)
+          
           // 初始化评价相关状态
           setReviewRequested(!!bookingData.review_requested)
           if (bookingData.review_data) {
@@ -300,39 +320,44 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
             setReviewRating(bookingData.review_data.rating || 0)
             setReviewText(bookingData.review_data.content || '')
           }
+          
+          // 初始化倒计时状态
           if (bookingData.status === 'completed') {
-            console.log('[chat] init: status=completed → ended')
+            console.log('[chat] Step 4 - Status completed')
             setCountdownSeconds(0)
             setConsultStatus('ended')
           } else {
-            // 正规做法：倒计时只用 scheduled_at
             const scheduledTime = bookingData.scheduled_at ? new Date(bookingData.scheduled_at).getTime() : null
+            console.log('[chat] Step 4 - scheduledTime parsed:', scheduledTime)
             if (scheduledTime && !isNaN(scheduledTime) && bookingData.duration_minutes) {
               const endTime = scheduledTime + bookingData.duration_minutes * 60 * 1000
               const now = Date.now()
               const remaining = Math.max(0, Math.floor((endTime - now) / 1000))
-              console.log('[chat] init time check:', { scheduledTime, endTime, now, remaining, status: bookingData.status, duration: bookingData.duration_minutes })
+              console.log('[chat] Step 4 - time check:', { now, scheduledTime, endTime, remaining, duration: bookingData.duration_minutes })
               if (now > endTime) {
-                console.log('[chat] init: past endTime → ended')
                 setCountdownSeconds(0)
                 setConsultStatus('ended')
               } else if (now >= scheduledTime) {
-                console.log('[chat] init: within time window → in_progress')
                 setCountdownSeconds(remaining)
                 setConsultStatus('in_progress')
               } else {
-                console.log('[chat] init: before start time → not_started')
                 setCountdownSeconds(Math.max(0, Math.floor((scheduledTime - now) / 1000)))
                 setConsultStatus('not_started')
               }
             } else {
-              console.warn('[chat] init: missing scheduled_at or duration', { scheduled_at: bookingData.scheduled_at, duration: bookingData.duration_minutes })
+              console.warn('[chat] Step 4 - Missing scheduled_at or duration', { scheduled_at: bookingData.scheduled_at, duration: bookingData.duration_minutes })
             }
           }
+        } else {
+          console.error('[chat] Step 4 FAILED: bookingData is null/undefined')
         }
+      } else {
+        const errorText = await bookingRes.text()
+        console.error('[chat] Step 4 FAILED: API error', bookingRes.status, errorText)
       }
 
       setIsLoading(false)
+      console.log('[chat] === loadData END ===')
     }
 
     loadData()
