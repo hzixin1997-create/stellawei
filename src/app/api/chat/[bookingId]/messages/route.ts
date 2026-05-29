@@ -31,14 +31,24 @@ export async function GET(
     }
 
     // 验证 booking 存在且当前用户有权访问
+    console.log('[chat:GET] Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL?.substring(0, 30) + '...')
+    console.log('[chat:GET] Service key exists:', !!process.env.SUPABASE_SERVICE_ROLE_KEY)
+    
     const { data: booking, error: bookingError } = await supabase
       .from('bookings')
       .select('id, user_id, master_id, status, payment_status, scheduled_at, scheduled_date, scheduled_time, duration_minutes, timezone, service_id, total_amount, currency, is_first_time, user_typing_until, master_typing_until, review_requested, review_data')
       .eq('id', bookingId)
       .single();
 
+    console.log('[chat:GET] booking query result:', { 
+      hasData: !!booking, 
+      error: bookingError ? { code: bookingError.code, message: bookingError.message } : null,
+      bookingId: bookingId
+    })
+
     if (bookingError || !booking) {
-      return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
+      console.error('[chat:GET] Booking not found. Error:', bookingError)
+      return NextResponse.json({ error: 'Booking not found', details: bookingError?.message }, { status: 404 });
     }
 
     // 检查权限：用户本人或该订单的师傅
