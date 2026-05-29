@@ -498,11 +498,24 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
           text: isZh ? '🔴 咨询进行中' : '🔴 Consultation in progress',
           bgColor: 'bg-green-50 border-green-200 text-green-800',
         }
-      case 'ended':
+      case 'ended': {
+        // 严格区分 ended vs completed：ended 是倒计时结束但尚未 completed
+        // 用户端和师傅端显示不同
+        if (isMaster) {
+          return {
+            text: isZh 
+              ? '⏳ 咨询已结束，收尾阶段。您可以继续发送收尾消息。' 
+              : '⏳ Consultation ended. Wrap-up period active. You may continue sending follow-up messages.',
+            bgColor: 'bg-blue-50 border-blue-200 text-blue-800',
+          }
+        }
         return {
-          text: isZh ? '✅ 咨询已结束' : '✅ Consultation ended',
+          text: isZh 
+            ? '✅ 咨询已结束。师傅可能还在发送收尾消息。' 
+            : '✅ Consultation ended. Your advisor may still send follow-up messages.',
           bgColor: 'bg-stone-200 border-stone-300 text-stone-700',
         }
+      }
       default:
         return {
           text: isZh ? `⏰ 咨询将于 ${booking?.scheduled_date || ''} ${booking?.scheduled_time?.split(':').slice(0, 2).join(':') || ''} 开始` : `⏰ Consultation upcoming`,
@@ -515,19 +528,13 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     const currentBooking = bookingRef.current
     console.log('[chat:debug] handleAutoComplete called', { status: currentBooking?.status, id: bookingId })
     if (!currentBooking || currentBooking.status === 'completed') return
-    try {
-      const { data: { session } } = await supabase.auth.getSession()
-      await fetch(`/api/chat/${bookingId}/complete`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          authorization: `Bearer ${session?.access_token || ''}`,
-        },
-      })
-      setBooking(prev => prev ? { ...prev, status: 'completed' } : null)
-    } catch (err) {
-      console.error('Auto complete error:', err)
-    }
+    
+    // 前端不再自动调用 API 标记完成
+    // completed 只能由后端（cron 或用户手动点击）标记
+    // 前端只更新 UI 状态为 'ended'，等待后端状态同步
+    console.log('[chat:state] auto-complete: countdown ended, marking local ended (not completed)')
+    setConsultStatus('ended')
+    setCountdownSeconds(0)
   }
 
   useEffect(() => {
@@ -687,6 +694,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   }
 
   const sendTypingStatus = async (isTyping: boolean) => {
+    if (!isMaster && (consultStatus === 'ended' || booking?.status === 'completed')) return
     try {
       const { data: { session }, error: sessionError } = await supabase.auth.getSession()
       if (!session?.access_token) {
@@ -843,6 +851,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
   const uploadAudio = async (blob: Blob, duration: number) => {
     if (consultStatus === 'ended' && !isMaster) return
+    if (booking?.status === 'completed') return
     if (consultStatus === 'not_started' && !isMaster && preConsultMsgCount >= PRE_CONSULT_LIMIT) {
       alert(isZh
         ? `已达到咨询前消息上限（${PRE_CONSULT_LIMIT}条），请等待预约时间正式开始对话`
@@ -931,7 +940,17 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
   const handleSend = async () => {
     const content = inputValue.trim()
-    if (!content || isSending || consultStatus === 'ended') return
+    if (!content || isSending) return
+    // ended 状态：用户不能发，师傅可以发（收尾阶段）
+    if (consultStatus === 'ended' && !isMaster) {
+      alert(isZh ? '咨询已结束，您不能继续发送消息' : 'Consultation ended. You cannot send more messages.')
+      return
+    }
+    // completed 状态：双方都不能发
+    if (booking?.status === 'completed') {
+      alert(isZh ? '订单已完成' : 'Order completed')
+      return
+    }
 
     // 前端：咨询未开始时检查5条限制
     if (consultStatus === 'not_started' && !isMaster && preConsultMsgCount >= PRE_CONSULT_LIMIT) {
@@ -1195,7 +1214,9 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   const master = booking ? masters[booking.master_id] : null
   const service = booking ? services[booking.service_id] : null
   const canComplete = booking?.status === 'in_progress' && consultStatus !== 'ended'
-  const isCompleted = booking?.status === 'completed' || consultStatus === 'ended'
+  // 严格区分：completed = 后端标记完成；ended = 倒计时结束但尚未 completed
+  const isCompleted = booking?.status === 'completed'
+  const isEnded = consultStatus === 'ended' || booking?.status === 'ended'
   // 师傅可邀请评价：订单已完成/已结束，且是师傅身份
   const canRequestReview = isMaster && isCompleted
 

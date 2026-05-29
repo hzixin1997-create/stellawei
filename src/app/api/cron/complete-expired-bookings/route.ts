@@ -6,11 +6,10 @@ export const dynamic = 'force-dynamic'
 /**
  * POST /api/cron/complete-expired-bookings
  * 兜底机制：自动标记已过期的订单为 completed
- * 应由外部 cron 服务（如 Vercel Cron / GitHub Actions）每小时调用一次
+ * 严格：只有 end_time + 10分钟 后才标记 completed
  */
 export async function POST(request: Request) {
   try {
-    // 简单的 cron secret 验证（防止被恶意调用）
     const authHeader = request.headers.get('authorization')
     const expectedSecret = process.env.CRON_SECRET
     if (expectedSecret && authHeader !== `Bearer ${expectedSecret}`) {
@@ -18,15 +17,14 @@ export async function POST(request: Request) {
     }
 
     const supabase = createServiceClient()
-    const now = new Date().toISOString()
+    const now = Date.now()
 
-    // 找出所有 status=confirmed/in_progress 且已过期的订单
-    // scheduled_at + duration_minutes < now
+    // 严格：查询 status=ended 或 in_progress，且 start_time 至少在 duration+10分钟前
+    // 先查出所有可能过期的，再 JS 端精确过滤
     const { data: expiredBookings, error: fetchError } = await supabase
       .from('bookings')
       .select('id, scheduled_at, duration_minutes, status')
-      .in('status', ['confirmed', 'in_progress'])
-      .lt('scheduled_at', now)
+      .in('status', ['in_progress', 'ended'])
       .not('duration_minutes', 'is', null)
 
     if (fetchError) {
@@ -34,11 +32,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Fetch failed', details: fetchError.message }, { status: 500 })
     }
 
-    // 过滤出真正过期的（scheduled_at + duration_minutes < now）
+    // 严格过滤：end_time + 10分钟 < now
     const toComplete = (expiredBookings || []).filter((b: any) => {
       const scheduledTime = new Date(b.scheduled_at).getTime()
       const endTime = scheduledTime + (b.duration_minutes || 25) * 60 * 1000
-      return Date.now() > endTime
+      const bufferEndTime = endTime + 10 * 60 * 1000 // +10分钟缓冲
+      return now > bufferEndTime
     })
 
     if (toComplete.length === 0) {
@@ -48,7 +47,7 @@ export async function POST(request: Request) {
     // 批量更新为 completed
     const { error: updateError } = await supabase
       .from('bookings')
-      .update({ status: 'completed', updated_at: now })
+      .update({ status: 'completed', updated_at: new Date().toISOString() })
       .in('id', toComplete.map((b: any) => b.id))
 
     if (updateError) {
