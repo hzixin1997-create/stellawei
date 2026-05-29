@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server';
-import { createServiceClient } from '@/lib/supabase';
+import { createClient } from '@supabase/supabase-js';
 import { sendConsultationReminder } from '@/lib/email';
 
 export const dynamic = 'force-dynamic';
-// redeploy trigger: 2026-05-19 env refresh v2
 
 // 师傅 slug → email 映射（兜底，等数据库加 email/slug 列后可移除）
 const MASTER_EMAIL_MAP: Record<string, { display_name: string; email: string }> = {
@@ -13,28 +12,31 @@ const MASTER_EMAIL_MAP: Record<string, { display_name: string; email: string }> 
 };
 
 /**
- * GET /api/reminders/check
- * 检查10分钟内即将开始的咨询，发送提醒邮件
- * 应由外部 cron 服务每5分钟调用一次
+ * POST /api/reminders/check
+ * 检查未来15分钟内即将开始的咨询，发送提醒邮件
+ * 由外部 cron 服务每5分钟调用一次
+ * 
+ * 鉴权：Header x-cron-secret: xxx
  */
-export async function GET(request: Request) {
+export async function POST(request: Request) {
   try {
-    // 简单的 API Key 保护（防止被公开访问）
-    const { searchParams } = new URL(request.url);
-    const apiKey = searchParams.get('key');
-    const expectedKey = process.env.REMINDER_API_KEY;
-    
-    if (apiKey !== expectedKey) {
-      console.warn(`[reminders/check] Auth failed. Received key: ${apiKey?.slice(0, 10)}..., Expected: ${expectedKey?.slice(0, 10)}...`);
+    // Header 鉴权（不再用 query param）
+    const cronSecret = request.headers.get('x-cron-secret');
+    const expectedSecret = process.env.CRON_SECRET;
+
+    if (!cronSecret || cronSecret !== expectedSecret) {
+      console.warn(`[reminders/check] Auth failed. Header: ${cronSecret?.slice(0, 10) ?? 'none'}...`);
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const supabase = createServiceClient();
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
 
-    // 查找10分钟内即将开始、且尚未发送提醒的咨询
+    // 查询未来15分钟内即将开始的咨询
     const now = new Date();
-    const tenMinutesLater = new Date(now.getTime() + 10 * 60 * 1000);
-    const elevenMinutesLater = new Date(now.getTime() + 11 * 60 * 1000);
+    const fifteenMinutesLater = new Date(now.getTime() + 15 * 60 * 1000);
 
     const { data: upcomingBookings, error } = await supabase
       .from('bookings')
@@ -47,16 +49,22 @@ export async function GET(request: Request) {
         scheduled_time,
         scheduled_at,
         timezone,
-        reminder_sent
+        user_reminder_sent,
+        master_reminder_sent,
+        reminder_processing,
+        reminder_processing_at,
+        payment_status,
+        status
       `)
       .eq('payment_status', 'paid')
       .eq('status', 'confirmed')
-      .eq('reminder_sent', false)
+      .eq('reminder_processing', false)
       .gte('scheduled_at', now.toISOString())
-      .lte('scheduled_at', elevenMinutesLater.toISOString());
+      .lte('scheduled_at', fifteenMinutesLater.toISOString())
+      .or('user_reminder_sent.eq.false,master_reminder_sent.eq.false');
 
     if (error) {
-      console.error('Reminder check error:', error);
+      console.error('[reminders/check] Query error:', error);
       return NextResponse.json(
         { error: 'Failed to check upcoming consultations' },
         { status: 500 }
@@ -64,10 +72,10 @@ export async function GET(request: Request) {
     }
 
     if (!upcomingBookings || upcomingBookings.length === 0) {
-      return NextResponse.json({ 
-        success: true, 
-        message: 'No upcoming consultations in the next 10 minutes',
-        checked: 0 
+      return NextResponse.json({
+        success: true,
+        message: 'No upcoming consultations in the next 15 minutes',
+        checked: 0,
       });
     }
 
@@ -75,6 +83,25 @@ export async function GET(request: Request) {
 
     for (const booking of upcomingBookings) {
       try {
+        // === 原子锁定：防止并发重复发送 ===
+        const { data: locked, error: lockError } = await supabase
+          .from('bookings')
+          .update({
+            reminder_processing: true,
+            reminder_processing_at: new Date().toISOString(),
+          })
+          .eq('id', booking.id)
+          .eq('reminder_processing', false)
+          .or('user_reminder_sent.eq.false,master_reminder_sent.eq.false')
+          .select('id, user_reminder_sent, master_reminder_sent')
+          .single();
+
+        if (lockError || !locked) {
+          console.warn(`[reminders] Booking ${booking.id} already locked by another process`);
+          results.push({ bookingId: booking.id, skipped: 'Already locked' });
+          continue;
+        }
+
         // 获取用户信息
         const { data: userData } = await supabase
           .from('profiles')
@@ -82,86 +109,107 @@ export async function GET(request: Request) {
           .eq('id', booking.user_id)
           .single();
 
-
         if (!userData || !userData.email) {
           console.warn('Missing user data for booking:', booking.id);
+          await releaseLock(supabase, booking.id, 'Missing user email');
           results.push({ bookingId: booking.id, error: 'Missing user email' });
           continue;
         }
 
-        // 获取师傅信息（先查数据库，fallback 到映射表）
+        // 获取师傅信息
         let masterData: { display_name: string; email: string } | null = null;
-        
         const { data: dbMaster } = await supabase
           .from('masters')
           .select('display_name, email, slug')
           .eq('slug', booking.master_id)
           .single();
-        
 
         if (dbMaster && dbMaster.email) {
-          masterData = {
-            display_name: dbMaster.display_name,
-            email: dbMaster.email,
-          };
+          masterData = { display_name: dbMaster.display_name, email: dbMaster.email };
         } else if (MASTER_EMAIL_MAP[booking.master_id]) {
           masterData = MASTER_EMAIL_MAP[booking.master_id];
         }
 
         if (!masterData) {
           console.warn('Missing master data for booking:', booking.id, 'master_id:', booking.master_id);
+          await releaseLock(supabase, booking.id, 'Missing master data');
           results.push({ bookingId: booking.id, error: 'Missing master data' });
           continue;
         }
 
         const chatUrl = `https://stellawei.org/chat/${booking.id}`;
+        const attemptAt = new Date().toISOString();
 
-        // 给用户发邮件
-        const userEmailResult = await sendConsultationReminder({
-          to: userData.email,
-          userName: userData.full_name || 'User',
-          masterName: masterData.display_name,
-          serviceName: booking.service_id,
-          scheduledDate: booking.scheduled_date,
-          scheduledTime: booking.scheduled_time,
-          timezone: booking.timezone || 'Asia/Shanghai',
-          isMaster: false,
-          chatUrl,
-        });
-
-        // 给师傅发邮件
-        const masterEmailResult = await sendConsultationReminder({
-          to: masterData.email,
-          userName: userData.full_name || 'User',
-          masterName: masterData.display_name,
-          serviceName: booking.service_id,
-          scheduledDate: booking.scheduled_date,
-          scheduledTime: booking.scheduled_time,
-          timezone: booking.timezone || 'Asia/Shanghai',
-          isMaster: true,
-          chatUrl,
-        });
-
-        // 标记已发送：用户和师傅都必须收到才标记
-        if (userEmailResult.success && masterEmailResult.success) {
-          await supabase
-            .from('bookings')
-            .update({ reminder_sent: true })
-            .eq('id', booking.id);
-        } else {
-          // 记录失败，不重试（下次 cron 仍会命中这个 booking）
-          console.warn(`[reminders] Partial failure for booking ${booking.id}: user=${userEmailResult.success}, master=${masterEmailResult.success}`);
+        // === 给用户发邮件（如果未发送）===
+        let userEmailResult = { success: true, id: undefined, provider: 'skipped' };
+        if (!booking.user_reminder_sent) {
+          userEmailResult = await sendConsultationReminder({
+            to: userData.email,
+            userName: userData.full_name || 'User',
+            masterName: masterData.display_name,
+            serviceName: booking.service_id,
+            scheduledDate: booking.scheduled_date,
+            scheduledTime: booking.scheduled_time,
+            timezone: booking.timezone || 'Asia/Shanghai',
+            isMaster: false,
+            chatUrl,
+          });
         }
+
+        // === 给师傅发邮件（如果未发送）===
+        let masterEmailResult = { success: true, id: undefined, provider: 'skipped' };
+        if (!booking.master_reminder_sent) {
+          masterEmailResult = await sendConsultationReminder({
+            to: masterData.email,
+            userName: userData.full_name || 'User',
+            masterName: masterData.display_name,
+            serviceName: booking.service_id,
+            scheduledDate: booking.scheduled_date,
+            scheduledTime: booking.scheduled_time,
+            timezone: booking.timezone || 'Asia/Shanghai',
+            isMaster: true,
+            chatUrl,
+          });
+        }
+
+        // === 更新发送状态 ===
+        const updatePayload: any = {
+          reminder_processing: false,
+          last_reminder_attempt_at: attemptAt,
+          reminder_retry_count: (booking.reminder_retry_count || 0) + 1,
+        };
+
+        if (userEmailResult.success && !booking.user_reminder_sent) {
+          updatePayload.user_reminder_sent = true;
+          updatePayload.user_reminder_sent_at = attemptAt;
+        }
+        if (masterEmailResult.success && !booking.master_reminder_sent) {
+          updatePayload.master_reminder_sent = true;
+          updatePayload.master_reminder_sent_at = attemptAt;
+        }
+
+        // 记录错误（如果有失败）
+        const errors = [];
+        if (!userEmailResult.success) errors.push(`user: ${userEmailResult.error}`);
+        if (!masterEmailResult.success) errors.push(`master: ${masterEmailResult.error}`);
+        if (errors.length > 0) {
+          updatePayload.reminder_error = errors.join('; ');
+        }
+
+        await supabase.from('bookings').update(updatePayload).eq('id', booking.id);
 
         results.push({
           bookingId: booking.id,
           userEmail: userEmailResult.success,
+          userProvider: userEmailResult.provider,
           masterEmail: masterEmailResult.success,
-          userError: userEmailResult.error,
-          masterError: masterEmailResult.error,
+          masterProvider: masterEmailResult.provider,
+          userError: userEmailResult.success ? undefined : userEmailResult.error,
+          masterError: masterEmailResult.success ? undefined : masterEmailResult.error,
         });
       } catch (err) {
         console.error('Failed to send reminder for booking:', booking.id, err);
+        await releaseLock(supabase, booking.id, (err as Error).message);
         results.push({
           bookingId: booking.id,
           error: (err as Error).message,
@@ -180,5 +228,21 @@ export async function GET(request: Request) {
       { error: 'Internal server error', message: error.message },
       { status: 500 }
     );
+  }
+}
+
+// 辅助函数：释放锁并记录错误
+async function releaseLock(supabase: any, bookingId: string, error: string) {
+  try {
+    await supabase
+      .from('bookings')
+      .update({
+        reminder_processing: false,
+        reminder_error: error,
+        last_reminder_attempt_at: new Date().toISOString(),
+      })
+      .eq('id', bookingId);
+  } catch (e) {
+    console.error('[reminders] Failed to release lock:', bookingId, e);
   }
 }

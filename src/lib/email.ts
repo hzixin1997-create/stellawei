@@ -33,15 +33,15 @@ export async function sendConsultationReminder({
   chatUrl,
 }: ReminderEmailProps) {
   const subject = isMaster
-    ? `⏰ 提醒：您有咨询即将开始（10分钟后）`
-    : `⏰ Reminder: Your consultation starts in 10 minutes`;
+    ? `⏰ 提醒：您有咨询即将开始（15分钟后）`
+    : `⏰ Reminder: Your consultation starts in 15 minutes`;
 
   const html = isMaster
     ? `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
       <h2 style="color: #7c3aed;">🔔 咨询即将开始</h2>
       <p>您好 ${masterName} 师傅，</p>
-      <p>您有一个咨询将在 <strong>10分钟后</strong>开始：</p>
+      <p>您有一个咨询将在 <strong>15分钟后</strong>开始：</p>
       <ul>
         <li><strong>服务：</strong> ${serviceName}</li>
         <li><strong>时间：</strong> ${scheduledDate} ${scheduledTime} (${timezone})</li>
@@ -56,7 +56,7 @@ export async function sendConsultationReminder({
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
       <h2 style="color: #7c3aed;">🔔 Consultation Reminder</h2>
       <p>Hi ${userName},</p>
-      <p>Your consultation with <strong>${masterName}</strong> will begin in <strong>10 minutes</strong>:</p>
+      <p>Your consultation with <strong>${masterName}</strong> will begin in <strong>15 minutes</strong>:</p>
       <ul>
         <li><strong>Service:</strong> ${serviceName}</li>
         <li><strong>Time:</strong> ${scheduledDate} ${scheduledTime} (${timezone})</li>
@@ -67,7 +67,7 @@ export async function sendConsultationReminder({
     </div>
     `;
 
-  // ===== 双发机制：Brevo 主 + Resend 备 =====
+  // ===== 双发机制：Brevo 主（5秒超时）+ Resend 备 =====
   // 1. 先尝试 Brevo（对 QQ/163 送达率更好）
   const brevoResult = await sendEmailViaBrevo({ to, subject, html });
   if (brevoResult.success) {
@@ -75,7 +75,7 @@ export async function sendConsultationReminder({
     return { success: true, id: brevoResult.id, provider: 'brevo' };
   }
 
-  // 2. Brevo 失败，fallback 到 Resend
+  // 2. Brevo 失败（超时或错误），fallback 到 Resend
   console.warn('[email] Brevo failed, fallback to Resend:', brevoResult.error);
   const resend = getResend();
   if (!resend) {
