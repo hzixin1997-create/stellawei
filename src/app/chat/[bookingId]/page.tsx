@@ -158,7 +158,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const [countdownSeconds, setCountdownSeconds] = useState(0)
-  const [consultStatus, setConsultStatus] = useState<'not_started' | 'in_progress' | 'ended'>('not_started')
+  const [consultStatus, setConsultStatus] = useState<'not_started' | 'in_progress' | 'ended' | 'completed'>('not_started')
 
   // booking ref for auto-complete to avoid stale closure
   const bookingRef = useRef<BookingInfo | null>(null)
@@ -284,7 +284,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
           // 初始化倒计时状态
           if (bookingData.status === 'completed') {
             setCountdownSeconds(0)
-            setConsultStatus('ended')
+            setConsultStatus('completed')
           } else {
             const scheduledTime = bookingData.scheduled_at ? new Date(bookingData.scheduled_at).getTime() : null
             if (scheduledTime && !isNaN(scheduledTime) && bookingData.duration_minutes) {
@@ -351,7 +351,12 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
   // 倒计时 + 状态同步（每秒更新）
   useEffect(() => {
-    if (!booking || booking.status === 'completed') return
+    if (!booking) return
+    if (booking.status === 'completed') {
+      setCountdownSeconds(0)
+      setConsultStatus('completed')
+      return
+    }
     // 已取消/已退款的订单停止倒计时，避免自动完成
     if (booking.status === 'cancelled' || booking.status === 'refunded' || booking.payment_status === 'cancelled') {
       setCountdownSeconds(0)
@@ -516,6 +521,11 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
           bgColor: 'bg-stone-200 border-stone-300 text-stone-700',
         }
       }
+      case 'completed':
+        return {
+          text: isZh ? '✅ 咨询已完全结束' : '✅ Consultation fully completed.',
+          bgColor: 'bg-green-50 border-green-200 text-green-800',
+        }
       default:
         return {
           text: isZh ? `⏰ 咨询将于 ${booking?.scheduled_date || ''} ${booking?.scheduled_time?.split(':').slice(0, 2).join(':') || ''} 开始` : `⏰ Consultation upcoming`,
@@ -694,7 +704,8 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   }
 
   const sendTypingStatus = async (isTyping: boolean) => {
-    if (!isMaster && (consultStatus === 'ended' || booking?.status === 'completed')) return
+    if (consultStatus === 'completed') return
+    if (!isMaster && consultStatus === 'ended') return
     try {
       const { data: { session }, error: sessionError } = await supabase.auth.getSession()
       if (!session?.access_token) {
@@ -738,8 +749,8 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   }
 
   const uploadImageFile = async (file: File) => {
-    // 用户端：过期后不能发图；师傅端：随时可以发
-    if (consultStatus === 'ended' && !isMaster) return
+    // 用户端：completed 后不能发图；ended 后也不能发；师傅端：随时可以发
+    if (consultStatus === 'completed' || (consultStatus === 'ended' && !isMaster)) return
 
     // 前端：咨询未开始时检查5条限制
     if (consultStatus === 'not_started' && !isMaster && preConsultMsgCount >= PRE_CONSULT_LIMIT) {
@@ -850,8 +861,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   }
 
   const uploadAudio = async (blob: Blob, duration: number) => {
-    if (consultStatus === 'ended' && !isMaster) return
-    if (booking?.status === 'completed') return
+    if (consultStatus === 'completed' || (consultStatus === 'ended' && !isMaster)) return
     if (consultStatus === 'not_started' && !isMaster && preConsultMsgCount >= PRE_CONSULT_LIMIT) {
       alert(isZh
         ? `已达到咨询前消息上限（${PRE_CONSULT_LIMIT}条），请等待预约时间正式开始对话`
@@ -947,8 +957,8 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       return
     }
     // completed 状态：双方都不能发
-    if (booking?.status === 'completed') {
-      alert(isZh ? '订单已完成' : 'Order completed')
+    if (consultStatus === 'completed') {
+      alert(isZh ? '咨询已完全结束' : 'Consultation fully completed.')
       return
     }
 
@@ -1032,7 +1042,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (!file || consultStatus === 'ended') return
+    if (!file || consultStatus === 'completed' || (consultStatus === 'ended' && !isMaster)) return
 
     // 前端：咨询未开始时检查5条限制（图片也算一条消息）
     if (consultStatus === 'not_started' && !isMaster && preConsultMsgCount >= PRE_CONSULT_LIMIT) {
@@ -1215,8 +1225,8 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   const service = booking ? services[booking.service_id] : null
   const canComplete = booking?.status === 'in_progress' && consultStatus !== 'ended'
   // 严格区分：completed = 后端标记完成；ended = 倒计时结束但尚未 completed
-  const isCompleted = booking?.status === 'completed'
-  const isEnded = consultStatus === 'ended' || booking?.status === 'ended'
+  const isCompleted = consultStatus === 'completed'
+  const isEnded = consultStatus === 'ended' || consultStatus === 'completed'
   // 师傅可邀请评价：订单已完成/已结束，且是师傅身份
   const canRequestReview = isMaster && isCompleted
 
@@ -1434,7 +1444,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
           {isCompleted && (
             <div className="flex items-center justify-center gap-2 py-2">
               <p className="text-stone-400 text-sm">
-                {isZh ? '✅ 咨询已结束，真心希望能帮助到您' : '✅ Consultation ended. We hope it was helpful.'}
+                {isZh ? '✅ 咨询已完全结束' : '✅ Consultation fully completed.'}
               </p>
             </div>
           )}
