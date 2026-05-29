@@ -34,7 +34,6 @@ export async function GET(
     // 诊断：检查环境变量和 Supabase 权限
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
     const key = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
-    console.log('[chat:GET] Env check:', { 
       urlLength: url.length, 
       keyLength: key.length,
       keyPrefix: key.substring(0, 10) + '...'
@@ -45,7 +44,6 @@ export async function GET(
       .from('bookings')
       .select('id')
       .limit(1)
-    console.log('[chat:GET] Permission test:', { 
       canAccess: !!testData, 
       count: testData?.length,
       error: testError ? { code: testError.code, message: testError.message } : null
@@ -57,7 +55,6 @@ export async function GET(
       .eq('id', bookingId)
       .single();
 
-    console.log('[chat:GET] Booking query:', { 
       hasData: !!booking, 
       error: bookingError ? { code: bookingError.code, message: bookingError.message, details: bookingError.details } : null,
       bookingId: bookingId
@@ -91,14 +88,12 @@ export async function GET(
     }
 
     // 查询消息
-    console.log('[chat:GET] querying messages for booking:', bookingId);
     const { data: messages, error } = await supabase
       .from('messages')
       .select('*')
       .eq('booking_id', bookingId)
       .order('created_at', { ascending: true });
 
-    console.log('[chat:GET] query result:', { count: messages?.length || 0, error: error?.message || null });
 
     if (error) {
       return NextResponse.json(
@@ -239,14 +234,12 @@ export async function POST(
       source: 'chat',
     };
 
-    console.log('[chat:POST] insert payload:', JSON.stringify(insertPayload));
 
     const { data: insertedRows, error: insertError } = await supabase
       .from('messages')
       .insert(insertPayload)
       .select();
 
-    console.log('[chat:POST] insert result:', { rowsCount: insertedRows?.length || 0, error: insertError?.message || null });
 
     if (insertError) {
       console.error('[chat:POST] Insert message error:', insertError);
@@ -266,7 +259,6 @@ export async function POST(
       );
     }
 
-    console.log('[chat:POST] returning message:', JSON.stringify({ id: message.id, created_at: message.created_at }));
     return NextResponse.json({ success: true, message });
   } catch (error: any) {
     return NextResponse.json(
