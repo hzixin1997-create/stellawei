@@ -31,8 +31,25 @@ export async function GET(
     }
 
     // 验证 booking 存在且当前用户有权访问
-    console.log('[chat:GET] Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL?.substring(0, 30) + '...')
-    console.log('[chat:GET] Service key exists:', !!process.env.SUPABASE_SERVICE_ROLE_KEY)
+    // 诊断：检查环境变量和 Supabase 权限
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+    console.log('[chat:GET] Env check:', { 
+      urlLength: url.length, 
+      keyLength: key.length,
+      keyPrefix: key.substring(0, 10) + '...'
+    })
+    
+    // 诊断：测试 service_role 是否能访问 bookings 表
+    const { data: testData, error: testError } = await supabase
+      .from('bookings')
+      .select('id')
+      .limit(1)
+    console.log('[chat:GET] Permission test:', { 
+      canAccess: !!testData, 
+      count: testData?.length,
+      error: testError ? { code: testError.code, message: testError.message } : null
+    })
     
     const { data: booking, error: bookingError } = await supabase
       .from('bookings')
@@ -40,15 +57,20 @@ export async function GET(
       .eq('id', bookingId)
       .single();
 
-    console.log('[chat:GET] booking query result:', { 
+    console.log('[chat:GET] Booking query:', { 
       hasData: !!booking, 
-      error: bookingError ? { code: bookingError.code, message: bookingError.message } : null,
+      error: bookingError ? { code: bookingError.code, message: bookingError.message, details: bookingError.details } : null,
       bookingId: bookingId
     })
 
     if (bookingError || !booking) {
       console.error('[chat:GET] Booking not found. Error:', bookingError)
-      return NextResponse.json({ error: 'Booking not found', details: bookingError?.message }, { status: 404 });
+      return NextResponse.json({ 
+        error: 'Booking not found', 
+        details: bookingError?.message,
+        code: bookingError?.code,
+        hint: 'Check if service_role key has RLS bypass permission'
+      }, { status: 404 });
     }
 
     // 检查权限：用户本人或该订单的师傅
