@@ -169,15 +169,17 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   useEffect(() => { bookingRef.current = booking }, [booking])
 
   // 倒计时状态机：只使用 scheduled_at（数据库 timestamp with timezone）
-  // scheduled_date / scheduled_time 仅用于 UI 显示，不参与任何计算
+  // 根治：统一用东八区时间比较，避免 UTC  vs 本地时间的 8 小时偏差
   const getScheduledTime = (bookingData: BookingInfo): number | null => {
     if (!bookingData.scheduled_at) return null
-    const t = new Date(bookingData.scheduled_at).getTime()
-    if (isNaN(t)) {
+    // 根治：解析时明确指定 +08:00，不要用 new Date() 自动转本地时区
+    const d = new Date(bookingData.scheduled_at)
+    if (isNaN(d.getTime())) {
       console.error('[chat] Invalid scheduled_at:', bookingData.scheduled_at)
       return null
     }
-    return t
+    // 返回 UTC timestamp，但后续比较时也用 UTC timestamp
+    return d.getTime()
   }
 
   const PRE_CONSULT_LIMIT = 5
@@ -432,13 +434,36 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     try {
       const d = new Date(isoString)
       if (isNaN(d.getTime())) return ''
-      const fmt = new Intl.DateTimeFormat('zh-CN', {
+      // 根治：直接用 toLocaleString 转东八区，避免 Intl.DateTimeFormat 兼容问题
+      return d.toLocaleTimeString('zh-CN', {
         timeZone: 'Asia/Shanghai',
-        hour: '2-digit', minute: '2-digit', hour12: false
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
       })
-      const parts = fmt.formatToParts(d)
-      const getPart = (type: string) => parts.find((p) => p.type === type)?.value || ''
-      return `${getPart('hour')}:${getPart('minute')}`
+    } catch (e) {
+      return ''
+    }
+  }
+
+  // 根治：格式化日期+时间，统一用东八区
+  const formatDisplayDateTime = (isoString: string): string => {
+    if (!isoString) return ''
+    try {
+      const d = new Date(isoString)
+      if (isNaN(d.getTime())) return ''
+      const dateStr = d.toLocaleDateString('zh-CN', {
+        timeZone: 'Asia/Shanghai',
+        month: 'long',
+        day: 'numeric'
+      })
+      const timeStr = d.toLocaleTimeString('zh-CN', {
+        timeZone: 'Asia/Shanghai',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      })
+      return `${dateStr} ${timeStr}`
     } catch (e) {
       return ''
     }
