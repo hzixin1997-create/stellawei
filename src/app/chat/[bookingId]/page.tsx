@@ -256,9 +256,23 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       }
 
       // 通过 API 获取 booking + messages（不受 RLS 限制）
-      const { data: { session } } = await supabase.auth.getSession()
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+      console.log('[chat] loadData session:', { 
+        hasSession: !!session, 
+        hasAccessToken: !!session?.access_token,
+        tokenPrefix: session?.access_token ? session.access_token.substring(0, 20) + '...' : 'none',
+        error: sessionError?.message 
+      })
+      
+      if (!session?.access_token) {
+        console.error('[chat] No session found, redirecting to login')
+        router.push('/auth/login?redirect=' + encodeURIComponent(`/chat/${bookingId}`))
+        return
+      }
+      
       const bookingRes = await fetch(`/api/chat/${bookingId}/messages`, {
-        headers: { authorization: `Bearer ${session?.access_token || ''}` },
+        headers: { authorization: `Bearer ${session.access_token}` },
+        credentials: 'include',
       })
       if (bookingRes.ok) {
         const json = await bookingRes.json()
@@ -319,10 +333,14 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession()
-        if (!session) return
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+        if (!session?.access_token) {
+          console.log('[chat] poll: no session, skipping')
+          return
+        }
         const res = await fetch(`/api/chat/${bookingId}/messages`, {
           headers: { authorization: `Bearer ${session.access_token}` },
+          credentials: 'include',
         })
         if (res.ok) {
           const json = await res.json()
@@ -696,13 +714,18 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
   const sendTypingStatus = async (isTyping: boolean) => {
     try {
-      const { data: { session } } = await supabase.auth.getSession()
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+      if (!session?.access_token) {
+        console.error('[chat] sendTypingStatus: no session')
+        return
+      }
       await fetch(`/api/chat/${bookingId}/typing`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          authorization: `Bearer ${session?.access_token || ''}`,
+          authorization: `Bearer ${session.access_token}`,
         },
+        credentials: 'include',
         body: JSON.stringify({ isTyping }),
       })
     } catch (err) {
@@ -747,15 +770,22 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
     setUploadingImage(true)
     try {
-      const { data: { session } } = await supabase.auth.getSession()
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+      if (!session?.access_token) {
+        console.error('[chat] uploadImageFile: no session')
+        alert(isZh ? '登录已过期，请重新登录' : 'Session expired, please login again')
+        return
+      }
+      
       const formData = new FormData()
       formData.append('file', file)
 
       const uploadRes = await fetch(`/api/chat/${bookingId}/upload-image`, {
         method: 'POST',
         headers: {
-          authorization: `Bearer ${session?.access_token || ''}`,
+          authorization: `Bearer ${session.access_token}`,
         },
+        credentials: 'include',
         body: formData,
       })
 
@@ -771,8 +801,9 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          authorization: `Bearer ${session?.access_token || ''}`,
+          authorization: `Bearer ${session.access_token}`,
         },
+        credentials: 'include',
         body: JSON.stringify({ image_url: imageUrl }),
       })
 
@@ -847,7 +878,13 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     }
 
     try {
-      const { data: { session } } = await supabase.auth.getSession()
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+      if (!session?.access_token) {
+        console.error('[chat] uploadAudio: no session')
+        alert(isZh ? '登录已过期，请重新登录' : 'Session expired, please login again')
+        return
+      }
+      
       const formData = new FormData()
       formData.append('file', blob, `recording_${Date.now()}.webm`)
       formData.append('duration', duration.toString())
@@ -855,8 +892,9 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       const uploadRes = await fetch(`/api/chat/${bookingId}/upload-audio`, {
         method: 'POST',
         headers: {
-          authorization: `Bearer ${session?.access_token || ''}`,
+          authorization: `Bearer ${session.access_token}`,
         },
+        credentials: 'include',
         body: formData,
       })
 
@@ -871,8 +909,9 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          authorization: `Bearer ${session?.access_token || ''}`,
+          authorization: `Bearer ${session.access_token}`,
         },
+        credentials: 'include',
         body: JSON.stringify({
           audio_url: uploadData.audio_url,
           audio_duration: uploadData.duration,
@@ -952,13 +991,21 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     setIsSending(true)
 
     try {
-      const { data: { session } } = await supabase.auth.getSession()
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+      if (!session?.access_token) {
+        console.error('[chat] handleSend: no session')
+        alert(isZh ? '登录已过期，请重新登录' : 'Session expired, please login again')
+        router.push('/auth/login?redirect=' + encodeURIComponent(`/chat/${bookingId}`))
+        return
+      }
+      
       const res = await fetch(`/api/chat/${bookingId}/messages`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          authorization: `Bearer ${session?.access_token || ''}`,
+          authorization: `Bearer ${session.access_token}`,
         },
+        credentials: 'include',
         body: JSON.stringify({ content }),
       })
 

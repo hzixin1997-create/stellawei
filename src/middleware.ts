@@ -8,6 +8,10 @@ const protectedRoutes = [
   '/settings',
   '/orders',
   '/appointments',
+  '/user/dashboard',   // 新增：用户后台需要登录
+  '/chat',             // 新增：聊天页面需要登录
+  '/master/dashboard', // 新增：师傅后台需要登录
+  '/master/orders',    // 新增：师傅订单需要登录
 ]
 
 // Define auth routes (redirect to user dashboard if already logged in)

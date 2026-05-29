@@ -28,12 +28,17 @@ export function createClient() {
     } as any
   }
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  // 根治：trim 环境变量，去除换行符和空格
+  const url = (process.env.NEXT_PUBLIC_SUPABASE_URL || '').trim()
+  const key = (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '').trim()
   
   if (!url || !key) {
     throw new Error('Missing Supabase environment variables')
   }
   
-  return createBrowserClient(url, key)
+  // 根治：确保 URL 和 key 不含换行符
+  const cleanUrl = url.replace(/\n/g, '').replace(/\r/g, '')
+  const cleanKey = key.replace(/\n/g, '').replace(/\r/g, '')
+  
+  return createBrowserClient(cleanUrl, cleanKey)
 }
