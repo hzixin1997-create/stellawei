@@ -387,27 +387,17 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
       setCountdownSeconds(remaining)
 
-      let newStatus: 'not_started' | 'in_progress' | 'ended'
+      let newStatus: 'not_started' | 'in_progress' | 'ended' | 'completed'
+      const WRAP_UP_MS = 10 * 60 * 1000 // 10分钟收尾阶段
 
-      if (booking.status === 'completed') {
-        newStatus = 'ended'
-      } else if (booking.status === 'confirmed' || booking.status === 'in_progress') {
-        if (now < scheduledTime) {
-          newStatus = 'not_started'
-        } else if (now >= scheduledTime && now < endTime) {
-          newStatus = 'in_progress'
-        } else {
-          newStatus = 'ended'
-        }
+      if (now < scheduledTime) {
+        newStatus = 'not_started'
+      } else if (now >= scheduledTime && now < endTime) {
+        newStatus = 'in_progress'
+      } else if (now >= endTime && now < endTime + WRAP_UP_MS) {
+        newStatus = 'ended' // 收尾阶段
       } else {
-        // 其他状态（如 paid）
-        if (now < scheduledTime) {
-          newStatus = 'not_started'
-        } else if (now >= scheduledTime && now < endTime) {
-          newStatus = 'in_progress'
-        } else {
-          newStatus = 'ended'
-        }
+        newStatus = 'completed' // 超过收尾阶段，完全结束
       }
 
       setConsultStatus(prev => {
