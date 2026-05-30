@@ -980,8 +980,12 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
     setMessages((prev) => [...prev, optimisticMsg])
     setInputValue('')
-    inputRef.current?.focus()
     setIsSending(true)
+
+    // 移动端修复：延迟 focus，让消息先渲染到 DOM 再弹出键盘，避免 scrollToBottom 冲突
+    setTimeout(() => {
+      inputRef.current?.focus()
+    }, 100)
 
     try {
       const { data: { session }, error: sessionError } = await supabase.auth.getSession()
