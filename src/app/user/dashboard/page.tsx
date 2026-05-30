@@ -90,6 +90,12 @@ export default function UserDashboard() {
   const [rescheduleSelectedTime, setRescheduleSelectedTime] = useState('')
   const [rescheduleSubmitting, setRescheduleSubmitting] = useState(false)
 
+  // 用户时区设置
+  const [userTimezone, setUserTimezone] = useState<string>('')
+  const [showTimezoneModal, setShowTimezoneModal] = useState(false)
+  const [timezoneInput, setTimezoneInput] = useState('')
+  const [savingTimezone, setSavingTimezone] = useState(false)
+
   // Reschedule 通知弹窗
   const [showNoticeModal, setShowNoticeModal] = useState(false)
   const [noticeBooking, setNoticeBooking] = useState<Booking | null>(null)
@@ -145,7 +151,17 @@ export default function UserDashboard() {
       }
       setUser(user)
 
-      // 2. 查询用户的 bookings（通过 API 绕过 RLS）
+      // 2. 获取用户 profile（包含 timezone）
+      try {
+        const { data: profile } = await supabase.from('profiles').select('timezone').eq('id', user.id).single()
+        if (profile?.timezone) {
+          setUserTimezone(profile.timezone)
+        }
+      } catch (err) {
+        console.error('Fetch profile timezone error:', err)
+      }
+
+      // 3. 查询用户的 bookings（通过 API 绕过 RLS）
       const { data: { session } } = await supabase.auth.getSession()
       const bookingsRes = await fetch('/api/user/bookings', {
         headers: { authorization: `Bearer ${session?.access_token || ''}` },
@@ -405,6 +421,26 @@ export default function UserDashboard() {
       alert(isZh ? `删除失败: ${err.message}` : `Delete failed: ${err.message}`)
     } finally {
       setDeletingId(null)
+    }
+  }
+
+  // 保存用户时区
+  const handleSaveTimezone = async () => {
+    if (!timezoneInput.trim()) return
+    setSavingTimezone(true)
+    try {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        await supabase.from('profiles').update({ timezone: timezoneInput.trim() }).eq('id', user.id)
+        setUserTimezone(timezoneInput.trim())
+        setShowTimezoneModal(false)
+      }
+    } catch (err) {
+      console.error('Save timezone error:', err)
+      alert(isZh ? '保存失败' : 'Save failed')
+    } finally {
+      setSavingTimezone(false)
     }
   }
 
@@ -685,6 +721,30 @@ export default function UserDashboard() {
               </CardContent>
             </Card>
           </div>
+
+          {/* 账户设置：时区 */}
+          <Card className="mb-6">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-stone-500">{isZh ? '我的时区' : 'My Timezone'}</p>
+                    <p className="text-sm font-medium">{userTimezone || Intl.DateTimeFormat().resolvedOptions().timeZone}</p>
+                  </div>
+                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setShowTimezoneModal(true)}
+                >
+                  {isZh ? '修改' : 'Change'}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* 快速操作 */}
           <div className="mb-6">
@@ -1285,6 +1345,50 @@ export default function UserDashboard() {
           )}
         </div>
       </div>
+
+      {/* 时区修改弹窗 */}
+          {showTimezoneModal && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
+              <div className="bg-white rounded-2xl p-4 sm:p-6 max-w-md w-full shadow-xl">
+                <h3 className="text-lg font-bold text-center mb-4">
+                  {isZh ? '修改时区' : 'Change Timezone'}
+                </h3>
+                <p className="text-sm text-stone-500 mb-4">
+                  {isZh ? '请输入您的时区，例如：Asia/Shanghai, America/New_York' : 'Enter your timezone, e.g., Asia/Shanghai, America/New_York'}
+                </p>
+                <input
+                  type="text"
+                  value={timezoneInput}
+                  onChange={(e) => setTimezoneInput(e.target.value)}
+                  placeholder={isZh ? 'Asia/Shanghai' : 'America/New_York'}
+                  className="w-full border rounded-lg p-3 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-violet-500"
+                />
+                <div className="flex gap-3">
+                  <Button
+                    variant="outline"
+                    className="flex-1"
+                    onClick={() => {
+                      setShowTimezoneModal(false)
+                      setTimezoneInput('')
+                    }}
+                  >
+                    {isZh ? '取消' : 'Cancel'}
+                  </Button>
+                  <Button
+                    className="flex-1 bg-violet-600 hover:bg-violet-700"
+                    onClick={handleSaveTimezone}
+                    disabled={savingTimezone}
+                  >
+                    {savingTimezone ? (
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                    ) : (
+                      isZh ? '保存' : 'Save'
+                    )}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
 
       {/* 微信浏览器支付拦截弹窗 */}
       <WeChatBrowserModal open={showWeChatModal} onClose={() => setShowWeChatModal(false)} />
