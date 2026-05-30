@@ -18,9 +18,12 @@ i18nInstance
       zh: { translation: zh },
     },
     fallbackLng: 'en',
+    supportedLngs: ['en', 'zh'],
+    nonExplicitSupportedLngs: true, // 允许 zh-CN, zh-TW 等映射到 zh
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],
+      lookupLocalStorage: 'language', // 统一使用 'language' 作为 key
     },
     interpolation: {
       escapeValue: false,
