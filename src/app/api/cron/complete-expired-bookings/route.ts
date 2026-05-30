@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic'
 /**
  * POST /api/cron/complete-expired-bookings
  * 兜底机制：自动标记已过期的订单为 completed
- * 严格：只有 end_time + 10分钟 后才标记 completed
+ * 严格：只有 end_time + 5分钟 后才标记 completed
  */
 export async function GET(request: Request) {
   return doComplete(null)
@@ -28,7 +28,7 @@ async function doComplete(secret: string | null) {
     const supabase = createServiceClient()
     const now = Date.now()
 
-    // 严格：查询 status=ended 或 in_progress，且 start_time 至少在 duration+10分钟前
+    // 严格：查询 status=ended 或 in_progress，且 start_time 至少在 duration+5分钟前
     // 先查出所有可能过期的，再 JS 端精确过滤
     const { data: expiredBookings, error: fetchError } = await supabase
       .from('bookings')
@@ -41,7 +41,7 @@ async function doComplete(secret: string | null) {
       return NextResponse.json({ error: 'Fetch failed', details: fetchError.message }, { status: 500 })
     }
 
-    // 严格过滤：end_time + 10分钟 < now
+    // 严格过滤：end_time + 5分钟 < now
     const toComplete = (expiredBookings || []).filter((b: any) => {
       const scheduledTime = new Date(b.scheduled_at).getTime()
       const endTime = scheduledTime + (b.duration_minutes || 25) * 60 * 1000
