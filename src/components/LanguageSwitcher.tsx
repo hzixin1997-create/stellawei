@@ -10,11 +10,19 @@ export function LanguageSwitcher() {
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    // 确保 html lang 与当前语言同步
+    if (i18n.language) {
+      document.documentElement.lang = i18n.language;
+    }
+  }, [i18n.language]);
 
   const toggleLanguage = () => {
     const newLang = i18n.language === 'zh' ? 'en' : 'zh';
     i18n.changeLanguage(newLang);
+    // 显式写入 localStorage，确保优先级最高
+    localStorage.setItem('language', newLang);
+    // 同步更新 html lang 属性
+    document.documentElement.lang = newLang;
   };
 
   if (!mounted) {
