@@ -1227,8 +1227,8 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   // 严格区分：completed = 后端标记完成；ended = 倒计时结束但尚未 completed
   const isCompleted = consultStatus === 'completed'
   const isEnded = consultStatus === 'ended' || consultStatus === 'completed'
-  // 师傅可邀请评价：订单已完成/已结束，且是师傅身份
-  const canRequestReview = isMaster && isCompleted
+  // 师傅可邀请评价：订单已结束（ended 或 completed），且是师傅身份
+  const canRequestReview = isMaster && isEnded
 
   return (
     <div className="min-h-[100svh] h-[100svh] bg-gradient-to-br from-stone-50 to-stone-100 flex flex-col">
