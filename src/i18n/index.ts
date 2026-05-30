@@ -21,9 +21,11 @@ i18nInstance
     supportedLngs: ['en', 'zh'],
     nonExplicitSupportedLngs: true, // 允许 zh-CN, zh-TW 等映射到 zh
     detection: {
-      order: ['localStorage', 'navigator', 'htmlTag'],
-      caches: ['localStorage'],
-      lookupLocalStorage: 'language', // 统一使用 'language' 作为 key
+      order: ['cookie', 'localStorage', 'navigator', 'htmlTag'],
+      caches: ['cookie', 'localStorage'],
+      lookupLocalStorage: 'language',
+      lookupCookie: 'language',
+      cookieMinutes: 60 * 24 * 365, // 1年
     },
     interpolation: {
       escapeValue: false,

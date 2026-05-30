@@ -19,8 +19,10 @@ export function LanguageSwitcher() {
   const toggleLanguage = () => {
     const newLang = i18n.language === 'zh' ? 'en' : 'zh';
     i18n.changeLanguage(newLang);
-    // 显式写入 localStorage，确保优先级最高
+    // 显式写入 localStorage
     localStorage.setItem('language', newLang);
+    // 写入 cookie（服务端读取用）
+    document.cookie = `language=${newLang}; path=/; max-age=${60 * 60 * 24 * 365}`;
     // 同步更新 html lang 属性
     document.documentElement.lang = newLang;
   };

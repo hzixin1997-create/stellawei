@@ -771,7 +771,7 @@ export default function BookingPage() {
                           <span className="text-sm font-medium">{isZh ? '可用时段' : 'Available Slots'}</span>
                           {master && (
                             <span className="text-xs text-stone-400">
-                              {TIMEZONE_LABELS[master.timezone]?.[isZh ? 'zh' : 'en']}
+                              {isZh ? '师傅时间：' : 'Advisor time: '}{TIMEZONE_LABELS[master.timezone]?.[isZh ? 'zh' : 'en']}
                             </span>
                           )}
                         </div>
@@ -884,8 +884,8 @@ export default function BookingPage() {
                     <div className="bg-violet-50 border border-violet-200 rounded-lg p-3 mb-4">
                       <p className="text-sm text-violet-700">
                         {isZh
-                          ? `您选择的预约时间：${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')} ${selectedTime} (${TIMEZONE_LABELS[master.timezone]?.zh || master.timezone || ''})`
-                          : `Your appointment: ${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')} ${selectedTime} (${TIMEZONE_LABELS[master.timezone]?.en || master.timezone || ''})`}
+                          ? `您选择的预约时间：${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')} ${selectedTime}（师傅时间：${TIMEZONE_LABELS[master.timezone]?.zh || master.timezone || ''}）`
+                          : `Your appointment: ${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')} ${selectedTime} (Advisor time: ${TIMEZONE_LABELS[master.timezone]?.en || master.timezone || ''})`}
                       </p>
                     </div>
                   )}

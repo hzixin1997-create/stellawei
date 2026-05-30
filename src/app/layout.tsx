@@ -1,3 +1,4 @@
+import { headers } from 'next/headers';
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -30,15 +31,37 @@ export const metadata: Metadata = {
   },
 };
 
+function detectLanguageFromHeaders(): string {
+  const headersList = headers();
+  
+  // 1. 检查 cookie
+  const cookie = headersList.get('cookie') || '';
+  const langMatch = cookie.match(/language=([^;]+)/);
+  if (langMatch) {
+    const lang = langMatch[1].trim();
+    if (lang === 'zh' || lang === 'en') return lang;
+  }
+  
+  // 2. 检查 Accept-Language
+  const acceptLang = headersList.get('accept-language') || '';
+  if (acceptLang.includes('zh')) return 'zh';
+  if (acceptLang.includes('en')) return 'en';
+  
+  // 3. 默认英文
+  return 'en';
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const lang = detectLanguageFromHeaders();
+  
   return (
-    <html lang="en">
+    <html lang={lang} suppressHydrationWarning>
       <body className={inter.className}>
-        <I18nProvider>
+        <I18nProvider initialLang={lang}>
           <AuthProvider>
             {children}
           </AuthProvider>
