@@ -97,8 +97,16 @@ const TIERS = [
 
 // 时区标签
 const TIMEZONE_LABELS: Record<string, { en: string; zh: string }> = {
-  'America/Los_Angeles': { en: 'Pacific Time (PT)', zh: '太平洋时间 (PT)' },
-  'Asia/Shanghai': { en: 'China Standard Time (CST)', zh: '北京时间 (CST)' },
+  'America/Los_Angeles': { en: 'Los Angeles', zh: '洛杉矶' },
+  'Asia/Shanghai': { en: 'Beijing', zh: '北京' },
+  'Asia/Tokyo': { en: 'Tokyo', zh: '东京' },
+  'Asia/Hong_Kong': { en: 'Hong Kong', zh: '香港' },
+  'Asia/Singapore': { en: 'Singapore', zh: '新加坡' },
+  'America/New_York': { en: 'New York', zh: '纽约' },
+  'Europe/London': { en: 'London', zh: '伦敦' },
+  'Europe/Paris': { en: 'Paris', zh: '巴黎' },
+  'Australia/Sydney': { en: 'Sydney', zh: '悉尼' },
+  'UTC': { en: 'UTC', zh: 'UTC' },
 }
 
 // 时间段（含30分钟间隔）
@@ -870,7 +878,18 @@ export default function BookingPage() {
                   {error && (
                     <p className="text-sm text-red-600 mb-3">{error}</p>
                   )}
-                  
+
+                  {/* 时间确认提示 */}
+                  {consultationType === 'realtime' && selectedDate && selectedTime && master && (
+                    <div className="bg-violet-50 border border-violet-200 rounded-lg p-3 mb-4">
+                      <p className="text-sm text-violet-700">
+                        {isZh
+                          ? `您选择的预约时间：${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')} ${selectedTime} (${TIMEZONE_LABELS[master.timezone]?.zh || master.timezone || ''})`
+                          : `Your appointment: ${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')} ${selectedTime} (${TIMEZONE_LABELS[master.timezone]?.en || master.timezone || ''})`}
+                      </p>
+                    </div>
+                  )}
+
                   <Button
                     className="w-full"
                     size="lg"
