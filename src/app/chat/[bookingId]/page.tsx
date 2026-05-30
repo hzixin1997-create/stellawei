@@ -396,7 +396,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       setCountdownSeconds(remaining)
 
       let newStatus: 'not_started' | 'in_progress' | 'ended' | 'completed'
-      const WRAP_UP_MS = 10 * 60 * 1000 // 10分钟收尾阶段
+      const WRAP_UP_MS = 5 * 60 * 1000 // 5分钟收尾阶段
 
       if (now < scheduledTime) {
         newStatus = 'not_started'

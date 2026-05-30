@@ -45,7 +45,7 @@ async function doComplete(secret: string | null) {
     const toComplete = (expiredBookings || []).filter((b: any) => {
       const scheduledTime = new Date(b.scheduled_at).getTime()
       const endTime = scheduledTime + (b.duration_minutes || 25) * 60 * 1000
-      const bufferEndTime = endTime + 10 * 60 * 1000 // +10分钟缓冲
+      const bufferEndTime = endTime + 5 * 60 * 1000 // +5分钟缓冲
       return now > bufferEndTime
     })
 
