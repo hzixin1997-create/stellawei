@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { getConsultationDisplayStatus } from '@/lib/utils';
+import { getConsultationDisplayStatus, formatBookingTimeDisplay } from '@/lib/utils';
 import { Inbox, CheckCircle, Clock, AlertCircle, Video, MessageSquare, ArrowLeft, Loader2, UserCheck, Star, User, X } from 'lucide-react';
 
 interface BookingOrder {
@@ -17,6 +17,7 @@ interface BookingOrder {
   tier: string;
   scheduled_at: string;
   scheduled_time: string;
+  timezone?: string;
   duration_text: string;
   total_amount: number;
   currency: string;
@@ -403,7 +404,7 @@ export default function MasterOrdersPage() {
                         </p>
                         {order.scheduled_at && (
                           <p className="text-sm text-stone-500 mt-1">
-                            预约时间: {new Date(order.scheduled_at?.replace(' ', 'T')?.replace(/([+-]\d{2})$/, '$1:00') || order.scheduled_at).toLocaleDateString('zh-CN')} {order.scheduled_time}
+                            预约时间: {formatBookingTimeDisplay(order, { showLocalTime: true })}
                           </p>
                         )}
                         <p className="text-xs text-stone-400 mt-1">

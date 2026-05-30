@@ -70,6 +70,64 @@ export function isConsultationExpired(
   return Date.now() > endTime
 }
 
+export function getTimezoneShortName(tz: string): string {
+  const map: Record<string, string> = {
+    'Asia/Tokyo': '东京',
+    'Asia/Shanghai': '北京',
+    'Asia/Hong_Kong': '香港',
+    'Asia/Singapore': '新加坡',
+    'America/Los_Angeles': '洛杉矶',
+    'America/New_York': '纽约',
+    'Europe/London': '伦敦',
+    'Europe/Paris': '巴黎',
+    'Australia/Sydney': '悉尼',
+    'UTC': 'UTC',
+  }
+  return map[tz] || tz
+}
+
+export function formatInTimezone(
+  isoTimestamp: string,
+  timezone: string,
+  options?: Intl.DateTimeFormatOptions
+): string {
+  const d = new Date(isoTimestamp)
+  return new Intl.DateTimeFormat('zh-CN', {
+    timeZone: timezone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    ...options,
+  }).format(d)
+}
+
+export function formatBookingTimeDisplay(
+  booking: {
+    scheduled_date?: string
+    scheduled_time?: string
+    timezone?: string
+    scheduled_at?: string
+  },
+  options?: { showLocalTime?: boolean; targetTimezone?: string }
+): string {
+  const { scheduled_date, scheduled_time, timezone, scheduled_at } = booking
+
+  if (!scheduled_date || !scheduled_time) return ''
+
+  const tzName = getTimezoneShortName(timezone || '')
+  const customerTime = `${scheduled_date} ${scheduled_time} (${tzName})`
+
+  if (options?.showLocalTime && scheduled_at && timezone && timezone !== 'Asia/Shanghai') {
+    const localTime = formatInTimezone(scheduled_at, options.targetTimezone || 'Asia/Shanghai')
+    return `${customerTime} / ${localTime} (北京)`
+  }
+
+  return customerTime
+}
+
 export function getConsultationDisplayStatus(
   booking: { status: string; scheduled_at?: string | null; duration_minutes?: number | null; expires_at?: string | null }
 ): string {

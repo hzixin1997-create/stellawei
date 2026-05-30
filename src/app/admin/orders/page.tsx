@@ -17,6 +17,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { createClient } from '@/lib/supabase/client';
+import { formatBookingTimeDisplay } from '@/lib/utils';
 
 const mastersMap: Record<string, string> = {
   'master-luna': '卢娜师傅',
@@ -463,14 +464,11 @@ export default function AdminOrders() {
                             {(() => {
                               // 优先用 scheduled_date + scheduled_time（新数据）
                               if (order.scheduled_date && order.scheduled_time) {
-                                return ` · ${order.scheduled_date} ${order.scheduled_time}`;
+                                return ` · ${formatBookingTimeDisplay(order, { showLocalTime: true })}`;
                               }
                               // 兜底：从 scheduled_at 解析（老数据兼容）
                               if (order.scheduled_at) {
-                                const d = new Date(order.scheduled_at);
-                                const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-                                const timeStr = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-                                return ` · ${dateStr} ${timeStr}`;
+                                return ` · ${formatBookingTimeDisplay({ scheduled_at: order.scheduled_at, timezone: order.timezone }, { showLocalTime: true })}`;
                               }
                               if (order.consultation_type === 'message') {
                                 return ' · 留言咨询';

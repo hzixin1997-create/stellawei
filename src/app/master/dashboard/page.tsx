@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/client'
-import { getConsultationDisplayStatus } from '@/lib/utils'
+import { getConsultationDisplayStatus, formatBookingTimeDisplay } from '@/lib/utils'
 import {
   ShoppingBag,
   Clock,
@@ -46,6 +46,7 @@ interface Booking {
   service_id: string
   scheduled_date: string
   scheduled_time: string
+  timezone?: string
   scheduled_at?: string
   duration_minutes: number
   status: string
@@ -1110,7 +1111,7 @@ export default function MasterDashboard() {
                             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm text-stone-500">
                               <span className="flex items-center gap-1">
                                 <Clock className="w-3.5 h-3.5" />
-                                {booking.scheduled_date} {booking.scheduled_time}
+                                {formatBookingTimeDisplay(booking, { showLocalTime: true })}
                               </span>
                               <span>{booking.duration_minutes} min</span>
                             </div>

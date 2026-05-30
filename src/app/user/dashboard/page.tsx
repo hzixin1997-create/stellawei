@@ -10,7 +10,7 @@ import { ShoppingBag, MessageSquare, ArrowRight, Clock, User, Home, LogOut, Mess
 import { Calendar } from '@/components/ui/calendar'
 import Link from 'next/link'
 
-import { isConsultationExpired, getConsultationDisplayStatus } from '@/lib/utils'
+import { isConsultationExpired, getConsultationDisplayStatus, formatBookingTimeDisplay } from '@/lib/utils'
 import {
   WeChatBrowserModal,
   isWeChatBrowser,
@@ -735,12 +735,12 @@ export default function UserDashboard() {
                               {isZh ? service.nameCn : service.name}
                             </p>
                             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm text-stone-500">
-                              {booking.consultation_type !== 'message' && (
-                                <span className="flex items-center gap-1">
-                                  <Clock className="w-3.5 h-3.5" />
-                                  {booking.scheduled_date || '-'} {booking.scheduled_time || ''}
-                                </span>
-                              )}
+                                {booking.consultation_type !== 'message' && (
+                                  <span className="flex items-center gap-1">
+                                    <Clock className="w-3.5 h-3.5" />
+                                    {formatBookingTimeDisplay(booking)}
+                                  </span>
+                                )}
                               {booking.consultation_type === 'message' && (
                                 <span className="px-2 py-0.5 rounded bg-stone-100 text-stone-500 text-xs">
                                   {isZh ? '留言咨询' : 'Message'}
