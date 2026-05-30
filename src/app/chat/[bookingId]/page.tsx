@@ -1231,7 +1231,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   const canRequestReview = isMaster && isCompleted
 
   return (
-    <div className="min-h-[100svh] h-[100svh] bg-gradient-to-br from-stone-50 to-stone-100 flex flex-col overflow-hidden">
+    <div className="min-h-[100svh] h-[100svh] bg-gradient-to-br from-stone-50 to-stone-100 flex flex-col">
       {/* 顶部栏 — 固定定位，滚动时始终可见 */}
       <div className="bg-white border-b border-stone-200 px-4 py-3 flex-shrink-0">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
@@ -1330,7 +1330,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       })()}
 
       {/* 消息区域 */}
-      <div className="flex-1 overflow-y-auto pt-6 pb-4 px-4 relative">
+      <div className="flex-1 overflow-y-auto pt-6 pb-24 px-4 relative">
         <div className="max-w-3xl mx-auto space-y-4">
           {messages.map((msg) => {
             const isMe =
@@ -1437,8 +1437,8 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         </div>
       </div>
 
-      {/* 输入区域 */}
-      <div className="bg-white border-t border-stone-200 px-4 py-3 flex-shrink-0">
+      {/* 输入区域 — 固定底部，防止键盘弹出时跳动 */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-stone-200 px-4 py-3 z-50">
         <div className="max-w-3xl mx-auto">
           {/* 已结束 - 只读提示 */}
           {isCompleted && (
@@ -1502,14 +1502,6 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
                   ref={inputRef}
                   value={inputValue}
                   onChange={handleInputChange}
-                  onFocus={() => {
-                    // 移动端修复：键盘弹出时防止输入框跳动
-                    if (typeof window !== 'undefined' && window.innerWidth < 640) {
-                      setTimeout(() => {
-                        inputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
-                      }, 300)
-                    }
-                  }}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault()
