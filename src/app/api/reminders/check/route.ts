@@ -31,7 +31,6 @@ export async function POST(request: Request) {
 
 async function doCheck(cronSecret: string | null) {
   try {
-    const cronSecret = cronSecretArg
     const expectedSecret = process.env.CRON_SECRET
 
     if (expectedSecret && cronSecret && cronSecret !== expectedSecret) {
