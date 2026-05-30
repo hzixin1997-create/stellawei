@@ -1,0 +1,255 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1100" width="1600" height="1100">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="userGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4f46e5;stop-opacity:0.15"/>
+      <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:0.08"/>
+    </linearGradient>
+    <linearGradient id="masterGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#059669;stop-opacity:0.15"/>
+      <stop offset="100%" style="stop-color:#10b981;stop-opacity:0.08"/>
+    </linearGradient>
+    <linearGradient id="adminGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#dc2626;stop-opacity:0.15"/>
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:0.08"/>
+    </linearGradient>
+    <linearGradient id="infraGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#374151;stop-opacity:0.2"/>
+      <stop offset="100%" style="stop-color:#1f2937;stop-opacity:0.1"/>
+    </linearGradient>
+    <linearGradient id="flowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4f46e5"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
+    </linearGradient>
+    <!-- Arrow marker -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#6b7280"/>
+    </marker>
+    <marker id="arrowFlow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4f46e5"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="800" y="35" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="700" fill="#1f2937">stellawei.org — 功能架构全景图</text>
+  <text x="800" y="58" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" fill="#6b7280">Updated: 2026-05-30 | 全功能覆盖 | 含安全/时区/语言系统</text>
+
+  <!-- ==================== 1. 用户端 (User Side) ==================== -->
+  <rect x="20" y="80" width="385" height="920" rx="16" fill="url(#userGrad)" stroke="#4f46e5" stroke-width="1.5" stroke-opacity="0.3"/>
+  <text x="212" y="108" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="#4f46e5">👤 用户端 (Public + Dashboard)</text>
+
+  <!-- Public Pages -->
+  <rect x="40" y="125" width="165" height="170" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="122" y="145" text-anchor="middle" font-size="11" font-weight="700" fill="#374151">🏠 公开页面</text>
+  <text x="50" y="165" font-size="9.5" fill="#4b5563">• 首页 (Hero + 师傅展示)</text>
+  <text x="50" y="182" font-size="9.5" fill="#4b5563">• 服务页 (塔罗/八字/灵性)</text>
+  <text x="50" y="199" font-size="9.5" fill="#4b5563">• 师傅详情页 (个人资料)</text>
+  <text x="50" y="216" font-size="9.5" fill="#4b5563">• 帮助中心 / 退款政策</text>
+  <text x="50" y="233" font-size="9.5" fill="#4b5563">• 隐私条款 / 使用条款</text>
+  <text x="50" y="250" font-size="9.5" fill="#4b5563">• 时区显示 (城市名)</text>
+  <text x="50" y="267" font-size="9.5" fill="#4b5563">• 多语言 (i18n: EN/ZH)</text>
+
+  <!-- Booking Flow -->
+  <rect x="215" y="125" width="170" height="170" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="300" y="145" text-anchor="middle" font-size="11" font-weight="700" fill="#374151">📅 预约流程</text>
+  <text x="225" y="165" font-size="9.5" fill="#4b5563">• 选择服务类型</text>
+  <text x="225" y="182" font-size="9.5" fill="#4b5563">• 选择师傅 + 时段</text>
+  <text x="225" y="199" font-size="9.5" fill="#4b5563">• 实时咨询 / 留言咨询</text>
+  <text x="225" y="216" font-size="9.5" fill="#4b5563">• Stripe 支付 (多币种)</text>
+  <text x="225" y="233" font-size="9.5" fill="#4b5563">• 支付宝/微信浏览器检测</text>
+  <text x="225" y="250" font-size="9.5" fill="#4b5563">• 支付成功 / 取消页面</text>
+  <text x="225" y="267" font-size="9.5" fill="#4b5563">• Webhook 双保险</text>
+
+  <!-- User Dashboard -->
+  <rect x="40" y="310" width="345" height="210" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="212" y="330" text-anchor="middle" font-size="11" font-weight="700" fill="#374151">🎛️ 用户后台 (/user/dashboard)</text>
+  <text x="50" y="350" font-size="9.5" fill="#4b5563">• 订单列表 (状态筛选)</text>
+  <text x="50" y="367" font-size="9.5" fill="#4b5563">• 查看历史对话</text>
+  <text x="50" y="384" font-size="9.5" fill="#4b5563">• 实时聊天 (文字+图片)</text>
+  <text x="50" y="401" font-size="9.5" fill="#4b5563">• 倒计时状态机 (upcoming→in_progress→ended→completed)</text>
+  <text x="50" y="418" font-size="9.5" fill="#4b5563">• 修改预约时间 (Reschedule)</text>
+  <text x="50" y="435" font-size="9.5" fill="#4b5563">• 申请退款</text>
+  <text x="50" y="452" font-size="9.5" fill="#4b5563">• 评价师傅 (师傅触发制)</text>
+  <text x="50" y="469" font-size="9.5" fill="#4b5563">• 我的留言 (跨booking查看)</text>
+  <text x="50" y="486" font-size="9.5" fill="#4b5563">•  reschedule 通知弹窗</text>
+  <text x="50" y="503" font-size="9.5" fill="#4b5563">• 查看评价 (⭐ 星级+内容)</text>
+
+  <!-- Chat Features -->
+  <rect x="40" y="535" width="345" height="120" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="212" y="555" text-anchor="middle" font-size="11" font-weight="700" fill="#374151">💬 聊天功能 (/chat/[id])</text>
+  <text x="50" y="575" font-size="9.5" fill="#4b5563">• Supabase Realtime (双向推送)</text>
+  <text x="50" y="592" font-size="9.5" fill="#4b5563">• 消息发送 (乐观更新)</text>
+  <text x="50" y="609" font-size="9.5" fill="#4b5563">• 图片上传 (5MB限制, Storage)</text>
+  <text x="50" y="626" font-size="9.5" fill="#4b5563">• Typing 指示器 (用户+师傅)</text>
+  <text x="50" y="643" font-size="9.5" fill="#4b5563">• 已读状态 / 撤回 (P3)</text>
+
+  <!-- Auth -->
+  <rect x="40" y="670" width="345" height="80" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="212" y="690" text-anchor="middle" font-size="11" font-weight="700" fill="#374151">🔐 认证系统</text>
+  <text x="50" y="710" font-size="9.5" fill="#4b5563">• Supabase Auth (邮箱+密码)</text>
+  <text x="50" y="727" font-size="9.5" fill="#4b5563">• 免验证注册 (前端自动登录)</text>
+  <text x="50" y="744" font-size="9.5" fill="#4b5563">• 一键确认全部未验证邮箱</text>
+
+  <!-- SEO -->
+  <rect x="40" y="765" width="345" height="55" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="212" y="785" text-anchor="middle" font-size="11" font-weight="700" fill="#374151">🔍 SEO</text>
+  <text x="50" y="805" font-size="9.5" fill="#4b5563">• robots.txt / sitemap.xml / Google Search Console</text>
+
+  <!-- i18n -->
+  <rect x="40" y="835" width="345" height="55" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="212" y="855" text-anchor="middle" font-size="11" font-weight="700" fill="#374151">🌐 国际化 (i18n)</text>
+  <text x="50" y="875" font-size="9.5" fill="#4b5563">• 语言检测顺序: localStorage → navigator → htmlTag</text>
+
+  <!-- Status indicators -->
+  <circle cx="60" cy="910" r="5" fill="#10b981"/><text x="72" y="914" font-size="9" fill="#374151">支付链路 — 已验证 (2单)</text>
+  <circle cx="60" cy="930" r="5" fill="#10b981"/><text x="72" y="934" font-size="9" fill="#374151">评价功能 — 全链路通</text>
+  <circle cx="60" cy="950" r="5" fill="#f59e0b"/><text x="72" y="954" font-size="9" fill="#374151">Reschedule — 重构完待测</text>
+  <circle cx="60" cy="970" r="5" fill="#f59e0b"/><text x="72" y="974" font-size="9" fill="#374151">语言系统 — 已部署待验证</text>
+
+  <!-- ==================== 2. 师傅端 (Master Side) ==================== -->
+  <rect x="425" y="80" width="385" height="920" rx="16" fill="url(#masterGrad)" stroke="#059669" stroke-width="1.5" stroke-opacity="0.3"/>
+  <text x="617" y="108" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="#059669">🧙 师傅端 (Master Dashboard)</text>
+
+  <!-- Auth -->
+  <rect x="445" y="125" width="345" height="60" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="617" y="145" text-anchor="middle" font-size="11" font-weight="700" fill="#374151">🔐 师傅登录</text>
+  <text x="455" y="165" font-size="9.5" fill="#4b5563">• 邮箱白名单 (master-auth) → 免注册自动创建账号</text>
+  <text x="455" y="182" font-size="9.5" fill="#4b5563">• 独立登录入口 (/master/login)</text>
+
+  <!-- Dashboard -->
+  <rect x="445" y="200" width="345" height="160" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="617" y="220" text-anchor="middle" font-size="11" font-weight="700" fill="#374151">📊 师傅 Dashboard</text>
+  <text x="455" y="240" font-size="9.5" fill="#4b5563">• 订单列表 (状态筛选: 全部/待接单/进行中/已完成/留言)</text>
+  <text x="455" y="257" font-size="9.5" fill="#4b5563">• 接单 / 拒绝 / 标记已完成</text>
+  <text x="455" y="274" font-size="9.5" fill="#4b5563">• 申请退款 (师傅主动)</text>
+  <text x="455" y="291" font-size="9.5" fill="#4b5563">• 修改预约时间 (Reschedule)</text>
+  <text x="455" y="308" font-size="9.5" fill="#4b5563">• 客户列表 (分页加载)</text>
+  <text x="455" y="325" font-size="9.5" fill="#4b5563">• 收入统计</text>
+  <text x="455" y="342" font-size="9.5" fill="#4b5563">• 可用时段设置 (日历)</text>
+
+  <!-- Chat -->
+  <rect x="445" y="375" width="345" height="110" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="617" y="395" text-anchor="middle" font-size="11" font-weight="700" fill="#374151">💬 师傅聊天 (/chat/[id])</text>
+  <text x="455" y="415" font-size="9.5" fill="#4b5563">• 接收用户消息 (Realtime)</text>
+  <text x="455" y="432" font-size="9.5" fill="#4b5563">• 发送消息 (文字+图片)</text>
+  <text x="455" y="449" font-size="9.5" fill="#4b5563">• 邀请用户评价 (ended状态触发)</text>
+  <text x="455" y="466" font-size="9.5" fill="#4b5563">• 查看用户评价 (review_data)</text>
+
+  <!-- Orders Page -->
+  <rect x="445" y="500" width="345" height="90" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="617" y="520" text-anchor="middle" font-size="11" font-weight="700" fill="#374151">📋 订单管理 (/master/orders)</text>
+  <text x="455" y="540" font-size="9.5" fill="#4b5563">• 全部订单查看 (含已完成)</text>
+  <text x="455" y="557" font-size="9.5" fill="#4b5563">• 查看评价弹窗 (⭐ 星级+内容)</text>
+  <text x="455" y="574" font-size="9.5" fill="#4b5563">• 移动端适配</text>
+
+  <!-- ==================== 3. 总裁端 (Admin) ==================== -->
+  <rect x="830" y="80" width="385" height="920" rx="16" fill="url(#adminGrad)" stroke="#dc2626" stroke-width="1.5" stroke-opacity="0.3"/>
+  <text x="1022" y="108" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="#dc2626">👑 总裁端 (Admin)</text>
+
+  <!-- Dashboard -->
+  <rect x="850" y="125" width="345" height="100" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="1022" y="145" text-anchor="middle" font-size="11" font-weight="700" fill="#374151">📈 数据看板</text>
+  <text x="860" y="165" font-size="9.5" fill="#4b5563">• 总注册用户 / 7天内新用户 / 在线用户</text>
+  <text x="860" y="182" font-size="9.5" fill="#4b5563">• 订单统计 (待接单/进行中/已完成)</text>
+  <text x="860" y="199" font-size="9.5" fill="#4b5563">• 收入统计 (平台抽成)</text>
+
+  <!-- Order Management -->
+  <rect x="850" y="240" width="345" height="110" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="1022" y="260" text-anchor="middle" font-size="11" font-weight="700" fill="#374151">🛠️ 订单管理</text>
+  <text x="860" y="280" font-size="9.5" fill="#4b5563">• 全部订单列表 (状态筛选+数量)</text>
+  <text x="860" y="297" font-size="9.5" fill="#4b5563">• 订单详情 (时间/师傅/用户/金额)</text>
+  <text x="860" y="314" font-size="9.5" fill="#4b5563">• 取消订单 / 处理退款</text>
+  <text x="860" y="331" font-size="9.5" fill="#4b5563">• 修改订单状态 (严格状态机)</text>
+
+  <!-- Master Management -->
+  <rect x="850" y="365" width="345" height="80" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="1022" y="385" text-anchor="middle" font-size="11" font-weight="700" fill="#374151">🧙 师傅管理</text>
+  <text x="860" y="405" font-size="9.5" fill="#4b5563">• 师傅列表 (移动端适配)</text>
+  <text x="860" y="422" font-size="9.5" fill="#4b5563">• 修改师傅状态 (启用/禁用)</text>
+  <text x="860" y="439" font-size="9.5" fill="#4b5563">• 师傅收入查看</text>
+
+  <!-- Finance -->
+  <rect x="850" y="460" width="345" height="70" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="1022" y="480" text-anchor="middle" font-size="11" font-weight="700" fill="#374151">💰 财务管理</text>
+  <text x="860" y="500" font-size="9.5" fill="#4b5563">• 平台收入 / 师傅分成</text>
+  <text x="860" y="517" font-size="9.5" fill="#4b5563">• 退款记录 / 手续费</text>
+
+  <!-- Super Admin -->
+  <rect x="850" y="550" width="345" height="100" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="1022" y="570" text-anchor="middle" font-size="11" font-weight="700" fill="#374151">🔧 超级管理</text>
+  <text x="860" y="590" font-size="9.5" fill="#4b5563">• 一键确认全部未验证邮箱</text>
+  <text x="860" y="607" font-size="9.5" fill="#4b5563">• 数据库状态检查</text>
+  <text x="860" y="624" font-size="9.5" fill="#4b5563">• 评价审核 / 评论管理</text>
+  <text x="860" y="641" font-size="9.5" fill="#4b5563">• 系统设置</text>
+
+  <!-- ==================== 4. 基础设施 (Infrastructure) ==================== -->
+  <rect x="1235" y="80" width="345" height="920" rx="16" fill="url(#infraGrad)" stroke="#374151" stroke-width="1.5" stroke-opacity="0.3"/>
+  <text x="1407" y="108" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="#374151">⚙️ 基础设施</text>
+
+  <!-- Database -->
+  <rect x="1255" y="125" width="305" height="140" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="1407" y="145" text-anchor="middle" font-size="11" font-weight="700" fill="#374151">🗄️ Supabase (Postgres)</text>
+  <text x="1265" y="165" font-size="9.5" fill="#4b5563">• bookings (订单主表)</text>
+  <text x="1265" y="182" font-size="9.5" fill="#4b5563">• messages (聊天记录)</text>
+  <text x="1265" y="199" font-size="9.5" fill="#4b5563">• profiles (用户资料)</text>
+  <text x="1265" y="216" font-size="9.5" fill="#4b5563">• masters (师傅信息)</text>
+  <text x="1265" y="233" font-size="9.5" fill="#4b5563">• master_availability (时段)</text>
+  <text x="1265" y="250" font-size="9.5" fill="#4b5563">• Realtime (bookings 表监听)</text>
+
+  <!-- Payment -->
+  <rect x="1255" y="280" width="305" height="90" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="1407" y="300" text-anchor="middle" font-size="11" font-weight="700" fill="#374151">💳 支付系统</text>
+  <text x="1265" y="320" font-size="9.5" fill="#4b5563">• Stripe (香港账户, 多币种)</text>
+  <text x="1265" y="337" font-size="9.5" fill="#4b5563">• Webhook (checkout.session.completed)</text>
+  <text x="1265" y="354" font-size="9.5" fill="#4b5563">• 支付兜底 (dashboard自动同步)</text>
+
+  <!-- Email -->
+  <rect x="1255" y="385" width="305" height="80" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="1407" y="405" text-anchor="middle" font-size="11" font-weight="700" fill="#374151">📧 邮件系统</text>
+  <text x="1265" y="425" font-size="9.5" fill="#4b5563">• Brevo (主发, 300封/天)</text>
+  <text x="1265" y="442" font-size="9.5" fill="#4b5563">• Resend (备用)</text>
+  <text x="1265" y="459" font-size="9.5" fill="#4b5563">• 注册确认 / 预约提醒</text>
+
+  <!-- Cron -->
+  <rect x="1255" y="480" width="305" height="80" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="1407" y="500" text-anchor="middle" font-size="11" font-weight="700" fill="#374151">⏰ 定时任务 (Cron)</text>
+  <text x="1265" y="520" font-size="9.5" fill="#4b5563">• /api/reminders/check (15分钟提醒)</text>
+  <text x="1265" y="537" font-size="9.5" fill="#4b5563">• /api/cron/complete-expired (5分钟缓冲)</text>
+
+  <!-- Security -->
+  <rect x="1255" y="575" width="305" height="100" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="1407" y="595" text-anchor="middle" font-size="11" font-weight="700" fill="#374151">🔒 安全</text>
+  <text x="1265" y="615" font-size="9.5" fill="#4b5563">• Service Role Key (服务端)</text>
+  <text x="1265" y="632" font-size="9.5" fill="#4b5563">• Anon Key (客户端, 已脱敏)</text>
+  <text x="1265" y="649" font-size="9.5" fill="#4b5563">• Cron Secret (Header鉴权)</text>
+  <text x="1265" y="666" font-size="9.5" fill="#4b5563">• 敏感信息已从Git移除</text>
+
+  <!-- Deploy -->
+  <rect x="1255" y="690" width="305" height="65" rx="10" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="1407" y="710" text-anchor="middle" font-size="11" font-weight="700" fill="#374151">🚀 部署</text>
+  <text x="1265" y="730" font-size="9.5" fill="#4b5563">• Vercel (Next.js 14, 自动部署)</text>
+  <text x="1265" y="747" font-size="9.5" fill="#4b5563">• 域名: stellawei.org</text>
+
+  <!-- ==================== Cross-Cutting Features ==================== -->
+  <rect x="40" y="915" width="1520" height="65" rx="10" fill="#fef3c7" stroke="#f59e0b" stroke-width="1" stroke-opacity="0.4"/>
+  <text x="800" y="935" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">🔄 横切功能 (Cross-Cutting)</text>
+  <text x="60" y="955" font-size="9.5" fill="#78350f">• 状态机: pending → paid → confirmed → upcoming → in_progress → ended(5min) → completed</text>
+  <text x="60" y="972" font-size="9.5" fill="#78350f">• 时区: UTC存储 + 城市名显示(洛杉矶/北京/东京) + 确认提示</text>
+  <text x="700" y="955" font-size="9.5" fill="#78350f">• 语言: i18next + localStorage持久化 + html lang同步</text>
+  <text x="700" y="972" font-size="9.5" fill="#78350f">• 响应式: 移动端适配 (首页/后台/聊天/订单)</text>
+  <text x="1200" y="955" font-size="9.5" fill="#78350f">• 错误处理: 404/403/500 统一页面</text>
+  <text x="1200" y="972" font-size="9.5" fill="#78350f">• 性能: 图片懒加载 / 字体swap / API合并 / 分页加载</text>
+
+  <!-- ==================== Legend ==================== -->
+  <rect x="20" y="1010" width="1540" height="55" rx="10" fill="#f3f4f6" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="40" y="1030" font-size="10" font-weight="700" fill="#374151">图例:</text>
+  <circle cx="100" cy="1045" r="5" fill="#10b981"/><text x="112" y="1049" font-size="9" fill="#4b5563">已验证</text>
+  <circle cx="180" cy="1045" r="5" fill="#f59e0b"/><text x="192" y="1049" font-size="9" fill="#4b5563">待测试</text>
+  <circle cx="260" cy="1045" r="5" fill="#ef4444"/><text x="272" y="1049" font-size="9" fill="#4b5563">未上线</text>
+  <rect x="340" y="1038" width="12" height="12" fill="#4f46e5" opacity="0.15" stroke="#4f46e5" stroke-width="1"/><text x="358" y="1049" font-size="9" fill="#4b5563">用户端</text>
+  <rect x="430" y="1038" width="12" height="12" fill="#059669" opacity="0.15" stroke="#059669" stroke-width="1"/><text x="448" y="1049" font-size="9" fill="#4b5563">师傅端</text>
+  <rect x="530" y="1038" width="12" height="12" fill="#dc2626" opacity="0.15" stroke="#dc2626" stroke-width="1"/><text x="548" y="1049" font-size="9" fill="#4b5563">总裁端</text>
+  <rect x="630" y="1038" width="12" height="12" fill="#374151" opacity="0.15" stroke="#374151" stroke-width="1"/><text x="648" y="1049" font-size="9" fill="#4b5563">基础设施</text>
+  <text x="900" y="1030" font-size="10" fill="#6b7280">评分: 65/100 | 推广建议: 小范围测试(10-20人) ✅ | 大规模推广 ❌</text>
+  <text x="900" y="1048" font-size="9" fill="#6b7280">待完成: Reschedule验证 / 语言系统验证 / 监控告警 / 可回滚稳定版本</text>
+</svg>
