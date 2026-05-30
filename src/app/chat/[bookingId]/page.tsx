@@ -531,10 +531,8 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     
     // 前端不再自动调用 API 标记完成
     // completed 只能由后端（cron 或用户手动点击）标记
-    // 前端只更新 UI 状态为 'ended'，等待后端状态同步
-    console.log('[chat:state] auto-complete: countdown ended, marking local ended (not completed)')
-    setConsultStatus('ended')
-    setCountdownSeconds(0)
+    // 前端 countdown tick 已经正确设置了 consultStatus，不需要再覆盖
+    console.log('[chat:state] auto-complete: countdown ended, UI already handled by tick')
   }
 
   useEffect(() => {
