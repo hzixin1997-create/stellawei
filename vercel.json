@@ -1,14 +1,4 @@
 {
-  "crons": [
-    {
-      "path": "/api/reminders/check",
-      "schedule": "*/5 * * * *"
-    },
-    {
-      "path": "/api/cron/complete-expired-bookings",
-      "schedule": "0 * * * *"
-    }
-  ],
   "buildCommand": "npm run build",
   "devCommand": "npm run dev",
   "installCommand": "npm install",
