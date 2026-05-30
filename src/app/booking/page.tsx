@@ -50,7 +50,7 @@ const MASTERS = [
     nameCn: '卢娜师傅',
     categories: ['tarot', 'spiritual'],
     pricing: { first: 9.9, basic: 28, deep: 55 },
-    timezone: 'America/Los_Angeles',
+    timezone: 'Asia/Shanghai',
     avatar: '/masters/master_luna.jpg',
     tagline: '看见您内心已知的一切，以及前方的道路',
     taglineEn: 'Seeing what your heart already knows, and what lies ahead',
