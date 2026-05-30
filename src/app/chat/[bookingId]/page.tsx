@@ -110,6 +110,8 @@ function normalizeBooking(bookingData: any): BookingInfo {
     scheduled_date: scheduledDate,
     scheduled_time: scheduledTime,
     scheduled_at: scheduledAt,
+    review_requested: bookingData.review_requested || false,
+    review_data: bookingData.review_data || undefined,
   }
 }
 

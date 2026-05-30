@@ -53,7 +53,7 @@ export async function GET(
     
     const { data: booking, error: bookingError } = await supabase
       .from('bookings')
-      .select('id, user_id, master_id, status, payment_status, scheduled_at, scheduled_date, scheduled_time, duration_minutes, timezone, service_id, total_amount, currency, is_first_time, user_typing_until, master_typing_until')
+      .select('id, user_id, master_id, status, payment_status, scheduled_at, scheduled_date, scheduled_time, duration_minutes, timezone, service_id, total_amount, currency, is_first_time, user_typing_until, master_typing_until, review_requested, review_data')
       .eq('id', bookingId)
       .single();
 
