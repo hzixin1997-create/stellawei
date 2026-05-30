@@ -860,18 +860,52 @@ export default function BookingPage() {
 
                 {/* 确认按钮 */}
                 <div className="pt-4 border-t border-stone-200">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <p className="text-sm text-stone-500">
-                        {isZh ? '总计' : 'Total'}
-                      </p>
-                      <p className="text-2xl font-bold text-violet-600">
-                        ${getPrice()}
-                      </p>
-                    </div>
-                    <div className="text-right text-sm text-stone-500">
-                      <p>{getDuration()}</p>
-                      <p>{isZh ? '咨询方式：' : 'Type: '}{isZh ? CONSULTATION_TYPES.find(t => t.id === consultationType)?.nameZh : CONSULTATION_TYPES.find(t => t.id === consultationType)?.nameEn}</p>
+                  {/* 预约摘要（实时更新） */}
+                  <div className="bg-stone-50 border border-stone-200 rounded-lg p-4 mb-4">
+                    <p className="text-sm font-medium text-stone-700 mb-3">
+                      {isZh ? '预约摘要' : 'Booking Summary'}
+                    </p>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-stone-500">{isZh ? '师傅' : 'Advisor'}</span>
+                        <span className="font-medium">{isZh ? master?.nameCn : master?.name}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-stone-500">{isZh ? '服务' : 'Service'}</span>
+                        <span className="font-medium">
+                          {isZh 
+                            ? CATEGORIES.find(c => c.id === category)?.nameZh 
+                            : CATEGORIES.find(c => c.id === category)?.nameEn}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-stone-500">{isZh ? '时长' : 'Duration'}</span>
+                        <span className="font-medium">{getDuration()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-stone-500">{isZh ? '咨询方式' : 'Consultation'}</span>
+                        <span className="font-medium">{isZh ? CONSULTATION_TYPES.find(t => t.id === consultationType)?.nameZh : CONSULTATION_TYPES.find(t => t.id === consultationType)?.nameEn}</span>
+                      </div>
+                      {consultationType === 'realtime' && selectedDate && selectedTime && (
+                        <div className="flex justify-between">
+                          <span className="text-stone-500">{isZh ? '预约时间' : 'Time'}</span>
+                          <span className="font-medium">
+                            {selectedDate.getFullYear()}-{String(selectedDate.getMonth() + 1).padStart(2, '0')}-{String(selectedDate.getDate()).padStart(2, '0')} {selectedTime}
+                          </span>
+                        </div>
+                      )}
+                      {master && (
+                        <div className="flex justify-between">
+                          <span className="text-stone-500">{isZh ? '时区' : 'Timezone'}</span>
+                          <span className="font-medium">
+                            {isZh ? '师傅时间：' : 'Advisor time: '}{TIMEZONE_LABELS[master.timezone]?.[isZh ? 'zh' : 'en'] || master.timezone || ''}
+                          </span>
+                        </div>
+                      )}
+                      <div className="border-t border-stone-200 pt-2 flex justify-between">
+                        <span className="font-medium">{isZh ? '总计' : 'Total'}</span>
+                        <span className="font-bold text-violet-600 text-lg">${getPrice()}</span>
+                      </div>
                     </div>
                   </div>
                   
@@ -882,10 +916,18 @@ export default function BookingPage() {
                   {/* 时间确认提示 */}
                   {consultationType === 'realtime' && selectedDate && selectedTime && master && (
                     <div className="bg-violet-50 border border-violet-200 rounded-lg p-3 mb-4">
+                      <p className="text-sm text-violet-700 font-medium mb-1">
+                        {isZh ? '预约时间确认' : 'Appointment Time Confirmation'}
+                      </p>
                       <p className="text-sm text-violet-700">
                         {isZh
-                          ? `您选择的预约时间：${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')} ${selectedTime}（师傅时间：${TIMEZONE_LABELS[master.timezone]?.zh || master.timezone || ''}）`
-                          : `Your appointment: ${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')} ${selectedTime} (Advisor time: ${TIMEZONE_LABELS[master.timezone]?.en || master.timezone || ''})`}
+                          ? `您选择的时间：${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')} ${selectedTime}（${TIMEZONE_LABELS[master.timezone]?.zh || master.timezone || ''}，师傅时间）`
+                          : `Your selected time: ${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')} ${selectedTime} (${TIMEZONE_LABELS[master.timezone]?.en || master.timezone || ''}, advisor time)`}
+                      </p>
+                      <p className="text-xs text-violet-600 mt-1">
+                        {isZh
+                          ? '请确认这是您希望咨询的时间，跨时区预约请核对双方时间。'
+                          : 'Please confirm this is your desired time. Cross-timezone appointments: verify both times.'}
                       </p>
                     </div>
                   )}
