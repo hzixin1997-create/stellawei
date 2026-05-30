@@ -226,6 +226,14 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
+  // 初始化时滚动到底部，帮助浏览器建立正确的滚动位置（iOS 键盘预热）
+  useEffect(() => {
+    const warmup = setTimeout(() => {
+      scrollToBottom()
+    }, 300)
+    return () => clearTimeout(warmup)
+  }, [])
+
   useEffect(() => {
     scrollToBottom()
   }, [messages])
@@ -1223,7 +1231,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   const canRequestReview = isMaster && isCompleted
 
   return (
-    <div className="min-h-[100dvh] h-[100svh] bg-gradient-to-br from-stone-50 to-stone-100 flex flex-col overflow-hidden">
+    <div className="min-h-[100svh] h-[100svh] bg-gradient-to-br from-stone-50 to-stone-100 flex flex-col overflow-hidden">
       {/* 顶部栏 — 固定定位，滚动时始终可见 */}
       <div className="bg-white border-b border-stone-200 px-4 py-3 flex-shrink-0">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
@@ -1499,7 +1507,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
                     if (typeof window !== 'undefined' && window.innerWidth < 640) {
                       setTimeout(() => {
                         inputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
-                      }, 200)
+                      }, 300)
                     }
                   }}
                   onKeyDown={(e) => {
