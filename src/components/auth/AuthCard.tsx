@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from './AuthProvider'
+import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -83,12 +84,25 @@ export function AuthCard() {
         return
       }
 
-      // 注册成功后直接自动登录
+      // 注册成功后自动登录
       const { error: signInError } = await signIn(email, password)
       
       if (signInError) {
         setError(signInError.message)
         return
+      }
+
+      // 自动存储用户 timezone 到 profile
+      try {
+        const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+        const supabase = createClient()
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+          await supabase.from('profiles').update({ timezone: userTimezone }).eq('id', user.id)
+        }
+      } catch (tzError) {
+        // timezone 存储失败不影响主流程
+        console.error('Failed to store timezone:', tzError)
       }
 
       // 登录成功，直接跳转
