@@ -1223,7 +1223,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   const canRequestReview = isMaster && isCompleted
 
   return (
-    <div className="min-h-[100dvh] h-[100dvh] bg-gradient-to-br from-stone-50 to-stone-100 flex flex-col overflow-hidden">
+    <div className="min-h-[100dvh] h-[100svh] bg-gradient-to-br from-stone-50 to-stone-100 flex flex-col overflow-hidden">
       {/* 顶部栏 — 固定定位，滚动时始终可见 */}
       <div className="bg-white border-b border-stone-200 px-4 py-3 flex-shrink-0">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
@@ -1430,7 +1430,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       </div>
 
       {/* 输入区域 */}
-      <div className="bg-white border-t border-stone-200 px-4 py-3">
+      <div className="bg-white border-t border-stone-200 px-4 py-3 flex-shrink-0">
         <div className="max-w-3xl mx-auto">
           {/* 已结束 - 只读提示 */}
           {isCompleted && (
@@ -1494,6 +1494,14 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
                   ref={inputRef}
                   value={inputValue}
                   onChange={handleInputChange}
+                  onFocus={() => {
+                    // 移动端修复：键盘弹出时防止输入框跳动
+                    if (typeof window !== 'undefined' && window.innerWidth < 640) {
+                      setTimeout(() => {
+                        inputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+                      }, 200)
+                    }
+                  }}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault()
