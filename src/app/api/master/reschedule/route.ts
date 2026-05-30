@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { createServiceClient } from '@/lib/supabase';
 import { createClient } from '@/lib/supabase/server';
 import { getMasterByEmail } from '@/lib/master-auth';
+import { rescheduleBooking } from '@/lib/reschedule';
 
 export const dynamic = 'force-dynamic';
 
@@ -35,147 +35,48 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Not a master' }, { status: 403 });
     }
 
-    const supabase = createServiceClient();
-
-    // 获取订单信息
-    const { data: booking, error: bookingError } = await supabase
-      .from('bookings')
-      .select('id, master_id, user_id, status, payment_status, scheduled_date, scheduled_time, scheduled_at, duration_minutes, consultation_type')
-      .eq('id', bookingId)
-      .single();
-
-    if (bookingError || !booking) {
-      return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
-    }
-
-    // 权限检查：只能修改自己的订单
-    if (booking.master_id !== masterInfo.slug) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
-
-    // 只能修改实时咨询
-    if (booking.consultation_type === 'message') {
-      return NextResponse.json(
-        { error: 'Message consultations cannot be rescheduled' },
-        { status: 400 }
-      );
-    }
-
-    // 只能修改已付款的订单
-    if (booking.payment_status !== 'paid') {
-      return NextResponse.json(
-        { error: 'Only paid bookings can be rescheduled' },
-        { status: 400 }
-      );
-    }
-
-    // 2小时缓冲校验
-    const [hour, minute] = scheduled_time.split(':').map(Number);
-    const newDateTime = new Date(scheduled_date);
-    newDateTime.setHours(hour, minute, 0, 0);
-    const minBookingTime = new Date(Date.now() + 2 * 60 * 60 * 1000);
-    if (newDateTime.getTime() < minBookingTime.getTime()) {
-      return NextResponse.json(
-        { error: 'Real-time consultations must be booked at least 2 hours in advance' },
-        { status: 400 }
-      );
-    }
-
-    // 检查师傅是否设置了可用时段
-    const { data: masterRecord } = await supabase
+    // 获取 master 的 Supabase UUID
+    const supabaseService = await createClient();
+    const { data: masterRecord } = await supabaseService
       .from('masters')
       .select('id')
-      .eq('slug', booking.master_id)
+      .eq('slug', masterInfo.slug)
       .single();
-    const masterUuid = masterRecord?.id || booking.master_id;
+    const masterId = masterRecord?.id || masterInfo.slug;
 
-    const { data: availability } = await supabase
-      .from('master_availability')
-      .select('available_slots')
-      .eq('master_id', masterUuid)
-      .eq('date', scheduled_date)
-      .single();
-
-    if (availability?.available_slots && availability.available_slots.length > 0) {
-      if (!availability.available_slots.includes(scheduled_time)) {
-        return NextResponse.json(
-          { error: 'Master has not opened this time slot' },
-          { status: 400 }
-        );
-      }
-    }
-
-    // 检查新时间槽是否被占用（排除自己）
-    const { data: occupiedBookings, error: occupiedError } = await supabase
-      .from('bookings')
-      .select('id, status, expires_at')
-      .eq('master_id', booking.master_id)
-      .eq('scheduled_date', scheduled_date)
-      .eq('scheduled_time', scheduled_time)
-      .in('status', ['pending', 'paid', 'confirmed', 'in_progress']);
-
-    if (occupiedError) {
-      console.error('Reschedule check slot error:', occupiedError);
-      return NextResponse.json(
-        { error: 'Failed to check slot availability' },
-        { status: 500 }
-      );
-    }
-
-    const now = Date.now();
-    const isOccupied = (occupiedBookings || []).some((b: any) => {
-      if (b.id === bookingId) return false;
-      if (['paid', 'confirmed', 'in_progress'].includes(b.status)) return true;
-      if (b.status === 'pending') {
-        if (!b.expires_at) return true;
-        return new Date(b.expires_at).getTime() > now;
-      }
-      return false;
+    // 调用统一 reschedule 函数
+    const result = await rescheduleBooking({
+      bookingId,
+      scheduledDate: scheduled_date,
+      scheduledTime: scheduled_time,
+      requestingUserId: masterId,
+      requestingUserEmail: user.email || undefined,
+      isMaster: true,
     });
 
-    if (isOccupied) {
+    if (!result.success) {
+      const statusMap: Record<string, number> = {
+        NOT_FOUND: 404,
+        FORBIDDEN: 403,
+        INVALID_TYPE: 400,
+        INVALID_STATUS: 400,
+        UNPAID: 400,
+        PAST_TIME: 400,
+        ENDED_TIME: 400,
+        SLOT_UNAVAILABLE: 400,
+        TIME_CONFLICT: 409,
+        CONFLICT_CHECK_ERROR: 500,
+        UPDATE_ERROR: 500,
+      };
       return NextResponse.json(
-        { error: 'This time slot is already occupied' },
-        { status: 400 }
-      );
-    }
-
-    // 生成新的 scheduled_at（带北京时间时区）
-    const scheduledAt = `${scheduled_date}T${scheduled_time}:00+08:00`;
-
-    // 生成通知内容
-    const oldTime = booking.scheduled_date && booking.scheduled_time
-      ? `${booking.scheduled_date} ${booking.scheduled_time}`
-      : '未设置';
-    const newTime = `${scheduled_date} ${scheduled_time}`;
-    const noticeContent = `师傅已将您的预约时间从 ${oldTime} 调整为 ${newTime}。`;
-
-    // 更新订单时间 + 写入变更通知
-    const { data: updatedBooking, error: updateError } = await supabase
-      .from('bookings')
-      .update({
-        scheduled_date,
-        scheduled_time,
-        scheduled_at: scheduledAt,
-        updated_at: new Date().toISOString(),
-        reschedule_notice: noticeContent,
-        reschedule_notice_read: false,
-      })
-      .eq('id', bookingId)
-      .select()
-      .single();
-
-    if (updateError) {
-      console.error('Reschedule update error:', updateError);
-      return NextResponse.json(
-        { error: 'Failed to update booking', message: updateError.message },
-        { status: 500 }
+        { error: result.error },
+        { status: statusMap[result.code] || 400 }
       );
     }
 
     return NextResponse.json({
       success: true,
-      booking: updatedBooking,
+      booking: result.booking,
       message: 'Booking rescheduled successfully',
     });
   } catch (error: any) {
