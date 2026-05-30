@@ -119,21 +119,21 @@ async function doCheck(cronSecret: string | null) {
         }
 
         // 获取用户信息 + 语言偏好
-        const { data: userData } = await supabase
+        const { data: userData, error: userError } = await supabase
           .from('profiles')
-          .select('full_name, email, language')
+          .select('full_name, email, locale')
           .eq('id', booking.user_id)
           .single();
 
-        if (!userData || !userData.email) {
-          console.warn('Missing user data for booking:', booking.id);
-          await releaseLock(supabase, booking.id, 'Missing user email');
+        if (userError || !userData || !userData.email) {
+          console.warn('Missing user data for booking:', booking.id, userError);
+          await releaseLock(supabase, booking.id, `Missing user email: ${userError?.message || 'no data'}`);
           results.push({ bookingId: booking.id, error: 'Missing user email' });
           continue;
         }
 
-        // 语言优先级：booking.language > user profile.language > 默认 zh
-        const userLanguage = userData.language || 'zh';
+        // 语言优先级：booking.language > user profile.locale > 默认 zh
+        const userLanguage = userData.locale || 'zh';
         console.log('[reminders] MASTER FLOW ENTRY CHECK', JSON.stringify({
           bookingId: booking.id,
           user_reminder_sent: locked.user_reminder_sent,
