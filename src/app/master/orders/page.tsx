@@ -426,6 +426,14 @@ export default function MasterOrdersPage() {
                             </button>
                           </>
                         )}
+                        {displayStatus === 'completed' && order.review_data && order.review_data.rating && (
+                          <div className="flex items-center gap-1 text-amber-500">
+                            {Array.from({ length: 5 }).map((_, i) => (
+                              <Star key={i} className={`w-4 h-4 ${i < (order.review_data?.rating || 0) ? 'fill-amber-400' : 'text-stone-200'}`} />
+                            ))}
+                            <span className="text-xs ml-1">{order.review_data.rating}/5</span>
+                          </div>
+                        )}
                         {canAccept && (
                           <>
                             <button
