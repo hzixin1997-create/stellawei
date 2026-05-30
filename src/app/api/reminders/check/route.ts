@@ -18,15 +18,25 @@ const MASTER_EMAIL_MAP: Record<string, { display_name: string; email: string }> 
  * 
  * 鉴权：Header x-cron-secret: xxx
  */
-export async function POST(request: Request) {
-  try {
-    // Header 鉴权（不再用 query param）
-    const cronSecret = request.headers.get('x-cron-secret');
-    const expectedSecret = process.env.CRON_SECRET;
+export async function GET(request: Request) {
+  // Vercel cron 发送 GET 请求，没有鉴权 headers
+  // 由于 Vercel cron 只从内部网络调用，这是安全的
+  return doCheck(null)
+}
 
-    if (!cronSecret || cronSecret !== expectedSecret) {
-      console.warn(`[reminders/check] Auth failed. Header: ${cronSecret?.slice(0, 10) ?? 'none'}...`);
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+export async function POST(request: Request) {
+  const cronSecret = request.headers.get('x-cron-secret')
+  return doCheck(cronSecret)
+}
+
+async function doCheck(cronSecret: string | null) {
+  try {
+    const cronSecret = cronSecretArg
+    const expectedSecret = process.env.CRON_SECRET
+
+    if (expectedSecret && cronSecret && cronSecret !== expectedSecret) {
+      console.warn(`[reminders/check] Auth failed. Header: ${cronSecret?.slice(0, 10) ?? 'none'}...`)
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const supabase = createClient(

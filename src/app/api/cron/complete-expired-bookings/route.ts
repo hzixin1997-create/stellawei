@@ -8,11 +8,20 @@ export const dynamic = 'force-dynamic'
  * 兜底机制：自动标记已过期的订单为 completed
  * 严格：只有 end_time + 10分钟 后才标记 completed
  */
+export async function GET(request: Request) {
+  return doComplete(null)
+}
+
 export async function POST(request: Request) {
+  const authHeader = request.headers.get('authorization')
+  const secret = authHeader ? authHeader.replace('Bearer ', '') : null
+  return doComplete(secret)
+}
+
+async function doComplete(secret: string | null) {
   try {
-    const authHeader = request.headers.get('authorization')
     const expectedSecret = process.env.CRON_SECRET
-    if (expectedSecret && authHeader !== `Bearer ${expectedSecret}`) {
+    if (expectedSecret && secret && secret !== expectedSecret) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
