@@ -26,6 +26,11 @@ interface BookingOrder {
   order_number?: string;
   question_text?: string | null;
   expires_at?: string | null;
+  review_data?: {
+    rating: number;
+    content: string | null;
+    created_at: string;
+  } | null;
 }
 
 interface MessageOrder {
@@ -180,13 +185,20 @@ export default function MasterOrdersPage() {
   };
 
   // 查看评价
-  const openReviewModal = async (bookingId: string) => {
+  const openReviewModal = async (order: BookingOrder) => {
     setReviewModalOpen(true);
     setReviewLoading(true);
     setReviewData(null);
     try {
+      // 优先使用订单中的 review_data（不额外请求 API）
+      if (order.review_data && order.review_data.rating) {
+        setReviewData(order.review_data);
+        setReviewLoading(false);
+        return;
+      }
+      // fallback：请求 API
       const { data: { session } } = await supabase.auth.getSession();
-      const res = await fetch(`/api/bookings/${bookingId}/review`, {
+      const res = await fetch(`/api/bookings/${order.id}/review`, {
         headers: { authorization: `Bearer ${session?.access_token || ''}` },
       });
       if (res.ok) {
@@ -407,7 +419,7 @@ export default function MasterOrdersPage() {
                               </button>
                             </Link>
                             <button
-                              onClick={() => openReviewModal(order.id)}
+                              onClick={() => openReviewModal(order)}
                               className="px-4 py-2 text-sm bg-amber-50 text-amber-700 rounded-lg hover:bg-amber-100 transition-colors text-center w-full"
                             >
                               查看评价
@@ -461,6 +473,85 @@ export default function MasterOrdersPage() {
                 );
               })
             )}
+          </div>
+        )}
+
+        {/* 查看评价弹窗 */}
+        {reviewModalOpen && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
+            <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4 shadow-xl">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">用户评价</h3>
+                <button
+                  onClick={() => {
+                    setReviewModalOpen(false);
+                    setReviewData(null);
+                  }}
+                  className="text-stone-400 hover:text-stone-600"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {reviewLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="w-5 h-5 animate-spin text-stone-400" />
+                </div>
+              ) : reviewData ? (
+                <div className="space-y-4">
+                  {/* 星级评分 */}
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`w-6 h-6 ${
+                          i < (reviewData.rating || 0)
+                            ? 'text-amber-400 fill-amber-400'
+                            : 'text-stone-200'
+                        }`}
+                      />
+                    ))}
+                    <span className="ml-2 text-sm text-stone-500">
+                      {reviewData.rating || 0} / 5
+                    </span>
+                  </div>
+
+                  {/* 评价内容 */}
+                  {reviewData.content ? (
+                    <div className="bg-stone-50 border border-stone-200 rounded-lg p-4">
+                      <p className="text-sm text-stone-700 whitespace-pre-wrap">
+                        {reviewData.content}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-stone-400 italic">用户未填写文字评价</p>
+                  )}
+
+                  {/* 评价时间 */}
+                  {reviewData.created_at && (
+                    <p className="text-xs text-stone-400">
+                      {new Date(reviewData.created_at).toLocaleString('zh-CN')}
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-stone-400 text-sm">暂无评价</p>
+                </div>
+              )}
+
+              <div className="flex justify-end mt-4">
+                <button
+                  onClick={() => {
+                    setReviewModalOpen(false);
+                    setReviewData(null);
+                  }}
+                  className="px-4 py-2 text-sm bg-stone-100 text-stone-600 rounded-lg hover:bg-stone-200 transition-colors"
+                >
+                  关闭
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
