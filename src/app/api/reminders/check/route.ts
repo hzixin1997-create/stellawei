@@ -134,16 +134,6 @@ async function doCheck(cronSecret: string | null) {
 
         // 语言优先级：booking.language > user profile.locale > 默认 zh
         const userLanguage = userData.locale || 'zh';
-        console.log('[reminders] MASTER FLOW ENTRY CHECK', JSON.stringify({
-          bookingId: booking.id,
-          user_reminder_sent: locked.user_reminder_sent,
-          master_reminder_sent: locked.master_reminder_sent,
-          reminder_retry_count: booking.reminder_retry_count,
-          status: booking.status,
-          payment_status: booking.payment_status,
-          userLanguage,
-          master_id: booking.master_id,
-        }));
 
         // 获取师傅信息
         let masterData: { display_name: string; email: string } | null = null;

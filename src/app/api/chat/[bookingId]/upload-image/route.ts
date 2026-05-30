@@ -42,16 +42,6 @@ export async function POST(
     const isUser = booking.user_id === user.id;
     const isMaster = masterInfo && booking.master_id === masterInfo.slug;
 
-    console.log('[upload-image] auth check:', {
-      userId: user.id,
-      userEmail: user.email,
-      bookingUserId: booking.user_id,
-      bookingMasterId: booking.master_id,
-      masterSlug: masterInfo?.slug,
-      isUser,
-      isMaster,
-    });
-
     if (!isUser && !isMaster) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
