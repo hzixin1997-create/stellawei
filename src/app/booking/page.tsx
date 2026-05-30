@@ -913,7 +913,7 @@ export default function BookingPage() {
                     <p className="text-sm text-red-600 mb-3">{error}</p>
                   )}
 
-                  {/* 时间确认提示 */}
+                  {/* 时间确认提示（双时区显示） */}
                   {consultationType === 'realtime' && selectedDate && selectedTime && master && (
                     <div className="bg-violet-50 border border-violet-200 rounded-lg p-3 mb-4">
                       <p className="text-sm text-violet-700 font-medium mb-1">
@@ -921,9 +921,23 @@ export default function BookingPage() {
                       </p>
                       <p className="text-sm text-violet-700">
                         {isZh
-                          ? `您选择的时间：${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')} ${selectedTime}（${TIMEZONE_LABELS[master.timezone]?.zh || master.timezone || ''}，师傅时间）`
-                          : `Your selected time: ${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')} ${selectedTime} (${TIMEZONE_LABELS[master.timezone]?.en || master.timezone || ''}, advisor time)`}
+                          ? `师傅时间：${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')} ${selectedTime}（${TIMEZONE_LABELS[master.timezone]?.zh || master.timezone || ''}）`
+                          : `Advisor time: ${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')} ${selectedTime} (${TIMEZONE_LABELS[master.timezone]?.en || master.timezone || ''})`}
                       </p>
+                      {(() => {
+                        const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone
+                        if (userTz !== master.timezone) {
+                          const dateStr = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}T${selectedTime}:00`
+                          const d = new Date(dateStr + (master.timezone === 'Asia/Shanghai' ? '+08:00' : master.timezone === 'Asia/Tokyo' ? '+09:00' : ''))
+                          const localStr = d.toLocaleString(isZh ? 'zh-CN' : 'en-US', { timeZone: userTz, month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false })
+                          return (
+                            <p className="text-sm text-violet-700 mt-1">
+                              {isZh ? `您的本地时间：${localStr}（${userTz}）` : `Your local time: ${localStr} (${userTz})`}
+                            </p>
+                          )
+                        }
+                        return null
+                      })()}
                       <p className="text-xs text-violet-600 mt-1">
                         {isZh
                           ? '请确认这是您希望咨询的时间，跨时区预约请核对双方时间。'
