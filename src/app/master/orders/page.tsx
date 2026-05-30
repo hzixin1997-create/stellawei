@@ -434,6 +434,9 @@ export default function MasterOrdersPage() {
                             <span className="text-xs ml-1">{order.review_data.rating}/5</span>
                           </div>
                         )}
+                        {displayStatus === 'completed' && (
+                          <div className="text-xs text-amber-600 font-medium">⭐ 评价功能已上线</div>
+                        )}
                         {canAccept && (
                           <>
                             <button
