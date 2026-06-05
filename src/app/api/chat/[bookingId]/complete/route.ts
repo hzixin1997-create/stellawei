@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
 import { createClient } from '@/lib/supabase/server';
 import { getMasterByEmail } from '@/lib/master-auth';
+import { getMessage } from '@/lib/i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,7 +22,7 @@ export async function POST(
     const { data: { user } } = await authSupabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: getMessage('UNAUTHORIZED', request) }, { status: 401 });
     }
 
     const supabase = createServiceClient();
@@ -34,7 +35,7 @@ export async function POST(
       .single();
 
     if (bookingError || !booking) {
-      return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
+      return NextResponse.json({ error: getMessage('BOOKING_NOT_FOUND', request) }, { status: 404 });
     }
 
     // 检查权限
@@ -43,19 +44,19 @@ export async function POST(
     const isMaster = masterInfo && booking.master_id === masterInfo.slug;
 
     if (!isUser && !isMaster) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      return NextResponse.json({ error: getMessage('FORBIDDEN_NOT_USER', request) }, { status: 403 });
     }
 
     // 检查订单状态（confirmed 或 in_progress 均可标记为 completed）
     if (booking.status !== 'in_progress' && booking.status !== 'confirmed') {
       return NextResponse.json(
-        { error: 'Booking is not in progress', currentStatus: booking.status },
+        { error: getMessage('CONSULTATION_ENDED', request), currentStatus: booking.status },
         { status: 400 }
       );
     }
 
     if (booking.payment_status !== 'paid') {
-      return NextResponse.json({ error: 'Booking not paid' }, { status: 400 });
+      return NextResponse.json({ error: getMessage('UNPAID_BOOKING', request) }, { status: 400 });
     }
 
     // 更新订单状态为 completed
@@ -72,7 +73,7 @@ export async function POST(
     if (updateError) {
       console.error('Complete booking error:', updateError);
       return NextResponse.json(
-        { error: 'Failed to complete booking', message: updateError.message },
+        { error: getMessage('COMPLETE_FAILED', request), message: updateError.message },
         { status: 500 }
       );
     }
@@ -81,7 +82,7 @@ export async function POST(
   } catch (error: any) {
     console.error('Complete chat API error:', error);
     return NextResponse.json(
-      { error: 'Internal server error', message: error.message },
+      { error: getMessage('INTERNAL_ERROR', request), message: error.message },
       { status: 500 }
     );
   }

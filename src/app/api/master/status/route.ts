@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
+import { getMessage } from '@/lib/i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,7 +15,7 @@ export async function PUT(request: Request) {
     const token = authHeader.replace('Bearer ', '').trim();
     
     if (!token) {
-      return NextResponse.json({ error: 'Unauthorized: missing token' }, { status: 401 });
+      return NextResponse.json({ error: getMessage('UNAUTHORIZED', request) }, { status: 401 });
     }
 
     // 验证用户：直接用 Supabase auth.getUser(token) 验证 JWT
@@ -22,7 +23,7 @@ export async function PUT(request: Request) {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     
     if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized: invalid token' }, { status: 401 });
+      return NextResponse.json({ error: getMessage('UNAUTHORIZED', request) }, { status: 401 });
     }
 
     const { status } = await request.json();
@@ -39,7 +40,7 @@ export async function PUT(request: Request) {
       .single();
 
     if (!master) {
-      return NextResponse.json({ error: 'Master not found' }, { status: 404 });
+      return NextResponse.json({ error: getMessage('FORBIDDEN_NOT_MASTER', request) }, { status: 404 });
     }
 
     // 用 service role key 绕过 RLS 更新
@@ -51,7 +52,7 @@ export async function PUT(request: Request) {
 
     if (error) {
       console.error('Update master status error:', error);
-      return NextResponse.json({ error: 'Failed to update status', details: error.message }, { status: 500 });
+      return NextResponse.json({ error: getMessage('STATUS_UPDATE_FAILED', request), details: error.message }, { status: 500 });
     }
 
     if (!updatedRows || updatedRows.length === 0) {
@@ -62,7 +63,7 @@ export async function PUT(request: Request) {
   } catch (error: any) {
     console.error('Master status API error:', error);
     return NextResponse.json(
-      { error: 'Internal server error', message: error.message },
+      { error: getMessage('INTERNAL_ERROR', request), message: error.message },
       { status: 500 }
     );
   }

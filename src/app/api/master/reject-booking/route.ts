@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
 import { createClient } from '@/lib/supabase/server';
 import { getMasterByEmail } from '@/lib/master-auth';
+import { getMessage } from '@/lib/i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,7 +24,7 @@ export async function POST(request: Request) {
     const { data: { user } } = await authSupabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: getMessage('UNAUTHORIZED', request) }, { status: 401 });
     }
 
     const supabase = createServiceClient();
@@ -31,7 +32,7 @@ export async function POST(request: Request) {
     // 验证师傅身份
     const masterInfo = getMasterByEmail(user.email || '');
     if (!masterInfo) {
-      return NextResponse.json({ error: 'Not a master account' }, { status: 403 });
+      return NextResponse.json({ error: getMessage('FORBIDDEN_NOT_MASTER', request) }, { status: 403 });
     }
 
     // 验证 booking 存在且属于该师傅
@@ -42,11 +43,11 @@ export async function POST(request: Request) {
       .single();
 
     if (bookingError || !booking) {
-      return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
+      return NextResponse.json({ error: getMessage('BOOKING_NOT_FOUND', request) }, { status: 404 });
     }
 
     if (booking.master_id !== masterInfo.slug) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      return NextResponse.json({ error: getMessage('FORBIDDEN_NOT_MASTER', request) }, { status: 403 });
     }
 
     // 更新订单状态为 cancelled
@@ -73,7 +74,7 @@ export async function POST(request: Request) {
   } catch (error: any) {
     console.error('Reject booking API error:', error);
     return NextResponse.json(
-      { error: 'Internal server error', message: error.message },
+      { error: getMessage('INTERNAL_ERROR', request), message: error.message },
       { status: 500 }
     );
   }

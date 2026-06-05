@@ -12,6 +12,7 @@ export interface RescheduleParams {
   isMaster?: boolean;
   requestingUserId: string;
   requestingUserEmail?: string;
+  lang?: string;
 }
 
 export interface RescheduleResult {
@@ -38,7 +39,7 @@ export async function rescheduleBooking(
   // 1. 获取当前订单信息
   const { data: booking, error: fetchError } = await supabase
     .from('bookings')
-    .select('id, user_id, master_id, status, payment_status, scheduled_date, scheduled_time, scheduled_at, duration_minutes, consultation_type, updated_at')
+    .select('id, user_id, master_id, status, payment_status, scheduled_date, scheduled_time, scheduled_at, duration_minutes, consultation_type, updated_at, reschedule_count')
     .eq('id', bookingId)
     .single();
 
@@ -88,6 +89,17 @@ export async function rescheduleBooking(
   const minBookingTime = new Date(Date.now() + MIN_BUFFER_MINUTES * 60 * 1000);
   if (newDateTime.getTime() < minBookingTime.getTime()) {
     return { success: false, booking: null, error: `Appointments must be at least ${MIN_BUFFER_MINUTES} minutes in advance`, code: 'PAST_TIME' };
+  }
+
+  // 6b. 新预约时间必须 >= 当前时间 + 2小时
+  const minRescheduleTime = new Date(Date.now() + 2 * 60 * 60 * 1000);
+  if (newDateTime.getTime() < minRescheduleTime.getTime()) {
+    return { success: false, booking: null, error: 'New appointment time must be at least 2 hours in advance', code: 'PAST_TIME' };
+  }
+
+  // 6c. 改期次数限制（最多2次）
+  if (booking.reschedule_count >= 2) {
+    return { success: false, booking: null, error: 'This booking has reached the reschedule limit (max 2 times)', code: 'RESCHEDULE_LIMIT' };
   }
 
   // 7. 检查新时间是否已过去（结束时间）
@@ -150,7 +162,9 @@ export async function rescheduleBooking(
   }
 
   // 10. 生成新的 scheduled_at（带北京时间时区）
-  const scheduledAt = `${scheduledDate}T${scheduledTime}:00+08:00`;
+  // 处理 TIME 类型带秒的情况（11:00:00 → 11:00）
+  const timeWithoutSeconds = scheduledTime.split(':').slice(0, 2).join(':');
+  const scheduledAt = `${scheduledDate}T${timeWithoutSeconds}:00+08:00`;
 
   // 11. 生成变更通知（师傅端）
   let noticeContent: string | null = null;
@@ -162,12 +176,14 @@ export async function rescheduleBooking(
     noticeContent = `Master has rescheduled your appointment from ${oldTime} to ${newTime}.`;
   }
 
-  // 12. 构建 UPDATE 数据：时间 + 提醒重置 + 通知 + 状态清理
+  // 12. 构建 UPDATE 数据：时间 + 提醒重置 + 通知 + 状态清理 + 改期次数
   const updatePayload: any = {
     scheduled_date: scheduledDate,
     scheduled_time: scheduledTime,
     scheduled_at: scheduledAt,
     updated_at: new Date().toISOString(),
+    // === 改期次数递增 ===
+    reschedule_count: (booking.reschedule_count || 0) + 1,
     // === 重置提醒系统（关键）===
     user_reminder_sent: false,
     master_reminder_sent: false,
@@ -199,5 +215,94 @@ export async function rescheduleBooking(
     return { success: false, booking: null, error: updateError.message, code: 'UPDATE_ERROR' };
   }
 
+  // 14. 飞书通知（异步，不阻塞主流程）
+  try {
+    await sendRescheduleFeishuNotification({
+      booking,
+      updatedBooking,
+      isMaster: !!isMaster,
+      supabase,
+      oldTime: `${booking.scheduled_date} ${booking.scheduled_time}`,
+      newTime: `${scheduledDate} ${scheduledTime}`,
+    });
+  } catch (notifyErr) {
+    console.error('[reschedule] Feishu notification failed:', notifyErr);
+  }
+
   return { success: true, booking: updatedBooking, error: null, code: 'SUCCESS' };
+}
+
+// 发送飞书改期通知
+async function sendRescheduleFeishuNotification({
+  booking,
+  updatedBooking,
+  isMaster,
+  supabase,
+  oldTime,
+  newTime,
+}: {
+  booking: any;
+  updatedBooking: any;
+  isMaster: boolean;
+  supabase: any;
+  oldTime: string;
+  newTime: string;
+}) {
+  const FEISHU_WEBHOOK = process.env.FEISHU_WEBHOOK_URL;
+  if (!FEISHU_WEBHOOK) {
+    console.warn('[Reschedule] FEISHU_WEBHOOK_URL not configured');
+    return;
+  }
+
+  try {
+    // 获取师傅信息
+    const { data: master } = await supabase
+      .from('masters')
+      .select('display_name, email')
+      .eq('slug', booking.master_id)
+      .single();
+
+    // 获取用户信息
+    const { data: user } = await supabase
+      .from('profiles')
+      .select('full_name, email')
+      .eq('id', booking.user_id)
+      .single();
+
+    const masterName = master?.display_name || booking.master_id;
+    const userName = user?.full_name || user?.email || 'Unknown';
+    const orderNumber = booking.order_number || booking.id.slice(0, 8);
+    const rescheduleCount = updatedBooking.reschedule_count || 1;
+
+    const actor = isMaster ? `师傅 ${masterName}` : `用户 ${userName}`;
+    const chatUrl = `https://stellawei.org/chat/${booking.id}`;
+
+    const timezoneLabel = booking.timezone ? `（${booking.timezone}）` : '';
+
+    const content = `📅 预约时间变更
+
+订单号：${orderNumber}
+师傅：${masterName}
+用户：${userName}
+变更人：${actor}
+
+原时间：${oldTime}${timezoneLabel}
+新时间：${newTime}${timezoneLabel}
+改期次数：第 ${rescheduleCount} 次
+
+立即查看：${chatUrl}`;
+
+    await fetch(FEISHU_WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        msg_type: 'text',
+        content: JSON.stringify({ text: content }),
+      }),
+    });
+
+    console.log('[Reschedule] Feishu notification sent for booking:', booking.id);
+  } catch (err) {
+    console.error('[Reschedule] Failed to send Feishu notification:', err);
+  }
 }

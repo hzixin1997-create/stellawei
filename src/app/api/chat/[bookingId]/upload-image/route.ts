@@ -64,14 +64,22 @@ export async function POST(
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
+    console.log('[upload-image] Received file:', {
+      name: file.name,
+      size: file.size,
+      type: file.type,
+    });
+
     // 验证文件类型
     if (!file.type.startsWith('image/')) {
+      console.warn('[upload-image] Rejected: not an image file. type:', file.type);
       return NextResponse.json({ error: 'Only image files are allowed' }, { status: 400 });
     }
 
-    // 验证文件大小（最大 5MB）
-    if (file.size > 5 * 1024 * 1024) {
-      return NextResponse.json({ error: 'File size exceeds 5MB limit' }, { status: 400 });
+    // 验证文件大小（最大 10MB）
+    if (file.size > 10 * 1024 * 1024) {
+      console.warn('[upload-image] Rejected: file too large. size:', file.size);
+      return NextResponse.json({ error: 'File size exceeds 10MB limit' }, { status: 400 });
     }
 
     // 生成文件名

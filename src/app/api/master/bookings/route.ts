@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
 import { createClient } from '@/lib/supabase/server';
 import { getMasterByEmail } from '@/lib/master-auth';
+import { getMessage } from '@/lib/i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,13 +17,13 @@ export async function GET(request: Request) {
     const { data: { user } } = await authSupabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: getMessage('UNAUTHORIZED', request) }, { status: 401 });
     }
 
     // 验证师傅身份
     const masterInfo = getMasterByEmail(user.email || '');
     if (!masterInfo) {
-      return NextResponse.json({ error: 'Not a master' }, { status: 403 });
+      return NextResponse.json({ error: getMessage('FORBIDDEN_NOT_MASTER', request) }, { status: 403 });
     }
 
     const { searchParams } = new URL(request.url);
@@ -51,15 +52,32 @@ export async function GET(request: Request) {
       );
     }
 
+    // Join user profiles
+    const userIds = Array.from(new Set((bookings || []).map((b: any) => b.user_id)));
+    let profileMap: Record<string, any> = {};
+    if (userIds.length > 0) {
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, email, full_name')
+        .in('id', userIds);
+      (profiles || []).forEach((p: any) => { profileMap[p.id] = p; });
+    }
+
+    const bookingsWithUser = (bookings || []).map((b: any) => ({
+      ...b,
+      user_email: profileMap[b.user_id]?.email || '',
+      user_name: profileMap[b.user_id]?.full_name || '',
+    }));
+
     return NextResponse.json({
       success: true,
-      bookings: bookings || [],
-      count: (bookings || []).length,
+      bookings: bookingsWithUser || [],
+      count: (bookingsWithUser || []).length,
     });
   } catch (error: any) {
     console.error('Master bookings API error:', error);
     return NextResponse.json(
-      { error: 'Internal server error', message: error.message },
+      { error: getMessage('INTERNAL_ERROR', request), message: error.message },
       { status: 500 }
     );
   }

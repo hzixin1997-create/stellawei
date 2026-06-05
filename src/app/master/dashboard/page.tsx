@@ -26,6 +26,8 @@ import {
   X,
   Crown,
   Calendar,
+  Star,
+  Trash,
 } from 'lucide-react'
 import Link from 'next/link'
 import { SimpleCalendar } from '@/components/SimpleCalendar'
@@ -38,6 +40,19 @@ const services: Record<string, { name: string; nameCn: string }> = {
   liuyao: { name: 'Liu Yao Divination', nameCn: '六爻占卜' },
   bazi: { name: 'BaZi Analysis', nameCn: '八字分析' },
   fengshui: { name: 'Feng Shui Consultation', nameCn: '风水咨询' },
+}
+
+const TIMEZONE_LABELS: Record<string, { en: string; zh: string }> = {
+  'America/Los_Angeles': { en: 'Los Angeles', zh: '洛杉矶' },
+  'Asia/Shanghai': { en: 'Beijing', zh: '北京' },
+  'Asia/Tokyo': { en: 'Tokyo', zh: '东京' },
+  'Asia/Hong_Kong': { en: 'Hong Kong', zh: '香港' },
+  'Asia/Singapore': { en: 'Singapore', zh: '新加坡' },
+  'America/New_York': { en: 'New York', zh: '纽约' },
+  'Europe/London': { en: 'London', zh: '伦敦' },
+  'Europe/Paris': { en: 'Paris', zh: '巴黎' },
+  'Australia/Sydney': { en: 'Sydney', zh: '悉尼' },
+  'UTC': { en: 'UTC', zh: 'UTC' },
 }
 
 interface Booking {
@@ -54,11 +69,14 @@ interface Booking {
   total_amount: number
   currency: string
   user_id: string
+  user_email?: string
+  user_name?: string
   created_at: string
   expires_at?: string | null
   deleted_at?: string | null
   order_number?: string
   consultation_type?: string
+  tier?: string
   question_text?: string | null
   question_images?: string[] | null
 }
@@ -83,6 +101,7 @@ export default function MasterDashboard() {
   const [user, setUser] = useState<any>(null)
   const [masterInfo, setMasterInfo] = useState<MasterInfo | null>(null)
   const [bookings, setBookings] = useState<Booking[]>([])
+  const [stats, setStats] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isZh, setIsZh] = useState(true)
   const [acceptingId, setAcceptingId] = useState<string | null>(null)
@@ -98,6 +117,11 @@ export default function MasterDashboard() {
   const [hasMoreBookings, setHasMoreBookings] = useState(false)
   const [loadingMore, setLoadingMore] = useState(false)
   const [showCustomerMessageModal, setShowCustomerMessageModal] = useState(false)
+  // 查看评价弹窗
+  const [showReviewModal, setShowReviewModal] = useState(false)
+  const [reviewData, setReviewData] = useState<any>(null)
+  const [reviewLoading, setReviewLoading] = useState(false)
+  const [reviewTargetBooking, setReviewTargetBooking] = useState<Booking | null>(null)
   const [selectedCustomer, setSelectedCustomer] = useState<any>(null)
   const [customerMessageText, setCustomerMessageText] = useState('')
   const [sendingCustomerMessage, setSendingCustomerMessage] = useState(false)
@@ -136,7 +160,7 @@ export default function MasterDashboard() {
   })
 
   // 订单状态筛选
-  const [orderFilter, setOrderFilter] = useState<'all' | 'pending' | 'processing' | 'completed' | 'message'>('all')
+  const [orderFilter, setOrderFilter] = useState<'all' | 'pending' | 'processing' | 'completed' | 'refund' | 'message' | 'expired'>('all')
 
   const ALL_TIME_SLOTS = [
     '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
@@ -297,6 +321,9 @@ export default function MasterDashboard() {
         if (data.availability?.available_slots !== undefined) {
           setAvailableSlots(data.availability.available_slots)
         }
+        if (data.stats) {
+          setStats(data.stats)
+        }
       } else {
         console.error('Dashboard API error:', data.error)
       }
@@ -417,40 +444,58 @@ export default function MasterDashboard() {
 
   const visibleBookings = bookings.filter((b) => !b.deleted_at && b.status !== 'cancelled' && b.payment_status !== 'cancelled' && b.payment_status !== 'refunded')
 
-  // 根据筛选条件过滤订单
+  // 根据筛选条件过滤订单（使用 TimeEngine displayStatus，与 badge 一致）
   const filteredBookings = visibleBookings.filter((b) => {
     if (orderFilter === 'all') return true
     const displayStatus = getDisplayStatus(b)
-    if (orderFilter === 'pending') return b.payment_status === 'paid' && displayStatus === 'pending'
-    if (orderFilter === 'processing') return b.payment_status === 'paid' && (displayStatus === 'confirmed' || displayStatus === 'in_progress')
-    if (orderFilter === 'completed') return displayStatus === 'completed'
+    if (orderFilter === 'pending') return b.payment_status === 'paid' && (displayStatus === 'confirmed' || displayStatus === 'upcoming')
+    if (orderFilter === 'processing') return b.payment_status === 'paid' && displayStatus === 'in_progress'
+    if (orderFilter === 'completed') return displayStatus === 'completed' || displayStatus === 'ended'
+    if (orderFilter === 'refund') return b.status === 'refund_requested' || b.payment_status === 'refund_requested'
     if (orderFilter === 'message') return b.consultation_type === 'message'
+    if (orderFilter === 'expired') return (displayStatus as string) === 'expired' || (b.payment_status === 'paid' && (displayStatus as string) === 'expired')
     return true
   })
 
-  const totalOrders = visibleBookings.length
-  const pendingOrders = visibleBookings.filter(
-    (b) => b.payment_status === 'paid' && getDisplayStatus(b) === 'pending'
+  const totalOrders = stats?.total ?? visibleBookings.length
+  const pendingOrders = stats?.pending ?? visibleBookings.filter(
+    (b) => b.payment_status === 'paid' && (getDisplayStatus(b) === 'confirmed' || getDisplayStatus(b) === 'upcoming')
   ).length
-  const processingOrders = visibleBookings.filter(
-    (b) =>
-      b.payment_status === 'paid' &&
-      (getDisplayStatus(b) === 'confirmed' || getDisplayStatus(b) === 'in_progress')
+  const processingOrders = stats?.processing ?? visibleBookings.filter(
+    (b) => b.payment_status === 'paid' && getDisplayStatus(b) === 'in_progress'
   ).length
-  const completedOrders = visibleBookings.filter(
-    (b) => getDisplayStatus(b) === 'completed'
+  const completedOrders = stats?.completed ?? visibleBookings.filter(
+    (b) => getDisplayStatus(b) === 'completed' || getDisplayStatus(b) === 'ended'
+  ).length
+  const refundOrders = stats?.refund ?? visibleBookings.filter(
+    (b) => b.status === 'refund_requested' || b.payment_status === 'refund_requested'
+  ).length
+  const messageOrders = stats?.message ?? visibleBookings.filter(
+    (b) => b.consultation_type === 'message'
+  ).length
+  const expiredOrders = stats?.expired ?? visibleBookings.filter(
+    (b) => getDisplayStatus(b) === 'expired'
   ).length
 
   const filterConfig = [
-    { key: 'all', label: '全部', labelEn: 'All', count: visibleBookings.length },
-    { key: 'pending', label: '待接单', labelEn: 'Pending', count: pendingOrders },
+    { key: 'all', label: '全部', labelEn: 'All', count: totalOrders },
+    { key: 'pending', label: '待服务', labelEn: 'To Service', count: pendingOrders },
     { key: 'processing', label: '进行中', labelEn: 'In Progress', count: processingOrders },
     { key: 'completed', label: '已完成', labelEn: 'Completed', count: completedOrders },
-    { key: 'message', label: '留言', labelEn: 'Message', count: visibleBookings.filter((b) => b.consultation_type === 'message').length },
+    { key: 'refund', label: '退款申请', labelEn: 'Refund', count: refundOrders },
+    { key: 'message', label: '留言', labelEn: 'Message', count: messageOrders },
+    { key: 'expired', label: '已过期', labelEn: 'Expired', count: expiredOrders },
   ]
 
-  // 状态标签样式（基于 displayStatus）
-  const getStatusBadge = (displayStatus: string, paymentStatus: string) => {
+  // 状态标签样式（基于 displayStatus + paymentStatus + status）
+  const getStatusBadge = (displayStatus: string, paymentStatus: string, status?: string) => {
+    if (status === 'refund_requested' || paymentStatus === 'refund_requested') {
+      return (
+        <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
+          {isZh ? '退款申请' : 'Refund Requested'}
+        </Badge>
+      )
+    }
     if (displayStatus === 'expired' || (paymentStatus === 'pending' && displayStatus === 'expired')) {
       return (
         <Badge variant="outline" className="bg-gray-100 text-gray-500 border-gray-200">
@@ -511,6 +556,27 @@ export default function MasterDashboard() {
   }
 
   // 接单
+  // 删除过期订单
+  const handleDeleteExpired = async (bookingId: string) => {
+    if (!confirm(isZh ? '确定删除该过期订单？' : 'Delete this expired order?')) return
+    try {
+      const supabase = createClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch(`/api/bookings/${bookingId}/delete`, {
+        method: 'POST',
+        headers: { authorization: `Bearer ${session?.access_token || ''}` },
+      })
+      if (res.ok) {
+        setBookings(prev => prev.filter(b => b.id !== bookingId))
+        alert(isZh ? '已删除' : 'Deleted')
+      } else {
+        alert(isZh ? '删除失败' : 'Delete failed')
+      }
+    } catch (err) {
+      alert(isZh ? '删除失败' : 'Delete failed')
+    }
+  }
+
   const handleAccept = async (bookingId: string) => {
     if (!confirm(isZh ? '确定要接这个订单吗？' : 'Are you sure you want to accept this order?')) {
       return
@@ -540,6 +606,31 @@ export default function MasterDashboard() {
   }
 
   // 修改预约时间
+  // 查看评价
+  const loadReview = async (booking: any) => {
+    setReviewTargetBooking(booking)
+    setShowReviewModal(true)
+    setReviewLoading(true)
+    try {
+      const supabase = createClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch(`/api/bookings/${booking.id}/review`, {
+        headers: { authorization: `Bearer ${session?.access_token || ''}` },
+      })
+      if (res.ok) {
+        const json = await res.json()
+        setReviewData(json.review || null)
+      } else {
+        setReviewData(null)
+      }
+    } catch (err) {
+      console.error('Load review error:', err)
+      setReviewData(null)
+    } finally {
+      setReviewLoading(false)
+    }
+  }
+
   const openRescheduleModal = async (booking: any) => {
     setRescheduleBooking(booking)
     setShowRescheduleModal(true)
@@ -779,10 +870,7 @@ export default function MasterDashboard() {
                   <path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>
                 </svg>
                 <span className="text-xs sm:text-sm font-medium text-amber-700">
-                  ${bookings
-                    .filter(b => ['completed', 'confirmed', 'in_progress'].includes(b.status) && b.payment_status === 'paid')
-                    .reduce((sum, b) => sum + (b.total_amount || 0) * 0.7, 0)
-                    .toFixed(2)}
+                  ${stats?.earnings?.toFixed(2) || '0.00'}
                 </span>
               </div>
             </div>
@@ -1087,10 +1175,13 @@ export default function MasterDashboard() {
                     const displayStatus = getDisplayStatus(booking)
                     const isPendingAccept =
                       booking.payment_status === 'paid' && displayStatus === 'pending'
-                    const isProcessing =
+                    const isToService =
                       booking.payment_status === 'paid' &&
-                      (displayStatus === 'confirmed' || displayStatus === 'in_progress')
-                    const isCompleted = displayStatus === 'completed'
+                      (displayStatus === 'confirmed' || displayStatus === 'upcoming')
+                    const isInProgress =
+                      booking.payment_status === 'paid' && displayStatus === 'in_progress'
+                    const isCompleted = displayStatus === 'completed' || displayStatus === 'ended'
+                    const isExpired = (displayStatus as string) === 'expired' || (booking.payment_status === 'paid' && (displayStatus as string) === 'expired')
 
                     return (
                       <div
@@ -1101,9 +1192,16 @@ export default function MasterDashboard() {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-2">
                               <span className="font-semibold text-sm sm:text-base truncate">
-                                {isZh ? service.nameCn : service.name}
+                                {booking.user_name || booking.user_email || booking.user_id}
                               </span>
-                              {getStatusBadge(displayStatus, booking.payment_status)}
+                              <Badge variant="outline" className={`text-xs ${booking.consultation_type === 'message' ? 'bg-stone-100 text-stone-600 border-stone-200' : 'bg-violet-50 text-violet-700 border-violet-200'}`}>
+                                {booking.consultation_type === 'message'
+                                  ? (isZh ? '留言咨询' : 'Message')
+                                  : booking.tier === 'deep'
+                                    ? (isZh ? '深度咨询' : 'Deep')
+                                    : (isZh ? '普通咨询' : 'Standard')}
+                              </Badge>
+                              {getStatusBadge(displayStatus, booking.payment_status, booking.status)}
                             </div>
                             <div className="text-xs text-stone-400 mb-1.5">
                               {isZh ? '订单号' : 'Order'}: {booking.order_number || booking.id.slice(0, 8)}
@@ -1119,7 +1217,7 @@ export default function MasterDashboard() {
                               ${booking.total_amount}
                             </p>
                           </div>
-                          <div className="flex flex-row sm:flex-col gap-2 sm:min-w-[100px]">
+                          <div className="flex flex-wrap sm:flex-col gap-2 sm:min-w-[100px]">
                             {isPendingAccept && (
                               <Button
                                 size="sm"
@@ -1151,8 +1249,8 @@ export default function MasterDashboard() {
                                 {isZh ? '取消并退款' : 'Cancel & Refund'}
                               </Button>
                             )}
-                            {/* 进行中订单 - 实时咨询进入对话 / 留言咨询查看留言 */}
-                            {isProcessing && (
+                            {/* 待服务订单 - 可修改时间 */}
+                            {isToService && (
                               <>
                                 {booking.consultation_type === 'message' ? (
                                   <Button
@@ -1189,6 +1287,36 @@ export default function MasterDashboard() {
                                       {isZh ? '修改时间' : 'Reschedule'}
                                     </Button>
                                   </>
+                                )}
+                              </>
+                            )}
+                            {/* 进行中订单 - 不可修改时间 */}
+                            {isInProgress && (
+                              <>
+                                {booking.consultation_type === 'message' ? (
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="text-violet-600 border-violet-200 hover:bg-violet-50 w-full"
+                                    onClick={() => {
+                                      setSelectedBooking(booking)
+                                      setShowMessageModal(true)
+                                    }}
+                                  >
+                                    <MessageSquare className="w-4 h-4 mr-1" />
+                                    {isZh ? '查看留言' : 'View Message'}
+                                  </Button>
+                                ) : (
+                                  <Link href={`/chat/${booking.id}`} className="inline-flex">
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      className="text-violet-600 border-violet-200 hover:bg-violet-50 w-full"
+                                    >
+                                      <MessageCircle className="w-4 h-4 mr-1" />
+                                      {isZh ? '进入咨询' : 'Enter Chat'}
+                                    </Button>
+                                  </Link>
                                 )}
                               </>
                             )}
@@ -1234,13 +1362,34 @@ export default function MasterDashboard() {
                                     </Button>
                                   </Link>
                                 )}
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-amber-600 border-amber-200 hover:bg-amber-50 w-full"
+                                  onClick={() => loadReview(booking)}
+                                >
+                                  <Star className="w-4 h-4 mr-1" />
+                                  {isZh ? '查看评价' : 'View Review'}
+                                </Button>
                               </>
                             )}
                             {(booking.status === 'cancelled' ||
-                              booking.payment_status === 'cancelled') && (
+                              booking.payment_status === 'cancelled') && !isExpired && (
                               <Badge variant="outline" className="self-center">
                                 {isZh ? '已取消' : 'Cancelled'}
                               </Badge>
+                            )}
+                            {/* 过期订单 - 删除按钮 */}
+                            {isExpired && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-red-600 border-red-200 hover:bg-red-50 w-full"
+                                onClick={() => handleDeleteExpired(booking.id)}
+                              >
+                                <Trash className="w-4 h-4 mr-1" />
+                                {isZh ? '删除' : 'Delete'}
+                              </Button>
                             )}
                           </div>
                         </div>
@@ -1610,6 +1759,79 @@ export default function MasterDashboard() {
         </div>
       )}
 
+      {/* 查看评价弹窗（师傅端只读） */}
+      {showReviewModal && reviewTargetBooking && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
+          <div className="bg-white rounded-xl p-6 w-full max-w-lg mx-4 shadow-xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">
+                {isZh ? '查看评价' : 'View Review'}
+              </h3>
+              <button
+                onClick={() => {
+                  setShowReviewModal(false)
+                  setReviewTargetBooking(null)
+                  setReviewData(null)
+                }}
+                className="text-stone-400 hover:text-stone-600"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {reviewLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="w-5 h-5 animate-spin text-stone-400" />
+              </div>
+            ) : reviewData ? (
+              <div className="space-y-4">
+                <div className="flex justify-center gap-2 mb-4">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      className={`w-8 h-8 ${
+                        star <= (reviewData.rating || 0)
+                          ? 'text-amber-400 fill-amber-400'
+                          : 'text-stone-300'
+                      }`}
+                    />
+                  ))}
+                </div>
+                <div className="bg-stone-50 rounded-lg p-4">
+                  <p className="text-sm text-stone-600 whitespace-pre-wrap">
+                    {reviewData.content || (isZh ? '（用户未留下文字评价）' : 'No written review')}
+                  </p>
+                </div>
+                <p className="text-xs text-stone-400 text-center">
+                  {reviewData.created_at
+                    ? new Date(reviewData.created_at).toLocaleString()
+                    : ''}
+                </p>
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-stone-500 text-sm">
+                  {isZh ? '该订单暂无评价' : 'No review for this booking'}
+                </p>
+              </div>
+            )}
+
+            <div className="flex justify-end mt-4">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowReviewModal(false)
+                  setReviewTargetBooking(null)
+                  setReviewData(null)
+                }}
+              >
+                {isZh ? '关闭' : 'Close'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 查看留言弹窗 */}
       {showMessageModal && selectedBooking && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
@@ -1822,10 +2044,15 @@ export default function MasterDashboard() {
             <h3 className="text-xl font-bold text-center mb-4">
               {isZh ? '修改预约时间' : 'Reschedule Booking'}
             </h3>
-            <p className="text-stone-500 text-center mb-6 text-sm">
+            <p className="text-stone-500 text-center mb-2 text-sm">
               {isZh
                 ? `当前预约：${rescheduleBooking.scheduled_date || '-'} ${rescheduleBooking.scheduled_time || ''}`
                 : `Current: ${rescheduleBooking.scheduled_date || '-'} ${rescheduleBooking.scheduled_time || ''}`}
+            </p>
+            <p className="text-stone-400 text-center mb-6 text-xs">
+              {isZh
+                ? `师傅时间：${TIMEZONE_LABELS[rescheduleBooking.timezone]?.zh || rescheduleBooking.timezone || ''}`
+                : `Advisor time: ${TIMEZONE_LABELS[rescheduleBooking.timezone]?.en || rescheduleBooking.timezone || ''}`}
             </p>
 
             <div className="mb-4">

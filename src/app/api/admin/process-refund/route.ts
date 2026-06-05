@@ -1,21 +1,25 @@
 import { NextResponse } from 'next/server'
-import { getStripe } from '@/lib/stripe'
-import { createServiceClient } from '@/lib/supabase'
 import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase'
+import { RefundEngine } from '@/lib/refundEngine'
+import { getMessage, getLang } from '@/lib/i18n'
+import { logAdminAudit } from '@/lib/observability'
+
+export const dynamic = 'force-dynamic'
 
 /**
  * POST /api/admin/process-refund
- * 总裁处理退款申请（管理员专用）
+ * 总裁处理退款（统一使用 RefundEngine）
  */
 export async function POST(request: Request) {
   try {
-    const stripe = getStripe()
     const body = await request.json()
-    const { bookingId } = body
+    const { bookingId, action, adminNote } = body
+    const lang = getLang(request)
 
     if (!bookingId) {
       return NextResponse.json(
-        { error: 'Missing required parameter: bookingId' },
+        { error: getMessage('INTERNAL_ERROR', request) },
         { status: 400 }
       )
     }
@@ -23,93 +27,127 @@ export async function POST(request: Request) {
     // 🔒 鉴权：验证管理员身份
     const authSupabase = await createClient()
     const { data: { user } } = await authSupabase.auth.getUser()
-    
+
     if (!user) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        { error: getMessage('UNAUTHORIZED', request) },
         { status: 401 }
       )
     }
 
-    // 总裁邮箱白名单
     const isAdmin = user.email === 'hzixin1997@gmail.com'
     if (!isAdmin) {
       return NextResponse.json(
-        { error: 'Admin access required' },
+        { error: getMessage('FORBIDDEN_NOT_MASTER', request) },
         { status: 403 }
       )
     }
 
     const supabase = createServiceClient()
 
-    // 获取 booking 信息
-    const { data: booking, error: bookingError } = await supabase
-      .from('bookings')
-      .select('*')
-      .eq('id', bookingId)
+    // 获取退款请求
+    const { data: refundRequest } = await supabase
+      .from('refund_requests')
+      .select('id, status')
+      .eq('booking_id', bookingId)
+      .in('status', ['requested', 'under_review', 'approved'])
+      .order('created_at', { ascending: false })
+      .limit(1)
       .single()
 
-    if (bookingError || !booking) {
-      return NextResponse.json(
-        { error: 'Booking not found' },
-        { status: 404 }
-      )
+    if (!refundRequest) {
+      // 如果没有退款请求记录，直接调用 RefundEngine 处理（兼容旧订单）
+      const eligibility = await RefundEngine.checkEligibility(bookingId, 'admin')
+      if (!eligibility.canRefund) {
+        return NextResponse.json(
+          { error: eligibility.reason, code: eligibility.code },
+          { status: 400 }
+        )
+      }
+
+      // 创建退款请求并处理
+      const requestResult = await RefundEngine.requestRefund({
+        bookingId,
+        requestedBy: 'admin',
+        requestedById: user.id,
+        requestedByEmail: user.email || undefined,
+        reason: adminNote || 'Admin force refund',
+        lang,
+      })
+
+      if (!requestResult.success || !requestResult.refundRequestId) {
+        return NextResponse.json(
+          { error: requestResult.error || 'Failed to create refund request', code: requestResult.code },
+          { status: 400 }
+        )
+      }
+
+      // 处理退款
+      const processResult = await RefundEngine.processRefund({
+        refundRequestId: requestResult.refundRequestId,
+        bookingId,
+        adminId: user.id,
+        adminEmail: user.email || undefined,
+        action: 'approve',
+        adminNote,
+        lang,
+      })
+
+      return NextResponse.json({
+        success: processResult.success,
+        refundRequestId: processResult.refundRequestId,
+        stripeRefundId: processResult.stripeRefundId,
+        status: processResult.status,
+        isLegacy: processResult.isLegacy,
+        message: processResult.isLegacy
+          ? 'Legacy order: marked as refunded without Stripe'
+          : processResult.error,
+      })
     }
 
-    // 检查是否是退款申请状态
-    if (booking.status !== 'refund_requested' && booking.payment_status !== 'refund_requested') {
-      return NextResponse.json(
-        { error: 'Booking is not in refund requested status' },
-        { status: 400 }
-      )
-    }
-
-    // 获取 stripe_payment_intent_id
-    const paymentIntentId = booking.stripe_payment_intent_id || booking.payment_intent_id
-
-    if (!paymentIntentId) {
-      return NextResponse.json(
-        { error: 'Payment intent not found for this booking' },
-        { status: 400 }
-      )
-    }
-
-    // 创建 Stripe 退款
-    const refund = await stripe.refunds.create({
-      payment_intent: paymentIntentId,
-      reason: 'requested_by_customer',
-      metadata: {
-        booking_id: bookingId,
-        processed_by: user.id,
-        user_id: booking.user_id,
-      },
+    // 调用 RefundEngine 处理退款
+    const result = await RefundEngine.processRefund({
+      refundRequestId: refundRequest.id,
+      bookingId,
+      adminId: user.id,
+      adminEmail: user.email || undefined,
+      action: action === 'reject' ? 'reject' : 'approve',
+      adminNote,
+      lang,
     })
 
-    const now = new Date().toISOString()
-
-    // 更新 bookings 表
-    await supabase
-      .from('bookings')
-      .update({
-        payment_status: 'refunded',
-        status: 'refunded',
-        stripe_refund_id: refund.id,
-        refunded_at: now,
-        updated_at: now,
+    // 记录审计日志
+    try {
+      await logAdminAudit({
+        adminId: user.id,
+        adminEmail: user.email || undefined,
+        action: action === 'reject' ? 'refund_rejected' : 'refund_processed',
+        targetType: 'booking',
+        targetId: bookingId,
+        beforeState: { refund_status: refundRequest.status },
+        afterState: { refund_status: result.status, stripe_refund_id: result.stripeRefundId },
+        reason: adminNote || 'Admin processed refund',
       })
-      .eq('id', bookingId)
+    } catch (logErr) {
+      console.error('[Admin Refund] Audit log failed:', logErr)
+    }
 
     return NextResponse.json({
-      success: true,
-      refundId: refund.id,
-      amount: booking.total_amount,
-      currency: booking.currency || 'USD',
-      status: refund.status,
+      success: result.success,
+      refundRequestId: result.refundRequestId,
+      stripeRefundId: result.stripeRefundId,
+      status: result.status,
+      isLegacy: result.isLegacy,
+      message: result.status === 'refunded'
+        ? 'Refund processed successfully'
+        : result.status === 'rejected'
+        ? 'Refund request rejected'
+        : result.error,
     })
   } catch (error: any) {
-    console.error('Error processing refund:', error)
+    console.error('[Admin Refund API] Error:', error)
     return NextResponse.json(
-      { error: 'Failed to process refund', message: error.message },
+      { error: getMessage('REFUND_FAILED', request), message: error.message },
       { status: 500 }
     )
   }

@@ -20,6 +20,7 @@
     "@radix-ui/react-tabs": "^1.1.13",
     "@radix-ui/react-toast": "^1.2.1",
     "@sendgrid/mail": "^8.1.6",
+    "@sentry/nextjs": "^10.55.0",
     "@stripe/stripe-js": "^9.4.0",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/ssr": "^0.9.0",
@@ -43,6 +44,7 @@
     "tailwind-merge": "^2.4.0"
   },
   "devDependencies": {
+    "@sentry/wizard": "^6.12.0",
     "@types/node": "^22.0.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",

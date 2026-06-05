@@ -122,14 +122,24 @@
   animation: shimmer 2s linear infinite;
 }
 
+/* Marquee animation */
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-33.33%); }
+}
+
+.animate-marquee-scroll {
+  animation: marquee-scroll 30s linear infinite;
+}
+
 /* Safe gradient text - 解决文字裁切问题 */
 .safe-gradient-text {
   background: linear-gradient(90deg, #6B46C1 0%, #9F7AEA 50%, #D4AF37 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  padding: 0.3em 0 0.5em 0;
-  line-height: 1.8;
+  padding: 0.05em 0;
+  line-height: 1.2;
   display: inline-block;
   overflow: visible;
   box-decoration-break: clone;

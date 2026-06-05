@@ -1,7 +1,10 @@
-import { NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
+import { NextResponse } from 'next/server';
+import { createServiceClient } from '@/lib/supabase';
+import { TimeEngine } from '@/lib/timeEngine';
+import { getMessage } from '@/lib/i18n';
+import * as Sentry from '@sentry/nextjs';
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 
 /**
  * POST /api/cron/complete-expired-bookings
@@ -22,14 +25,13 @@ async function doComplete(secret: string | null) {
   try {
     const expectedSecret = process.env.CRON_SECRET
     if (expectedSecret && secret && secret !== expectedSecret) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: getMessage('UNAUTHORIZED', new Request('http://localhost')) }, { status: 401 })
     }
 
     const supabase = createServiceClient()
     const now = Date.now()
 
-    // 严格：查询 status=ended 或 in_progress，且 start_time 至少在 duration+5分钟前
-    // 先查出所有可能过期的，再 JS 端精确过滤
+    // 严格：查询 status=ended 或 in_progress，且 TimeEngine 判断为 completed
     const { data: expiredBookings, error: fetchError } = await supabase
       .from('bookings')
       .select('id, scheduled_at, duration_minutes, status')
@@ -38,15 +40,17 @@ async function doComplete(secret: string | null) {
 
     if (fetchError) {
       console.error('[cron] fetch expired bookings error:', fetchError)
-      return NextResponse.json({ error: 'Fetch failed', details: fetchError.message }, { status: 500 })
+      return NextResponse.json({ error: getMessage('COMPLETE_EXPIRED_FAILED', new Request('http://localhost')), details: fetchError.message }, { status: 500 })
     }
 
-    // 严格过滤：end_time + 5分钟 < now
+    // 使用 TimeEngine 严格过滤：状态为 completed
     const toComplete = (expiredBookings || []).filter((b: any) => {
-      const scheduledTime = new Date(b.scheduled_at).getTime()
-      const endTime = scheduledTime + (b.duration_minutes || 25) * 60 * 1000
-      const bufferEndTime = endTime + 5 * 60 * 1000 // +5分钟缓冲
-      return now > bufferEndTime
+      const state = TimeEngine.getSessionState({
+        scheduled_at: b.scheduled_at,
+        duration_minutes: b.duration_minutes,
+        status: b.status,
+      }, now)
+      return state === 'completed'
     })
 
     if (toComplete.length === 0) {
@@ -61,7 +65,7 @@ async function doComplete(secret: string | null) {
 
     if (updateError) {
       console.error('[cron] update bookings error:', updateError)
-      return NextResponse.json({ error: 'Update failed', details: updateError.message }, { status: 500 })
+      return NextResponse.json({ error: getMessage('COMPLETE_EXPIRED_FAILED', new Request('http://localhost')), details: updateError.message }, { status: 500 })
     }
 
     console.log(`[cron] Auto-completed ${toComplete.length} expired bookings:`, toComplete.map((b: any) => b.id))
@@ -73,6 +77,9 @@ async function doComplete(secret: string | null) {
     })
   } catch (error: any) {
     console.error('[cron] complete-expired error:', error)
-    return NextResponse.json({ error: 'Internal server error', message: error.message }, { status: 500 })
+    Sentry.captureException(error, {
+      tags: { api: 'cron/complete-expired-bookings', component: 'cron' },
+    });
+    return NextResponse.json({ error: getMessage('INTERNAL_ERROR', new Request('http://localhost')), message: error.message }, { status: 500 })
   }
 }

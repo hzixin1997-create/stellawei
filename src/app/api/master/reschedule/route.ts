@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getMasterByEmail } from '@/lib/master-auth';
 import { rescheduleBooking } from '@/lib/reschedule';
+import { getLang, getMessage } from '@/lib/i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,7 +18,7 @@ export async function POST(request: Request) {
 
     if (!bookingId || !scheduled_date || !scheduled_time) {
       return NextResponse.json(
-        { error: 'Missing required fields: bookingId, scheduled_date, scheduled_time' },
+        { error: getMessage('INTERNAL_ERROR', request) },
         { status: 400 }
       );
     }
@@ -27,12 +28,15 @@ export async function POST(request: Request) {
     const { data: { user } } = await authSupabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json(
+        { error: getMessage('UNAUTHORIZED', request) },
+        { status: 401 }
+      );
     }
 
     const masterInfo = getMasterByEmail(user.email || '');
     if (!masterInfo) {
-      return NextResponse.json({ error: 'Not a master' }, { status: 403 });
+      return NextResponse.json({ error: getMessage('FORBIDDEN_NOT_MASTER', request) }, { status: 403 });
     }
 
     // 获取 master 的 Supabase UUID
@@ -52,6 +56,7 @@ export async function POST(request: Request) {
       requestingUserId: masterId,
       requestingUserEmail: user.email || undefined,
       isMaster: true,
+      lang: getLang(request),
     });
 
     if (!result.success) {
@@ -82,7 +87,7 @@ export async function POST(request: Request) {
   } catch (error: any) {
     console.error('Master reschedule API error:', error);
     return NextResponse.json(
-      { error: 'Internal server error', message: error.message },
+      { error: getMessage('INTERNAL_ERROR', request), message: error.message },
       { status: 500 }
     );
   }

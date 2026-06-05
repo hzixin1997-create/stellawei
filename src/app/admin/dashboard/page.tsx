@@ -15,6 +15,7 @@ import {
   RotateCcw,
   AlertTriangle,
   Mail,
+  TrendingUp,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -246,7 +247,7 @@ export default function AdminDashboard() {
 
         {/* 订单统计卡片 */}
         <h2 className="text-lg font-semibold text-stone-800 mb-4">{isZh ? '订单 & 财务' : 'Orders & Finance'}</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 mb-8">
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
@@ -276,12 +277,45 @@ export default function AdminDashboard() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 text-teal-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-stone-500">{isZh ? '转化率' : 'CVR'}</p>
+                  <p className="text-2xl font-bold">
+                    {ov?.totalUsers && ov.totalUsers > 0
+                      ? ((ov.totalOrders / ov.totalUsers) * 100).toFixed(1)
+                      : '0.0'}%
+                  </p>
+                  <p className="text-xs text-stone-400">
+                    {isZh ? `${ov?.totalOrders || 0} 订单 / ${ov?.totalUsers || 0} 用户` : `${ov?.totalOrders || 0} orders / ${ov?.totalUsers || 0} users`}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
                   <DollarSign className="w-5 h-5 text-green-600" />
                 </div>
                 <div>
                   <p className="text-sm text-stone-500">{isZh ? '本月收入' : 'Monthly Revenue'}</p>
                   <p className="text-2xl font-bold">${(ov?.monthRevenue || 0).toFixed(2)}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                  <DollarSign className="w-5 h-5 text-emerald-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-stone-500">{isZh ? '总收入' : 'Total Revenue'}</p>
+                  <p className="text-2xl font-bold">${(ov?.totalRevenue || 0).toFixed(2)}</p>
                 </div>
               </div>
             </CardContent>

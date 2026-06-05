@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
 import { createClient } from '@/lib/supabase/server';
 import { getMasterByEmail } from '@/lib/master-auth';
+import { getMessage } from '@/lib/i18n';
 
 export async function POST(request: Request) {
   try {
@@ -20,7 +21,7 @@ export async function POST(request: Request) {
     const { data: { user } } = await authSupabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: getMessage('UNAUTHORIZED', request) }, { status: 401 });
     }
 
     const supabase = createServiceClient();
@@ -28,7 +29,7 @@ export async function POST(request: Request) {
     // 获取师傅信息（用 email 从白名单取 slug， bookings.master_id 存的是 slug）
     const masterInfo = getMasterByEmail(user.email || '');
     if (!masterInfo) {
-      return NextResponse.json({ error: 'Master not found' }, { status: 403 });
+      return NextResponse.json({ error: getMessage('FORBIDDEN_NOT_MASTER', request) }, { status: 403 });
     }
 
     // 获取 booking 并验证归属
@@ -41,7 +42,7 @@ export async function POST(request: Request) {
 
     if (bookingError || !booking) {
       return NextResponse.json(
-        { error: 'Booking not found or not assigned to this master' },
+        { error: getMessage('BOOKING_NOT_FOUND', request) },
         { status: 404 }
       );
     }
@@ -67,7 +68,7 @@ export async function POST(request: Request) {
 
     if (updateError) {
       return NextResponse.json(
-        { error: 'Failed to accept booking', message: updateError.message },
+        { error: getMessage('ACCEPT_FAILED', request), message: updateError.message },
         { status: 500 }
       );
     }
@@ -79,7 +80,7 @@ export async function POST(request: Request) {
   } catch (error: any) {
     console.error('Accept booking error:', error);
     return NextResponse.json(
-      { error: 'Internal server error', message: error.message },
+      { error: getMessage('INTERNAL_ERROR', request), message: error.message },
       { status: 500 }
     );
   }

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { rescheduleBooking } from '@/lib/reschedule';
+import { getLang } from '@/lib/i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -40,6 +41,7 @@ export async function POST(
       scheduledTime: scheduled_time,
       requestingUserId: user.id,
       isMaster: false,
+      lang: getLang(request),
     });
 
     if (!result.success) {

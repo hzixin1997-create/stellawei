@@ -3,6 +3,8 @@ import { createServiceClient } from '@/lib/supabase';
 import { createClient } from '@/lib/supabase/server';
 import { getMasterByEmail } from '@/lib/master-auth';
 
+import { TimeEngine } from '@/lib/timeEngine';
+
 export const dynamic = 'force-dynamic';
 
 export const maxDuration = 15;
@@ -39,7 +41,7 @@ export async function GET(request: Request) {
       .eq('user_id', user.id)
       .single();
 
-    // 2. 分页订单
+    // 2. 分页订单（用于展示）
     let bookingsQuery = supabase
       .from('bookings')
       .select('*', { count: 'exact' })
@@ -48,7 +50,18 @@ export async function GET(request: Request) {
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
 
-    const { data: bookings, error: bookingsError, count } = await bookingsQuery;
+    // 同时查询所有订单用于统计（不分页）
+    let allBookingsQuery = supabase
+      .from('bookings')
+      .select('*')
+      .eq('master_id', masterInfo.slug)
+      .is('deleted_at', null)
+      .order('created_at', { ascending: false });
+
+    const [
+      { data: bookings, error: bookingsError, count },
+      { data: allBookings }
+    ] = await Promise.all([bookingsQuery, allBookingsQuery]);
 
     if (bookingsError) {
       console.error('Dashboard bookings error:', bookingsError);
@@ -56,6 +69,22 @@ export async function GET(request: Request) {
 
     const totalBookings = count || 0;
     const hasMore = offset + (bookings?.length || 0) < totalBookings;
+
+    const userIdsFromBookings = Array.from(new Set((bookings || []).map((b: any) => b.user_id)));
+    let profileMap: Record<string, any> = {};
+    if (userIdsFromBookings.length > 0) {
+      const { data: bookingProfiles } = await supabase
+        .from('profiles')
+        .select('id, email, full_name')
+        .in('id', userIdsFromBookings);
+      (bookingProfiles || []).forEach((p: any) => { profileMap[p.id] = p; });
+    }
+
+    const bookingsWithUser = (bookings || []).map((b: any) => ({
+      ...b,
+      user_email: profileMap[b.user_id]?.email || '',
+      user_name: profileMap[b.user_id]?.full_name || '',
+    }));
 
     // 3. 客户列表（限制30个）
     const { data: customerBookings } = await supabase
@@ -113,13 +142,44 @@ export async function GET(request: Request) {
       .eq('date', dateStr)
       .single();
 
+    // 5. 计算统计数据（基于 TimeEngine displayStatus，与前端保持一致）
+    const visibleAllBookings = (allBookings || []).filter((b: any) => !b.deleted_at && b.status !== 'cancelled' && b.payment_status !== 'cancelled' && b.payment_status !== 'refunded');
+    const getDisplayStatusForAPI = (b: any) => {
+      return TimeEngine.getSessionState({
+        status: b.status,
+        scheduled_at: b.scheduled_at || null,
+        duration_minutes: b.duration_minutes || 30,
+        expires_at: b.expires_at,
+      });
+    };
+
+    const statsTotal = visibleAllBookings.length;
+    const statsPending = visibleAllBookings.filter((b: any) => {
+      const ds = getDisplayStatusForAPI(b);
+      return b.payment_status === 'paid' && (ds === 'confirmed' || ds === 'upcoming');
+    }).length;
+    const statsProcessing = visibleAllBookings.filter((b: any) => {
+      const ds = getDisplayStatusForAPI(b);
+      return b.payment_status === 'paid' && ds === 'in_progress';
+    }).length;
+    const statsCompleted = visibleAllBookings.filter((b: any) => {
+      const ds = getDisplayStatusForAPI(b);
+      return ds === 'completed' || ds === 'ended';
+    }).length;
+    const statsRefund = visibleAllBookings.filter((b: any) => b.status === 'refund_requested' || b.payment_status === 'refund_requested').length;
+    const statsMessage = visibleAllBookings.filter((b: any) => b.consultation_type === 'message').length;
+  const statsExpired = visibleAllBookings.filter((b: any) => getDisplayStatusForAPI(b) === 'expired').length;
+    const statsEarnings = visibleAllBookings
+      .filter((b: any) => ['completed', 'confirmed', 'in_progress'].includes(b.status) && b.payment_status === 'paid')
+      .reduce((sum: number, b: any) => sum + (b.total_amount || 0) * 0.7, 0);
+
     return NextResponse.json({
       master: {
         ...masterInfo,
         id: master?.id,
         status: master?.status || 'online',
       },
-      bookings: bookings || [],
+      bookings: bookingsWithUser || [],
       bookingsPagination: {
         page,
         limit,
@@ -130,6 +190,16 @@ export async function GET(request: Request) {
       availability: {
         date: dateStr,
         available_slots: availability?.available_slots || [],
+      },
+      stats: {
+        total: statsTotal,
+        pending: statsPending,
+        processing: statsProcessing,
+        completed: statsCompleted,
+        refund: statsRefund,
+        message: statsMessage,
+        expired: statsExpired,
+        earnings: statsEarnings,
       },
     });
 

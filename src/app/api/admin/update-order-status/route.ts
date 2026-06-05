@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
 import { createClient } from '@/lib/supabase/server';
+import { getMessage } from '@/lib/i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,21 +11,21 @@ export async function POST(request: Request) {
     const { bookingId, action } = body;
 
     if (!bookingId) {
-      return NextResponse.json({ error: 'Missing bookingId' }, { status: 400 });
+      return NextResponse.json({ error: getMessage('INTERNAL_ERROR', request) }, { status: 400 });
     }
     if (!action || !['cancel', 'refund'].includes(action)) {
-      return NextResponse.json({ error: 'Invalid action. Use "cancel" or "refund"' }, { status: 400 });
+      return NextResponse.json({ error: getMessage('INTERNAL_ERROR', request) }, { status: 400 });
     }
 
     if (body.status !== undefined) {
-      return NextResponse.json({ error: 'Direct status modification is not allowed. Use action instead.' }, { status: 400 });
+      return NextResponse.json({ error: getMessage('INTERNAL_ERROR', request) }, { status: 400 });
     }
 
     const authSupabase = await createClient();
     const { data: { user } } = await authSupabase.auth.getUser();
 
     if (!user || !user.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: getMessage('UNAUTHORIZED', request) }, { status: 401 });
     }
 
     const supabase = createServiceClient();
@@ -37,7 +38,7 @@ export async function POST(request: Request) {
       .single();
 
     if (fetchError || !booking) {
-      return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
+      return NextResponse.json({ error: getMessage('BOOKING_NOT_FOUND', request) }, { status: 404 });
     }
 
     const updateData: Record<string, any> = { updated_at: new Date().toISOString() };
@@ -46,7 +47,7 @@ export async function POST(request: Request) {
       // 取消订单：只允许 pending/confirmed/in_progress
       if (!['pending', 'confirmed', 'in_progress'].includes(booking.status)) {
         return NextResponse.json(
-          { error: 'Cannot cancel booking with status: ' + booking.status },
+          { error: getMessage('CANCEL_FAILED', request) },
           { status: 400 }
         );
       }
@@ -58,7 +59,7 @@ export async function POST(request: Request) {
       // 退款：只允许已支付的订单
       if (booking.payment_status !== 'paid') {
         return NextResponse.json(
-          { error: 'Cannot refund unpaid booking', payment_status: booking.payment_status },
+          { error: getMessage('REFUND_FAILED', request), payment_status: booking.payment_status },
           { status: 400 }
         );
       }
@@ -73,11 +74,11 @@ export async function POST(request: Request) {
       .single();
 
     if (error) {
-      return NextResponse.json({ error: 'Update failed', details: error.message }, { status: 500 });
+      return NextResponse.json({ error: getMessage('STATUS_UPDATE_FAILED', request), details: error.message }, { status: 500 });
     }
 
     return NextResponse.json({ success: true, booking: data });
   } catch (error: any) {
-    return NextResponse.json({ error: 'Internal server error', message: error.message }, { status: 500 });
+    return NextResponse.json({ error: getMessage('INTERNAL_ERROR', request), message: error.message }, { status: 500 });
   }
 }

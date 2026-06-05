@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
+import { Calendar, zhCN, enUS } from '@/components/ui/calendar'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
@@ -142,11 +142,12 @@ export default function BookingPage() {
 
   const isZh = i18n.language === 'zh'
 
-  // 查询师傅某天可用时段（与师傅后台同步）
-  const fetchMasterAvailability = async (masterId: string, date: Date) => {
+  // 查询师傅某天可用时段（与师傅后台同步，带时长参数）
+  const fetchMasterAvailability = async (masterId: string, date: Date, durationMinutes?: number) => {
     try {
       const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-      const res = await fetch(`/api/bookings/occupied-slots?master_id=${masterId}&date=${dateStr}`)
+      const dur = durationMinutes || 25
+      const res = await fetch(`/api/bookings/occupied-slots?master_id=${masterId}&date=${dateStr}&duration_minutes=${dur}`)
       if (res.ok) {
         const data = await res.json()
         return data.occupiedSlots || []
@@ -197,20 +198,22 @@ export default function BookingPage() {
     checkUser()
   }, [router])
 
-  // 查询已占用时间槽
+  // 查询已占用时间槽（基于区间重叠，带时长参数）
   useEffect(() => {
     const fetchBookedSlots = async () => {
-      if (!selectedMaster || !selectedDate || consultationType !== 'realtime') {
+      if (!selectedMaster || !selectedDate || consultationType !== 'realtime' || !selectedTier) {
         setBookedSlots([])
         return
       }
       setCheckingSlots(true)
       try {
+        const tierInfo = TIERS.find(t => t.id === selectedTier)
+        const durationMinutes = tierInfo?.durationMinutes || 25
         // 使用本地日期，避免 UTC 时区偏差
         const dateStr = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`
         
-        // 通过 API 查询已占用时间槽（绕过 RLS）
-        const res = await fetch(`/api/bookings/occupied-slots?master_id=${selectedMaster}&date=${dateStr}`)
+        // 通过 API 查询已占用时间槽（带时长参数，做区间重叠检测）
+        const res = await fetch(`/api/bookings/occupied-slots?master_id=${selectedMaster}&date=${dateStr}&duration_minutes=${durationMinutes}`)
         if (res.ok) {
           const data = await res.json()
           const occupied = data.occupiedSlots || []
@@ -228,7 +231,7 @@ export default function BookingPage() {
       }
     }
     fetchBookedSlots()
-  }, [selectedMaster, selectedDate, consultationType])
+  }, [selectedMaster, selectedDate, consultationType, selectedTier])
 
   // 获取当前选中的师傅
   const master = MASTERS.find(m => m.id === selectedMaster)
@@ -346,8 +349,8 @@ export default function BookingPage() {
         // 使用本地日期，避免 toISOString() 返回 UTC 日期导致时区偏差（UTC+8 可能前一天）
         const dateStr = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`
         
-        // 时间槽占用检查（通过 API 绕过 RLS）
-        const checkRes = await fetch(`/api/bookings/check-slot?master_id=${selectedMaster}&date=${dateStr}&time=${selectedTime}`)
+        // 时间槽占用检查（通过 API 绕过 RLS，带时长参数做区间重叠检测）
+        const checkRes = await fetch(`/api/bookings/check-slot?master_id=${selectedMaster}&date=${dateStr}&time=${selectedTime}&duration_minutes=${durationMinutes}`)
         const checkData = await checkRes.json()
 
         if (!checkRes.ok) {
@@ -756,6 +759,7 @@ export default function BookingPage() {
                           mode="single"
                           selected={selectedDate}
                           onSelect={setSelectedDate}
+                          locale={isZh ? zhCN : enUS}
                           disabled={(date) => {
                             const today = new Date()
                             today.setHours(0, 0, 0, 0)

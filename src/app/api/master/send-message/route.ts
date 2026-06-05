@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
 import { createClient } from '@/lib/supabase/server';
 import { getMasterByEmail } from '@/lib/master-auth';
+import { getMessage } from '@/lib/i18n';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,13 +26,13 @@ export async function POST(request: Request) {
     const { data: { user } } = await authSupabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: getMessage('UNAUTHORIZED', request) }, { status: 401 });
     }
 
     // 使用白名单获取师傅信息
     const masterInfo = getMasterByEmail(user.email || '');
     if (!masterInfo) {
-      return NextResponse.json({ error: 'Not a master' }, { status: 403 });
+      return NextResponse.json({ error: getMessage('FORBIDDEN_NOT_MASTER', request) }, { status: 403 });
     }
 
     const supabase = createServiceClient();
@@ -44,11 +45,11 @@ export async function POST(request: Request) {
       .single();
 
     if (bookingError || !booking) {
-      return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
+      return NextResponse.json({ error: getMessage('BOOKING_NOT_FOUND', request) }, { status: 404 });
     }
 
     if (booking.master_id !== masterInfo.slug) {
-      return NextResponse.json({ error: 'Not authorized for this booking' }, { status: 403 });
+      return NextResponse.json({ error: getMessage('FORBIDDEN_NOT_MASTER', request) }, { status: 403 });
     }
 
     // 2. 插入消息
@@ -68,7 +69,7 @@ export async function POST(request: Request) {
 
     if (msgError) {
       return NextResponse.json(
-        { error: 'Failed to send message', message: msgError.message },
+        { error: getMessage('SEND_FAILED', request), message: msgError.message },
         { status: 500 }
       );
     }
@@ -89,7 +90,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, message });
   } catch (error: any) {
     return NextResponse.json(
-      { error: 'Internal server error', message: error.message },
+      { error: getMessage('INTERNAL_ERROR', request), message: error.message },
       { status: 500 }
     );
   }

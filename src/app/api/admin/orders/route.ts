@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase'
 import { createClient } from '@/lib/supabase/server'
+import { getMessage } from '@/lib/i18n'
 
 export async function GET(request: Request) {
   try {
@@ -9,12 +10,12 @@ export async function GET(request: Request) {
     const { data: { user } } = await authSupabase.auth.getUser()
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: getMessage('UNAUTHORIZED', request) }, { status: 401 })
     }
 
     const isAdmin = user.email === 'hzixin1997@gmail.com'
     if (!isAdmin) {
-      return NextResponse.json({ error: 'Admin access required' }, { status: 403 })
+      return NextResponse.json({ error: getMessage('FORBIDDEN_NOT_MASTER', request) }, { status: 403 })
     }
 
     // 获取 URL 参数
@@ -40,7 +41,7 @@ export async function GET(request: Request) {
     if (error) {
       console.error('Admin orders fetch error:', error)
       return NextResponse.json(
-        { error: 'Failed to fetch orders', message: error.message },
+        { error: getMessage('INTERNAL_ERROR', request), message: error.message },
         { status: 500 }
       )
     }
@@ -49,7 +50,7 @@ export async function GET(request: Request) {
   } catch (error: any) {
     console.error('Admin orders API error:', error)
     return NextResponse.json(
-      { error: 'Internal server error', message: error.message },
+      { error: getMessage('INTERNAL_ERROR', request), message: error.message },
       { status: 500 }
     )
   }

@@ -10,7 +10,16 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Stellawei品牌色
+        // 新克制配色
+        'sw-bg': '#FFFFFF',
+        'sw-cream': '#FAF7F2',
+        'sw-surface': '#F5F3EF',
+        'sw-text': '#1A1A2E',
+        'sw-text-secondary': '#6B6B7B',
+        'sw-accent': '#6B46C1',
+        'sw-accent-soft': '#EDE9F6',
+        'sw-gold': '#C9A84C',
+        'sw-gold-soft': '#FDF6E3',
         stellawei: {
           purple: '#6B46C1',
           'purple-dark': '#553C9A',

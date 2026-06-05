@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
 import { createClient } from '@/lib/supabase/server';
+import { TimeEngine } from '@/lib/timeEngine';
+import { getMessage, getLang } from '@/lib/i18n';
+import * as Sentry from '@sentry/nextjs';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,7 +20,7 @@ export async function POST(request: Request) {
     const { data: { user } } = await authSupabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: getMessage('UNAUTHORIZED', request) }, { status: 401 });
     }
 
     const supabase = createServiceClient();
@@ -58,7 +61,7 @@ export async function POST(request: Request) {
 
       if (conflictError) {
         return NextResponse.json(
-          { error: 'Failed to check slot availability' },
+          { error: getMessage('CHECK_SLOT_FAILED', request) },
           { status: 500 }
         );
       }
@@ -75,7 +78,7 @@ export async function POST(request: Request) {
 
       if (occupied.length > 0) {
         return NextResponse.json(
-          { error: 'This time slot is already booked. Please select another time.' },
+          { error: getMessage('SLOT_BOOKED', request) },
           { status: 409 }
         );
       }
@@ -98,7 +101,7 @@ export async function POST(request: Request) {
       const p = pendingOrders[0];
       return NextResponse.json(
         {
-          error: 'You already have a pending order',
+          error: getMessage('PENDING_ORDER', request),
           message: `You have an unpaid order scheduled for ${p.scheduled_date} ${p.scheduled_time}. Please complete payment or wait for it to expire before creating a new order.`,
           existingOrderId: p.id,
         },
@@ -119,7 +122,7 @@ export async function POST(request: Request) {
 
       if (paidOrders && paidOrders.length > 0) {
         return NextResponse.json(
-          { error: 'First-time discount is only available for your first order' },
+          { error: getMessage('FIRST_TIME_ONLY', request) },
           { status: 400 }
         );
       }
@@ -127,16 +130,16 @@ export async function POST(request: Request) {
 
     // ===== 2小时预约缓冲校验 =====
     // 实时咨询必须至少提前2小时预约
-    if (body.consultation_type === 'realtime' && body.scheduled_date && body.scheduled_time) {
-      const [hour, minute] = body.scheduled_time.split(':').map(Number);
-      const scheduledDateTime = new Date(body.scheduled_date);
-      scheduledDateTime.setHours(hour, minute, 0, 0);
-      
-      const minBookingTime = new Date(Date.now() + 2 * 60 * 60 * 1000);
-      
-      if (scheduledDateTime.getTime() < minBookingTime.getTime()) {
+    if (body.consultation_type === 'realtime' && body.scheduled_at) {
+      if (!TimeEngine.canBook(body.scheduled_at)) {
         return NextResponse.json(
-          { error: 'Real-time consultations must be booked at least 2 hours in advance' },
+          { error: 'Real-time consultations must be booked at least 15 minutes in advance' },
+          { status: 400 }
+        );
+      }
+      if (!TimeEngine.canReschedule(body.scheduled_at)) {
+        return NextResponse.json(
+          { error: getMessage('BOOK_TOO_SHORT', request) },
           { status: 400 }
         );
       }
@@ -192,7 +195,7 @@ export async function POST(request: Request) {
     if (bookingError) {
       console.error('Create booking error:', bookingError);
       return NextResponse.json(
-        { error: 'Failed to create booking', message: bookingError.message },
+        { error: getMessage('CREATE_FAILED', request), message: bookingError.message },
         { status: 500 }
       );
     }
@@ -200,8 +203,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, booking });
   } catch (error: any) {
     console.error('Create booking API error:', error);
+    Sentry.captureException(error, {
+      tags: { api: 'bookings', method: 'POST', component: 'booking' },
+    });
     return NextResponse.json(
-      { error: 'Internal server error', message: error.message },
+      { error: getMessage('INTERNAL_ERROR', request), message: error.message },
       { status: 500 }
     );
   }

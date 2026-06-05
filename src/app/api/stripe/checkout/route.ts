@@ -1,6 +1,7 @@
 import { stripe, getPriceId } from "@/lib/stripe";
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
+import * as Sentry from '@sentry/nextjs';
 
 export async function POST(request: Request) {
   try {
@@ -60,6 +61,9 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ sessionUrl: session.url });
   } catch (error: any) {
+    Sentry.captureException(error, {
+      tags: { api: 'stripe/checkout', component: 'payment' },
+    });
     console.error("Stripe checkout error:", error);
     return NextResponse.json(
       { error: error.message || "Checkout failed" },

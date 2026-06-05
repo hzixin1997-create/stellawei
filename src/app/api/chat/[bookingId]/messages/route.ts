@@ -1,12 +1,14 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { createServiceClient } from '@/lib/supabase';
 import { getMasterByEmail } from '@/lib/master-auth';
+import { getMessage, getLang } from '@/lib/i18n';
+import * as Sentry from '@sentry/nextjs';
 
 export const dynamic = 'force-dynamic';
 
 /**
  * GET /api/chat/[bookingId]/messages
- * 获取指定 booking 的聊天历史消息
+ * Voice Engine v1.0 - 获取指定 booking 的聊天历史消息
  */
 export async function GET(
   request: Request,
@@ -14,20 +16,17 @@ export async function GET(
 ) {
   try {
     const { bookingId } = params;
+    const supabase = createServiceClient();
+    const lang = getLang(request);
 
-    // 鉴权（用 service client 直接验证 token，减少一次 client 创建）
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
     const authHeader = request.headers.get('authorization');
     if (!authHeader) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: getMessage('UNAUTHORIZED', request) }, { status: 401 });
     }
     const token = authHeader.replace('Bearer ', '');
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: getMessage('UNAUTHORIZED', request) }, { status: 401 });
     }
 
     // 验证 booking 存在且当前用户有权访问
@@ -40,31 +39,28 @@ export async function GET(
     if (bookingError || !booking) {
       console.error('[chat:GET] Booking not found. Error:', bookingError)
       return NextResponse.json({ 
-        error: 'Booking not found', 
+        error: getMessage('BOOKING_NOT_FOUND', request), 
         details: bookingError?.message,
         code: bookingError?.code,
-        hint: 'Check if service_role key has RLS bypass permission'
       }, { status: 404 });
     }
 
-    // 检查权限：用户本人或该订单的师傅
     const masterInfo = getMasterByEmail(user.email || '');
     const isUser = booking.user_id === user.id;
     const isMaster = masterInfo && booking.master_id === masterInfo.slug;
 
     if (!isUser && !isMaster) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      return NextResponse.json({ error: getMessage('FORBIDDEN_NOT_USER', request) }, { status: 403 });
     }
 
-    // 检查订单状态是否允许聊天
     if (booking.status === 'cancelled' || booking.status === 'refunded') {
-      return NextResponse.json({ error: 'Booking is cancelled' }, { status: 400 });
+      return NextResponse.json({ error: getMessage('CONSULTATION_ENDED', request) }, { status: 400 });
     }
     if (booking.payment_status !== 'paid' && booking.payment_status !== 'refund_requested') {
-      return NextResponse.json({ error: 'Booking not paid' }, { status: 400 });
+      return NextResponse.json({ error: getMessage('UNPAID_BOOKING', request) }, { status: 400 });
     }
 
-    // 查询消息
+    // 查询消息 - Voice Engine: 包含所有 audio 相关字段
     const { data: messages, error } = await supabase
       .from('messages')
       .select('*')
@@ -73,12 +69,12 @@ export async function GET(
 
     if (error) {
       return NextResponse.json(
-        { error: 'Failed to fetch messages', message: error.message },
+        { error: getMessage('SEND_FAILED', request), message: error.message },
         { status: 500 }
       );
     }
 
-    // 标记对方消息为已读（当前用户查看时，将对方发送的未读消息标记为已读）
+    // 标记对方消息为已读
     const oppositeSenderType = isMaster ? 'user' : 'master';
     const unreadMessages = (messages || []).filter(
       (m) => m.sender_type === oppositeSenderType && !m.read_at
@@ -92,7 +88,6 @@ export async function GET(
         .in('id', unreadIds);
     }
 
-    // 返回 typing 状态
     const now = new Date().toISOString();
     const isUserTyping = booking.user_typing_until && booking.user_typing_until > now;
     const isMasterTyping = booking.master_typing_until && booking.master_typing_until > now;
@@ -100,15 +95,16 @@ export async function GET(
     return NextResponse.json({
       messages: messages || [],
       booking,
-      typing: {
-        user: isUserTyping,
-        master: isMasterTyping,
-      },
+      typing: { user: isUserTyping, master: isMasterTyping },
     });
   } catch (error: any) {
     console.error('Chat messages API error:', error);
+    Sentry.captureException(error, {
+      tags: { api: 'chat/messages', method: 'GET', component: 'chat' },
+      extra: { bookingId: params?.bookingId },
+    });
     return NextResponse.json(
-      { error: 'Internal server error', message: error.message },
+      { error: getMessage('INTERNAL_ERROR', request), message: error.message },
       { status: 500 }
     );
   }
@@ -116,7 +112,7 @@ export async function GET(
 
 /**
  * POST /api/chat/[bookingId]/messages
- * 发送聊天消息
+ * Voice Engine v1.0 - 发送聊天消息（含语音状态机）
  */
 export async function POST(
   request: Request,
@@ -125,31 +121,26 @@ export async function POST(
   try {
     const { bookingId } = params;
     const body = await request.json();
-    const { content, image_url, audio_url, audio_duration } = body;
+    const { content, image_url, audio_url, audio_duration, audio_size, audio_format, voice_status } = body;
 
     if (!content && !image_url && !audio_url) {
       return NextResponse.json(
-        { error: 'Message must have content, image, or audio' },
+        { error: getMessage('SEND_FAILED', request) },
         { status: 400 }
       );
     }
 
-    // 鉴权（用 service client 直接验证 token，减少一次 client 创建）
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const supabase = createServiceClient();
     const authHeader = request.headers.get('authorization');
     if (!authHeader) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: getMessage('UNAUTHORIZED', request) }, { status: 401 });
     }
     const token = authHeader.replace('Bearer ', '');
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: getMessage('UNAUTHORIZED', request) }, { status: 401 });
     }
 
-    // 验证 booking 存在
     const { data: booking, error: bookingError } = await supabase
       .from('bookings')
       .select('id, user_id, master_id, status, payment_status, scheduled_at, duration_minutes')
@@ -157,47 +148,40 @@ export async function POST(
       .single();
 
     if (bookingError || !booking) {
-      return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
+      return NextResponse.json({ error: getMessage('BOOKING_NOT_FOUND', request) }, { status: 404 });
     }
 
-    // 检查权限
     const masterInfo = getMasterByEmail(user.email || '');
     const isUser = booking.user_id === user.id;
     const isMaster = masterInfo && booking.master_id === masterInfo.slug;
 
     if (!isUser && !isMaster) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      return NextResponse.json({ error: getMessage('FORBIDDEN_NOT_USER', request) }, { status: 403 });
     }
 
-    // 检查订单状态是否允许发送消息
-    // 用户端：只允许 confirmed / in_progress，且不能超时
-    // 师傅端：只要不是 cancelled/refunded，随时可以发
     if (isUser) {
       if (!['confirmed', 'in_progress'].includes(booking.status)) {
         return NextResponse.json(
-          { error: 'Booking is not ready for chat', currentStatus: booking.status },
+          { error: getMessage('CONSULTATION_ENDED', request), currentStatus: booking.status },
           { status: 400 }
         );
       }
-      // 检查是否已超时（咨询时间结束）
       if (booking.scheduled_at && booking.duration_minutes) {
         const endTime = new Date(booking.scheduled_at).getTime() + booking.duration_minutes * 60 * 1000;
         if (Date.now() > endTime) {
-          return NextResponse.json({ error: 'Consultation time has ended' }, { status: 400 });
+          return NextResponse.json({ error: getMessage('CONSULTATION_ENDED', request) }, { status: 400 });
         }
       }
     }
 
     if (booking.payment_status !== 'paid') {
-      return NextResponse.json({ error: 'Booking not paid' }, { status: 400 });
+      return NextResponse.json({ error: getMessage('UNPAID_BOOKING', request) }, { status: 400 });
     }
 
-    // 获取发送者名称
     const senderName = isMaster
       ? masterInfo?.name || 'Master'
       : user.user_metadata?.full_name || user.email || 'User';
 
-    // 插入消息
     const insertPayload: any = {
       booking_id: bookingId,
       sender_id: user.id,
@@ -207,6 +191,9 @@ export async function POST(
       image_url: image_url || null,
       audio_url: audio_url || null,
       audio_duration: audio_duration != null ? audio_duration : null,
+      audio_size: audio_size != null ? audio_size : null,
+      audio_format: audio_format || null,
+      voice_status: voice_status || (audio_url ? 'sent' : null),
       source: 'chat',
     };
 
@@ -218,7 +205,7 @@ export async function POST(
     if (insertError) {
       console.error('[chat:POST] Insert message error:', insertError);
       return NextResponse.json(
-        { error: 'Failed to send message', message: insertError.message },
+        { error: getMessage('SEND_FAILED', request), message: insertError.message },
         { status: 500 }
       );
     }
@@ -228,15 +215,19 @@ export async function POST(
     if (!message) {
       console.error('[chat:POST] Insert succeeded but no row returned');
       return NextResponse.json(
-        { error: 'Failed to send message', message: 'Insert succeeded but no row returned' },
+        { error: getMessage('SEND_FAILED', request), message: 'Insert succeeded but no row returned' },
         { status: 500 }
       );
     }
 
     return NextResponse.json({ success: true, message });
   } catch (error: any) {
+    Sentry.captureException(error, {
+      tags: { api: 'chat/messages', method: 'POST', component: 'chat' },
+      extra: { bookingId: params?.bookingId },
+    });
     return NextResponse.json(
-      { error: 'Internal server error', message: error.message },
+      { error: getMessage('INTERNAL_ERROR', request), message: error.message },
       { status: 500 }
     );
   }

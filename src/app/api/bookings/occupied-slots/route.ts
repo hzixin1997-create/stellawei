@@ -1,17 +1,25 @@
 import { NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
+import { TimeEngine } from '@/lib/timeEngine';
 
 export const dynamic = 'force-dynamic';
 
+const ALL_SLOTS = [
+  '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
+  '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30',
+  '19:00', '19:30', '20:00', '20:30'
+];
+
 /**
- * GET /api/bookings/occupied-slots?master_id=xxx&date=2026-05-16
- * 返回指定师傅某天的所有已占用时间槽
+ * GET /api/bookings/occupied-slots?master_id=xxx&date=2026-05-16&duration_minutes=25
+ * 返回指定师傅某天的可用/占用时段（基于区间重叠检测）
  */
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const masterId = searchParams.get('master_id');
     const date = searchParams.get('date');
+    const durationMinutes = parseInt(searchParams.get('duration_minutes') || '25', 10);
 
     if (!masterId || !date) {
       return NextResponse.json(
@@ -22,9 +30,10 @@ export async function GET(request: Request) {
 
     const supabase = createServiceClient();
 
+    // 查询同师傅当天所有非取消/非退款的订单
     const { data: bookings, error } = await supabase
       .from('bookings')
-      .select('scheduled_time, status, created_at, expires_at')
+      .select('id, scheduled_time, duration_minutes, status, created_at, expires_at')
       .eq('master_id', masterId)
       .eq('scheduled_date', date)
       .not('status', 'in', '(cancelled,refunded)');
@@ -37,11 +46,9 @@ export async function GET(request: Request) {
       );
     }
 
-    // 过滤出有效占用的时段
-    // paid/confirmed/in_progress: 永久占用
-    // pending: 看 expires_at，过期即释放
+    // 过滤出有效占用的订单
     const now = Date.now();
-    const orderOccupiedSlots = (bookings || [])
+    const existingBookings = (bookings || [])
       .filter((b: any) => {
         if (['paid', 'confirmed', 'in_progress'].includes(b.status)) return true;
         if (b.status === 'pending') {
@@ -50,18 +57,17 @@ export async function GET(request: Request) {
         }
         return false;
       })
-      .map((b: any) => b.scheduled_time)
-      // 去重
-      .filter((value: string, index: number, self: string[]) => self.indexOf(value) === index);
+      .map((b: any) => ({
+        scheduled_time: b.scheduled_time,
+        duration_minutes: b.duration_minutes || 30,
+      }));
 
-    // 获取师傅设置的可用时段（如果有设置的话）
-    // 注意：master_availability 表使用 masters.id (UUID)，不是 slug
+    // 获取师傅设置的可用时段
     const { data: masterRecord } = await supabase
       .from('masters')
       .select('id')
       .eq('slug', masterId)
       .single();
-
     const masterUuid = masterRecord?.id || masterId;
 
     const { data: availability } = await supabase
@@ -71,13 +77,6 @@ export async function GET(request: Request) {
       .eq('date', date)
       .single();
 
-    // 标准全天时段
-    const allSlots = [
-      '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
-      '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30',
-      '19:00', '19:30', '20:00', '20:30'
-    ];
-
     // 检查师傅是否有任何可用时段设置记录
     const { data: anyAvailability } = await supabase
       .from('master_availability')
@@ -86,41 +85,37 @@ export async function GET(request: Request) {
       .limit(1);
 
     const hasAvailabilitySettings = anyAvailability && anyAvailability.length > 0;
-    let availableSlots: string[] = [];
 
+    // 计算开放时段：师傅有设置则使用设置，否则全天开放
+    let openSlots: string[] = [];
     if (hasAvailabilitySettings) {
-      // 师傅已经设置过可用时段
       if (availability?.available_slots && availability.available_slots.length > 0) {
-        // 师傅设置了该天的可用时段，从中排除被占用的
-        const occupiedSet = new Set(orderOccupiedSlots);
-        availableSlots = availability.available_slots.filter((s: string) => !occupiedSet.has(s));
+        openSlots = availability.available_slots;
       } else {
-        // 师傅没设置这天（或设置为空），全部关闭
-        availableSlots = [];
+        openSlots = []; // 师傅没设置这天，全部关闭
       }
     } else {
-      // 师傅从来没设置过可用时段，默认全天开放，排除被占用的
-      const occupiedSet = new Set(orderOccupiedSlots);
-      availableSlots = allSlots.filter(s => !occupiedSet.has(s));
+      openSlots = ALL_SLOTS; // 师傅从来没设置过，默认全天开放
     }
 
-    // occupiedSlots 保持原有逻辑（向后兼容）
-    let occupiedSlots = orderOccupiedSlots;
-    if (hasAvailabilitySettings) {
-      if (availability?.available_slots && availability.available_slots.length > 0) {
-        const allowedSet = new Set(availability.available_slots);
-        const unavailableSlots = allSlots.filter(s => !allowedSet.has(s));
-        const mergedSet = new Set([...orderOccupiedSlots, ...unavailableSlots]);
-        occupiedSlots = Array.from(mergedSet);
-      } else {
-        occupiedSlots = Array.from(new Set([...orderOccupiedSlots, ...allSlots]));
-      }
-    }
+    // 使用 TimeEngine 做区间重叠检测，计算可用/占用时段
+    const { availableSlots, occupiedSlots } = TimeEngine.getAvailableSlots(
+      date,
+      openSlots,
+      existingBookings,
+      durationMinutes
+    );
+
+    // 补充：师傅未开放但未被占用的时段（用于显示"不可约"）
+    const unavailableSlots = ALL_SLOTS.filter(s => !openSlots.includes(s) && !occupiedSlots.includes(s));
 
     return NextResponse.json({
       occupiedSlots,
       available_slots: availableSlots,
-      count: occupiedSlots.length,
+      unavailableSlots,
+      existingBookings: existingBookings.length,
+      durationMinutes,
+      count: occupiedSlots.length + unavailableSlots.length,
     });
   } catch (error: any) {
     console.error('Occupied slots API error:', error);

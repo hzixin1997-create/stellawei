@@ -24,6 +24,8 @@ interface BookingOrder {
   is_first_time: boolean;
   created_at: string;
   user_id: string;
+  user_email?: string;
+  user_name?: string;
   order_number?: string;
   question_text?: string | null;
   expires_at?: string | null;
@@ -308,16 +310,19 @@ export default function MasterOrdersPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <h3 className="font-semibold text-stone-900">
-                            {categoryMap[order.service_category] || order.service_category}
+                            {order.user_name || order.user_email || order.user_id}
                           </h3>
-                          <span className={`px-2 py-0.5 text-xs rounded-full ${status.color}`}>
-                            {status.label}
+                          <span className="px-2 py-0.5 text-xs rounded-full bg-stone-100 text-stone-600">
+                            {order.consultation_type === 'message' ? '留言咨询' : order.tier === 'deep' ? '深度咨询' : '普通咨询'}
                           </span>
                           {order.question_text && (
                             <span className="px-2 py-0.5 text-xs rounded-full bg-red-100 text-red-700">
                               新消息
                             </span>
                           )}
+                          <span className={`px-2 py-0.5 text-xs rounded-full ${status.color}`}>
+                            {status.label}
+                          </span>
                         </div>
                         <p className="text-xs text-stone-400 mb-1">
                           订单号: {order.order_number || order.id.slice(0, 8)}
@@ -387,10 +392,10 @@ export default function MasterOrdersPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <h3 className="font-semibold text-stone-900">
-                            {categoryMap[order.service_category] || order.service_category}
+                            {order.user_name || order.user_email || order.user_id}
                           </h3>
                           <span className="px-2 py-0.5 text-xs rounded-full bg-stone-100 text-stone-600">
-                            {tierMap[order.tier] || order.tier}
+                            {order.consultation_type === 'message' ? '留言咨询' : order.tier === 'deep' ? '深度咨询' : '普通咨询'}
                           </span>
                           <span className={`px-2 py-0.5 text-xs rounded-full ${status.color}`}>
                             {status.label}
@@ -408,7 +413,7 @@ export default function MasterOrdersPage() {
                           </p>
                         )}
                         <p className="text-xs text-stone-400 mt-1">
-                          用户: {order.user_id?.slice(0, 12)}... · {new Date(order.created_at).toLocaleDateString('zh-CN')}
+                          {new Date(order.created_at).toLocaleDateString('zh-CN')}
                         </p>
                       </div>
                       <div className="flex flex-col gap-2 flex-shrink-0">

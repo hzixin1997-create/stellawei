@@ -10,6 +10,10 @@ import {
   Home,
   Loader2,
   Trash2,
+  AlertTriangle,
+  TrendingUp,
+  CreditCard,
+  RefreshCcw,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -39,7 +43,8 @@ const statusLabels: Record<string, { text: string; color: string }> = {
 
 export default function AdminOrders() {
   const { t, i18n } = useTranslation();
-  const isZh = i18n.language === 'zh';
+  // admin 页面强制中文（黄总是唯一用户，不需要英文）
+  const isZh = true;
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
@@ -49,6 +54,10 @@ export default function AdminOrders() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [deleting, setDeleting] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
+  // 支付监控统计
+  const [paymentStats, setPaymentStats] = useState<any>(null);
+  const [paymentAnomalies, setPaymentAnomalies] = useState<any[]>([]);
+  const [showAnomalies, setShowAnomalies] = useState(false);
 
   const handleProcessRefund = async (orderId: string) => {
     if (!confirm(isZh ? '确认处理此退款申请？款项将原路退回用户。' : 'Confirm processing this refund? The amount will be returned to the user.')) {
@@ -255,7 +264,30 @@ export default function AdminOrders() {
       }
     };
     fetchOrders();
+    fetchPaymentStats();
   }, []);
+
+  // 获取支付监控统计
+  const fetchPaymentStats = async () => {
+    try {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      // 获取异常订单
+      const res = await fetch('/api/admin/payment-anomalies', {
+        headers: { authorization: `Bearer ${session.access_token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setPaymentAnomalies(data.anomalies || []);
+      }
+    } catch (err) {
+      console.error('Fetch payment stats error:', err);
+    }
+  };
+
+  const now = new Date().getTime();
 
   const filteredOrders = orders.filter((order) => {
     const matchQuery =
@@ -263,9 +295,15 @@ export default function AdminOrders() {
       order.id?.toLowerCase().includes(query.toLowerCase()) ||
       order.user_id?.toLowerCase().includes(query.toLowerCase());
     const matchMaster = masterFilter === 'all' || order.master_id === masterFilter;
+    
+    // 检查订单时间是否已过
+    const scheduledTime = order.scheduled_at ? new Date(order.scheduled_at).getTime() : 0;
+    const isTimePassed = scheduledTime > 0 && scheduledTime < now;
+    
     const matchStatus = statusFilter === 'all' ||
-      (statusFilter === 'ready' && order.payment_status === 'paid' && (order.status === 'confirmed' || order.status === 'in_progress')) ||
+      (statusFilter === 'ready' && order.payment_status === 'paid' && (order.status === 'confirmed' || order.status === 'in_progress') && !isTimePassed) ||
       (statusFilter === 'in_progress' && order.status === 'in_progress') ||
+      (statusFilter === 'overdue' && order.payment_status === 'paid' && !['completed', 'refunded', 'cancelled'].includes(order.status) && isTimePassed) ||
       order.payment_status === statusFilter ||
       order.status === statusFilter;
     return matchQuery && matchMaster && matchStatus;
@@ -277,9 +315,10 @@ export default function AdminOrders() {
     pending: orders.filter(o => o.payment_status === 'pending').length,
     paid: orders.filter(o => o.payment_status === 'paid' && o.status !== 'refund_requested').length,
     confirmed: orders.filter(o => o.status === 'confirmed').length,
-    ready: orders.filter(o => o.payment_status === 'paid' && (o.status === 'confirmed' || o.status === 'in_progress')).length, // 待服务：已支付 + 未标记完成
+    ready: orders.filter(o => o.payment_status === 'paid' && (o.status === 'confirmed' || o.status === 'in_progress') && !(o.scheduled_at ? new Date(o.scheduled_at).getTime() < now : false)).length,
     in_progress: orders.filter(o => o.status === 'in_progress').length,
     completed: orders.filter(o => o.status === 'completed').length,
+    overdue: orders.filter(o => o.payment_status === 'paid' && !['completed', 'refunded', 'cancelled'].includes(o.status) && (o.scheduled_at ? new Date(o.scheduled_at).getTime() < now : false)).length,
     refund_requested: orders.filter(o => o.status === 'refund_requested' || o.payment_status === 'refund_requested').length,
     refunded: orders.filter(o => o.payment_status === 'refunded').length,
   };
@@ -287,9 +326,10 @@ export default function AdminOrders() {
   const statusFilterConfig = [
     { key: 'all', label: '全部', labelEn: 'All' },
     { key: 'pending', label: '待付款', labelEn: 'Pending' },
-    { key: 'ready', label: '待服务', labelEn: 'Ready' }, // 新增：已支付但未开始
-    { key: 'in_progress', label: '进行中', labelEn: 'In Progress' }, // 新增
+    { key: 'ready', label: '待服务', labelEn: 'Ready' },
+    { key: 'in_progress', label: '进行中', labelEn: 'In Progress' },
     { key: 'completed', label: '已完成', labelEn: 'Completed' },
+    { key: 'overdue', label: '已过期', labelEn: 'Overdue' },
     { key: 'refund_requested', label: '退款申请', labelEn: 'Refund' },
     { key: 'refunded', label: '已退款', labelEn: 'Refunded' },
   ];
@@ -321,6 +361,83 @@ export default function AdminOrders() {
       </div>
 
       <div className="max-w-7xl mx-auto px-2 sm:px-4 py-6 sm:py-8">
+        {/* 支付监控统计 */}
+        {paymentAnomalies.length > 0 && (
+          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2 text-red-700 font-medium">
+                <AlertTriangle size={18} />
+                <span>支付异常检测 ({paymentAnomalies.length} 个)</span>
+              </div>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setShowAnomalies(!showAnomalies)}
+              >
+                {showAnomalies ? '收起' : '查看详情'}
+              </Button>
+            </div>
+            {showAnomalies && (
+              <div className="space-y-2 mt-2">
+                {paymentAnomalies.map((anomaly: any, idx: number) => (
+                  <div key={idx} className="p-2 bg-white rounded border border-red-100 text-sm">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">{anomaly.bookingId?.slice(0, 8)}</span>
+                      <Badge className={anomaly.severity === 'high' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700'}>
+                        {anomaly.severity === 'high' ? '严重' : '警告'}
+                      </Badge>
+                      <span className="text-stone-600">{anomaly.description}</span>
+                    </div>
+                    <div className="text-xs text-stone-400 mt-1">
+                      建议: {anomaly.suggestion}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* 统计卡片 */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+          <Card>
+            <CardContent className="p-3">
+              <div className="flex items-center gap-2">
+                <CreditCard className="w-4 h-4 text-green-600" />
+                <span className="text-sm text-stone-600">今日支付</span>
+              </div>
+              <p className="text-xl font-bold mt-1">{orders.filter(o => o.payment_status === 'paid' && new Date(o.created_at).toDateString() === new Date().toDateString()).length}</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-3">
+              <div className="flex items-center gap-2">
+                <RefreshCcw className="w-4 h-4 text-blue-600" />
+                <span className="text-sm text-stone-600">Webhook 失败</span>
+              </div>
+              <p className="text-xl font-bold mt-1">{paymentAnomalies.filter((a: any) => a.type === 'webhook_failed').length}</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-3">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-violet-600" />
+                <span className="text-sm text-stone-600">总收入</span>
+              </div>
+              <p className="text-xl font-bold mt-1">${orders.filter(o => o.payment_status === 'paid').reduce((sum, o) => sum + (o.total_amount || 0), 0).toFixed(2)}</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-3">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-red-600" />
+                <span className="text-sm text-stone-600">异常订单</span>
+              </div>
+              <p className="text-xl font-bold mt-1">{paymentAnomalies.length}</p>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* 筛选栏 */}
         <Card className="mb-4 sm:mb-6">
           <CardContent className="p-3 sm:p-4 flex flex-col gap-3">
@@ -352,9 +469,10 @@ export default function AdminOrders() {
               >
                 <option value="all">{isZh ? '全部状态' : 'All Status'}</option>
                 <option value="pending">{isZh ? '待付款' : 'Pending'}</option>
-                <option value="paid">{isZh ? '已付款' : 'Paid'}</option>
-                <option value="confirmed">{isZh ? '已确认' : 'Confirmed'}</option>
+                <option value="ready">{isZh ? '待服务' : 'Ready'}</option>
+                <option value="in_progress">{isZh ? '进行中' : 'In Progress'}</option>
                 <option value="completed">{isZh ? '已完成' : 'Completed'}</option>
+                <option value="overdue">{isZh ? '已过期' : 'Overdue'}</option>
                 <option value="refund_requested">{isZh ? '退款申请' : 'Refund Requested'}</option>
                 <option value="refunded">{isZh ? '已退款' : 'Refunded'}</option>
               </select>
@@ -449,6 +567,14 @@ export default function AdminOrders() {
                           <div className="flex flex-wrap items-center gap-2 mb-1">
                             <span className="font-medium">{mastersMap[order.master_id] || order.master_id}</span>
                             {(() => {
+                              // 支付成功永远优先显示 paid，不受 expires_at 影响
+                              if (order.payment_status === 'paid') {
+                                return (
+                                  <Badge className="bg-green-100 text-green-800">
+                                    已付款
+                                  </Badge>
+                                );
+                              }
                               const isExpiredOrder = order.status === 'pending' && order.payment_status === 'pending' && order.expires_at && Date.now() > new Date(order.expires_at).getTime();
                               const displayStatus = isExpiredOrder ? 'expired' : order.payment_status;
                               return (
@@ -456,6 +582,32 @@ export default function AdminOrders() {
                                   {statusLabels[displayStatus]?.text || displayStatus}
                                 </Badge>
                               );
+                            })()}
+                            {/* 异常标记 */}
+                            {(() => {
+                              // 检测支付异常
+                              if (order.payment_status === 'paid' && order.status === 'pending') {
+                                return (
+                                  <Badge className="bg-red-100 text-red-700 text-xs">
+                                    ⚠️ 支付异常
+                                  </Badge>
+                                );
+                              }
+                              if (order.payment_sync_status === 'failed') {
+                                return (
+                                  <Badge className="bg-red-100 text-red-700 text-xs">
+                                    ⚠️ 同步失败
+                                  </Badge>
+                                );
+                              }
+                              if (order.payment_status === 'pending' && order.expires_at && Date.now() > new Date(order.expires_at).getTime()) {
+                                return (
+                                  <Badge className="bg-orange-100 text-orange-700 text-xs">
+                                    ⚠️ 已过期
+                                  </Badge>
+                                );
+                              }
+                              return null;
                             })()}
                             <span className="text-xs text-stone-400">{order.id.slice(0, 8)}</span>
                           </div>
@@ -494,7 +646,7 @@ export default function AdminOrders() {
                             {updatingStatus === order.id ? (isZh ? '处理中...' : 'Processing...') : (isZh ? '取消订单' : 'Cancel Order')}
                           </Button>
                         )}
-                        {(order.payment_status === 'paid') && (
+                        {(order.payment_status === 'paid' || order.payment_status === 'refund_requested') && (
                           <Button
                             size="sm"
                             variant="outline"

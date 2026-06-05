@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
 import { createClient } from '@/lib/supabase/server';
+import { getMessage } from '@/lib/i18n';
 
 export async function GET(request: Request) {
   try {
@@ -9,7 +10,7 @@ export async function GET(request: Request) {
     const { data: { user } } = await authSupabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: getMessage('UNAUTHORIZED', request) }, { status: 401 });
     }
 
     const supabase = createServiceClient();
@@ -23,7 +24,7 @@ export async function GET(request: Request) {
 
     if (error) {
       return NextResponse.json(
-        { error: 'Failed to fetch bookings', message: error.message },
+        { error: getMessage('INTERNAL_ERROR', request), message: error.message },
         { status: 500 }
       );
     }
@@ -31,7 +32,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ bookings });
   } catch (error: any) {
     return NextResponse.json(
-      { error: 'Internal server error', message: error.message },
+      { error: getMessage('INTERNAL_ERROR', request), message: error.message },
       { status: 500 }
     );
   }

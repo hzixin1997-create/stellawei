@@ -1,6 +1,10 @@
+
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { sendConsultationReminder } from '@/lib/email';
+import { TimeEngine } from '@/lib/timeEngine';
+import { getMessage, getLang } from '@/lib/i18n';
+import * as Sentry from '@sentry/nextjs';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,7 +17,7 @@ const MASTER_EMAIL_MAP: Record<string, { display_name: string; email: string }> 
 
 /**
  * POST /api/reminders/check
- * 检查未来15分钟内即将开始的咨询，发送提醒邮件
+ * 检查未来15分钟内即将开始的咨询，发送提醒邮件 + 飞书通知
  * 由外部 cron 服务每5分钟调用一次
  * 
  * 鉴权：Header x-cron-secret: xxx
@@ -35,7 +39,7 @@ async function doCheck(cronSecret: string | null) {
 
     if (expectedSecret && cronSecret && cronSecret !== expectedSecret) {
       console.warn(`[reminders/check] Auth failed. Header: ${cronSecret?.slice(0, 10) ?? 'none'}...`)
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: getMessage('UNAUTHORIZED', new Request('http://localhost')) }, { status: 401 })
     }
 
     const supabase = createClient(
@@ -64,6 +68,7 @@ async function doCheck(cronSecret: string | null) {
         timezone,
         user_reminder_sent,
         master_reminder_sent,
+        feishu_reminder_sent,
         reminder_processing,
         reminder_processing_at,
         reminder_retry_count,
@@ -75,13 +80,13 @@ async function doCheck(cronSecret: string | null) {
       .or(`reminder_processing.eq.false,reminder_processing_at.lt.${tenMinutesAgo}`)
       .gte('scheduled_at', now.toISOString())
       .lte('scheduled_at', fifteenMinutesLater.toISOString())
-      .or('user_reminder_sent.eq.false,master_reminder_sent.eq.false')
+      .or('user_reminder_sent.eq.false,master_reminder_sent.eq.false,feishu_reminder_sent.eq.false')
       .lte('reminder_retry_count', 3);
 
     if (error) {
       console.error('[reminders/check] Query error:', error);
       return NextResponse.json(
-        { error: 'Failed to check upcoming consultations' },
+        { error: getMessage('REMINDER_CHECK_FAILED', new Request('http://localhost')) },
         { status: 500 }
       );
     }
@@ -89,7 +94,7 @@ async function doCheck(cronSecret: string | null) {
     if (!upcomingBookings || upcomingBookings.length === 0) {
       return NextResponse.json({
         success: true,
-        message: 'No upcoming consultations in the next 15 minutes',
+        message: getMessage('NO_REMINDER', new Request('http://localhost')),
         checked: 0,
       });
     }
@@ -108,8 +113,8 @@ async function doCheck(cronSecret: string | null) {
           .eq('id', booking.id)
           .lte('reminder_retry_count', 3)
           .or(`reminder_processing.eq.false,reminder_processing_at.lt.${tenMinutesAgo}`)
-          .or('user_reminder_sent.eq.false,master_reminder_sent.eq.false')
-          .select('id, user_reminder_sent, master_reminder_sent')
+          .or('user_reminder_sent.eq.false,master_reminder_sent.eq.false,feishu_reminder_sent.eq.false')
+          .select('id, user_reminder_sent, master_reminder_sent, feishu_reminder_sent')
           .single();
 
         if (lockError || !locked) {
@@ -128,7 +133,7 @@ async function doCheck(cronSecret: string | null) {
         if (userError || !userData || !userData.email) {
           console.warn('Missing user data for booking:', booking.id, userError);
           await releaseLock(supabase, booking.id, `Missing user email: ${userError?.message || 'no data'}`);
-          results.push({ bookingId: booking.id, error: 'Missing user email' });
+          results.push({ bookingId: booking.id, error: getMessage('MISSING_USER_EMAIL', new Request('http://localhost')) });
           continue;
         }
 
@@ -152,7 +157,7 @@ async function doCheck(cronSecret: string | null) {
         if (!masterData) {
           console.warn('Missing master data for booking:', booking.id, 'master_id:', booking.master_id);
           await releaseLock(supabase, booking.id, 'Missing master data');
-          results.push({ bookingId: booking.id, error: 'Missing master data' });
+          results.push({ bookingId: booking.id, error: getMessage('MISSING_MASTER_DATA', new Request('http://localhost')) });
           continue;
         }
 
@@ -195,6 +200,17 @@ async function doCheck(cronSecret: string | null) {
           });
         }
 
+        // === 发送飞书提醒（如果未发送）===
+        let feishuResult: { success: boolean; error?: string } = { success: true };
+        if (!locked.feishu_reminder_sent) {
+          feishuResult = await sendFeishuReminder({
+            booking,
+            userName: userData.full_name || 'Unknown',
+            masterName: masterData.display_name,
+            chatUrl,
+          });
+        }
+
         // === 更新发送状态（只更新本次处理的维度）===
         const updatePayload: any = {
           reminder_processing: false,
@@ -212,6 +228,11 @@ async function doCheck(cronSecret: string | null) {
           updatePayload.master_reminder_sent = true;
           updatePayload.master_reminder_sent_at = attemptAt;
         }
+        // 只更新飞书维度（如果这次处理了）
+        if (!locked.feishu_reminder_sent && feishuResult.success) {
+          updatePayload.feishu_reminder_sent = true;
+          updatePayload.feishu_reminder_sent_at = attemptAt;
+        }
 
         // 记录错误（如果有失败）
         const errors = [];
@@ -220,6 +241,9 @@ async function doCheck(cronSecret: string | null) {
         }
         if (!locked.master_reminder_sent && !masterEmailResult.success) {
           errors.push(`master: ${masterEmailResult.error}`);
+        }
+        if (!locked.feishu_reminder_sent && !feishuResult.success) {
+          errors.push(`feishu: ${feishuResult.error}`);
         }
         if (errors.length > 0) {
           updatePayload.reminder_error = errors.join('; ');
@@ -233,11 +257,16 @@ async function doCheck(cronSecret: string | null) {
           userProvider: userEmailResult.provider,
           masterEmail: masterEmailResult.success,
           masterProvider: masterEmailResult.provider,
+          feishu: feishuResult.success,
           userError: userEmailResult.success ? undefined : userEmailResult.error,
           masterError: masterEmailResult.success ? undefined : masterEmailResult.error,
+          feishuError: feishuResult.success ? undefined : feishuResult.error,
         });
       } catch (err) {
         console.error('Failed to send reminder for booking:', booking.id, err);
+        Sentry.captureException(err, {
+          tags: { api: 'reminders/check', component: 'reminder', bookingId: booking.id },
+        });
         await releaseLock(supabase, booking.id, (err as Error).message);
         results.push({
           bookingId: booking.id,
@@ -253,8 +282,11 @@ async function doCheck(cronSecret: string | null) {
     });
   } catch (error: any) {
     console.error('Reminder API error:', error);
+    Sentry.captureException(error, {
+      tags: { api: 'reminders/check', component: 'reminder' },
+    });
     return NextResponse.json(
-      { error: 'Internal server error', message: error.message },
+      { error: getMessage('INTERNAL_ERROR', new Request('http://localhost')), message: error.message },
       { status: 500 }
     );
   }
@@ -273,5 +305,80 @@ async function releaseLock(supabase: any, bookingId: string, error: string) {
       .eq('id', bookingId);
   } catch (e) {
     console.error('[reminders] Failed to release lock:', bookingId, e);
+    Sentry.captureException(e, {
+      tags: { api: 'reminders/check', component: 'reminder', bookingId },
+      extra: { stage: 'release-lock' },
+    });
+  }
+}
+
+// 发送飞书提醒
+async function sendFeishuReminder({
+  booking,
+  userName,
+  masterName,
+  chatUrl,
+}: {
+  booking: any;
+  userName: string;
+  masterName: string;
+  chatUrl: string;
+}): Promise<{ success: boolean; error?: string }> {
+  const FEISHU_WEBHOOK = process.env.FEISHU_WEBHOOK_URL;
+  if (!FEISHU_WEBHOOK) {
+    console.warn('[reminders] FEISHU_WEBHOOK_URL not configured');
+    return { success: false, error: 'FEISHU_WEBHOOK_URL not configured' };
+  }
+
+  try {
+    const orderNumber = booking.order_number || booking.id.slice(0, 8);
+    const serviceName = booking.service_id || 'Consultation';
+    const scheduledDate = booking.scheduled_date || '-';
+    const scheduledTime = booking.scheduled_time || '-';
+    const duration = booking.duration_minutes || 25;
+    const timezone = booking.timezone || 'Asia/Shanghai';
+    const now = new Date();
+    const minutesUntil = Math.max(0, Math.round((new Date(booking.scheduled_at).getTime() - now.getTime()) / 60000));
+
+    // Convert to Beijing time for admin/masters
+    let beijingTimeDisplay = '';
+    if (booking.scheduled_at && timezone !== 'Asia/Shanghai') {
+      try {
+        const beijingTime = TimeEngine.formatInTimezone(booking.scheduled_at, 'Asia/Shanghai', 'zh-CN');
+        beijingTimeDisplay = `\n北京时间：${beijingTime}`;
+      } catch (e) {
+        // Fallback: ignore conversion error
+      }
+    }
+
+    const content = `⏰ 咨询即将开始
+
+订单号：${orderNumber}
+师傅：${masterName}
+用户：${userName}
+服务：${serviceName}（${duration}分钟）
+预约时间：${scheduledDate} ${scheduledTime}（${timezone}）${beijingTimeDisplay}
+距开始：${minutesUntil} 分钟
+
+立即进入：${chatUrl}`;
+
+    const res = await fetch(FEISHU_WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        msg_type: 'text',
+        content: JSON.stringify({ text: content }),
+      }),
+    });
+
+    if (!res.ok) {
+      throw new Error(`Feishu webhook returned ${res.status}`);
+    }
+
+    console.log('[reminders] Feishu reminder sent for booking:', booking.id);
+    return { success: true };
+  } catch (err: any) {
+    console.error('[reminders] Failed to send Feishu reminder:', err);
+    return { success: false, error: err.message };
   }
 }

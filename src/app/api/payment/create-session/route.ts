@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getStripe, convertToStripeAmount } from '@/lib/stripe'
 import { createServiceClient } from '@/lib/supabase'
+import * as Sentry from '@sentry/nextjs'
 
 const STRIPE_SESSION_TIMEOUT_MINUTES = 30
 
@@ -138,12 +139,14 @@ export async function POST(request: Request) {
 
     // Stripe session created successfully
 
-    // 更新 booking 记录
+    // 更新 booking 记录：分离存储 session id 和 payment intent id
     await supabase
       .from('bookings')
       .update({
-        payment_intent_id: session.id,
+        stripe_session_id: session.id,
+        // payment_intent_id 在 Webhook 收到 checkout.session.completed 后更新
         payment_status: 'pending',
+        payment_sync_status: 'pending',
         expires_at: bookingExpiresAt,
         updated_at: new Date().toISOString(),
       })
@@ -155,7 +158,10 @@ export async function POST(request: Request) {
       url: session.url,
     })
   } catch (error: any) {
-    // Create session error - logged in error tracking system
+    Sentry.captureException(error, {
+      tags: { api: 'payment/create-session', component: 'payment' },
+      extra: { body: 'checkout session creation' },
+    });
     return NextResponse.json(
       { error: error.message || 'Failed to create checkout session' },
       { status: 500 }

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/client'
 import { ShoppingBag, MessageSquare, ArrowRight, Clock, User, Home, LogOut, MessageCircle, AlertTriangle, Star, Calendar as CalendarIcon } from 'lucide-react'
-import { Calendar } from '@/components/ui/calendar'
+import { Calendar, zhCN, enUS } from '@/components/ui/calendar'
 import Link from 'next/link'
 
 import { isConsultationExpired, getConsultationDisplayStatus, formatBookingTimeDisplay } from '@/lib/utils'
@@ -16,10 +16,23 @@ import {
   isWeChatBrowser,
   isInCooldown,
 } from '@/components/stripe/wechat-browser-modal'
-const masters: Record<string, { name: string; nameCn: string; specialty: string }> = {
-  'master-luna': { name: 'Master Luna', nameCn: '卢娜师傅', specialty: 'Tarot' },
-  'zhang-yihua': { name: 'Master Zhang Yihua', nameCn: '张易桦', specialty: 'Qi Men Dun Jia' },
-  'wu-yang': { name: 'Master Wu Yang', nameCn: '戊阳', specialty: 'BaZi & Feng Shui' },
+const masters: Record<string, { name: string; nameCn: string; specialty: string; timezone: string }> = {
+  'master-luna': { name: 'Master Luna', nameCn: '卢娜师傅', specialty: 'Tarot', timezone: 'America/Los_Angeles' },
+  'zhang-yihua': { name: 'Master Zhang Yihua', nameCn: '张易桦', specialty: 'Qi Men Dun Jia', timezone: 'Asia/Shanghai' },
+  'wu-yang': { name: 'Master Wu Yang', nameCn: '戊阳', specialty: 'BaZi & Feng Shui', timezone: 'Asia/Shanghai' },
+}
+
+const TIMEZONE_LABELS: Record<string, { en: string; zh: string }> = {
+  'America/Los_Angeles': { en: 'Los Angeles', zh: '洛杉矶' },
+  'Asia/Shanghai': { en: 'Beijing', zh: '北京' },
+  'Asia/Tokyo': { en: 'Tokyo', zh: '东京' },
+  'Asia/Hong_Kong': { en: 'Hong Kong', zh: '香港' },
+  'Asia/Singapore': { en: 'Singapore', zh: '新加坡' },
+  'America/New_York': { en: 'New York', zh: '纽约' },
+  'Europe/London': { en: 'London', zh: '伦敦' },
+  'Europe/Paris': { en: 'Paris', zh: '巴黎' },
+  'Australia/Sydney': { en: 'Sydney', zh: '悉尼' },
+  'UTC': { en: 'UTC', zh: 'UTC' },
 }
 
 // 服务数据
@@ -52,6 +65,12 @@ interface Booking {
   consultation_type?: string
   reschedule_notice?: string | null
   reschedule_notice_read?: boolean
+  refund_status?: string
+  refund_reason?: string
+  refund_requested_at?: string
+  refund_processed_at?: string
+  stripe_refund_id?: string
+  scheduled_at?: string
 }
 
 // 格式化倒计时
@@ -70,6 +89,7 @@ export default function UserDashboard() {
   const [isZh, setIsZh] = useState(true)
   const [cancellingId, setCancellingId] = useState<string | null>(null)
   const [refundingId, setRefundingId] = useState<string | null>(null)
+  const [refundInfo, setRefundInfo] = useState<Record<string, any>>({})
   const [payingId, setPayingId] = useState<string | null>(null)
   const [showReviewModal, setShowReviewModal] = useState(false)
   const [reviewTargetBooking, setReviewTargetBooking] = useState<Booking | null>(null)
@@ -312,15 +332,30 @@ export default function UserDashboard() {
     return () => clearInterval(interval)
   }, [bookings])
 
-  // 状态标签样式
+  // 状态标签样式（兼容新旧退款状态）
   const getStatusBadge = (booking: Booking) => {
     const displayStatus = getConsultationDisplayStatus(booking)
-    const { status, payment_status } = booking
+    const { status, payment_status, refund_status } = booking
     const expired = isExpired(booking)
     
     if (expired && (payment_status === 'pending' || payment_status === 'pending_payment')) {
       return <Badge variant="outline" className="bg-stone-100 text-stone-400 border-stone-200">{isZh ? '已过期' : 'Expired'}</Badge>
     }
+    // 优先使用新的 refund_status 字段
+    if (refund_status && refund_status !== 'none') {
+      const refundStatusMap: Record<string, { text: string; color: string }> = {
+        requested: { text: '退款申请中', color: 'bg-orange-50 text-orange-700 border-orange-200' },
+        under_review: { text: '审核中', color: 'bg-yellow-50 text-yellow-700 border-yellow-200' },
+        approved: { text: '已批准', color: 'bg-blue-50 text-blue-700 border-blue-200' },
+        rejected: { text: '已拒绝', color: 'bg-red-50 text-red-700 border-red-200' },
+        processing: { text: '处理中', color: 'bg-blue-50 text-blue-700 border-blue-200' },
+        refunded: { text: '已退款', color: 'bg-gray-100 text-gray-500 border-gray-200' },
+        failed: { text: '退款失败', color: 'bg-red-50 text-red-700 border-red-200' },
+      }
+      const config = refundStatusMap[refund_status] || { text: refund_status, color: 'bg-gray-100 text-gray-500 border-gray-200' }
+      return <Badge variant="outline" className={config.color}>{isZh ? config.text : config.text}</Badge>
+    }
+    // 兼容旧数据
     if (payment_status === 'refund_requested' || status === 'refund_requested') {
       return <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">{isZh ? '退款申请中' : 'Refund Requested'}</Badge>
     }
@@ -333,6 +368,12 @@ export default function UserDashboard() {
     if (payment_status === 'paid') {
       if (displayStatus === 'in_progress') {
         return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">{isZh ? '咨询中' : 'In Progress'}</Badge>
+      }
+      if (displayStatus === 'upcoming') {
+        return <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">{isZh ? '即将开始' : 'Upcoming'}</Badge>
+      }
+      if (displayStatus === 'ended') {
+        return <Badge variant="outline" className="bg-stone-100 text-stone-600 border-stone-200">{isZh ? '已结束' : 'Ended'}</Badge>
       }
       if (displayStatus === 'confirmed') {
         return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">{isZh ? '已确认' : 'Confirmed'}</Badge>
@@ -837,7 +878,7 @@ export default function UserDashboard() {
                           </div>
                           <div className="flex flex-wrap sm:flex-nowrap sm:flex-col gap-2 sm:min-w-[80px]">
                             {/* 已完成订单：查看历史/留言 + 查看评价 + 删除 */}
-                            {displayStatus === 'completed' && (
+                            {displayStatus === 'completed' && booking.payment_status === 'paid' && (
                               <>
                                 <Link href={`/chat/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
                                   <Button
@@ -871,8 +912,56 @@ export default function UserDashboard() {
                                 </Button>
                               </>
                             )}
-                            {/* 已确认/进行中：实时咨询 */}
-                            {(displayStatus === 'confirmed' || displayStatus === 'in_progress') && booking.consultation_type !== 'message' && (
+                            {/* 已结束/收尾期：实时咨询（仍可进入聊天） */}
+                            {booking.payment_status === 'paid' && displayStatus === 'ended' && booking.consultation_type !== 'message' && (
+                              <>
+                                <Link href={`/chat/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="text-violet-600 border-violet-200 hover:bg-violet-50 hover:text-violet-700 w-full"
+                                  >
+                                    <MessageCircle className="w-4 h-4 mr-1" />
+                                    {isZh ? '进入咨询' : 'Enter Chat'}
+                                  </Button>
+                                </Link>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-amber-600 border-amber-200 hover:bg-amber-50 hover:text-amber-700 flex-1 sm:flex-none"
+                                  onClick={() => openReviewModal(booking)}
+                                >
+                                  <Star className="w-4 h-4 mr-1" />
+                                  {isZh ? '查看评价' : 'Review'}
+                                </Button>
+                              </>
+                            )}
+                            {/* 已结束/收尾期：留言咨询 */}
+                            {booking.payment_status === 'paid' && displayStatus === 'ended' && booking.consultation_type === 'message' && (
+                              <>
+                                <Link href={`/chat/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="text-violet-600 border-violet-200 hover:bg-violet-50 hover:text-violet-700 w-full"
+                                  >
+                                    <MessageCircle className="w-4 h-4 mr-1" />
+                                    {isZh ? '查看留言' : 'View Message'}
+                                  </Button>
+                                </Link>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-amber-600 border-amber-200 hover:bg-amber-50 hover:text-amber-700 flex-1 sm:flex-none"
+                                  onClick={() => openReviewModal(booking)}
+                                >
+                                  <Star className="w-4 h-4 mr-1" />
+                                  {isZh ? '查看评价' : 'Review'}
+                                </Button>
+                              </>
+                            )}
+                            {/* 已确认/即将开始：实时咨询 - 可修改时间 */}
+                            {booking.payment_status === 'paid' && (displayStatus === 'confirmed' || displayStatus === 'upcoming') && booking.consultation_type !== 'message' && (
                               <>
                                 <Link href={`/chat/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
                                   <Button
@@ -904,8 +993,56 @@ export default function UserDashboard() {
                                 </Button>
                               </>
                             )}
-                            {/* 已确认/进行中：留言咨询 */}
-                            {(displayStatus === 'confirmed' || displayStatus === 'in_progress') && booking.consultation_type === 'message' && (
+                            {/* 进行中：实时咨询 - 不可修改时间 */}
+                            {booking.payment_status === 'paid' && displayStatus === 'in_progress' && booking.consultation_type !== 'message' && (
+                              <>
+                                <Link href={`/chat/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="text-violet-600 border-violet-200 hover:bg-violet-50 hover:text-violet-700 w-full"
+                                  >
+                                    <MessageCircle className="w-4 h-4 mr-1" />
+                                    {isZh ? '进入咨询' : 'Enter Chat'}
+                                  </Button>
+                                </Link>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-orange-600 border-orange-200 hover:bg-orange-50 hover:text-orange-700 flex-1 sm:flex-none"
+                                  onClick={() => handleRefund(booking.id)}
+                                  disabled={refundingId === booking.id}
+                                >
+                                  {refundingId === booking.id ? (isZh ? '处理中...' : 'Processing...') : (isZh ? '申请退款' : 'Refund')}
+                                </Button>
+                              </>
+                            )}
+                            {/* 已确认/即将开始：留言咨询 - 可修改时间 */}
+                            {booking.payment_status === 'paid' && (displayStatus === 'confirmed' || displayStatus === 'upcoming') && booking.consultation_type === 'message' && (
+                              <>
+                                <Link href={`/chat/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="text-violet-600 border-violet-200 hover:bg-violet-50 hover:text-violet-700 w-full"
+                                  >
+                                    <MessageCircle className="w-4 h-4 mr-1" />
+                                    {isZh ? '查看留言' : 'View Message'}
+                                  </Button>
+                                </Link>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-orange-600 border-orange-200 hover:bg-orange-50 hover:text-orange-700 flex-1 sm:flex-none"
+                                  onClick={() => handleRefund(booking.id)}
+                                  disabled={refundingId === booking.id}
+                                >
+                                  {refundingId === booking.id ? (isZh ? '处理中...' : 'Processing...') : (isZh ? '申请退款' : 'Refund')}
+                                </Button>
+                              </>
+                            )}
+                            {/* 进行中：留言咨询 - 不可修改时间 */}
+                            {booking.payment_status === 'paid' && displayStatus === 'in_progress' && booking.consultation_type === 'message' && (
                               <>
                                 <Link href={`/chat/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
                                   <Button
@@ -1150,10 +1287,15 @@ export default function UserDashboard() {
                 <h3 className="text-xl font-bold text-center mb-4">
                   {isZh ? '修改预约时间' : 'Reschedule Booking'}
                 </h3>
-                <p className="text-stone-500 text-center mb-6 text-sm">
+                <p className="text-stone-500 text-center mb-2 text-sm">
                   {isZh
                     ? `当前预约：${rescheduleBooking.scheduled_date} ${rescheduleBooking.scheduled_time}`
                     : `Current: ${rescheduleBooking.scheduled_date} ${rescheduleBooking.scheduled_time}`}
+                </p>
+                <p className="text-stone-400 text-center mb-6 text-xs">
+                  {isZh
+                    ? `师傅时间：${TIMEZONE_LABELS[masters[rescheduleBooking.master_id]?.timezone]?.zh || masters[rescheduleBooking.master_id]?.timezone || ''}`
+                    : `Advisor time: ${TIMEZONE_LABELS[masters[rescheduleBooking.master_id]?.timezone]?.en || masters[rescheduleBooking.master_id]?.timezone || ''}`}
                 </p>
 
                 <div className="mb-4">
@@ -1172,6 +1314,7 @@ export default function UserDashboard() {
                           handleRescheduleDateChange(`${year}-${month}-${day}`)
                         }
                       }}
+                      locale={isZh ? zhCN : enUS}
                       disabled={(date) => {
                         const today = new Date()
                         today.setHours(0, 0, 0, 0)

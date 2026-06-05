@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
+import { TimeEngine } from '@/lib/timeEngine';
 
 export const dynamic = 'force-dynamic';
 
 /**
- * GET /api/bookings/check-slot?master_id=xxx&date=2026-05-16&time=14:00
- * 检查时间段是否被占用
+ * GET /api/bookings/check-slot?master_id=xxx&date=2026-05-16&time=14:00&duration_minutes=25
+ * 检查时间段是否可用（区间重叠检测）
  */
 export async function GET(request: Request) {
   try {
@@ -13,6 +14,7 @@ export async function GET(request: Request) {
     const masterId = searchParams.get('master_id');
     const date = searchParams.get('date');
     const time = searchParams.get('time');
+    const durationMinutes = parseInt(searchParams.get('duration_minutes') || '25', 10);
 
     if (!masterId || !date || !time) {
       return NextResponse.json(
@@ -64,13 +66,13 @@ export async function GET(request: Request) {
       }
     }
 
+    // 查询同师傅当天所有非取消/非退款的订单（包含 duration_minutes）
     const { data: bookings, error } = await supabase
       .from('bookings')
-      .select('id, status, created_at, expires_at')
+      .select('id, scheduled_time, duration_minutes, status, created_at, expires_at')
       .eq('master_id', masterId)
       .eq('scheduled_date', date)
-      .eq('scheduled_time', time)
-      .in('status', ['pending', 'paid', 'confirmed', 'in_progress']);
+      .not('status', 'in', '(cancelled,refunded)');
 
     if (error) {
       console.error('Check slot error:', error);
@@ -80,22 +82,58 @@ export async function GET(request: Request) {
       );
     }
 
-    // 判断是否有有效占用
-    // paid/confirmed/in_progress: 永久占用
-    // pending: 看 expires_at，过期即释放
+    // 过滤出有效占用的订单
     const now = Date.now();
-    const occupied = (bookings || []).filter((b: any) => {
-      if (['paid', 'confirmed', 'in_progress'].includes(b.status)) return true;
-      if (b.status === 'pending') {
-        if (!b.expires_at) return true;
-        return new Date(b.expires_at).getTime() > now;
-      }
-      return false;
-    });
+    const existingBookings = (bookings || [])
+      .filter((b: any) => {
+        if (['paid', 'confirmed', 'in_progress'].includes(b.status)) return true;
+        if (b.status === 'pending') {
+          if (!b.expires_at) return true;
+          return new Date(b.expires_at).getTime() > now;
+        }
+        return false;
+      })
+      .map((b: any) => ({
+        scheduled_time: b.scheduled_time,
+        duration_minutes: b.duration_minutes || 30,
+      }));
+
+    // 使用 TimeEngine 做区间重叠检测
+    const isAvailable = TimeEngine.isTimeSlotAvailable(
+      time,
+      date,
+      durationMinutes,
+      existingBookings
+    );
+
+    // 找出冲突的订单详情（用于调试）
+    const conflicts = (bookings || [])
+      .filter((b: any) => {
+        if (['paid', 'confirmed', 'in_progress'].includes(b.status)) return true;
+        if (b.status === 'pending') {
+          if (!b.expires_at) return true;
+          return new Date(b.expires_at).getTime() > now;
+        }
+        return false;
+      })
+      .filter((b: any) => {
+        const newStart = TimeEngine.parseUTC(`${date}T${time.slice(0, 5)}:00`);
+        const newEnd = newStart + durationMinutes * 60 * 1000;
+        const existingStart = TimeEngine.parseUTC(`${date}T${b.scheduled_time.slice(0, 5)}:00`);
+        const existingEnd = existingStart + (b.duration_minutes || 30) * 60 * 1000;
+        return newStart < existingEnd && newEnd > existingStart;
+      });
 
     return NextResponse.json({
-      available: occupied.length === 0,
-      occupiedCount: occupied.length,
+      available: isAvailable,
+      occupiedCount: existingBookings.length,
+      conflictCount: conflicts.length,
+      conflicts: conflicts.map((c: any) => ({
+        id: c.id,
+        scheduled_time: c.scheduled_time,
+        duration_minutes: c.duration_minutes,
+        status: c.status,
+      })),
     });
   } catch (error: any) {
     console.error('Check slot API error:', error);

@@ -1,5 +1,5 @@
 'use client'
-// cache-bust: 2026-05-29-chat-api-v4
+// cache-bust: 2026-06-03-voice-debug
 
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { isMasterEmail } from '@/lib/master-auth'
+import { TimeEngine } from '@/lib/timeEngine'
 
 interface Message {
   id: string
@@ -30,6 +31,9 @@ interface Message {
   image_url: string | null
   audio_url: string | null
   audio_duration: number | null
+  voice_status?: 'uploading' | 'uploaded' | 'sending' | 'sent' | 'failed'
+  audio_size?: number | null
+  audio_format?: string | null
   created_at: string
   read_at?: string | null
   source?: string
@@ -115,6 +119,78 @@ function normalizeBooking(bookingData: any): BookingInfo {
   }
 }
 
+// 图片压缩：最长边限制，JPEG quality 80%
+function compressImage(
+  file: File,
+  maxDimension: number = 1920,
+  quality: number = 0.8
+): Promise<File | null> {
+  return new Promise((resolve) => {
+    if (!file.type.startsWith('image/')) {
+      resolve(null)
+      return
+    }
+
+    const img = new Image()
+    const url = URL.createObjectURL(file)
+    
+    img.onload = () => {
+      URL.revokeObjectURL(url)
+      
+      let { width, height } = img
+      
+      // 计算缩放比例
+      if (width > maxDimension || height > maxDimension) {
+        if (width > height) {
+          height = Math.round((height * maxDimension) / width)
+          width = maxDimension
+        } else {
+          width = Math.round((width * maxDimension) / height)
+          height = maxDimension
+        }
+      }
+      
+      const canvas = document.createElement('canvas')
+      canvas.width = width
+      canvas.height = height
+      const ctx = canvas.getContext('2d')
+      
+      if (!ctx) {
+        resolve(null)
+        return
+      }
+      
+      // 白色背景（处理透明PNG）
+      ctx.fillStyle = '#FFFFFF'
+      ctx.fillRect(0, 0, width, height)
+      ctx.drawImage(img, 0, 0, width, height)
+      
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) {
+            resolve(null)
+            return
+          }
+          const compressedFile = new File([blob], file.name, {
+            type: 'image/jpeg',
+            lastModified: Date.now(),
+          })
+          resolve(compressedFile)
+        },
+        'image/jpeg',
+        quality
+      )
+    }
+    
+    img.onerror = () => {
+      URL.revokeObjectURL(url)
+      resolve(null)
+    }
+    
+    img.src = url
+  })
+}
+
 function formatCountdown(seconds: number): string {
   if (seconds <= 0) return '00:00'
   const m = Math.floor(seconds / 60)
@@ -143,6 +219,18 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   const [isMaster, setIsMaster] = useState(false)
   const [uploadingImage, setUploadingImage] = useState(false)
 
+  const [uploadingAudio, setUploadingAudio] = useState(false)
+  const [voiceError, setVoiceError] = useState<string | null>(null)
+  const [retryAudio, setRetryAudio] = useState<{ blob: Blob, duration: number } | null>(null)
+
+  // Voice Engine v1.0: State machine for voice messages
+  interface VoiceState {
+    status: 'idle' | 'recording' | 'uploading' | 'sending' | 'sent' | 'failed'
+    progress?: number
+    error?: string
+  }
+  const [voiceState, setVoiceState] = useState<VoiceState>({ status: 'idle' })
+
   // 语音消息状态
   const [isRecording, setIsRecording] = useState(false)
   const [recordingDuration, setRecordingDuration] = useState(0)
@@ -152,6 +240,48 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   const recordingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const [audioPlayingId, setAudioPlayingId] = useState<string | null>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const objectURLsRef = useRef<string[]>([])
+  // 15MB max for 180s audio
+  const MAX_AUDIO_SIZE = 15 * 1024 * 1024
+  // 60秒限制：Vercel Hobby 函数超时10秒，大文件容易超时
+  const MAX_RECORDING_SECONDS = 60
+
+  // 检测浏览器类型和推荐格式
+  const getAudioFormat = (): { mimeType: string, ext: string } => {
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+    
+    if (isIOS) {
+      // iOS Safari: try audio/mp4 first, fallback to default (browser will pick)
+      if (MediaRecorder.isTypeSupported('audio/mp4')) {
+        return { mimeType: 'audio/mp4', ext: 'm4a' }
+      }
+      if (MediaRecorder.isTypeSupported('audio/aac')) {
+        return { mimeType: 'audio/aac', ext: 'm4a' }
+      }
+      // iOS may not support any audio-only MIME type; let browser decide
+      return { mimeType: '', ext: 'm4a' }
+    }
+    if (isSafari) {
+      // macOS Safari
+      if (MediaRecorder.isTypeSupported('audio/mp4')) {
+        return { mimeType: 'audio/mp4', ext: 'm4a' }
+      }
+      if (MediaRecorder.isTypeSupported('audio/aac')) {
+        return { mimeType: 'audio/aac', ext: 'm4a' }
+      }
+    }
+    // Chrome/Android: webm
+    return { mimeType: 'audio/webm', ext: 'webm' }
+  }
+
+  // 资源清理：释放所有 ObjectURL
+  const releaseObjectURLs = () => {
+    objectURLsRef.current.forEach(url => {
+      try { URL.revokeObjectURL(url) } catch (e) { /* ignore */ }
+    })
+    objectURLsRef.current = []
+  }
 
   // 对方正在输入状态
   const [isOpponentTyping, setIsOpponentTyping] = useState(false)
@@ -236,9 +366,29 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     return () => clearTimeout(warmup)
   }, [])
 
+  // 只在消息数量增加时（新消息到达）自动滚动到底部
+  const prevMsgCountRef = useRef(0)
   useEffect(() => {
-    scrollToBottom()
+    const prevCount = prevMsgCountRef.current
+    const currentCount = messages.length
+    prevMsgCountRef.current = currentCount
+    
+    // 新消息到达时滚动（消息数量增加且不是初始化）
+    if (currentCount > 0 && currentCount > prevCount) {
+      scrollToBottom()
+    }
   }, [messages])
+
+  // 音频预加载：当 messages 中有新音频时，提前加载
+  useEffect(() => {
+    messages.forEach((msg) => {
+      if (msg.audio_url && !msg.audio_url.startsWith('blob:')) {
+        const audio = new Audio(msg.audio_url);
+        audio.preload = 'auto';
+        audio.load();
+      }
+    });
+  }, [messages]);
 
   // 咨询前消息数已从 messages 派生（preConsultMsgCount useMemo）
 
@@ -397,18 +547,23 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
       setCountdownSeconds(remaining)
 
-      let newStatus: 'not_started' | 'in_progress' | 'ended' | 'completed'
-      const WRAP_UP_MS = 5 * 60 * 1000 // 5分钟收尾阶段
+      // 使用 TimeEngine 统一计算状态
+      const engineState = TimeEngine.getSessionState({
+        scheduled_at: booking.scheduled_at,
+        duration_minutes: booking.duration_minutes,
+        status: booking.status,
+      })
 
-      if (now < scheduledTime) {
-        newStatus = 'not_started'
-      } else if (now >= scheduledTime && now < endTime) {
-        newStatus = 'in_progress'
-      } else if (now >= endTime && now < endTime + WRAP_UP_MS) {
-        newStatus = 'ended' // 收尾阶段
-      } else {
-        newStatus = 'completed' // 超过收尾阶段，完全结束
+      // 将 TimeEngine 状态映射到 chat 内部状态
+      const statusMap: Record<string, 'not_started' | 'in_progress' | 'ended' | 'completed'> = {
+        'confirmed': 'not_started',
+        'upcoming': 'not_started',
+        'in_progress': 'in_progress',
+        'ended': 'ended',
+        'completed': 'completed',
+        'scheduled': 'not_started',
       }
+      const newStatus = statusMap[engineState] || 'not_started'
 
       setConsultStatus(prev => {
         return newStatus
@@ -426,25 +581,17 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     return () => clearInterval(interval)
   }, [booking])
 
-  // 从 scheduled_at 解析显示时间（东八区），不依赖 scheduled_time 字段
+  // 格式化显示时间：用 TimeEngine 统一处理
   const formatDisplayTime = (isoString: string): string => {
     if (!isoString) return ''
     try {
-      const d = new Date(isoString)
-      if (isNaN(d.getTime())) return ''
-      // 根治：直接用 toLocaleString 转东八区，避免 Intl.DateTimeFormat 兼容问题
-      return d.toLocaleTimeString('zh-CN', {
-        timeZone: 'Asia/Shanghai',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      })
+      return TimeEngine.formatInTimezone(isoString, 'Asia/Shanghai', 'zh-CN')
     } catch (e) {
       return ''
     }
   }
 
-  // 根治：格式化日期+时间，统一用东八区
+  // 根治：格式化日期+时间，统一用 TimeEngine
   const formatDisplayDateTime = (isoString: string): string => {
     if (!isoString) return ''
     try {
@@ -455,13 +602,8 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         month: 'long',
         day: 'numeric'
       })
-      const timeStr = d.toLocaleTimeString('zh-CN', {
-        timeZone: 'Asia/Shanghai',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      })
-      return `${dateStr} ${timeStr}`
+      const timeStr = TimeEngine.formatInTimezone(isoString, 'Asia/Shanghai', 'zh-CN')
+      return `${dateStr} ${timeStr.split(' ')[1]}`
     } catch (e) {
       return ''
     }
@@ -810,75 +952,164 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     }
   }
 
-  // ===== 语音消息功能 =====
+  // ===== Voice Engine v1.0: Stable Voice Message System =====
   const startRecording = async () => {
+    const logPrefix = '[VoiceEngine]';
+    const startTime = Date.now();
+    
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      const mediaRecorder = new MediaRecorder(stream)
-      mediaRecorderRef.current = mediaRecorder
-      audioChunksRef.current = []
+      // 1. Check permissions
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      
+      // 2. Detect browser format
+      const { mimeType, ext } = getAudioFormat();
+      console.log(`${logPrefix} Browser format detected: ${mimeType || 'default'}, ext: ${ext}`);
+      
+      const mediaRecorder = mimeType 
+        ? new MediaRecorder(stream, { mimeType })
+        : new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+      setVoiceError(null);
+      setRetryAudio(null);
 
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
-          audioChunksRef.current.push(event.data)
+          audioChunksRef.current.push(event.data);
         }
-      }
+      };
 
       mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' })
-        uploadAudio(audioBlob, recordingDurationRef.current)
-        // 停止所有轨道
-        stream.getTracks().forEach(track => track.stop())
-      }
+        const recordEndTime = Date.now();
+        const recordDuration = recordEndTime - startTime;
+        const audioBlob = new Blob(audioChunksRef.current, { type: mimeType });
+        
+        console.log(`${logPrefix} Recording stopped`, {
+          blobSize: audioBlob.size,
+          duration: recordDuration,
+          format: ext,
+          chunks: audioChunksRef.current.length,
+        });
 
-      mediaRecorder.start()
-      setIsRecording(true)
-      setRecordingDuration(0)
-      recordingDurationRef.current = 0
+        // 3. Validate size (10MB max)
+        if (audioBlob.size > MAX_AUDIO_SIZE) {
+          setVoiceState({ status: 'failed', error: isZh ? '语音文件过大，请缩短录制时间' : 'Audio too large, please shorten' });
+          setVoiceError(isZh ? '语音文件过大，请缩短录制时间' : 'Audio too large');
+          stream.getTracks().forEach(track => track.stop());
+          return;
+        }
 
-      // 计时器
+        // 4. Store blob for retry capability
+        setRetryAudio({ blob: audioBlob, duration: recordingDurationRef.current });
+        
+        // 5. Upload with state machine
+        uploadAudioV2(audioBlob, recordingDurationRef.current, ext, mimeType);
+        
+        // 6. Clean up stream
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      mediaRecorder.onerror = (event) => {
+        console.error(`${logPrefix} MediaRecorder error:`, event);
+        setVoiceState({ status: 'failed', error: isZh ? '录音失败，请重试' : 'Recording failed' });
+        setVoiceError(isZh ? '录音失败，请重试' : 'Recording failed');
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+      setVoiceState({ status: 'recording' });
+      setRecordingDuration(0);
+      recordingDurationRef.current = 0;
+
+      // 7. Start timer with 180s limit
       recordingTimerRef.current = setInterval(() => {
-        setRecordingDuration(prev => prev + 1)
-        recordingDurationRef.current += 1
-      }, 1000)
+        setRecordingDuration(prev => {
+          const next = prev + 1;
+          recordingDurationRef.current = next;
+          
+          // Auto-stop at 180 seconds
+          if (next >= MAX_RECORDING_SECONDS) {
+            console.log(`${logPrefix} Auto-stopping at max duration: ${MAX_RECORDING_SECONDS}s`);
+            stopRecording();
+          }
+          
+          return next;
+        });
+      }, 1000);
+      
+      console.log(`${logPrefix} Recording started`, { format: ext, mimeType, maxDuration: MAX_RECORDING_SECONDS });
     } catch (err) {
-      console.error('Recording error:', err)
-      alert(isZh ? '无法访问麦克风，请检查权限设置' : 'Cannot access microphone. Please check permissions.')
+      console.error(`${logPrefix} Recording start error:`, err);
+      setVoiceState({ status: 'failed', error: isZh ? '无法访问麦克风，请检查权限设置' : 'Cannot access microphone' });
+      setVoiceError(isZh ? '无法访问麦克风，请检查权限设置' : 'Cannot access microphone');
     }
-  }
+  };
 
   const stopRecording = () => {
     if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop()
-      setIsRecording(false)
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+      setVoiceState({ status: 'uploading' });
       if (recordingTimerRef.current) {
-        clearInterval(recordingTimerRef.current)
-        recordingTimerRef.current = null
+        clearInterval(recordingTimerRef.current);
+        recordingTimerRef.current = null;
       }
     }
-  }
+  };
 
-  const uploadAudio = async (blob: Blob, duration: number) => {
-    if (consultStatus === 'completed' || (consultStatus === 'ended' && !isMaster)) return
+  const uploadAudioV2 = async (blob: Blob, duration: number, format: string, mimeType: string) => {
+    const logPrefix = '[VoiceEngine]';
+    const uploadStart = Date.now();
+    
+    if (consultStatus === 'completed' || (consultStatus === 'ended' && !isMaster)) return;
     if (consultStatus === 'not_started' && !isMaster && preConsultMsgCount >= PRE_CONSULT_LIMIT) {
       alert(isZh
         ? `已达到咨询前消息上限（${PRE_CONSULT_LIMIT}条），请等待预约时间正式开始对话`
         : `Pre-consultation message limit reached (${PRE_CONSULT_LIMIT}). Please wait for the scheduled time.`
-      )
-      return
+      );
+      return;
     }
 
+    // 1. Create optimistic message placeholder
+    const tempId = `temp-voice-${Date.now()}`;
+    const objectURL = URL.createObjectURL(blob);
+    objectURLsRef.current.push(objectURL);
+    
+    const optimisticVoiceMsg: Message = {
+      id: tempId,
+      booking_id: bookingId,
+      sender_id: user?.id || '',
+      sender_type: isMaster ? 'master' : 'user',
+      sender_name: isMaster ? 'Master' : (user?.user_metadata?.full_name || user?.email || 'User'),
+      content: null,
+      image_url: null,
+      audio_url: objectURL, // Local URL for immediate playback
+      audio_duration: duration,
+      created_at: new Date().toISOString(),
+      read_at: null,
+      source: 'chat',
+    };
+
+    setMessages((prev) => [...prev, optimisticVoiceMsg]);
+    setVoiceState({ status: 'uploading', progress: 0 });
+    setUploadingAudio(true);
+
     try {
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       if (!session?.access_token) {
-        console.error('[chat] uploadAudio: no session')
-        alert(isZh ? '登录已过期，请重新登录' : 'Session expired, please login again')
-        return
+        console.error(`${logPrefix} No session`);
+        setVoiceState({ status: 'failed', error: isZh ? '登录已过期' : 'Session expired' });
+        return;
       }
       
-      const formData = new FormData()
-      formData.append('file', blob, `recording_${Date.now()}.webm`)
-      formData.append('duration', duration.toString())
+      const formData = new FormData();
+      formData.append('file', blob, `recording_${Date.now()}.${format}`);
+      formData.append('duration', duration.toString());
+      formData.append('sender_type', isMaster ? 'master' : 'user');
+      formData.append('browser_type', navigator.userAgent);
+
+      console.log(`${logPrefix} Upload started`, { size: blob.size, duration, format });
 
       const uploadRes = await fetch(`/api/chat/${bookingId}/upload-audio`, {
         method: 'POST',
@@ -887,15 +1118,37 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         },
         credentials: 'include',
         body: formData,
-      })
+      });
+
+      const uploadDuration = Date.now() - uploadStart;
+      console.log(`${logPrefix} Upload completed`, { duration: uploadDuration, status: uploadRes.status });
 
       if (!uploadRes.ok) {
-        const err = await uploadRes.json()
-        throw new Error(err.error || 'Upload failed')
+        const err = await uploadRes.json();
+        console.error(`${logPrefix} Upload failed`, { status: uploadRes.status, error: err.error, code: err.code });
+        throw new Error(err.error || 'Upload failed');
       }
 
-      const uploadData = await uploadRes.json()
+      const uploadData = await uploadRes.json();
+      setVoiceState({ status: 'sending' });
 
+      // 2.5 URL accessibility check (CDN sync delay)
+      let urlReady = false;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          const headRes = await fetch(uploadData.audio_url, { method: 'HEAD', mode: 'no-cors' });
+          if (headRes.ok || headRes.status === 0) {
+            urlReady = true;
+            break;
+          }
+        } catch (e) {
+          console.log(`${logPrefix} URL not ready, attempt ${attempt + 1}/3`);
+        }
+        if (attempt < 2) await new Promise(r => setTimeout(r, 1000));
+      }
+
+      // 2. Send message with uploaded URL
+      const msgStart = Date.now();
       const res = await fetch(`/api/chat/${bookingId}/messages`, {
         method: 'POST',
         headers: {
@@ -907,42 +1160,109 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
           audio_url: uploadData.audio_url,
           audio_duration: uploadData.duration,
         }),
-      })
+      });
+
+      const msgDuration = Date.now() - msgStart;
+      console.log(`${logPrefix} Message created`, { duration: msgDuration, status: res.status });
 
       if (!res.ok) {
-        const err = await res.json()
-        alert(err.error || 'Audio send failed')
+        const err = await res.json();
+        throw new Error(err.error || 'Send failed');
       }
+
+      const json = await res.json();
+      
+      // 3. Replace optimistic message with real one
+      setMessages((prev) => {
+        if (prev.some((m) => m.id === json.message?.id)) return prev;
+        return prev.map((m) => m.id === tempId ? { ...json.message, audio_url: uploadData.audio_url } : m);
+      });
+      
+      setVoiceState({ status: 'sent' });
+      setVoiceError(null);
+      setRetryAudio(null);
+      
     } catch (err: any) {
-      console.error('Audio upload error:', err)
-      alert(`Upload failed: ${err.message}`)
+      console.error(`${logPrefix} Voice chain failed:`, err.message);
+      setVoiceState({ status: 'failed', error: err.message });
+      setVoiceError(err.message);
+      
+      // Mark optimistic message as failed
+      setMessages((prev) => prev.map((m) => 
+        m.id === tempId ? { ...m, voice_status: 'failed' as any } : m
+      ));
+    } finally {
+      setUploadingAudio(false);
     }
-  }
+  };
+
+  const retrySendAudio = async () => {
+    if (!retryAudio) return;
+    const { blob, duration } = retryAudio;
+    const { mimeType, ext } = getAudioFormat();
+    // Use original blob's type if available, otherwise use detected format
+    const actualMimeType = blob.type || mimeType;
+    const actualExt = actualMimeType.includes('webm') ? 'webm' : (actualMimeType.includes('mp4') || actualMimeType.includes('aac') ? 'm4a' : ext);
+    uploadAudioV2(blob, duration, actualExt, actualMimeType);
+  };
 
   const playAudio = (msgId: string, audioUrl: string) => {
     if (audioPlayingId === msgId) {
-      // 暂停
-      audioRef.current?.pause()
-      setAudioPlayingId(null)
+      audioRef.current?.pause();
+      setAudioPlayingId(null);
     } else {
-      // 播放
       if (audioRef.current) {
-        audioRef.current.pause()
+        audioRef.current.pause();
       }
-      const audio = new Audio(audioUrl)
-      audioRef.current = audio
-      audio.onended = () => setAudioPlayingId(null)
-      audio.play()
-      setAudioPlayingId(msgId)
+      const audio = new Audio(audioUrl);
+      audioRef.current = audio;
+      audio.onended = () => setAudioPlayingId(null);
+      audio.onerror = () => {
+        console.error('[VoiceEngine] Audio playback error, will retry in 2s:', audioUrl);
+        // 延迟2秒后重试，给CDN缓存时间
+        setTimeout(() => {
+          const retryAudio = new Audio(audioUrl + '?t=' + Date.now());
+          retryAudio.oncanplaythrough = () => {
+            retryAudio.play().catch(err => console.error('[VoiceEngine] Retry play failed:', err));
+          };
+          retryAudio.onerror = () => {
+            console.error('[VoiceEngine] Retry also failed');
+            alert(isZh ? '语音加载失败，请稍后重试' : 'Audio load failed, please retry later');
+            setAudioPlayingId(null);
+          };
+          retryAudio.preload = 'auto';
+          retryAudio.load();
+        }, 2000);
+      };
+      audio.preload = 'auto';
+      audio.play().catch(err => {
+        console.error('[VoiceEngine] Audio play error:', err);
+      });
+      setAudioPlayingId(msgId);
     }
-  }
+  };
 
   const formatDuration = (seconds: number) => {
-    const m = Math.floor(seconds / 60)
-    const s = seconds % 60
-    return `${m}:${s.toString().padStart(2, '0')}`
-  }
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  };
 
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      releaseObjectURLs();
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+      if (mediaRecorderRef.current) {
+        mediaRecorderRef.current = null;
+      }
+    };
+  }, []);
+
+  // 图片预览弹窗
   const [previewImage, setPreviewImage] = useState<string | null>(null)
   // Force rebuild: chat core fix v6 - countdown via scheduled_at + message merge
 
@@ -1046,6 +1366,19 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     const file = e.target.files?.[0]
     if (!file || consultStatus === 'completed' || (consultStatus === 'ended' && !isMaster)) return
 
+    console.log('[ImageUpload] Selected file:', {
+      name: file.name,
+      size: file.size,
+      type: file.type,
+    });
+
+    // 前端大小检查（10MB）
+    if (file.size > 10 * 1024 * 1024) {
+      alert(isZh ? '图片超过10MB限制，请选择更小的图片' : 'Image exceeds 10MB limit, please choose a smaller image')
+      if (fileInputRef.current) fileInputRef.current.value = ''
+      return
+    }
+
     // 前端：咨询未开始时检查5条限制（图片也算一条消息）
     if (consultStatus === 'not_started' && !isMaster && preConsultMsgCount >= PRE_CONSULT_LIMIT) {
       alert(isZh
@@ -1057,10 +1390,28 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
     setUploadingImage(true)
     try {
+      let uploadFile = file
+
+      // 图片压缩：大于1MB或HEIC格式时压缩
+      const needsCompression = file.size > 1 * 1024 * 1024 || file.type === 'image/heic' || file.type === 'image/heif'
+      if (needsCompression) {
+        console.log('[ImageUpload] Compressing image...');
+        const compressed = await compressImage(file, 1920, 0.8)
+        if (compressed) {
+          uploadFile = compressed
+          console.log('[ImageUpload] Compressed:', {
+            originalSize: file.size,
+            compressedSize: uploadFile.size,
+            type: uploadFile.type,
+          });
+        }
+      }
+
       const { data: { session } } = await supabase.auth.getSession()
       const formData = new FormData()
-      formData.append('file', file)
+      formData.append('file', uploadFile)
 
+      console.log('[ImageUpload] Uploading to API...');
       const uploadRes = await fetch(`/api/chat/${bookingId}/upload-image`, {
         method: 'POST',
         headers: {
@@ -1071,12 +1422,28 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
       if (!uploadRes.ok) {
         const err = await uploadRes.json()
-        throw new Error(err.error || 'Upload failed')
+        console.error('[ImageUpload] API error:', err);
+        
+        // 明确错误提示
+        let errorMsg = err.error || 'Upload failed'
+        if (errorMsg.includes('10MB')) {
+          errorMsg = isZh ? '图片超过10MB，请压缩后重试' : 'Image exceeds 10MB, please compress and retry'
+        } else if (errorMsg.includes('image')) {
+          errorMsg = isZh ? '仅支持图片文件（jpg/png/webp）' : 'Only image files supported (jpg/png/webp)'
+        } else if (uploadRes.status === 403) {
+          errorMsg = isZh ? '无权限上传图片' : 'No permission to upload'
+        } else if (uploadRes.status === 413) {
+          errorMsg = isZh ? '文件过大，请压缩后重试' : 'File too large, please compress and retry'
+        }
+        
+        alert(errorMsg)
+        return
       }
 
       const uploadData = await uploadRes.json()
       const imageUrl = uploadData.image_url
 
+      console.log('[ImageUpload] Upload success, sending message...');
       const res = await fetch(`/api/chat/${bookingId}/messages`, {
         method: 'POST',
         headers: {
@@ -1088,12 +1455,15 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
       if (!res.ok) {
         const err = await res.json()
-        alert(err.error || 'Image send failed')
+        console.error('[ImageUpload] Message send error:', err);
+        alert(err.error || (isZh ? '发送图片失败' : 'Image send failed'))
+      } else {
+        console.log('[ImageUpload] Message sent successfully');
       }
       // preConsultMsgCount 已从 messages 派生，无需乐观更新
     } catch (err: any) {
-      console.error('Image upload error:', err)
-      alert(`Upload failed: ${err.message}`)
+      console.error('[ImageUpload] Error:', err)
+      alert(err.message || (isZh ? '上传失败，请重试' : 'Upload failed, please retry'))
     } finally {
       setUploadingImage(false)
       if (fileInputRef.current) {
@@ -1374,36 +1744,75 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
                     />
                   )}
                   {msg.audio_url && (
-                    <div className="flex items-center gap-2 mt-2">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 rounded-full bg-violet-500/20 hover:bg-violet-500/30"
-                        onClick={() => playAudio(msg.id, msg.audio_url!)}
-                      >
-                        {audioPlayingId === msg.id ? (
-                          <span className="w-3 h-3 bg-violet-200 rounded-sm" />
-                        ) : (
-                          <svg className="w-4 h-4 text-violet-200" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z" />
-                          </svg>
-                        )}
-                      </Button>
-                      <span className="text-xs text-violet-200">
-                        {formatDuration(msg.audio_duration || 0)}
-                      </span>
-                      <div className="flex items-end gap-0.5 h-4">
-                        {Array.from({ length: 20 }).map((_, i) => (
-                          <div
-                            key={i}
-                            className="w-0.5 bg-violet-300/50 rounded-full"
-                            style={{
-                              height: `${Math.random() * 100}%`,
-                              animationDelay: `${i * 50}ms`,
-                            }}
-                          />
-                        ))}
-                      </div>
+                    <div className="mt-2">
+                      {/* Voice Engine v1.0: 状态机渲染 */}
+                      {(() => {
+                        const status = msg.voice_status;
+                        const isTemp = msg.id.startsWith('temp-voice-');
+                        
+                        if (status === 'uploading' || status === 'sending' || (isTemp && !status)) {
+                          return (
+                            <div className="flex items-center gap-2 text-xs text-violet-200">
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                              <span>{status === 'uploading' ? (isZh ? '上传中...' : 'Uploading...') : (isZh ? '发送中...' : 'Sending...')}</span>
+                              <span className="text-violet-300/60">{formatDuration(msg.audio_duration || 0)}</span>
+                            </div>
+                          );
+                        }
+                        
+                        if ((status as any) === 'failed' || (isTemp && (status as any) === 'failed')) {
+                          return (
+                            <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-2 bg-red-500/20 rounded-full px-3 py-1.5">
+                                <span className="text-xs text-red-200">{isZh ? '发送失败' : 'Send failed'}</span>
+                                <span className="text-xs text-red-300/60">{formatDuration(msg.audio_duration || 0)}</span>
+                              </div>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-7 px-2 text-xs text-violet-200 hover:text-white hover:bg-violet-500/30"
+                                onClick={() => retrySendAudio()}
+                              >
+                                {isZh ? '重新发送' : 'Retry'}
+                              </Button>
+                            </div>
+                          );
+                        }
+                        
+                        return (
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 rounded-full bg-violet-500/20 hover:bg-violet-500/30"
+                              onClick={() => playAudio(msg.id, msg.audio_url!)}
+                            >
+                              {audioPlayingId === msg.id ? (
+                                <span className="w-3 h-3 bg-violet-200 rounded-sm" />
+                              ) : (
+                                <svg className="w-4 h-4 text-violet-200" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M8 5v14l11-7z" />
+                                </svg>
+                              )}
+                            </Button>
+                            <span className="text-xs text-violet-200">
+                              {formatDuration(msg.audio_duration || 0)}
+                            </span>
+                            <div className="flex items-end gap-0.5 h-4">
+                              {Array.from({ length: 20 }).map((_, i) => (
+                                <div
+                                  key={i}
+                                  className="w-0.5 bg-violet-300/50 rounded-full"
+                                  style={{
+                                    height: `${Math.random() * 100}%`,
+                                    animationDelay: `${i * 50}ms`,
+                                  }}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })()}
                     </div>
                   )}
                   {/* 已读状态 - 仅自己消息显示 */}
@@ -1484,15 +1893,57 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
                 )}
               </Button>
               {/* 录音按钮 */}
+              {isRecording && (
+                <div className="fixed inset-0 bg-black/60 z-[60] flex flex-col items-center justify-center gap-4 animate-in fade-in duration-200"
+                  onClick={() => {
+                    // 点击背景不停止，必须点击按钮或松手
+                  }}
+                >
+                  <div className="bg-white rounded-2xl p-6 flex flex-col items-center gap-4 shadow-2xl">
+                    <div className="flex items-center gap-1 h-8">
+                      {Array.from({ length: 12 }).map((_, i) => (
+                        <div
+                          key={i}
+                          className="w-1 bg-red-500 rounded-full animate-pulse"
+                          style={{
+                            height: `${Math.max(20, Math.random() * 100)}%`,
+                            animationDelay: `${i * 80}ms`,
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <p className="text-lg font-bold text-stone-800">{formatDuration(recordingDuration)}</p>
+                    <p className="text-sm text-stone-500">
+                      {recordingDuration >= MAX_RECORDING_SECONDS
+                        ? (isZh ? '已达到最长录制时间' : 'Maximum recording time reached')
+                        : (isZh ? '录音请勿超过60秒，松手停止录音' : 'Recording max 60s, release to stop')}
+                    </p>
+                    <Button
+                      size="lg"
+                      className="bg-red-500 hover:bg-red-600 text-white rounded-full w-16 h-16 flex items-center justify-center"
+                      onClick={stopRecording}
+                    >
+                      <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <rect x="6" y="6" width="12" height="12" rx="2" />
+                      </svg>
+                    </Button>
+                  </div>
+                </div>
+              )}
               <Button
                 variant={isRecording ? 'default' : 'outline'}
                 size="icon"
                 className={`shrink-0 ${isRecording ? 'bg-red-500 hover:bg-red-600 text-white' : ''}`}
-                onClick={isRecording ? stopRecording : startRecording}
-                disabled={uploadingImage}
+                onClick={isRecording ? undefined : startRecording}
+                disabled={uploadingImage || uploadingAudio}
               >
                 {isRecording ? (
-                  <span className="text-xs font-bold">{formatDuration(recordingDuration)}</span>
+                  <span className="relative flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                  </span>
+                ) : uploadingAudio ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />

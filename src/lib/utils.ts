@@ -55,125 +55,14 @@ export function calculateTimeSlots(
   return slots
 }
 
-// ─── 咨询时间过期判断 ───
+// ─── 时间系统：已迁移至 TimeEngine，以下为兼容导出 ───
+export {
+  getConsultationDisplayStatus,
+  isConsultationExpired,
+  formatBookingTimeDisplay,
+  getTimezoneShortName,
+  formatInTimezone,
+} from './timeEngine'
 
-export function isConsultationExpired(
-  booking: { scheduled_at?: string | null; duration_minutes?: number | null; status?: string }
-): boolean {
-  if (booking.status === 'completed' || booking.status === 'cancelled' || booking.status === 'refunded') {
-    return false // Already in a terminal state
-  }
-  if (!booking.scheduled_at || !booking.duration_minutes) {
-    return false // Can't determine if no time data
-  }
-  const endTime = new Date(booking.scheduled_at).getTime() + booking.duration_minutes * 60 * 1000
-  return Date.now() > endTime
-}
-
-export function getTimezoneShortName(tz: string): string {
-  const map: Record<string, string> = {
-    'Asia/Tokyo': '东京',
-    'Asia/Shanghai': '北京',
-    'Asia/Hong_Kong': '香港',
-    'Asia/Singapore': '新加坡',
-    'America/Los_Angeles': '洛杉矶',
-    'America/New_York': '纽约',
-    'Europe/London': '伦敦',
-    'Europe/Paris': '巴黎',
-    'Australia/Sydney': '悉尼',
-    'UTC': 'UTC',
-  }
-  return map[tz] || tz
-}
-
-export function formatInTimezone(
-  isoTimestamp: string,
-  timezone: string,
-  options?: Intl.DateTimeFormatOptions
-): string {
-  const d = new Date(isoTimestamp)
-  return new Intl.DateTimeFormat('zh-CN', {
-    timeZone: timezone,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-    ...options,
-  }).format(d)
-}
-
-export function formatBookingTimeDisplay(
-  booking: {
-    scheduled_date?: string
-    scheduled_time?: string
-    timezone?: string
-    scheduled_at?: string
-  },
-  options?: { showLocalTime?: boolean; targetTimezone?: string }
-): string {
-  const { scheduled_date, scheduled_time, timezone, scheduled_at } = booking
-
-  if (!scheduled_date || !scheduled_time) return ''
-
-  const tzName = getTimezoneShortName(timezone || '')
-  const customerTime = `${scheduled_date} ${scheduled_time} (${tzName})`
-
-  if (options?.showLocalTime && scheduled_at && timezone && timezone !== 'Asia/Shanghai') {
-    const localTime = formatInTimezone(scheduled_at, options.targetTimezone || 'Asia/Shanghai')
-    return `${customerTime} / ${localTime} (北京)`
-  }
-
-  return customerTime
-}
-
-export function getConsultationDisplayStatus(
-  booking: { status: string; scheduled_at?: string | null; duration_minutes?: number | null; expires_at?: string | null }
-): string {
-  // 终端状态直接返回
-  if (booking.status === 'completed' || booking.status === 'cancelled' || booking.status === 'refunded') {
-    return booking.status
-  }
-
-  // pending 订单：检查支付是否已过期
-  if (booking.status === 'pending' && booking.expires_at) {
-    const expiresTime = new Date(booking.expires_at).getTime()
-    if (!isNaN(expiresTime) && Date.now() > expiresTime) {
-      return 'expired'
-    }
-  }
-
-  // 以下是有 scheduled_at 的实时咨询的时间状态判断
-  if (!booking.scheduled_at || !booking.duration_minutes) {
-    return booking.status
-  }
-  
-  // 正规做法：scheduled_at 是 ISO 格式（含时区信息），直接解析为 UTC 时间戳
-  const scheduledTime = new Date(booking.scheduled_at).getTime()
-  if (isNaN(scheduledTime)) {
-    console.error('[utils] Invalid scheduled_at:', booking.scheduled_at)
-    return booking.status
-  }
-  
-  const endTime = scheduledTime + booking.duration_minutes * 60 * 1000
-  const now = Date.now()
-
-  console.log('[utils] getConsultationDisplayStatus:', {
-    scheduled_at: booking.scheduled_at,
-    scheduledTime: new Date(scheduledTime).toISOString(),
-    endTime: new Date(endTime).toISOString(),
-    now: new Date(now).toISOString(),
-    duration: booking.duration_minutes,
-    status: booking.status,
-    result: now < scheduledTime ? 'confirmed' : now < endTime ? 'in_progress' : 'completed'
-  })
-
-  if (now < scheduledTime) {
-    return 'confirmed' // 还没到预约时间
-  } else if (now >= scheduledTime && now < endTime) {
-    return 'in_progress' // 咨询进行中
-  } else {
-    return 'completed' // 时间结束
-  }
-}
+export { TimeEngine } from './timeEngine'
+export type { SessionState, TimeBooking, DisplayTimeResult } from './timeEngine'
