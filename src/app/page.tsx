@@ -254,7 +254,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="pt-8 pb-12 lg:pt-16 lg:pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-6 lg:gap-2 items-center">
             {/* Left: Text */}
             <div>
               {/* Mobile Master Images — Accordion (top on mobile) */}
@@ -267,8 +267,9 @@ export default function Home() {
                         key={master.id}
                         onClick={() => setActiveMasterIdx(i)}
                         className={`relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 ease-out ${
-                          isActive ? 'flex-[2]' : 'flex-[1]'
+                          isActive ? 'flex-[10]' : 'flex-[2]'
                         }`}
+                        style={{ flex: isActive ? 10 : 2 }}
                       >
                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent z-10" />
                         <img
@@ -345,7 +346,7 @@ export default function Home() {
             </div>
 
             {/* Right: Master Images — Accordion Click Switch */}
-            <div className="hidden lg:flex gap-3 h-[560px]">
+            <div className="hidden lg:flex gap-2 h-[560px]">
               {masters.map((master, i) => {
                 const isActive = i === activeMasterIdx;
                 return (
@@ -353,9 +354,9 @@ export default function Home() {
                     key={master.id}
                     onClick={() => setActiveMasterIdx(i)}
                     className={`relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 ease-out ${
-                      isActive ? 'flex-[16]' : 'flex-[5]'
+                      isActive ? 'flex-[20]' : 'flex-[3]'
                     }`}
-                    style={{ flex: isActive ? 16 : 5 }}
+                    style={{ flex: isActive ? 20 : 3 }}
                   >
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent z-10" />
                     <img
