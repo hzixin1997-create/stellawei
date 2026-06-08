@@ -157,7 +157,7 @@ export default function Home() {
       <div className="absolute inset-0 bg-black">
         {/* Luna background */}
         <div 
-          className="absolute inset-0 transition-opacity duration-700 ease-in-out bg-cover bg-center bg-no-repeat bg-fixed"
+          className="absolute inset-0 transition-opacity duration-700 ease-in-out bg-cover bg-center bg-no-repeat md:bg-fixed"
           style={{ 
             backgroundImage: `url(/images/hero-bg-luna.jpg)`,
             opacity: isLunaBg ? 1 : 0
@@ -165,7 +165,7 @@ export default function Home() {
         />
         {/* Eastern background */}
         <div 
-          className="absolute inset-0 transition-opacity duration-700 ease-in-out bg-cover bg-center bg-no-repeat bg-fixed"
+          className="absolute inset-0 transition-opacity duration-700 ease-in-out bg-cover bg-center bg-no-repeat md:bg-fixed"
           style={{ 
             backgroundImage: `url(/images/hero-bg-eastern.jpg)`,
             opacity: isLunaBg ? 0 : 1
