@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Star, Shield, Clock, Sparkles, Moon, Sun, Users, Heart, Briefcase, Coins, Sparkles as SparklesIcon, User, X, Menu, MessageCircle, Video, Compass, ChevronRight } from "lucide-react"
+import { Star, Shield, Clock, Sparkles, Moon, Sun, Users, Heart, Briefcase, Coins, Sparkles as SparklesIcon, User, X, Menu, MessageCircle, Video, Compass, ChevronRight, Mic } from "lucide-react"
 import Link from "next/link"
 import { ActiveBookingBanner } from "@/components/ActiveBookingBanner";
 import { useTranslation } from 'react-i18next';
@@ -185,21 +185,13 @@ export default function Home() {
               <span className="text-xl font-serif font-bold text-white">{t('brand')}</span>
             </Link>
 
-            {/* Desktop Nav */}
+            {/* Desktop Nav - 服务/师傅/评价 已移除 */}
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#services" className="text-sm text-white/70 hover:text-white transition-colors">
-                {isZh ? '服务' : 'Services'}
-              </a>
-              <a href="#masters" className="text-sm text-white/70 hover:text-white transition-colors">
-                {isZh ? '师傅' : 'Masters'}
-              </a>
-              <a href="#testimonials" className="text-sm text-white/70 hover:text-white transition-colors">
-                {isZh ? '评价' : 'Reviews'}
-              </a>
+              <LanguageSwitcher />
             </div>
 
             {/* Right Side */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
               <div className="hidden sm:block">
                 <LanguageSwitcher />
               </div>
@@ -221,6 +213,18 @@ export default function Home() {
                 </Button>
               )}
 
+              {/* AI Voice — visible on all screens */}
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-purple-400/50 text-white/90 hover:bg-purple-500/20 rounded-full px-3 py-1 text-xs font-medium"
+                onClick={() => router.push('/voice')}
+              >
+                <Mic className="w-3 h-3 mr-1" />
+                <span className="hidden sm:inline">{isZh ? '语音转换' : 'AI Voice'}</span>
+                <span className="sm:hidden">{isZh ? '语音' : 'Voice'}</span>
+              </Button>
+
               {/* Mobile menu button */}
               <button
                 className="md:hidden p-2"
@@ -239,15 +243,18 @@ export default function Home() {
           <div className="absolute inset-0 bg-black/20" onClick={() => setMobileMenuOpen(false)} />
           <div className="absolute right-0 top-0 bottom-0 w-64 bg-black p-6 shadow-xl">
             <div className="space-y-4">
-              <a href="#services" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-white">
-                {isZh ? '服务' : 'Services'}
-              </a>
-              <a href="#masters" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-white">
+              <Link href="/" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-white">
+                {isZh ? '首页' : 'Home'}
+              </Link>
+              <Link href="/booking" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-white">
+                {isZh ? '预约' : 'Book Now'}
+              </Link>
+              <Link href="/masters" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-white">
                 {isZh ? '师傅' : 'Masters'}
-              </a>
-              <a href="#testimonials" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-white">
-                {isZh ? '评价' : 'Reviews'}
-              </a>
+              </Link>
+              <Link href="/voice" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-white">
+                {isZh ? '语音转换' : 'AI Voice'}
+              </Link>
             </div>
           </div>
         </div>
@@ -343,7 +350,7 @@ export default function Home() {
                   className="bg-[#6944b3] hover:bg-[#5a3a9e] text-white rounded-2xl px-8 h-16 text-lg font-semibold w-[85%] max-w-[420px] relative z-20 shadow-lg"
                   onClick={handleBookingClick}
                 >
-                  {isZh ? '开始首次咨询 $9.9' : 'Book Your First Reading From $9.9'}
+                  {isZh ? '登录' : 'Login'}
                 </Button>
               </div>
 
