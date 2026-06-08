@@ -342,7 +342,7 @@ export default function Home() {
                 <Button 
                   size="lg" 
                   className="bg-[#6944b3] hover:bg-[#5a3a9e] text-white rounded-2xl px-8 h-16 text-lg font-semibold w-[85%] max-w-[420px] relative z-20 shadow-lg"
-                  onClick={() => router.push('/booking')}
+                  onClick={handleBookingClick}
                 >
                   {isZh ? '开始首次咨询 $9.9' : 'Book Your First Reading From $9.9'}
                 </Button>
