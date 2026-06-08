@@ -136,8 +136,8 @@ export default function Home() {
       img.onload = () => setBgLoaded(prev => ({ ...prev, [key]: true }))
       img.src = src
     }
-    preload('/images/hero-bg-luna.jpg', 'luna')
-    preload('/images/hero-bg-eastern.jpg', 'eastern')
+    preload('/images/hero-bg-luna.webp', 'luna')
+    preload('/images/hero-bg-eastern.webp', 'eastern')
   }, [])
 
   // 背景图根据选中的师傅切换
@@ -159,7 +159,7 @@ export default function Home() {
         <div 
           className="absolute inset-0 transition-opacity duration-700 ease-in-out bg-cover bg-center bg-no-repeat md:bg-fixed"
           style={{ 
-            backgroundImage: `url(/images/hero-bg-luna.jpg)`,
+            backgroundImage: `url(/images/hero-bg-luna.webp)`,
             opacity: isLunaBg ? 1 : 0
           }} 
         />
@@ -167,7 +167,7 @@ export default function Home() {
         <div 
           className="absolute inset-0 transition-opacity duration-700 ease-in-out bg-cover bg-center bg-no-repeat md:bg-fixed"
           style={{ 
-            backgroundImage: `url(/images/hero-bg-eastern.jpg)`,
+            backgroundImage: `url(/images/hero-bg-eastern.webp)`,
             opacity: isLunaBg ? 0 : 1
           }} 
         />
