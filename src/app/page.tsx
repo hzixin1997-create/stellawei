@@ -185,9 +185,8 @@ export default function Home() {
               <span className="text-xl font-serif font-bold text-white">{t('brand')}</span>
             </Link>
 
-            {/* Desktop Nav - 服务/师傅/评价 已移除 */}
+            {/* Desktop Nav - empty */}
             <div className="hidden md:flex items-center space-x-8">
-              <LanguageSwitcher />
             </div>
 
             {/* Right Side */}
@@ -212,18 +211,6 @@ export default function Home() {
                   {isZh ? '登录' : 'Login'}
                 </Button>
               )}
-
-              {/* AI Voice — visible on all screens */}
-              <Button
-                size="sm"
-                variant="outline"
-                className="border-purple-400/50 text-white/90 hover:bg-purple-500/20 rounded-full px-3 py-1 text-xs font-medium"
-                onClick={() => router.push('/voice')}
-              >
-                <Mic className="w-3 h-3 mr-1" />
-                <span className="hidden sm:inline">{isZh ? '语音转换' : 'AI Voice'}</span>
-                <span className="sm:hidden">{isZh ? '语音' : 'Voice'}</span>
-              </Button>
 
               {/* Mobile menu button */}
               <button
@@ -251,9 +238,6 @@ export default function Home() {
               </Link>
               <Link href="/masters" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-white">
                 {isZh ? '师傅' : 'Masters'}
-              </Link>
-              <Link href="/voice" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-white">
-                {isZh ? '语音转换' : 'AI Voice'}
               </Link>
             </div>
           </div>
