@@ -153,22 +153,32 @@ export default function Home() {
 
   return (
     <div className="min-h-screen relative isolate">
-      {/* Background images — desktop + mobile, preload + fade transition */}
-      <div className="absolute inset-0 bg-black">
-        {/* Luna background */}
+      {/* Background images — desktop with photo, mobile with gradient */}
+      <div className="absolute inset-0">
+        {/* Desktop: Luna background photo */}
         <div 
-          className="absolute inset-0 transition-opacity duration-700 ease-in-out bg-cover bg-center bg-no-repeat md:bg-fixed"
+          className="absolute inset-0 transition-opacity duration-700 ease-in-out bg-cover bg-center bg-no-repeat bg-fixed hidden md:block"
           style={{ 
             backgroundImage: `url(/images/hero-bg-luna.webp)`,
             opacity: isLunaBg ? 1 : 0
           }} 
         />
-        {/* Eastern background */}
+        {/* Desktop: Eastern background photo */}
         <div 
-          className="absolute inset-0 transition-opacity duration-700 ease-in-out bg-cover bg-center bg-no-repeat md:bg-fixed"
+          className="absolute inset-0 transition-opacity duration-700 ease-in-out bg-cover bg-center bg-no-repeat bg-fixed hidden md:block"
           style={{ 
             backgroundImage: `url(/images/hero-bg-eastern.webp)`,
             opacity: isLunaBg ? 0 : 1
+          }} 
+        />
+        {/* Mobile: Gradient background */}
+        <div 
+          className="absolute inset-0 block md:hidden transition-opacity duration-700 ease-in-out"
+          style={{ 
+            background: isLunaBg 
+              ? 'radial-gradient(ellipse at 30% 20%, #1a0a3a 0%, #0d0618 50%, #050510 100%)'
+              : 'radial-gradient(ellipse at 70% 20%, #1a0a2e 0%, #0d0618 50%, #050510 100%)',
+            opacity: 1
           }} 
         />
       </div>
@@ -332,9 +342,8 @@ export default function Home() {
                 <Button 
                   size="lg" 
                   className="bg-[#6944b3] hover:bg-[#5a3a9e] text-white rounded-2xl px-8 h-16 text-lg font-semibold w-[85%] max-w-[420px] relative z-20 shadow-lg"
-                  {isZh ? '开始首次咨询 $9.9' : 'Book Your First Reading From $9.9'}
                 >
-                  {isZh ? '登录' : 'Login'}
+                  {isZh ? '开始首次咨询 $9.9' : 'Book Your First Reading From $9.9'}
                 </Button>
               </div>
 
