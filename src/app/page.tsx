@@ -154,7 +154,7 @@ export default function Home() {
   return (
     <div className="min-h-screen relative isolate">
       {/* Background images — desktop only, preload + fade transition */}
-      <div className="absolute inset-0 hidden md:block">
+      <div className="absolute inset-0 hidden md:block bg-black">
         {/* Luna background */}
         <div 
           className="absolute inset-0 transition-opacity duration-700 ease-in-out bg-cover bg-center bg-no-repeat bg-fixed"
