@@ -346,7 +346,7 @@ export default function Home() {
             </div>
 
             {/* Right: Master Images — Accordion Click Switch */}
-            <div className="hidden lg:flex gap-2 h-[560px]">
+            <div className="hidden lg:flex gap-6 h-[560px]">
               {masters.map((master, i) => {
                 const isActive = i === activeMasterIdx;
                 return (
@@ -354,9 +354,9 @@ export default function Home() {
                     key={master.id}
                     onClick={() => setActiveMasterIdx(i)}
                     className={`relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 ease-out ${
-                      isActive ? 'flex-[20]' : 'flex-[5]'
+                      isActive ? 'flex-[25]' : 'flex-[8]'
                     }`}
-                    style={{ flex: isActive ? 20 : 5 }}
+                    style={{ flex: isActive ? 25 : 8 }}
                   >
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent z-10" />
                     <img
