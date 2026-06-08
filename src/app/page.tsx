@@ -127,9 +127,21 @@ export default function Home() {
   }, []);
 
   const [activeMasterIdx, setActiveMasterIdx] = useState(0)
+  const [bgLoaded, setBgLoaded] = useState({ luna: false, eastern: false })
+
+  // 预加载背景图
+  useEffect(() => {
+    const preload = (src: string, key: 'luna' | 'eastern') => {
+      const img = new Image()
+      img.onload = () => setBgLoaded(prev => ({ ...prev, [key]: true }))
+      img.src = src
+    }
+    preload('/images/hero-bg-luna.jpg', 'luna')
+    preload('/images/hero-bg-eastern.jpg', 'eastern')
+  }, [])
 
   // 背景图根据选中的师傅切换
-  const heroBgImage = activeMasterIdx === 0 ? '/images/hero-bg-luna.jpg' : '/images/hero-bg-eastern.jpg'
+  const isLunaBg = activeMasterIdx === 0
 
   const handleBookingClick = () => {
     if (!user) {
@@ -141,8 +153,25 @@ export default function Home() {
 
   return (
     <div className="min-h-screen relative isolate">
-      {/* Background image — desktop only */}
-      <div className="absolute inset-0 hidden md:block bg-black" style={{ backgroundImage: `url(${heroBgImage})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }} />
+      {/* Background images — desktop only, preload + fade transition */}
+      <div className="absolute inset-0 hidden md:block">
+        {/* Luna background */}
+        <div 
+          className="absolute inset-0 transition-opacity duration-700 ease-in-out bg-cover bg-center bg-no-repeat bg-fixed"
+          style={{ 
+            backgroundImage: `url(/images/hero-bg-luna.jpg)`,
+            opacity: isLunaBg ? 1 : 0
+          }} 
+        />
+        {/* Eastern background */}
+        <div 
+          className="absolute inset-0 transition-opacity duration-700 ease-in-out bg-cover bg-center bg-no-repeat bg-fixed"
+          style={{ 
+            backgroundImage: `url(/images/hero-bg-eastern.jpg)`,
+            opacity: isLunaBg ? 0 : 1
+          }} 
+        />
+      </div>
       {/* Mobile gradient background — black to purple */}
       <div className="absolute inset-0 md:hidden bg-gradient-to-b from-black via-[#0f0a1a] to-[#1a0a2e]" />
       <div className="relative z-10">
