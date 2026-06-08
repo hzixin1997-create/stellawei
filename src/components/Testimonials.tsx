@@ -4,66 +4,55 @@ import { useState, useEffect } from 'react';
 import { Star, ChevronLeft, ChevronRight, Quote } from 'lucide-react';
 
 interface Review {
-  id: number;
-  text: string;
-  textZh: string;
-  author: string;
-  role: string;
-  roleZh: string;
-  avatar: string;
+  id: string;
+  content: string;
   rating: number;
+  author: string;
+  location: string;
+  masterName: string;
 }
 
+// 首页展示的评价（写死，如需更换请直接修改此数组）
 const reviews: Review[] = [
   {
-    id: 1,
-    text: "Master Luna helped me see clearly during a career transition. Three months later, I got the promotion she predicted. The guidance was specific and actionable.",
-    textZh: "卢娜师傅在我职业转型期帮我看清了方向。三个月后，她预测的升职真的发生了。指导非常具体且可执行。",
-    author: "Sarah L.",
-    role: "Marketing Director",
-    roleZh: "市场总监",
-    avatar: "/avatars/sarah.jpg",
+    id: '63391373-011d-46bc-b303-baa673ff997e',
+    content: '老师看牌很仔细很用心！无论是分析还是最后的总结，给的建议都很棒！以后有什么问题还想继续找老师看！',
     rating: 5,
+    author: 'D',
+    location: '日本',
+    masterName: 'Luna师傅',
   },
   {
-    id: 2,
-    text: "I was skeptical at first, but Master Wu Yang's BaZi reading was incredibly accurate about my relationship patterns. It helped me understand myself better.",
-    textZh: "起初我持怀疑态度，但戊阳师傅的八字分析对我感情模式的判断非常准确。帮助我更好地理解了自己。",
-    author: "Michael T.",
-    role: "Software Engineer",
-    roleZh: "软件工程师",
-    avatar: "/avatars/michael.jpg",
+    id: 'e80fd822-313d-4499-8c73-c8e80014b583',
+    content: '已经是回头客了，张大师本人超级帅，而且知识特别渊博！算的特别准，给的建议也特别好，十分推荐！下次还来！',
     rating: 5,
+    author: 'V**a',
+    location: '中国',
+    masterName: '张易桦师傅',
   },
   {
-    id: 3,
-    text: "The Qi Men Dun Jia session with Master Zhang gave me clarity on a major business decision. His insights on timing were spot-on.",
-    textZh: "张易桦师傅的奇门遁甲咨询为我的重大商业决策提供了清晰方向。他对时机的判断非常精准。",
-    author: "David K.",
-    role: "Entrepreneur",
-    roleZh: "创业者",
-    avatar: "/avatars/david.jpg",
+    id: '90b88502-1d7e-43ec-89a3-d188c7e60f52',
+    content: '很准，成功把我这个唯物主义者掰弯，推荐这位张大师！不说了我要去预约7日后大师深度破局！',
     rating: 5,
+    author: '冯*颖',
+    location: '中国',
+    masterName: '张易桦师傅',
   },
   {
-    id: 4,
-    text: "I've tried many online readings before. Stellawei is different — real masters, real conversations, real results. Worth every penny.",
-    textZh: "之前尝试过许多在线占卜。Stellawei 不一样——真人师傅、真实对话、真实效果。物超所值。",
-    author: "Emily R.",
-    role: "UX Designer",
-    roleZh: "UX设计师",
-    avatar: "/avatars/emily.jpg",
+    id: 'ddd16030-31e7-46e3-a7d2-f61c6559d4a1',
+    content: '第一次抱着试一试的态度下了单，结果Luna师傅很耐心的帮我梳理了内心的情感和工作纠结，有种豁然开朗的感觉，整个人都不那么焦虑了，非常感谢，已经推荐了朋友也来试试！',
     rating: 5,
+    author: 'L**a',
+    location: '新加坡',
+    masterName: 'Luna师傅',
   },
   {
-    id: 5,
-    text: "The 7-day refund policy gave me confidence to try. After my first session, I knew I'd be back. The masters here are genuinely gifted.",
-    textZh: "7天退款保障让我有信心尝试。第一次咨询后，我就知道还会再来。这里的师傅真正有天赋。",
-    author: "James W.",
-    role: "Financial Analyst",
-    roleZh: "金融分析师",
-    avatar: "/avatars/james.jpg",
+    id: '4522adb3-5f67-430f-b77b-d5437105c34e',
+    content: '张师傅耐心细致，解答疑惑不厌其烦，推测的情况与事实非常相符，并且提供了很有用的建议，非常感谢！强烈推荐！！！',
     rating: 5,
+    author: 'W*n',
+    location: '中国',
+    masterName: '张易桦师傅',
   },
 ];
 
@@ -78,28 +67,20 @@ export default function Testimonials() {
     return () => clearInterval(timer);
   }, []);
 
-  const goTo = (index: number) => {
-    setCurrent(index);
-  };
-
-  const prev = () => {
-    setCurrent((prev) => (prev - 1 + reviews.length) % reviews.length);
-  };
-
-  const next = () => {
-    setCurrent((prev) => (prev + 1) % reviews.length);
-  };
+  const goTo = (index: number) => setCurrent(index);
+  const prev = () => setCurrent((prev) => (prev - 1 + reviews.length) % reviews.length);
+  const next = () => setCurrent((prev) => (prev + 1) % reviews.length);
 
   const review = reviews[current];
 
   return (
-    <section className="py-24 bg-[#faf7fa]">
+    <section className="py-24">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-serif font-bold text-sw-text mb-4">
+          <h2 className="text-3xl sm:text-4xl font-serif font-bold text-white mb-4">
             {isZh ? '用户评价' : 'What Our Clients Say'}
           </h2>
-          <p className="text-sw-text-secondary max-w-xl mx-auto">
+          <p className="text-white/70 max-w-xl mx-auto">
             {isZh 
               ? '真实用户，真实体验，真实改变' 
               : 'Real people, real experiences, real transformations'}
@@ -107,12 +88,11 @@ export default function Testimonials() {
         </div>
 
         <div className="relative">
-          {/* Main Card */}
-          <div className="bg-white rounded-2xl p-8 sm:p-10 shadow-sm border border-gray-100">
+          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 sm:p-10 shadow-sm border border-white/10">
             <Quote className="w-10 h-10 text-sw-accent/20 mb-4" />
             
-            <p className="text-lg sm:text-xl text-sw-text leading-relaxed mb-8 min-h-[80px]">
-              {isZh ? review.textZh : review.text}
+            <p className="text-lg sm:text-xl text-white/90 leading-relaxed mb-8 min-h-[80px]">
+              {review.content}
             </p>
 
             <div className="flex items-center gap-4">
@@ -122,9 +102,9 @@ export default function Testimonials() {
                 </span>
               </div>
               <div>
-                <div className="font-semibold text-sw-text">{review.author}</div>
+                <div className="font-semibold text-white">{review.author}</div>
                 <div className="text-sm text-sw-text-secondary">
-                  {isZh ? review.roleZh : review.role}
+                  {review.location} · {review.masterName}
                 </div>
               </div>
               <div className="ml-auto flex gap-0.5">
@@ -135,7 +115,6 @@ export default function Testimonials() {
             </div>
           </div>
 
-          {/* Navigation */}
           <div className="flex items-center justify-center gap-4 mt-8">
             <button
               onClick={prev}
@@ -149,10 +128,10 @@ export default function Testimonials() {
                 <button
                   key={i}
                   onClick={() => goTo(i)}
-                  className={`w-2 h-2 rounded-full transition-all ${
+                  className={`h-2 rounded-full transition-all ${
                     i === current 
                       ? 'bg-sw-accent w-6' 
-                      : 'bg-gray-300 hover:bg-gray-400'
+                      : 'w-2 bg-gray-300 hover:bg-gray-400'
                   }`}
                 />
               ))}

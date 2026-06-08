@@ -22,6 +22,27 @@ const authRoutes = [
   '/auth/reset-password',
 ]
 
+// 带超时的 getSession 包装函数
+async function getSessionWithTimeout(
+  supabase: any,
+  timeoutMs: number = 5000
+): Promise<{ session: any | null; error: any | null }> {
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    setTimeout(() => reject(new Error('Supabase session timeout')), timeoutMs)
+  })
+
+  try {
+    const result = await Promise.race([
+      supabase.auth.getSession(),
+      timeoutPromise,
+    ])
+    return result?.data ? { session: result.data.session, error: null } : { session: null, error: null }
+  } catch (err: any) {
+    console.warn('Supabase session check timed out, allowing request through:', err.message)
+    return { session: null, error: err }
+  }
+}
+
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
     request: {
@@ -31,8 +52,8 @@ export async function middleware(request: NextRequest) {
 
   const { supabase } = createClient(request, response)
   
-  // Refresh session if expired - required for Server Components to work
-  const { data: { session }, error } = await supabase.auth.getSession()
+  // Refresh session if expired - with timeout protection
+  const { session } = await getSessionWithTimeout(supabase, 5000)
 
   const { pathname } = request.nextUrl
 

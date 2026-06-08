@@ -99,27 +99,6 @@ export class TimeEngine {
       const timeStr = booking.scheduled_time.split(':').slice(0, 2).join(':');
       scheduledAt = `${booking.scheduled_date}T${timeStr}:00+08:00`;
       startTime = this.parseUTC(scheduledAt);
-      
-      // 如果数据库中的 scheduled_at 存在且有效，验证一致性
-      if (booking.scheduled_at) {
-        const dbTime = this.parseUTC(booking.scheduled_at);
-        if (!isNaN(dbTime)) {
-          const diff = Math.abs(dbTime - startTime);
-          if (diff > 60 * 60 * 1000) {
-            // 数据库中的 scheduled_at 和重建时间差距超过1小时
-            // 说明数据库值有格式/时区问题，用重建时间
-            console.warn('[TimeEngine] scheduled_at mismatch, using reconstructed time:', {
-              db: booking.scheduled_at,
-              reconstructed: scheduledAt,
-              diff: Math.round(diff / 3600000) + 'h'
-            });
-          } else {
-            // 一致，使用数据库中的值（更精确）
-            scheduledAt = booking.scheduled_at;
-            startTime = dbTime;
-          }
-        }
-      }
     } else if (booking.scheduled_at) {
       // 没有 date/time，fallback 到 scheduled_at
       scheduledAt = booking.scheduled_at;
@@ -223,7 +202,9 @@ export class TimeEngine {
     };
   }
 
-  /** 格式化预约时间显示（用于订单卡片） */
+  /** 格式化预约时间显示（用于订单卡片）
+   * 根据用户时区转换为当地时间显示，同时保留北京时间
+   */
   static formatBookingTimeDisplay(
     booking: TimeBooking,
     options?: { showLocalTime?: boolean; targetTimezone?: string }
@@ -232,18 +213,31 @@ export class TimeEngine {
 
     if (!scheduled_date || !scheduled_time) return '';
 
-    const tzName = this.getTimezoneShortName(timezone || '');
-    const customerTime = `${scheduled_date} ${scheduled_time} (${tzName})`;
+    // 构建北京时间 ISO 字符串（师傅所在地）
+    const timeStr = scheduled_time.split(':').slice(0, 2).join(':');
+    const beijingIso = `${scheduled_date}T${timeStr}:00+08:00`;
 
-    if (options?.showLocalTime && booking.scheduled_at && timezone && timezone !== 'Asia/Shanghai') {
-      const localTime = this.formatInTimezone(
-        booking.scheduled_at,
-        options.targetTimezone || 'Asia/Shanghai'
-      );
-      return `${customerTime} / ${localTime} (北京)`;
+    // 用户时区（如果没有则默认浏览器时区）
+    const userTz = timezone || this.getDefaultTimezone();
+    const userTzName = this.getTimezoneShortName(userTz);
+
+    // 用户当地时间（转换后的）
+    const userLocalTime = this.formatInTimezone(beijingIso, userTz, 'zh-CN');
+    // 提取 "HH:mm" 部分
+    const userTimeMatch = userLocalTime.match(/(\d{2}:\d{2})/);
+    const userTime = userTimeMatch ? userTimeMatch[1] : scheduled_time;
+
+    // 北京时间（原始）
+    const beijingTime = timeStr;
+    const beijingTzName = this.getTimezoneShortName('Asia/Shanghai');
+
+    if (userTz === 'Asia/Shanghai') {
+      // 用户在北京时区，直接显示北京时间
+      return `${scheduled_date} ${beijingTime} (${beijingTzName})`;
     }
 
-    return customerTime;
+    // 非北京时区：显示用户当地时间 + 北京时间（双时区）
+    return `${scheduled_date} ${userTime} (${userTzName}) / ${beijingTime} (${beijingTzName})`;
   }
 
   // ==================== 区间冲突检测 ====================

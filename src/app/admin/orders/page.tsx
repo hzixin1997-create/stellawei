@@ -313,11 +313,11 @@ export default function AdminOrders() {
   const statusCounts = {
     all: orders.length,
     pending: orders.filter(o => o.payment_status === 'pending').length,
-    paid: orders.filter(o => o.payment_status === 'paid' && o.status !== 'refund_requested').length,
+    paid: orders.filter(o => o.status === 'paid' || (o.payment_status === 'paid' && o.status === 'pending')).length,
     confirmed: orders.filter(o => o.status === 'confirmed').length,
     ready: orders.filter(o => o.payment_status === 'paid' && (o.status === 'confirmed' || o.status === 'in_progress') && !(o.scheduled_at ? new Date(o.scheduled_at).getTime() < now : false)).length,
     in_progress: orders.filter(o => o.status === 'in_progress').length,
-    completed: orders.filter(o => o.status === 'completed').length,
+    completed: orders.filter(o => o.status === 'completed' || o.status === 'paid').length,
     overdue: orders.filter(o => o.payment_status === 'paid' && !['completed', 'refunded', 'cancelled'].includes(o.status) && (o.scheduled_at ? new Date(o.scheduled_at).getTime() < now : false)).length,
     refund_requested: orders.filter(o => o.status === 'refund_requested' || o.payment_status === 'refund_requested').length,
     refunded: orders.filter(o => o.payment_status === 'refunded').length,

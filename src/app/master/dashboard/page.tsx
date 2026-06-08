@@ -103,7 +103,21 @@ export default function MasterDashboard() {
   const [bookings, setBookings] = useState<Booking[]>([])
   const [stats, setStats] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [isZh, setIsZh] = useState(true)
+  // 语言切换（从 localStorage 读取，与首页统一）
+  const [isZh, setIsZh] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('language')
+      return saved !== 'en'
+    }
+    return true
+  })
+
+  const toggleLanguage = () => {
+    const newLang = isZh ? 'en' : 'zh'
+    setIsZh(!isZh)
+    localStorage.setItem('language', newLang)
+    document.cookie = `language=${newLang}; path=/; max-age=${60 * 60 * 24 * 365}`
+  }
   const [acceptingId, setAcceptingId] = useState<string | null>(null)
   const [updatingStatus, setUpdatingStatus] = useState(false)
   const [showMessageModal, setShowMessageModal] = useState(false)
@@ -822,11 +836,11 @@ export default function MasterDashboard() {
           </h1>
           <div className="flex items-center gap-2 sm:gap-4 min-w-0">
             <button
-              onClick={() => setIsZh(!isZh)}
+              onClick={toggleLanguage}
               className="flex items-center gap-1 text-xs sm:text-sm text-stone-500 hover:text-stone-900 transition-colors shrink-0"
             >
               <span className="w-5 h-5 rounded-full border border-stone-300 flex items-center justify-center text-xs">
-                {isZh ? '中' : 'EN'}
+                {isZh ? 'EN' : '中'}
               </span>
               <span className="hidden sm:inline">{isZh ? 'EN / 中' : 'EN / 中'}</span>
             </button>
@@ -874,6 +888,11 @@ export default function MasterDashboard() {
                 </span>
               </div>
             </div>
+            <p className="text-sm text-stone-600 mb-2">
+              💬 {isZh
+                ? '咨询前请添加客服微信号：Stellawei2026，或发送邮件至：stellawei@support，以确保咨询能正常进行。'
+                : 'Please add our customer service WeChat: Stellawei2026, or email: stellawei@support before your consultation to ensure everything goes smoothly.'}
+            </p>
             <p className="text-stone-600">
               {masterInfo
                 ? `${masterInfo.specialties.join(' · ')} · ${masterInfo.experience}经验`

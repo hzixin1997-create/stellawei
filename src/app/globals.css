@@ -59,7 +59,7 @@
     @apply border-border;
   }
   html, body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply text-foreground font-sans antialiased;
     overflow-x: hidden;
     max-width: 100vw;
     touch-action: pan-y;

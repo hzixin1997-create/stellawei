@@ -86,7 +86,21 @@ export default function UserDashboard() {
   const [user, setUser] = useState<any>(null)
   const [bookings, setBookings] = useState<Booking[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [isZh, setIsZh] = useState(true)
+  // 语言切换（从 localStorage 读取，与首页统一）
+  const [isZh, setIsZh] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('language')
+      return saved !== 'en'
+    }
+    return true
+  })
+
+  const toggleLanguage = () => {
+    const newLang = isZh ? 'en' : 'zh'
+    setIsZh(!isZh)
+    localStorage.setItem('language', newLang)
+    document.cookie = `language=${newLang}; path=/; max-age=${60 * 60 * 24 * 365}`
+  }
   const [cancellingId, setCancellingId] = useState<string | null>(null)
   const [refundingId, setRefundingId] = useState<string | null>(null)
   const [refundInfo, setRefundInfo] = useState<Record<string, any>>({})
@@ -709,6 +723,14 @@ export default function UserDashboard() {
               <span className="truncate hidden sm:inline">{user?.email}</span>
             </div>
             <button
+              onClick={toggleLanguage}
+              className="flex items-center gap-1 text-xs sm:text-sm text-stone-500 hover:text-violet-600 transition-colors shrink-0"
+            >
+              <span className="w-5 h-5 rounded-full border border-stone-300 flex items-center justify-center text-xs">
+                {isZh ? 'EN' : '中'}
+              </span>
+            </button>
+            <button
               onClick={handleLogout}
               className="flex items-center gap-1 text-xs sm:text-sm text-stone-500 hover:text-red-600 transition-colors shrink-0"
             >
@@ -726,8 +748,10 @@ export default function UserDashboard() {
             <h1 className="text-3xl font-serif font-bold text-stone-900">
               {isZh ? '欢迎回来' : 'Welcome Back'}
             </h1>
-            <p className="text-stone-600 mt-2">
-              {isZh ? '这里您可以查看所有订单和留言记录' : 'View all your orders and messages here'}
+            <p className="text-base text-stone-600 mt-2">
+              💬 {isZh
+                ? '咨询前请添加客服微信号：Stellawei2026，或发送邮件至：stellawei@support，以确保咨询能正常进行。'
+                : 'Please add our customer service WeChat: Stellawei2026, or email: stellawei@support before your consultation to ensure everything goes smoothly.'}
             </p>
           </div>
 
@@ -779,7 +803,10 @@ export default function UserDashboard() {
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => setShowTimezoneModal(true)}
+                  onClick={() => {
+                    setTimezoneInput(userTimezone || '')
+                    setShowTimezoneModal(true)
+                  }}
                 >
                   {isZh ? '修改' : 'Change'}
                 </Button>
@@ -1497,15 +1524,25 @@ export default function UserDashboard() {
                   {isZh ? '修改时区' : 'Change Timezone'}
                 </h3>
                 <p className="text-sm text-stone-500 mb-4">
-                  {isZh ? '请输入您的时区，例如：Asia/Shanghai, America/New_York' : 'Enter your timezone, e.g., Asia/Shanghai, America/New_York'}
+                  {isZh ? '请选择您的所在时区' : 'Select your timezone'}
                 </p>
-                <input
-                  type="text"
+                <select
                   value={timezoneInput}
                   onChange={(e) => setTimezoneInput(e.target.value)}
-                  placeholder={isZh ? 'Asia/Shanghai' : 'America/New_York'}
-                  className="w-full border rounded-lg p-3 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-violet-500"
-                />
+                  className="w-full border rounded-lg p-3 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
+                >
+                  <option value="">{isZh ? '-- 选择时区 --' : '-- Select timezone --'}</option>
+                  <option value="Asia/Shanghai">{isZh ? '中国 (北京/上海)' : 'China (Beijing/Shanghai)'}</option>
+                  <option value="Asia/Tokyo">{isZh ? '日本 (东京)' : 'Japan (Tokyo)'}</option>
+                  <option value="Asia/Hong_Kong">{isZh ? '中国香港' : 'Hong Kong'}</option>
+                  <option value="Asia/Singapore">{isZh ? '新加坡' : 'Singapore'}</option>
+                  <option value="America/Los_Angeles">{isZh ? '美国 (洛杉矶)' : 'USA (Los Angeles)'}</option>
+                  <option value="America/New_York">{isZh ? '美国 (纽约)' : 'USA (New York)'}</option>
+                  <option value="Europe/London">{isZh ? '英国 (伦敦)' : 'UK (London)'}</option>
+                  <option value="Europe/Paris">{isZh ? '法国 (巴黎)' : 'France (Paris)'}</option>
+                  <option value="Australia/Sydney">{isZh ? '澳大利亚 (悉尼)' : 'Australia (Sydney)'}</option>
+                  <option value="UTC">{isZh ? 'UTC' : 'UTC'}</option>
+                </select>
                 <div className="flex gap-3">
                   <Button
                     variant="outline"
@@ -1520,7 +1557,7 @@ export default function UserDashboard() {
                   <Button
                     className="flex-1 bg-violet-600 hover:bg-violet-700"
                     onClick={handleSaveTimezone}
-                    disabled={savingTimezone}
+                    disabled={savingTimezone || !timezoneInput}
                   >
                     {savingTimezone ? (
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />

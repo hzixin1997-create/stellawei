@@ -129,6 +129,7 @@ export default function BookingPage() {
   const [selectedDate, setSelectedDate] = useState<Date>()
   const [selectedTime, setSelectedTime] = useState('')
   const [bookedSlots, setBookedSlots] = useState<string[]>([])
+  const [unavailableSlots, setUnavailableSlots] = useState<string[]>([])
   const [checkingSlots, setCheckingSlots] = useState(false)
   const [isFirstTime, setIsFirstTime] = useState(true)
   const [isLoading, setIsLoading] = useState(true)
@@ -203,6 +204,7 @@ export default function BookingPage() {
     const fetchBookedSlots = async () => {
       if (!selectedMaster || !selectedDate || consultationType !== 'realtime' || !selectedTier) {
         setBookedSlots([])
+        setUnavailableSlots([])
         return
       }
       setCheckingSlots(true)
@@ -218,14 +220,17 @@ export default function BookingPage() {
           const data = await res.json()
           const occupied = data.occupiedSlots || []
           setBookedSlots(occupied)
-          if (selectedTime && occupied.includes(selectedTime)) {
+          setUnavailableSlots(data.unavailableSlots || [])
+          if (selectedTime && (occupied.includes(selectedTime) || (data.unavailableSlots || []).includes(selectedTime))) {
             setSelectedTime('')
           }
         } else {
           setBookedSlots([])
+          setUnavailableSlots([])
         }
       } catch {
         setBookedSlots([])
+        setUnavailableSlots([])
       } finally {
         setCheckingSlots(false)
       }
@@ -815,19 +820,22 @@ export default function BookingPage() {
                               
                               return availableSlots.map((time) => {
                                 const isBooked = bookedSlots.includes(time)
+                                const isUnavailable = unavailableSlots.includes(time)
+                                const disabled = !selectedDate || isBooked || isUnavailable || checkingSlots
                                 return (
                                   <Button
                                     key={time}
                                     variant={selectedTime === time ? 'default' : 'outline'}
-                                    onClick={() => !isBooked && setSelectedTime(time)}
-                                    disabled={!selectedDate || isBooked || checkingSlots}
+                                    onClick={() => !disabled && setSelectedTime(time)}
+                                    disabled={disabled}
                                     className={`text-sm ${
                                       selectedTime === time ? 'bg-violet-600' : 
-                                      isBooked ? 'bg-stone-100 text-stone-400 cursor-not-allowed h-auto py-1.5 flex-col gap-0' : 'h-10'
+                                      disabled ? 'bg-stone-100 text-stone-400 cursor-not-allowed h-auto py-1.5 flex-col gap-0' : 'h-10'
                                     }`}
                                   >
                                     <span>{time}</span>
                                     {isBooked && <span className="text-[10px] leading-tight">{isZh ? '不可约' : 'Unavailable'}</span>}
+                                    {isUnavailable && !isBooked && <span className="text-[10px] leading-tight">{isZh ? '未开放' : 'Closed'}</span>}
                                   </Button>
                                 )
                               })
@@ -893,16 +901,44 @@ export default function BookingPage() {
                       {consultationType === 'realtime' && selectedDate && selectedTime && (
                         <div className="flex justify-between">
                           <span className="text-stone-500">{isZh ? '预约时间' : 'Time'}</span>
-                          <span className="font-medium">
+                          <span className="font-medium text-right">
                             {selectedDate.getFullYear()}-{String(selectedDate.getMonth() + 1).padStart(2, '0')}-{String(selectedDate.getDate()).padStart(2, '0')} {selectedTime}
                           </span>
                         </div>
                       )}
-                      {master && (
+                      {master && consultationType === 'realtime' && selectedDate && selectedTime && (
                         <div className="flex justify-between">
                           <span className="text-stone-500">{isZh ? '时区' : 'Timezone'}</span>
-                          <span className="font-medium">
-                            {isZh ? '师傅时间：' : 'Advisor time: '}{TIMEZONE_LABELS[master.timezone]?.[isZh ? 'zh' : 'en'] || master.timezone || ''}
+                          <span className="font-medium text-right text-sm">
+                            {isZh ? '师傅时间' : 'Advisor'}：{TIMEZONE_LABELS[master.timezone]?.[isZh ? 'zh' : 'en'] || master.timezone || ''}
+                            {(() => {
+                              const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone
+                              const masterTz = master.timezone || 'Asia/Shanghai'
+                              if (userTz === masterTz) return null
+                              const dateStr = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`
+                              const timeStr = selectedTime.split(':').slice(0, 2).join(':')
+                              const beijingIso = `${dateStr}T${timeStr}:00+08:00`
+                              try {
+                                const d = new Date(beijingIso)
+                                const userLocal = d.toLocaleString(isZh ? 'zh-CN' : 'en-US', {
+                                  timeZone: userTz,
+                                  year: 'numeric',
+                                  month: '2-digit',
+                                  day: '2-digit',
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                  hour12: false
+                                })
+                                const userTzName = TIMEZONE_LABELS[userTz]?.[isZh ? 'zh' : 'en'] || userTz
+                                return (
+                                  <span className="block text-violet-600 mt-0.5">
+                                    {isZh ? '您的时间' : 'Your time'}：{userLocal}（{userTzName}）
+                                  </span>
+                                )
+                              } catch {
+                                return null
+                              }
+                            })()}
                           </span>
                         </div>
                       )}
@@ -930,17 +966,37 @@ export default function BookingPage() {
                       </p>
                       {(() => {
                         const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone
-                        if (userTz !== master.timezone) {
-                          const dateStr = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}T${selectedTime}:00`
-                          const d = new Date(dateStr + (master.timezone === 'Asia/Shanghai' ? '+08:00' : master.timezone === 'Asia/Tokyo' ? '+09:00' : ''))
-                          const localStr = d.toLocaleString(isZh ? 'zh-CN' : 'en-US', { timeZone: userTz, month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false })
+                        const masterTz = master.timezone || 'Asia/Shanghai'
+                        const dateStr = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`
+                        const timeStr = selectedTime.split(':').slice(0, 2).join(':')
+                        const beijingIso = `${dateStr}T${timeStr}:00+08:00`
+                        try {
+                          const d = new Date(beijingIso)
+                          const userLocal = d.toLocaleString(isZh ? 'zh-CN' : 'en-US', {
+                            timeZone: userTz,
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: false
+                          })
+                          const userTzName = TIMEZONE_LABELS[userTz]?.[isZh ? 'zh' : 'en'] || userTz
+                          if (userTz === masterTz) {
+                            return (
+                              <p className="text-sm text-violet-700 mt-1">
+                                {isZh ? '您的时间与师傅一致' : 'Your time matches advisor time'}
+                              </p>
+                            )
+                          }
                           return (
                             <p className="text-sm text-violet-700 mt-1">
-                              {isZh ? `您的本地时间：${localStr}（${userTz}）` : `Your local time: ${localStr} (${userTz})`}
+                              {isZh ? `您的时间：${userLocal}（${userTzName}）` : `Your time: ${userLocal} (${userTzName})`}
                             </p>
                           )
+                        } catch {
+                          return null
                         }
-                        return null
                       })()}
                       <p className="text-xs text-violet-600 mt-1">
                         {isZh

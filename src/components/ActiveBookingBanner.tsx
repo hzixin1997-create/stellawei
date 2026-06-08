@@ -127,29 +127,25 @@ export function ActiveBookingBanner({ isZh }: ActiveBookingBannerProps) {
 
   // 留言咨询（无倒计时）
   if (booking.consultation_type === 'message' || booking.status === 'message') {
-    const masterName = booking.master_id === 'master-luna' ? '卢娜师傅' : 
-                       booking.master_id === 'wu-yang' ? '戊阳' : 
-                       booking.master_id === 'zhang-yihua' ? '张易桦' : '师傅';
+    const masterName = isZh
+      ? (booking.master_id === 'master-luna' ? '卢娜师傅' : booking.master_id === 'wu-yang' ? '戊阳' : booking.master_id === 'zhang-yihua' ? '张易桦' : '师傅')
+      : (booking.master_id === 'master-luna' ? 'Luna' : booking.master_id === 'wu-yang' ? 'Wu Yang' : booking.master_id === 'zhang-yihua' ? 'Zhang Yihua' : 'Master');
     return (
-      <Card className="w-full bg-blue-50 border-blue-200 mb-4">
-        <div className="flex items-center justify-between p-4 sm:p-6">
-          <div className="flex items-center gap-3">
-            <MessageCircle className="w-5 h-5 text-blue-600" />
-            <div>
-              <p className="text-sm font-semibold text-blue-800">
-                {isZh ? `您有一条待查看的留言咨询 ${masterName}` : `You have a pending message consultation with ${masterName}`}
+      <Card className="fixed bottom-4 right-4 z-50 max-w-xs w-[calc(100vw-2rem)] bg-blue-50 border-blue-200 shadow-lg">
+        <div className="flex items-center justify-between p-3">
+          <div className="flex items-center gap-2 min-w-0">
+            <MessageCircle className="w-4 h-4 text-blue-600 shrink-0" />
+            <div className="min-w-0">
+              <p className="text-xs font-semibold text-blue-800 truncate">
+                {isZh ? `留言咨询 ${masterName}` : `Message ${masterName}`}
               </p>
               <p className="text-xs text-blue-600">
-                {isZh ? '师傅已回复，请查看留言内容' : 'Master has replied, please check the message'}
+                {isZh ? '师傅已回复' : 'Master replied'}
               </p>
             </div>
           </div>
-          <Button
-            size="sm"
-            className="bg-blue-600 hover:bg-blue-700 text-white"
-            onClick={() => router.push(`/chat/${booking.id}`)}
-          >
-            {isZh ? '查看留言' : 'View Message'}
+          <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white text-xs h-7 px-2 shrink-0" onClick={() => router.push(`/chat/${booking.id}`)}>
+            {isZh ? '查看' : 'View'}
           </Button>
         </div>
       </Card>
@@ -159,18 +155,13 @@ export function ActiveBookingBanner({ isZh }: ActiveBookingBannerProps) {
   // 退款状态优先
   if (isRefund) {
     return (
-      <Card className="w-full bg-orange-50 border-orange-200 mb-4">
-        <div className="flex items-center justify-between p-4 sm:p-6">
-          <div className="flex items-center gap-3">
-            <AlertTriangle className="w-5 h-5 text-orange-600" />
-            <div>
-              <p className="text-sm font-semibold text-orange-800">
-                {isZh ? '退款处理中' : 'Refund Processing'}
-              </p>
-              <p className="text-xs text-orange-600">
-                {isZh ? '您的退款申请正在处理，请耐心等待' : 'Your refund request is being processed'}
-              </p>
-            </div>
+      <Card className="fixed bottom-4 right-4 z-50 max-w-xs w-[calc(100vw-2rem)] bg-orange-50 border-orange-200 shadow-lg">
+        <div className="flex items-center gap-2 p-3">
+          <AlertTriangle className="w-4 h-4 text-orange-600 shrink-0" />
+          <div>
+            <p className="text-xs font-semibold text-orange-800">
+              {isZh ? '退款处理中' : 'Refund Processing'}
+            </p>
           </div>
         </div>
       </Card>
@@ -179,31 +170,27 @@ export function ActiveBookingBanner({ isZh }: ActiveBookingBannerProps) {
 
   // upcoming
   if (isUpcoming) {
-    const masterName = booking.master_id === 'master-luna' ? '卢娜师傅' : 
-                       booking.master_id === 'wu-yang' ? '戊阳' : 
-                       booking.master_id === 'zhang-yihua' ? '张易桦' : '师傅';
+    const masterName = isZh
+      ? (booking.master_id === 'master-luna' ? '卢娜师傅' : booking.master_id === 'wu-yang' ? '戊阳' : booking.master_id === 'zhang-yihua' ? '张易桦' : '师傅')
+      : (booking.master_id === 'master-luna' ? 'Luna' : booking.master_id === 'wu-yang' ? 'Wu Yang' : booking.master_id === 'zhang-yihua' ? 'Zhang Yihua' : 'Master');
     const timeStr = formatBookingTimeDisplay({ scheduled_date: booking.scheduled_date, scheduled_time: booking.scheduled_time, timezone: 'Asia/Shanghai' });
 
     return (
-      <Card className="w-full bg-violet-50 border-violet-200 mb-4">
-        <div className="flex items-center justify-between p-4 sm:p-6">
-          <div className="flex items-center gap-3">
-            <Clock className="w-5 h-5 text-violet-600" />
-            <div>
-              <p className="text-sm font-semibold text-violet-800">
-                {isZh ? `您的下一场咨询 ${masterName}` : `Your upcoming consultation with ${masterName}`}
+      <Card className="fixed bottom-4 right-4 z-50 max-w-xs w-[calc(100vw-2rem)] bg-violet-50 border-violet-200 shadow-lg">
+        <div className="flex items-center justify-between p-3">
+          <div className="flex items-center gap-2 min-w-0">
+            <Clock className="w-4 h-4 text-violet-600 shrink-0" />
+            <div className="min-w-0">
+              <p className="text-xs font-semibold text-violet-800 truncate">
+                {isZh ? `下一场 ${masterName}` : `Upcoming ${masterName}`}
               </p>
               <p className="text-xs text-violet-600">
-                {timeStr} · {isZh ? '距离开始还有' : 'Starts in'} {countdown}
+                {timeStr} · {countdown}
               </p>
             </div>
           </div>
-          <Button
-            size="sm"
-            className="bg-violet-600 hover:bg-violet-700 text-white"
-            onClick={() => router.push(`/chat/${booking.id}`)}
-          >
-            {isZh ? '进入咨询' : 'Enter Chat'}
+          <Button size="sm" className="bg-violet-600 hover:bg-violet-700 text-white text-xs h-7 px-2 shrink-0" onClick={() => router.push(`/chat/${booking.id}`)}>
+            {isZh ? '进入' : 'Chat'}
           </Button>
         </div>
       </Card>
@@ -212,30 +199,26 @@ export function ActiveBookingBanner({ isZh }: ActiveBookingBannerProps) {
 
   // in_progress
   if (isInProgress) {
-    const masterName = booking.master_id === 'master-luna' ? '卢娜师傅' : 
-                       booking.master_id === 'wu-yang' ? '戊阳' : 
-                       booking.master_id === 'zhang-yihua' ? '张易桦' : '师傅';
+    const masterName = isZh
+      ? (booking.master_id === 'master-luna' ? '卢娜师傅' : booking.master_id === 'wu-yang' ? '戊阳' : booking.master_id === 'zhang-yihua' ? '张易桦' : '师傅')
+      : (booking.master_id === 'master-luna' ? 'Luna' : booking.master_id === 'wu-yang' ? 'Wu Yang' : booking.master_id === 'zhang-yihua' ? 'Zhang Yihua' : 'Master');
 
     return (
-      <Card className="w-full bg-emerald-50 border-emerald-200 mb-4">
-        <div className="flex items-center justify-between p-4 sm:p-6">
-          <div className="flex items-center gap-3">
-            <MessageCircle className="w-5 h-5 text-emerald-600" />
-            <div>
-              <p className="text-sm font-semibold text-emerald-800">
-                {isZh ? `与 ${masterName} 咨询进行中` : `Consultation with ${masterName} in Progress`}
+      <Card className="fixed bottom-4 right-4 z-50 max-w-xs w-[calc(100vw-2rem)] bg-emerald-50 border-emerald-200 shadow-lg">
+        <div className="flex items-center justify-between p-3">
+          <div className="flex items-center gap-2 min-w-0">
+            <MessageCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+            <div className="min-w-0">
+              <p className="text-xs font-semibold text-emerald-800 truncate">
+                {isZh ? `与 ${masterName} 进行中` : `${masterName} In Progress`}
               </p>
               <p className="text-xs text-emerald-600">
-                {isZh ? '剩余时间' : 'Remaining'} {countdown}
+                {isZh ? '剩余' : 'Remaining'} {countdown}
               </p>
             </div>
           </div>
-          <Button
-            size="sm"
-            className="bg-emerald-600 hover:bg-emerald-700 text-white"
-            onClick={() => router.push(`/chat/${booking.id}`)}
-          >
-            {isZh ? '继续咨询' : 'Continue Chat'}
+          <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-7 px-2 shrink-0" onClick={() => router.push(`/chat/${booking.id}`)}>
+            {isZh ? '继续' : 'Continue'}
           </Button>
         </div>
       </Card>
@@ -244,31 +227,26 @@ export function ActiveBookingBanner({ isZh }: ActiveBookingBannerProps) {
 
   // ended
   if (isEnded) {
-    const masterName = booking.master_id === 'master-luna' ? '卢娜师傅' : 
-                       booking.master_id === 'wu-yang' ? '戊阳' : 
-                       booking.master_id === 'zhang-yihua' ? '张易桦' : '师傅';
+    const masterName = isZh
+      ? (booking.master_id === 'master-luna' ? '卢娜师傅' : booking.master_id === 'wu-yang' ? '戊阳' : booking.master_id === 'zhang-yihua' ? '张易桦' : '师傅')
+      : (booking.master_id === 'master-luna' ? 'Luna' : booking.master_id === 'wu-yang' ? 'Wu Yang' : booking.master_id === 'zhang-yihua' ? 'Zhang Yihua' : 'Master');
 
     return (
-      <Card className="w-full bg-stone-50 border-stone-200 mb-4">
-        <div className="flex items-center justify-between p-4 sm:p-6">
-          <div className="flex items-center gap-3">
-            <MessageCircle className="w-5 h-5 text-stone-600" />
-            <div>
-              <p className="text-sm font-semibold text-stone-800">
-                {isZh ? `与 ${masterName} 的咨询已结束` : `Consultation with ${masterName} Ended`}
+      <Card className="fixed bottom-4 right-4 z-50 max-w-xs w-[calc(100vw-2rem)] bg-stone-50 border-stone-200 shadow-lg">
+        <div className="flex items-center justify-between p-3">
+          <div className="flex items-center gap-2 min-w-0">
+            <MessageCircle className="w-4 h-4 text-stone-600 shrink-0" />
+            <div className="min-w-0">
+              <p className="text-xs font-semibold text-stone-800 truncate">
+                {isZh ? `与 ${masterName} 已结束` : `${masterName} Ended`}
               </p>
               <p className="text-xs text-stone-600">
-                {isZh ? '您仍可查看聊天记录' : 'You can still view chat history'}
+                {isZh ? '仍可查看聊天记录' : 'Chat history available'}
               </p>
             </div>
           </div>
-          <Button
-            size="sm"
-            variant="outline"
-            className="border-stone-300 text-stone-700"
-            onClick={() => router.push(`/chat/${booking.id}`)}
-          >
-            {isZh ? '查看聊天记录' : 'View Chat'}
+          <Button size="sm" variant="outline" className="border-stone-300 text-stone-700 text-xs h-7 px-2 shrink-0" onClick={() => router.push(`/chat/${booking.id}`)}>
+            {isZh ? '查看' : 'View'}
           </Button>
         </div>
       </Card>

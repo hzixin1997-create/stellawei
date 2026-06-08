@@ -40,10 +40,10 @@ export async function GET(request: Request) {
 
     // 获取所有相关的用户和师傅信息
     const enrichedReviews = await Promise.all((reviews || []).map(async (review) => {
-      // 查询用户信息
+      // 查询用户信息（包含地区）
       const { data: userData } = await supabase
         .from('profiles')
-        .select('full_name, email')
+        .select('full_name, email, location, timezone')
         .eq('id', review.user_id)
         .single();
       
@@ -81,7 +81,7 @@ export async function GET(request: Request) {
 
 /**
  * PATCH /api/admin/reviews
- * 管理员审核评价（approve / reject）
+ * 管理员审核评价（approve / reject / feature）
  */
 export async function PATCH(request: Request) {
   try {
@@ -94,20 +94,29 @@ export async function PATCH(request: Request) {
     }
 
     const body = await request.json();
-    const { reviewId, status } = body;
+    const { reviewId, status, featured } = body;
 
-    if (!reviewId || !['approved', 'rejected'].includes(status)) {
+    if (!reviewId) {
       return NextResponse.json(
-        { error: 'Invalid reviewId or status (must be approved or rejected)' },
+        { error: 'Invalid reviewId' },
         { status: 400 }
       );
     }
 
     const supabase = createServiceClient();
 
+    // 构建更新对象
+    const updateData: Record<string, any> = { updated_at: new Date().toISOString() };
+    if (status && ['approved', 'rejected'].includes(status)) {
+      updateData.status = status;
+    }
+    if (featured !== undefined) {
+      updateData.featured = featured;
+    }
+
     const { data: review, error } = await supabase
       .from('reviews')
-      .update({ status, updated_at: new Date().toISOString() })
+      .update(updateData)
       .eq('id', reviewId)
       .select()
       .single();
