@@ -259,7 +259,7 @@ export default function Home() {
             <div>
               {/* Mobile Master Images — Accordion (top on mobile) */}
               <div className="lg:hidden mb-6">
-                <div className="flex gap-2 h-[220px]">
+                <div className="flex gap-2 h-[260px]">
                   {masters.map((master, i) => {
                     const isActive = i === activeMasterIdx;
                     return (
@@ -320,7 +320,7 @@ export default function Home() {
               </div>
 
               {/* Trust badges */}
-              <div className="flex flex-col gap-2 text-sm text-white/70">
+              <div className="flex flex-col gap-2 text-sm text-white/90">
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                   <div className="flex items-center gap-1.5">
                     <svg className="w-4 h-4 text-sw-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -345,7 +345,7 @@ export default function Home() {
             </div>
 
             {/* Right: Master Images — Accordion Click Switch */}
-            <div className="hidden lg:flex gap-3 h-[480px]">
+            <div className="hidden lg:flex gap-3 h-[560px]">
               {masters.map((master, i) => {
                 const isActive = i === activeMasterIdx;
                 return (
@@ -477,7 +477,7 @@ export default function Home() {
       {/* Trust Section */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="rounded-3xl p-8 sm:p-12 lg:p-16 text-white">
+          <div className="bg-white/15 backdrop-blur-sm rounded-3xl p-8 sm:p-12 lg:p-16 text-white border border-white/10">
             <div className="text-center mb-12">
               <h2 className="text-3xl sm:text-4xl font-serif font-bold mb-4">
                 {isZh ? '为什么信任 Stellawei？' : 'Why Trust Stellawei?'}

@@ -39,7 +39,7 @@ export function LanguageSwitcher() {
   return (
     <button
       onClick={toggleLanguage}
-      className="flex items-center space-x-1 px-3 py-1.5 rounded-md text-sm font-medium text-foreground/70 hover:text-stellawei-purple transition-colors"
+      className="flex items-center space-x-1 px-3 py-1.5 rounded-md text-sm font-medium text-white/70 hover:text-white transition-colors"
       aria-label="Switch language"
     >
       <Globe className="w-4 h-4" />
