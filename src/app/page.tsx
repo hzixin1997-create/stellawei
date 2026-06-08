@@ -153,8 +153,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen relative isolate">
-      {/* Background images — desktop only, preload + fade transition */}
-      <div className="absolute inset-0 hidden md:block bg-black">
+      {/* Background images — desktop + mobile, preload + fade transition */}
+      <div className="absolute inset-0 bg-black">
         {/* Luna background */}
         <div 
           className="absolute inset-0 transition-opacity duration-700 ease-in-out bg-cover bg-center bg-no-repeat bg-fixed"
@@ -172,8 +172,6 @@ export default function Home() {
           }} 
         />
       </div>
-      {/* Mobile gradient background — black to purple */}
-      <div className="absolute inset-0 md:hidden bg-gradient-to-b from-black via-[#0f0a1a] to-[#1a0a2e]" />
       <div className="relative z-10">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/10">
