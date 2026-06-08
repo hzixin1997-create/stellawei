@@ -353,9 +353,9 @@ export default function Home() {
                     key={master.id}
                     onClick={() => setActiveMasterIdx(i)}
                     className={`relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 ease-out ${
-                      isActive ? 'flex-[10]' : 'flex-[3]'
+                      isActive ? 'flex-[12]' : 'flex-[4]'
                     }`}
-                    style={{ flex: isActive ? 10 : 3 }}
+                    style={{ flex: isActive ? 12 : 4 }}
                   >
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent z-10" />
                     <img
