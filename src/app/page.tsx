@@ -126,7 +126,10 @@ export default function Home() {
     return () => subscription.unsubscribe();
   }, []);
 
-  const [activeMasterIdx, setActiveMasterIdx] = useState(0);
+  const [activeMasterIdx, setActiveMasterIdx] = useState(0)
+
+  // 背景图根据选中的师傅切换
+  const heroBgImage = activeMasterIdx === 0 ? '/images/hero-bg-luna.jpg' : '/images/hero-bg-eastern.jpg'
 
   const handleBookingClick = () => {
     if (!user) {
@@ -137,9 +140,14 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#faf7fa]">
+    <div className="min-h-screen relative isolate">
+      {/* Background image — desktop only */}
+      <div className="absolute inset-0 hidden md:block bg-black" style={{ backgroundImage: `url(${heroBgImage})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }} />
+      {/* Mobile gradient background — black to purple */}
+      <div className="absolute inset-0 md:hidden bg-gradient-to-b from-black via-[#0f0a1a] to-[#1a0a2e]" />
+      <div className="relative z-10">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#faf7fa]/80 backdrop-blur-md border-b border-gray-100/50">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
@@ -147,18 +155,18 @@ export default function Home() {
               <div className="w-8 h-8 rounded-full bg-sw-accent flex items-center justify-center">
                 <Star className="w-4 h-4 text-white" />
               </div>
-              <span className="text-xl font-serif font-bold text-sw-text">{t('brand')}</span>
+              <span className="text-xl font-serif font-bold text-white">{t('brand')}</span>
             </Link>
 
             {/* Desktop Nav */}
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#services" className="text-sm text-sw-text-secondary hover:text-sw-text transition-colors">
+              <a href="#services" className="text-sm text-white/70 hover:text-white transition-colors">
                 {isZh ? '服务' : 'Services'}
               </a>
-              <a href="#masters" className="text-sm text-sw-text-secondary hover:text-sw-text transition-colors">
+              <a href="#masters" className="text-sm text-white/70 hover:text-white transition-colors">
                 {isZh ? '师傅' : 'Masters'}
               </a>
-              <a href="#testimonials" className="text-sm text-sw-text-secondary hover:text-sw-text transition-colors">
+              <a href="#testimonials" className="text-sm text-white/70 hover:text-white transition-colors">
                 {isZh ? '评价' : 'Reviews'}
               </a>
             </div>
@@ -202,15 +210,15 @@ export default function Home() {
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-[60] md:hidden">
           <div className="absolute inset-0 bg-black/20" onClick={() => setMobileMenuOpen(false)} />
-          <div className="absolute right-0 top-0 bottom-0 w-64 bg-[#faf7fa] p-6 shadow-xl">
+          <div className="absolute right-0 top-0 bottom-0 w-64 bg-black p-6 shadow-xl">
             <div className="space-y-4">
-              <a href="#services" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sw-text">
+              <a href="#services" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-white">
                 {isZh ? '服务' : 'Services'}
               </a>
-              <a href="#masters" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sw-text">
+              <a href="#masters" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-white">
                 {isZh ? '师傅' : 'Masters'}
               </a>
-              <a href="#testimonials" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sw-text">
+              <a href="#testimonials" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-white">
                 {isZh ? '评价' : 'Reviews'}
               </a>
             </div>
@@ -219,11 +227,11 @@ export default function Home() {
       )}
 
       {/* Infinite Marquee — 热门问题滚动 */}
-      <section className="relative overflow-hidden bg-stellawei-purple py-5 mt-16">
+      <section className="relative overflow-hidden bg-black py-5 mt-16">
         {/* 左侧渐隐 */}
-        <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-stellawei-purple to-transparent z-10" />
+        <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-black to-transparent z-10" />
         {/* 右侧渐隐 */}
-        <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-stellawei-purple to-transparent z-10" />
+        <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-black to-transparent z-10" />
         
         <div className="flex animate-marquee-scroll whitespace-nowrap">
           {[...hotQuestions, ...hotQuestions, ...hotQuestions].map((q, idx) => (
@@ -249,65 +257,95 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left: Text */}
             <div>
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold leading-[1.1] mb-4">
+              {/* Mobile Master Images — Accordion (top on mobile) */}
+              <div className="lg:hidden mb-6">
+                <div className="flex gap-2 h-[220px]">
+                  {masters.map((master, i) => {
+                    const isActive = i === activeMasterIdx;
+                    return (
+                      <div
+                        key={master.id}
+                        onClick={() => setActiveMasterIdx(i)}
+                        className={`relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 ease-out ${
+                          isActive ? 'flex-[2]' : 'flex-[1]'
+                        }`}
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent z-10" />
+                        <img
+                          src={master.image}
+                          alt={isZh ? master.nameCn : master.name}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute bottom-0 left-0 right-0 p-3 z-20">
+                          <div className="text-white font-semibold text-sm">{isZh ? master.nameCn : master.name}</div>
+                          <div className="text-white/80 text-xs">{isZh ? master.specialtyCn : master.specialty}</div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <h1 className="hidden lg:block text-3xl sm:text-5xl lg:text-6xl font-serif font-bold leading-[1.1] mb-4">
                 {isZh ? (
                   <>
-                    <span className="block text-[#2f1a92]">沉心倾听诉求</span>
-                    <span className="block text-[#2f1a92]">深度对话启悟</span>
-                    <span className="block safe-gradient-text">持续迭代成长</span>
+                    <span className="block safe-gradient-text">感到迷茫？</span>
+                    <span className="block safe-gradient-text">想不清方向？</span>
+                    <span className="block safe-gradient-text">寻找答案？</span>
                   </>
                 ) : (
                   <>
-                    <span className="block text-[#2f1a92]">Listen.</span>
-                    <span className="block text-[#2f1a92]">Enlighten.</span>
-                    <span className="block safe-gradient-text">Grow.</span>
+                    <span className="block safe-gradient-text">Feel Lost?</span>
+                    <span className="block safe-gradient-text">Need Clarity?</span>
+                    <span className="block safe-gradient-text">Seek Answers?</span>
                   </>
                 )}
               </h1>
 
-              <p className="text-base sm:text-lg text-sw-text-secondary mb-6">
+              <p className="text-base sm:text-lg text-white/90 mb-6 leading-relaxed whitespace-pre-line">
                 {isZh 
-                  ? '专业塔罗与东方命理咨询，全球海外华人信赖之选'
-                  : 'Professional Tarot & Eastern Divination. Trusted by Chinese worldwide.'
+                  ? '通过塔罗占卜、东方命理与真人咨询，\n帮助你看清感情、事业与人生方向。'
+                  : 'Discover your path through tarot, Eastern divination,\nand real master consultations.'
                 }
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 mb-4">
                 <Button 
                   size="lg" 
-                  className="bg-[#6a45b9] text-white hover:bg-[#5a3ba0] rounded-full px-8 h-14 text-base"
+                  className="bg-[#6944b3] hover:bg-[#5a3a9e] text-white rounded-2xl px-8 h-16 text-lg font-semibold w-[85%] max-w-[420px] relative z-20 shadow-lg"
                   onClick={handleBookingClick}
                 >
-                  {isZh ? '点击预约咨询 · 首次仅需$9.9' : 'Book Your Reading – $9.9'}
+                  {isZh ? '开始首次咨询 $9.9' : 'Book Your First Reading From $9.9'}
                 </Button>
               </div>
 
-              {/* Mobile Master Images — horizontal scroll */}
-              <div className="lg:hidden mt-8">
-                <div className="flex gap-2 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 -mr-4 pr-4">
-                  {masters.map((master) => (
-                    <div
-                      key={master.id}
-                      className="relative flex-shrink-0 w-[110px] h-[165px] rounded-2xl overflow-hidden snap-start"
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent z-10" />
-                      <img
-                        src={master.image}
-                        alt={isZh ? master.nameCn : master.name}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute bottom-0 left-0 right-0 p-3 z-20">
-                        <div className="text-white font-semibold text-sm">{isZh ? master.nameCn : master.name}</div>
-                        <div className="text-white/80 text-xs">{isZh ? master.specialtyCn : master.specialty}</div>
-                      </div>
-                    </div>
-                  ))}
+              {/* Trust badges */}
+              <div className="flex flex-col gap-2 text-sm text-white/70">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                  <div className="flex items-center gap-1.5">
+                    <svg className="w-4 h-4 text-sw-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>{isZh ? '7天退款保障' : '7-Day Refund'}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <svg className="w-4 h-4 text-sw-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <span>{isZh ? '真人咨询师傅' : 'Real Human Masters'}</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <svg className="w-4 h-4 text-sw-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                  </svg>
+                  <span>{isZh ? '100+真实评价来自美国、东京等海外华人用户' : '100+ reviews from overseas Chinese users'}</span>
                 </div>
               </div>
             </div>
 
             {/* Right: Master Images — Accordion Click Switch */}
-            <div className="hidden lg:flex gap-2 h-[480px]">
+            <div className="hidden lg:flex gap-3 h-[480px]">
               {masters.map((master, i) => {
                 const isActive = i === activeMasterIdx;
                 return (
@@ -315,7 +353,7 @@ export default function Home() {
                     key={master.id}
                     onClick={() => setActiveMasterIdx(i)}
                     className={`relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 ease-out ${
-                      isActive ? 'flex-[2]' : 'flex-[0.6]'
+                      isActive ? 'flex-[4]' : 'flex-[1]'
                     }`}
                   >
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent z-10" />
@@ -337,54 +375,19 @@ export default function Home() {
       </section>
 
 
-      <section id="services" className="py-24 bg-[#faf7fa]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-serif font-bold text-sw-text mb-4">
-              {isZh ? '我们的服务' : 'Our Services'}
-            </h2>
-            <p className="text-sw-text-secondary max-w-2xl mx-auto">
-              {isZh 
-                ? '从灵性指导服务中选择，全部采用透明的固定价格'
-                : 'Choose from our spiritual guidance services, all with transparent fixed pricing'}
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {services.map((service) => (
-              <Card key={service.id} className="group hover:shadow-lg transition-shadow rounded-2xl overflow-hidden border-stellawei-purple/10">
-                <CardContent className="p-6 sm:p-8">
-                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                    <service.icon className="w-7 h-7 text-white" />
-                  </div>
-                  <h3 className="text-xl font-serif font-semibold text-sw-text mb-3">
-                    {t(service.nameKey)}
-                  </h3>
-                  <p className="text-sw-text-secondary text-sm mb-6">
-                    {t(service.descriptionKey)}
-                  </p>
-                  <div className="flex justify-end">
-                    <Link href={service.id === 'eastern' ? '/services/bazi' : `/services/${service.id}`}>
-                      <Button variant="outline" size="sm" className="rounded-full border-stellawei-purple/30 text-stellawei-purple hover:bg-stellawei-purple/5">
-                        {isZh ? '了解更多' : 'Learn More'}
-                      </Button>
-                    </Link>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Testimonials */}
+      <div id="testimonials">
+        <Testimonials />
+      </div>
 
       {/* Masters Section */}
       <section id="masters" className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-serif font-bold text-sw-text mb-4">
+            <h2 className="text-3xl sm:text-4xl font-serif font-bold text-white mb-4">
               {isZh ? '认识我们的师傅' : 'Meet Our Masters'}
             </h2>
-            <p className="text-sw-text-secondary max-w-2xl mx-auto">
+            <p className="text-white/70 max-w-2xl mx-auto">
               {isZh 
                 ? '所有师傅均经过严格审核，拥有认证资质和多年经验'
                 : 'All masters are carefully vetted with verified credentials and years of experience'}
@@ -411,12 +414,12 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="px-2">
-                  <div className="flex items-center gap-4 text-sm text-sw-text-secondary mb-3">
+                  <div className="flex items-center gap-4 text-sm text-white/70 mb-3">
                     <span>{isZh ? master.experienceCn : master.experience}</span>
                     <span>·</span>
                     <span>{master.reviews} {isZh ? '条评价' : 'reviews'}</span>
                   </div>
-                  <p className="text-sm text-sw-text-secondary line-clamp-2">
+                  <p className="text-sm text-white/70 line-clamp-2">
                     {isZh ? master.taglineCn : master.tagline}
                   </p>
                   <Link href={`/masters/${master.id}`} className="inline-block mt-4">
@@ -431,15 +434,50 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <div id="testimonials">
-        <Testimonials />
-      </div>
+      <section id="services" className="py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-serif font-bold text-white mb-4">
+              {isZh ? '我们的服务' : 'Our Services'}
+            </h2>
+            <p className="text-white/70 max-w-2xl mx-auto">
+              {isZh 
+                ? '从灵性指导服务中选择，全部采用透明的固定价格'
+                : 'Choose from our spiritual guidance services, all with transparent fixed pricing'}
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {services.map((service) => (
+              <Card key={service.id} className="group hover:shadow-lg transition-shadow rounded-2xl overflow-hidden border-white/10 bg-white/5">
+                <CardContent className="p-6 sm:p-8">
+                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                    <service.icon className="w-7 h-7 text-white" />
+                  </div>
+                  <h3 className="text-xl font-serif font-semibold text-white mb-3">
+                    {t(service.nameKey)}
+                  </h3>
+                  <p className="text-white/70 text-sm mb-6">
+                    {t(service.descriptionKey)}
+                  </p>
+                  <div className="flex justify-end">
+                    <Link href={service.id === 'eastern' ? '/services/bazi' : `/services/${service.id}`}>
+                      <Button variant="outline" size="sm" className="rounded-full border-stellawei-purple/30 text-stellawei-purple hover:bg-stellawei-purple/5">
+                        {isZh ? '了解更多' : 'Learn More'}
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Trust Section */}
-      <section className="py-24 bg-[#faf7fa]">
+      <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-br from-stellawei-purple to-stellawei-purple-dark rounded-3xl p-8 sm:p-12 lg:p-16 text-white">
+          <div className="rounded-3xl p-8 sm:p-12 lg:p-16 text-white">
             <div className="text-center mb-12">
               <h2 className="text-3xl sm:text-4xl font-serif font-bold mb-4">
                 {isZh ? '为什么信任 Stellawei？' : 'Why Trust Stellawei?'}
@@ -485,7 +523,7 @@ export default function Home() {
       {/* CTA Section */}
       <section className="py-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl sm:text-4xl font-serif font-bold text-sw-text mb-6">
+          <h2 className="text-3xl sm:text-4xl font-serif font-bold text-white mb-6">
             {isZh ? '准备好开始你的旅程了吗？' : 'Ready to Start Your Journey?'}
           </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -514,7 +552,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-stellawei-purple-dark text-white py-12">
+      <footer className="bg-black text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
             <div className="col-span-2 md:col-span-1">
@@ -562,5 +600,6 @@ export default function Home() {
         </div>
       </footer>
     </div>
+  </div>
   )
 }
