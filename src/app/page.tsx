@@ -208,9 +208,10 @@ export default function Home() {
               {user ? (
                 <Link 
                   href={user?.email ? getDashboardRoute(user.email) : '/auth/login'}
-                  className="text-sm text-sw-text-secondary hover:text-sw-text"
+                  className="text-sm text-white/80 hover:text-white truncate max-w-[160px]"
+                  title={user?.email || ''}
                 >
-                  <User className="w-5 h-5" />
+                  {user?.email || ''}
                 </Link>
               ) : (
                 <Button 
