@@ -56,7 +56,6 @@ export function ClientMasterContent({ master }: Props) {
   const [authError, setAuthError] = useState(false);
   const [masterStatus, setMasterStatus] = useState<string>('online');
   const [masterReviews, setMasterReviews] = useState<any[]>([]);
-  const [loadingReviews, setLoadingReviews] = useState(true);
 
   // 用户名隐私处理
   function maskName(name: string): string {
@@ -135,43 +134,11 @@ export function ClientMasterContent({ master }: Props) {
   useEffect(() => {
     loadServices();
     loadMasterStatus();
-    loadReviews();
+    // 评价直接写死，不通过API加载
+    setMasterReviews(mockReviews.filter((r: any) => r.master_id === master.id));
   }, [master.id]);
 
-  async function loadReviews() {
-    try {
-      const res = await fetch(`/api/masters/${master.id}/reviews`);
-      const data = await res.json();
-      const apiReviews = data.reviews || [];
-      
-      // 合并 API 真实评价 + 硬编码展示数据（仅当 API 无数据时作为兜底）
-      const fallbackReviews = mockReviews.filter((r: any) => r.master_id === master.id);
-      
-      // 标准化评价数据格式（API 返回 rating/content/user[]，mock 返回 overall_rating/title/content）
-      const normalizedApi = apiReviews.map((r: any) => ({
-        ...r,
-        overall_rating: r.rating || r.overall_rating,
-        title: r.title || '',
-        content: r.content || r.review || '',
-        user: Array.isArray(r.user) && r.user.length > 0
-          ? r.user[0]
-          : (r.user || { full_name: 'Anonymous' }),
-      }));
-      
-      if (normalizedApi.length > 0) {
-        const apiIds = new Set(normalizedApi.map((r: any) => r.id));
-        const merged = [...normalizedApi, ...fallbackReviews.filter((r: any) => !apiIds.has(r.id))];
-        setMasterReviews(merged);
-      } else {
-        setMasterReviews(fallbackReviews);
-      }
-    } catch (err) {
-      console.error("Failed to load reviews:", err);
-      setMasterReviews(mockReviews.filter((r: any) => r.master_id === master.id));
-    } finally {
-      setLoadingReviews(false);
-    }
-  }
+
 
   // 根据当前语言选择显示内容
   const displayName = currentLang === 'zh' && master.display_nameCn ? master.display_nameCn : master.display_name;
