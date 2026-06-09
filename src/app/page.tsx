@@ -568,7 +568,7 @@ export default function Home() {
             <Button 
               variant="outline"
               size="lg" 
-              className="rounded-full px-10 h-14 text-base border-2 border-stellawei-purple text-stellawei-purple hover:bg-stellawei-purple/10"
+              className="rounded-full px-10 h-14 text-base border-2 border-stellawei-purple text-stellawei-purple bg-black/70 hover:bg-stellawei-purple/10"
               onClick={() => {
                 const servicesSection = document.getElementById('services');
                 if (servicesSection) {
