@@ -52,12 +52,12 @@ interface MessageOrder {
 const statusMap: Record<string, { label: string; color: string; icon: any }> = {
   pending: { label: '待付款', color: 'bg-yellow-100 text-yellow-800', icon: Clock },
   expired: { label: '已过期', color: 'bg-gray-100 text-gray-500', icon: AlertCircle },
-  paid: { label: '已付款', color: 'bg-blue-100 text-blue-800', icon: CheckCircle },
-  confirmed: { label: '已接单', color: 'bg-green-100 text-green-800', icon: CheckCircle },
+  paid: { label: '已付款', color: 'bg-blue-500/20 text-blue-800', icon: CheckCircle },
+  confirmed: { label: '已接单', color: 'bg-green-500/20 text-green-800', icon: CheckCircle },
   in_progress: { label: '进行中', color: 'bg-purple-100 text-purple-800', icon: Video },
-  completed: { label: '已完成', color: 'bg-green-100 text-green-800', icon: CheckCircle },
+  completed: { label: '已完成', color: 'bg-green-500/20 text-green-800', icon: CheckCircle },
   cancelled: { label: '已取消', color: 'bg-gray-100 text-gray-800', icon: AlertCircle },
-  refund_requested: { label: '退款申请', color: 'bg-orange-100 text-orange-800', icon: AlertCircle },
+  refund_requested: { label: '退款申请', color: 'bg-orange-500/20 text-orange-800', icon: AlertCircle },
   refunded: { label: '已退款', color: 'bg-gray-100 text-gray-800', icon: AlertCircle },
 };
 
@@ -316,7 +316,7 @@ export default function MasterOrdersPage() {
                             {order.consultation_type === 'message' ? '留言咨询' : order.tier === 'deep' ? '深度咨询' : '普通咨询'}
                           </span>
                           {order.question_text && (
-                            <span className="px-2 py-0.5 text-xs rounded-full bg-red-100 text-red-700">
+                            <span className="px-2 py-0.5 text-xs rounded-full bg-red-500/20 text-red-700">
                               新消息
                             </span>
                           )}
@@ -351,7 +351,7 @@ export default function MasterOrdersPage() {
                           </button>
                         )}
                         {(order.status === 'refund_requested' || order.payment_status === 'refund_requested') && (
-                          <span className="px-4 py-2 text-sm bg-orange-50 text-orange-600 rounded-lg text-center">
+                          <span className="px-4 py-2 text-sm bg-orange-50 text-orange-300 rounded-lg text-center">
                             退款申请中
                           </span>
                         )}
@@ -426,14 +426,14 @@ export default function MasterOrdersPage() {
                             </Link>
                             <button
                               onClick={() => openReviewModal(order)}
-                              className="px-4 py-2 text-sm bg-amber-50 text-amber-700 rounded-lg hover:bg-amber-100 transition-colors text-center w-full"
+                              className="px-4 py-2 text-sm bg-amber-50 text-amber-700 rounded-lg hover:bg-amber-500/100/20 transition-colors text-center w-full"
                             >
                               查看评价
                             </button>
                           </>
                         )}
                         {displayStatus === 'completed' && order.review_data && order.review_data.rating && (
-                          <div className="flex items-center gap-1 text-amber-500">
+                          <div className="flex items-center gap-1 text-amber-300">
                             {Array.from({ length: 5 }).map((_, i) => (
                               <Star key={i} className={`w-4 h-4 ${i < (order.review_data?.rating || 0) ? 'fill-amber-400' : 'text-stone-200'}`} />
                             ))}
@@ -441,7 +441,7 @@ export default function MasterOrdersPage() {
                           </div>
                         )}
                         {displayStatus === 'completed' && (
-                          <div className="text-xs text-amber-600 font-medium">⭐ 评价功能已上线</div>
+                          <div className="text-xs text-amber-300 font-medium">⭐ 评价功能已上线</div>
                         )}
                         {canAccept && (
                           <>
@@ -480,7 +480,7 @@ export default function MasterOrdersPage() {
                           </span>
                         )}
                         {(order.status === 'refund_requested' || order.payment_status === 'refund_requested') && (
-                          <span className="px-4 py-2 text-sm bg-orange-50 text-orange-600 rounded-lg text-center">
+                          <span className="px-4 py-2 text-sm bg-orange-50 text-orange-300 rounded-lg text-center">
                             退款申请中
                           </span>
                         )}

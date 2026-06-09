@@ -91,9 +91,9 @@ interface MasterInfo {
 }
 
 const statusConfig = {
-  online: { label: '在线', labelEn: 'Online', color: 'bg-green-100 text-green-700 border-green-500/30', icon: Wifi },
+  online: { label: '在线', labelEn: 'Online', color: 'bg-green-500/20 text-green-700 border-green-500/30', icon: Wifi },
   offline: { label: '离线', labelEn: 'Offline', color: 'bg-white/10 text-white/60 border-white/15', icon: WifiOff },
-  rest: { label: '休息中', labelEn: 'Resting', color: 'bg-orange-100 text-orange-700 border-orange-500/30', icon: Moon },
+  rest: { label: '休息中', labelEn: 'Resting', color: 'bg-orange-500/20 text-orange-700 border-orange-500/30', icon: Moon },
 }
 
 export default function MasterDashboard() {
@@ -505,7 +505,7 @@ export default function MasterDashboard() {
   const getStatusBadge = (displayStatus: string, paymentStatus: string, status?: string) => {
     if (status === 'refund_requested' || paymentStatus === 'refund_requested') {
       return (
-        <Badge variant="outline" className="bg-red-50 text-red-700 border-red-500/30">
+        <Badge variant="outline" className="bg-red-500/10 text-red-700 border-red-500/30">
           {isZh ? '退款申请' : 'Refund Requested'}
         </Badge>
       )
@@ -519,35 +519,35 @@ export default function MasterDashboard() {
     }
     if (paymentStatus === 'pending' || paymentStatus === 'pending_payment') {
       return (
-        <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-500/30">
+        <Badge variant="outline" className="bg-amber-500/10 text-amber-300 border-amber-500/30">
           {isZh ? '待支付' : 'Pending Payment'}
         </Badge>
       )
     }
     if (paymentStatus === 'paid' && displayStatus === 'pending') {
       return (
-        <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-500/30">
+        <Badge variant="outline" className="bg-orange-500/10 text-orange-700 border-orange-500/30">
           {isZh ? '待接单' : 'Pending Accept'}
         </Badge>
       )
     }
     if (displayStatus === 'confirmed') {
       return (
-        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-500/30">
+        <Badge variant="outline" className="bg-green-500/10 text-green-700 border-green-500/30">
           {isZh ? '已接单' : 'Confirmed'}
         </Badge>
       )
     }
     if (displayStatus === 'in_progress') {
       return (
-        <Badge variant="outline" className="bg-violet-50 text-violet-700 border-violet-500/30">
+        <Badge variant="outline" className="bg-violet-500/10 text-violet-700 border-violet-500/30">
           {isZh ? '进行中' : 'In Progress'}
         </Badge>
       )
     }
     if (displayStatus === 'completed') {
       return (
-        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-500/30">
+        <Badge variant="outline" className="bg-blue-500/10 text-blue-700 border-blue-500/30">
           {isZh ? '已完成' : 'Completed'}
         </Badge>
       )
@@ -877,13 +877,13 @@ export default function MasterDashboard() {
                 </Badge>
               </div>
               {/* 钱包图标 + 累计收入 */}
-              <div className="sm:ml-auto flex items-center gap-1.5 sm:gap-2 bg-amber-50 border border-amber-500/30 rounded-lg px-2 sm:px-3 py-1 sm:py-1.5 shrink-0 self-start sm:self-auto">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-600">
+              <div className="sm:ml-auto flex items-center gap-1.5 sm:gap-2 bg-amber-500/10 border border-amber-500/30 rounded-lg px-2 sm:px-3 py-1 sm:py-1.5 shrink-0 self-start sm:self-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-300">
                   <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/>
                   <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/>
                   <path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>
                 </svg>
-                <span className="text-xs sm:text-sm font-medium text-amber-700">
+                <span className="text-xs sm:text-sm font-medium text-amber-300">
                   ${stats?.earnings?.toFixed(2) || '0.00'}
                 </span>
               </div>
@@ -903,7 +903,7 @@ export default function MasterDashboard() {
           </div>
 
           {/* 状态切换栏 */}
-          <Card className="mb-6">
+          <Card className="mb-6 bg-black/40 border-white/10 backdrop-blur-sm">
             <CardContent className="p-4">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div className="min-w-0">
@@ -952,7 +952,7 @@ export default function MasterDashboard() {
 
           {/* 可用时段设置 */}
           {masterInfo?.status === 'online' && (
-            <Card className="mb-6">
+            <Card className="mb-6 bg-black/40 border-white/10 backdrop-blur-sm">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div>
@@ -1068,7 +1068,7 @@ export default function MasterDashboard() {
                           disabled={savingSlots}
                           className={`px-2 py-2 rounded-lg text-sm font-medium border transition-colors ${
                             availableSlots?.includes(slot)
-                              ? 'bg-violet-100 text-violet-700 border-violet-300'
+                              ? 'bg-violet-500/20 text-violet-700 border-violet-500/30'
                               : 'bg-white text-white/50 border-white/15 hover:bg-white/5'
                           } disabled:opacity-50`}
                         >
@@ -1077,7 +1077,7 @@ export default function MasterDashboard() {
                       ))}
                     </div>
                     {availableSlots !== null && availableSlots.length === 0 && (
-                      <p className="text-sm text-orange-500 mt-3">
+                      <p className="text-sm text-orange-300 mt-3">
                         {isZh ? '⚠️ 未选择任何时段，用户该日无法预约您' : '⚠️ No slots selected. Users cannot book you on this date.'}
                       </p>
                     )}
@@ -1089,7 +1089,7 @@ export default function MasterDashboard() {
 
           {/* 统计卡片 */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <Card>
+            <Card className="bg-black/40 border-white/10 backdrop-blur-sm">
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
@@ -1097,46 +1097,46 @@ export default function MasterDashboard() {
                   </div>
                   <div>
                     <p className="text-sm text-white/60">{isZh ? '总订单' : 'Total Orders'}</p>
-                    <p className="text-2xl font-bold">{totalOrders}</p>
+                    <p className="text-2xl font-bold text-white">{totalOrders}</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="bg-black/40 border-white/10 backdrop-blur-sm">
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
-                    <Clock className="w-5 h-5 text-orange-600" />
+                  <div className="w-10 h-10 rounded-full bg-orange-500/100/20 flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-orange-300" />
                   </div>
                   <div>
                     <p className="text-sm text-white/60">{isZh ? '待处理' : 'Pending'}</p>
-                    <p className="text-2xl font-bold">{pendingOrders}</p>
+                    <p className="text-2xl font-bold text-white">{pendingOrders}</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="bg-black/40 border-white/10 backdrop-blur-sm">
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-violet-100 flex items-center justify-center">
-                    <MessageCircle className="w-5 h-5 text-violet-600" />
+                  <div className="w-10 h-10 rounded-full bg-violet-500/100/20 flex items-center justify-center">
+                    <MessageCircle className="w-5 h-5 text-violet-300" />
                   </div>
                   <div>
                     <p className="text-sm text-white/60">{isZh ? '处理中' : 'In Progress'}</p>
-                    <p className="text-2xl font-bold">{processingOrders}</p>
+                    <p className="text-2xl font-bold text-white">{processingOrders}</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="bg-black/40 border-white/10 backdrop-blur-sm">
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                    <CheckCircle className="w-5 h-5 text-green-600" />
+                  <div className="w-10 h-10 rounded-full bg-green-500/100/20 flex items-center justify-center">
+                    <CheckCircle className="w-5 h-5 text-green-300" />
                   </div>
                   <div>
                     <p className="text-sm text-white/60">{isZh ? '已完成' : 'Completed'}</p>
-                    <p className="text-2xl font-bold">{completedOrders}</p>
+                    <p className="text-2xl font-bold text-white">{completedOrders}</p>
                   </div>
                 </div>
               </CardContent>
@@ -1144,14 +1144,14 @@ export default function MasterDashboard() {
           </div>
 
           {/* 最近订单 */}
-          <Card className="mb-6">
+          <Card className="mb-6 bg-black/40 border-white/10 backdrop-blur-sm">
             <CardHeader className="flex flex-row items-center justify-between flex-wrap gap-3">
               <CardTitle className="flex items-center gap-2">
                 <ShoppingBag className="w-5 h-5" />
                 {isZh ? '最近订单' : 'Recent Orders'}
               </CardTitle>
               <Link href="/master/orders">
-                <span className="text-sm text-violet-600 hover:text-violet-700 flex items-center gap-1">
+                <span className="text-sm text-violet-300 hover:text-violet-700 flex items-center gap-1">
                   {isZh ? '查看全部' : 'View All'}
                   <ArrowRight className="w-4 h-4" />
                 </span>
@@ -1166,12 +1166,12 @@ export default function MasterDashboard() {
                     onClick={() => setOrderFilter(f.key as any)}
                     className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors border ${
                       orderFilter === f.key
-                        ? 'bg-violet-100 text-violet-700 border-violet-300'
+                        ? 'bg-violet-500/20 text-violet-700 border-violet-500/30'
                         : 'bg-white text-white/70 border-white/15 hover:bg-white/5'
                     }`}
                   >
                     {isZh ? f.label : f.labelEn}
-                    <span className={`ml-1.5 text-xs ${orderFilter === f.key ? 'text-violet-500' : 'text-white/50'}`}>
+                    <span className={`ml-1.5 text-xs ${orderFilter === f.key ? 'text-violet-300' : 'text-white/50'}`}>
                       ({f.count})
                     </span>
                   </button>
@@ -1213,7 +1213,7 @@ export default function MasterDashboard() {
                               <span className="font-semibold text-sm sm:text-base truncate">
                                 {booking.user_name || booking.user_email || booking.user_id}
                               </span>
-                              <Badge variant="outline" className={`text-xs ${booking.consultation_type === 'message' ? 'bg-white/10 text-white/70 border-white/15' : 'bg-violet-50 text-violet-700 border-violet-500/30'}`}>
+                              <Badge variant="outline" className={`text-xs ${booking.consultation_type === 'message' ? 'bg-white/10 text-white/70 border-white/15' : 'bg-violet-500/10 text-violet-700 border-violet-500/30'}`}>
                                 {booking.consultation_type === 'message'
                                   ? (isZh ? '留言咨询' : 'Message')
                                   : booking.tier === 'deep'
@@ -1232,7 +1232,7 @@ export default function MasterDashboard() {
                               </span>
                               <span>{booking.duration_minutes} min</span>
                             </div>
-                            <p className="text-sm font-medium text-violet-600 mt-2">
+                            <p className="text-sm font-medium text-violet-300 mt-2">
                               ${booking.total_amount}
                             </p>
                           </div>
@@ -1258,7 +1258,7 @@ export default function MasterDashboard() {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                className="text-red-600 border-red-500/30 hover:bg-red-500/10 w-full"
+                                className="text-red-400 border-red-500/30 hover:bg-red-500/100/100/10 w-full"
                                 onClick={() => {
                                   setCancelBooking(booking)
                                   setCancelReason('')
@@ -1275,7 +1275,7 @@ export default function MasterDashboard() {
                                   <Button
                                     size="sm"
                                     variant="outline"
-                                    className="text-violet-600 border-violet-500/30 hover:bg-violet-500/10 w-full"
+                                    className="text-violet-300 border-violet-500/30 hover:bg-violet-500/100/100/10 w-full"
                                     onClick={() => {
                                       setSelectedBooking(booking)
                                       setShowMessageModal(true)
@@ -1290,7 +1290,7 @@ export default function MasterDashboard() {
                                       <Button
                                         size="sm"
                                         variant="outline"
-                                        className="text-violet-600 border-violet-500/30 hover:bg-violet-500/10 w-full"
+                                        className="text-violet-300 border-violet-500/30 hover:bg-violet-500/100/100/10 w-full"
                                       >
                                         <MessageCircle className="w-4 h-4 mr-1" />
                                         {isZh ? '进入咨询' : 'Enter Chat'}
@@ -1299,7 +1299,7 @@ export default function MasterDashboard() {
                                     <Button
                                       size="sm"
                                       variant="outline"
-                                      className="text-blue-600 border-blue-500/30 hover:bg-blue-500/10 hover:text-blue-700 w-full"
+                                      className="text-blue-300 border-blue-500/30 hover:bg-blue-500/100/100/10 hover:text-blue-700 w-full"
                                       onClick={() => openRescheduleModal(booking)}
                                     >
                                       <Calendar className="w-4 h-4 mr-1" />
@@ -1316,7 +1316,7 @@ export default function MasterDashboard() {
                                   <Button
                                     size="sm"
                                     variant="outline"
-                                    className="text-violet-600 border-violet-500/30 hover:bg-violet-500/10 w-full"
+                                    className="text-violet-300 border-violet-500/30 hover:bg-violet-500/100/100/10 w-full"
                                     onClick={() => {
                                       setSelectedBooking(booking)
                                       setShowMessageModal(true)
@@ -1330,7 +1330,7 @@ export default function MasterDashboard() {
                                     <Button
                                       size="sm"
                                       variant="outline"
-                                      className="text-violet-600 border-violet-500/30 hover:bg-violet-500/10 w-full"
+                                      className="text-violet-300 border-violet-500/30 hover:bg-violet-500/100/100/10 w-full"
                                     >
                                       <MessageCircle className="w-4 h-4 mr-1" />
                                       {isZh ? '进入咨询' : 'Enter Chat'}
@@ -1384,7 +1384,7 @@ export default function MasterDashboard() {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="text-amber-600 border-amber-500/30 hover:bg-amber-500/10 w-full"
+                                  className="text-amber-300 border-amber-500/30 hover:bg-amber-500/100/100/10 w-full"
                                   onClick={() => loadReview(booking)}
                                 >
                                   <Star className="w-4 h-4 mr-1" />
@@ -1403,7 +1403,7 @@ export default function MasterDashboard() {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                className="text-red-600 border-red-500/30 hover:bg-red-500/10 w-full"
+                                className="text-red-400 border-red-500/30 hover:bg-red-500/100/100/10 w-full"
                                 onClick={() => handleDeleteExpired(booking.id)}
                               >
                                 <Trash className="w-4 h-4 mr-1" />
@@ -1500,7 +1500,7 @@ export default function MasterDashboard() {
                           <Button
                             size="sm"
                             variant="outline"
-                            className="text-violet-600 border-violet-500/30 hover:bg-violet-500/10"
+                            className="text-violet-300 border-violet-500/30 hover:bg-violet-500/100/100/10"
                             onClick={() => handleViewCustomerMessages(customer)}
                           >
                             <MessageSquare className="w-4 h-4 mr-1" />
@@ -1509,7 +1509,7 @@ export default function MasterDashboard() {
                           <Button
                             size="sm"
                             variant="outline"
-                            className="text-violet-600 border-violet-500/30 hover:bg-violet-500/10"
+                            className="text-violet-300 border-violet-500/30 hover:bg-violet-500/100/100/10"
                             onClick={() => {
                               setSelectedCustomer(customer)
                               setShowCustomerMessageModal(true)
@@ -1567,9 +1567,9 @@ export default function MasterDashboard() {
             ) : (
               <div className="space-y-3">
                 {customerMessages.map((msg: any) => (
-                  <div key={msg.id} className="bg-violet-50 border border-violet-500/30 rounded-lg p-3">
+                  <div key={msg.id} className="bg-violet-500/10 border border-violet-500/30 rounded-lg p-3">
                     <div className="flex items-center gap-2 mb-1">
-                      <Crown className="w-3 h-3 text-violet-500" />
+                      <Crown className="w-3 h-3 text-violet-300" />
                       <span className="text-xs font-medium text-violet-700">{msg.sender_name}</span>
                       <span className="text-xs text-violet-400">
                         {new Date(msg.created_at).toLocaleString()}
@@ -1738,9 +1738,9 @@ export default function MasterDashboard() {
               ) : (
                 <div className="space-y-3">
                   {historyMessages.map((msg: any) => (
-                    <div key={msg.id} className="bg-violet-50 border border-violet-500/30 rounded-lg p-3">
+                    <div key={msg.id} className="bg-violet-500/10 border border-violet-500/30 rounded-lg p-3">
                       <div className="flex items-center gap-2 mb-1">
-                        <Crown className="w-3 h-3 text-violet-500" />
+                        <Crown className="w-3 h-3 text-violet-300" />
                         <span className="text-xs font-medium text-violet-700">{msg.sender_name}</span>
                         <span className="text-xs text-violet-400">
                           {new Date(msg.created_at).toLocaleString()}
@@ -1953,7 +1953,7 @@ export default function MasterDashboard() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
           <div className="bg-white rounded-xl p-6 w-full max-w-lg mx-4 shadow-xl">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-red-600">
+              <h3 className="text-lg font-bold text-red-400">
                 {isZh ? '取消订单并申请退款' : 'Cancel Order & Request Refund'}
               </h3>
               <button

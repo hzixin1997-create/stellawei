@@ -68,8 +68,8 @@ export function SimpleCalendar({ selected, onSelect, disabled }: SimpleCalendarP
           selectedFlag
             ? 'bg-violet-600 text-white'
             : disabledFlag
-              ? 'text-stone-300 cursor-not-allowed'
-              : 'hover:bg-stone-100 text-stone-700'
+              ? 'text-white/30 cursor-not-allowed'
+              : 'hover:bg-white/10 text-white/70'
         }`}
       >
         {d}
@@ -80,17 +80,17 @@ export function SimpleCalendar({ selected, onSelect, disabled }: SimpleCalendarP
   return (
     <div className="w-fit">
       <div className="flex items-center justify-between mb-2">
-        <button onClick={prevMonth} className="p-1 hover:bg-stone-100 rounded">
+        <button onClick={prevMonth} className="p-1 hover:bg-white/10 rounded">
           <ChevronLeft className="w-4 h-4" />
         </button>
         <span className="text-sm font-medium">
           {year}年{month + 1}月
         </span>
-        <button onClick={nextMonth} className="p-1 hover:bg-stone-100 rounded">
+        <button onClick={nextMonth} className="p-1 hover:bg-white/10 rounded">
           <ChevronRight className="w-4 h-4" />
         </button>
       </div>
-      <div className="grid grid-cols-7 gap-1 text-center text-xs text-stone-400 mb-1">
+      <div className="grid grid-cols-7 gap-1 text-center text-xs text-white/40 mb-1">
         {weekDays.map((w) => (
           <div key={w}>{w}</div>
         ))}
