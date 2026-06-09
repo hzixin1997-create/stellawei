@@ -237,8 +237,8 @@ export default function MasterOrdersPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] flex items-center justify-center">
-        <div className="flex items-center gap-2 text-white/70">
+      <div className="min-h-screen bg-stone-50 flex items-center justify-center">
+        <div className="flex items-center gap-2 text-stone-600">
           <Loader2 className="w-5 h-5 animate-spin" />
           加载中...
         </div>
@@ -247,16 +247,16 @@ export default function MasterOrdersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-stone-50 to-stone-100 py-8 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/master/dashboard" className="inline-flex items-center text-white/70 hover:text-white mb-4">
+          <Link href="/master/dashboard" className="inline-flex items-center text-stone-600 hover:text-stone-900 mb-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
             返回首页
           </Link>
-          <h1 className="text-3xl font-serif font-bold text-white">订单管理</h1>
-          <p className="text-white/70 mt-2">管理您的留言咨询和实时咨询订单</p>
+          <h1 className="text-3xl font-serif font-bold text-stone-900">订单管理</h1>
+          <p className="text-stone-600 mt-2">管理您的留言咨询和实时咨询订单</p>
         </div>
 
         {/* Tabs */}
@@ -266,7 +266,7 @@ export default function MasterOrdersPage() {
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
               activeTab === 'message'
                 ? 'bg-amber-700 text-white'
-                : 'bg-white/10 text-white/70 hover:bg-white/10 border border-white/15'
+                : 'bg-white text-stone-600 hover:bg-stone-100 border border-stone-200'
             }`}
           >
             <MessageSquare size={16} />
@@ -277,7 +277,7 @@ export default function MasterOrdersPage() {
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
               activeTab === 'realtime'
                 ? 'bg-amber-700 text-white'
-                : 'bg-white/10 text-white/70 hover:bg-white/10 border border-white/15'
+                : 'bg-white text-stone-600 hover:bg-stone-100 border border-stone-200'
             }`}
           >
             <Video size={16} />
@@ -289,7 +289,7 @@ export default function MasterOrdersPage() {
         {activeTab === 'message' && (
           <div className="space-y-4">
             {messageOrders.length === 0 ? (
-              <div className="bg-white/10 rounded-xl border border-white/15 p-12 text-center text-white/50">
+              <div className="bg-white rounded-xl border border-stone-200 p-12 text-center text-stone-400">
                 <Inbox size={48} className="mx-auto mb-3 opacity-50" />
                 <p>暂无留言订单</p>
               </div>
@@ -301,7 +301,7 @@ export default function MasterOrdersPage() {
                 return (
                   <div
                     key={order.id}
-                    className="bg-white/10 rounded-xl border border-white/15 p-5 hover:border-white/25 transition-colors"
+                    className="bg-white rounded-xl border border-stone-200 p-5 hover:border-stone-300 transition-colors"
                   >
                     <div className="flex items-start gap-4">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center ${status.color} flex-shrink-0`}>
@@ -309,10 +309,10 @@ export default function MasterOrdersPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold text-white">
+                          <h3 className="font-semibold text-stone-900">
                             {order.user_name || order.user_email || order.user_id}
                           </h3>
-                          <span className="px-2 py-0.5 text-xs rounded-full bg-white/10 text-white/70">
+                          <span className="px-2 py-0.5 text-xs rounded-full bg-stone-100 text-stone-600">
                             {order.consultation_type === 'message' ? '留言咨询' : order.tier === 'deep' ? '深度咨询' : '普通咨询'}
                           </span>
                           {order.question_text && (
@@ -324,13 +324,13 @@ export default function MasterOrdersPage() {
                             {status.label}
                           </span>
                         </div>
-                        <p className="text-xs text-white/50 mb-1">
+                        <p className="text-xs text-stone-400 mb-1">
                           订单号: {order.order_number || order.id.slice(0, 8)}
                         </p>
-                        <p className="text-sm text-white/70">
+                        <p className="text-sm text-stone-600">
                           {order.duration_text} · {order.currency.toUpperCase()} {order.total_amount}
                         </p>
-                        <p className="text-xs text-white/50 mt-1">
+                        <p className="text-xs text-stone-400 mt-1">
                           {new Date(order.created_at).toLocaleDateString('zh-CN')}
                         </p>
                       </div>
@@ -345,7 +345,7 @@ export default function MasterOrdersPage() {
                           <button
                             onClick={() => handleRequestRefund(order.id)}
                             disabled={requestingRefundId === order.id}
-                            className="px-4 py-2 text-sm border border-white/20 text-white/70 rounded-lg hover:bg-white/10 transition-colors disabled:opacity-50"
+                            className="px-4 py-2 text-sm border border-stone-300 text-stone-600 rounded-lg hover:bg-stone-100 transition-colors disabled:opacity-50"
                           >
                             {requestingRefundId === order.id ? '处理中...' : '申请退款'}
                           </button>
@@ -368,7 +368,7 @@ export default function MasterOrdersPage() {
         {activeTab === 'realtime' && (
           <div className="space-y-4">
             {realtimeOrders.length === 0 ? (
-              <div className="bg-white/10 rounded-xl border border-white/15 p-12 text-center text-white/50">
+              <div className="bg-white rounded-xl border border-stone-200 p-12 text-center text-stone-400">
                 <Inbox size={48} className="mx-auto mb-3 opacity-50" />
                 <p>暂无实时咨询订单</p>
               </div>
@@ -383,7 +383,7 @@ export default function MasterOrdersPage() {
                 return (
                   <div
                     key={order.id}
-                    className="bg-white/10 rounded-xl border border-white/15 p-5 hover:border-white/25 transition-colors"
+                    className="bg-white rounded-xl border border-stone-200 p-5 hover:border-stone-300 transition-colors"
                   >
                     <div className="flex items-start gap-4">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center ${status.color} flex-shrink-0`}>
@@ -391,28 +391,28 @@ export default function MasterOrdersPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold text-white">
+                          <h3 className="font-semibold text-stone-900">
                             {order.user_name || order.user_email || order.user_id}
                           </h3>
-                          <span className="px-2 py-0.5 text-xs rounded-full bg-white/10 text-white/70">
+                          <span className="px-2 py-0.5 text-xs rounded-full bg-stone-100 text-stone-600">
                             {order.consultation_type === 'message' ? '留言咨询' : order.tier === 'deep' ? '深度咨询' : '普通咨询'}
                           </span>
                           <span className={`px-2 py-0.5 text-xs rounded-full ${status.color}`}>
                             {status.label}
                           </span>
                         </div>
-                        <p className="text-xs text-white/50 mb-1">
+                        <p className="text-xs text-stone-400 mb-1">
                           订单号: {order.order_number || order.id.slice(0, 8)}
                         </p>
-                        <p className="text-sm text-white/70">
+                        <p className="text-sm text-stone-600">
                           {order.duration_text} · {order.currency.toUpperCase()} {order.total_amount}
                         </p>
                         {order.scheduled_at && (
-                          <p className="text-sm text-white/60 mt-1">
+                          <p className="text-sm text-stone-500 mt-1">
                             预约时间: {formatBookingTimeDisplay(order, { showLocalTime: true })}
                           </p>
                         )}
-                        <p className="text-xs text-white/50 mt-1">
+                        <p className="text-xs text-stone-400 mt-1">
                           {new Date(order.created_at).toLocaleDateString('zh-CN')}
                         </p>
                       </div>
@@ -420,7 +420,7 @@ export default function MasterOrdersPage() {
                         {displayStatus === 'completed' && (
                           <>
                             <Link href={`/chat/${order.id}`}>
-                              <button className="px-4 py-2 text-sm bg-white/10 text-white/70 rounded-lg hover:bg-stone-200 transition-colors text-center w-full">
+                              <button className="px-4 py-2 text-sm bg-stone-100 text-stone-600 rounded-lg hover:bg-stone-200 transition-colors text-center w-full">
                                 查看历史对话
                               </button>
                             </Link>
@@ -456,7 +456,7 @@ export default function MasterOrdersPage() {
                             <button
                               onClick={() => handleRequestRefund(order.id)}
                               disabled={requestingRefundId === order.id}
-                              className="px-4 py-2 text-sm border border-white/20 text-white/70 rounded-lg hover:bg-white/10 transition-colors disabled:opacity-50"
+                              className="px-4 py-2 text-sm border border-stone-300 text-stone-600 rounded-lg hover:bg-stone-100 transition-colors disabled:opacity-50"
                             >
                               {requestingRefundId === order.id ? '处理中...' : '申请退款'}
                             </button>
@@ -496,7 +496,7 @@ export default function MasterOrdersPage() {
         {/* 查看评价弹窗 */}
         {reviewModalOpen && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
-            <div className="bg-white/10 rounded-xl p-6 w-full max-w-md mx-4 shadow-xl">
+            <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4 shadow-xl">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold">用户评价</h3>
                 <button
@@ -504,7 +504,7 @@ export default function MasterOrdersPage() {
                     setReviewModalOpen(false);
                     setReviewData(null);
                   }}
-                  className="text-white/50 hover:text-white/70"
+                  className="text-stone-400 hover:text-stone-600"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -512,7 +512,7 @@ export default function MasterOrdersPage() {
 
               {reviewLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <Loader2 className="w-5 h-5 animate-spin text-white/50" />
+                  <Loader2 className="w-5 h-5 animate-spin text-stone-400" />
                 </div>
               ) : reviewData ? (
                 <div className="space-y-4">
@@ -528,32 +528,32 @@ export default function MasterOrdersPage() {
                         }`}
                       />
                     ))}
-                    <span className="ml-2 text-sm text-white/60">
+                    <span className="ml-2 text-sm text-stone-500">
                       {reviewData.rating || 0} / 5
                     </span>
                   </div>
 
                   {/* 评价内容 */}
                   {reviewData.content ? (
-                    <div className="bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] border border-white/15 rounded-lg p-4">
-                      <p className="text-sm text-white/80 whitespace-pre-wrap">
+                    <div className="bg-stone-50 border border-stone-200 rounded-lg p-4">
+                      <p className="text-sm text-stone-700 whitespace-pre-wrap">
                         {reviewData.content}
                       </p>
                     </div>
                   ) : (
-                    <p className="text-sm text-white/50 italic">用户未填写文字评价</p>
+                    <p className="text-sm text-stone-400 italic">用户未填写文字评价</p>
                   )}
 
                   {/* 评价时间 */}
                   {reviewData.created_at && (
-                    <p className="text-xs text-white/50">
+                    <p className="text-xs text-stone-400">
                       {new Date(reviewData.created_at).toLocaleString('zh-CN')}
                     </p>
                   )}
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <p className="text-white/50 text-sm">暂无评价</p>
+                  <p className="text-stone-400 text-sm">暂无评价</p>
                 </div>
               )}
 
@@ -563,7 +563,7 @@ export default function MasterOrdersPage() {
                     setReviewModalOpen(false);
                     setReviewData(null);
                   }}
-                  className="px-4 py-2 text-sm bg-white/10 text-white/70 rounded-lg hover:bg-stone-200 transition-colors"
+                  className="px-4 py-2 text-sm bg-stone-100 text-stone-600 rounded-lg hover:bg-stone-200 transition-colors"
                 >
                   关闭
                 </button>
@@ -575,7 +575,7 @@ export default function MasterOrdersPage() {
         {/* 查看历史弹窗（留言咨询） */}
         {showHistoryModal && historyBooking && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
-            <div className="bg-white/10 rounded-xl p-6 w-full max-w-lg mx-4 shadow-xl max-h-[90vh] overflow-y-auto">
+            <div className="bg-white rounded-xl p-6 w-full max-w-lg mx-4 shadow-xl max-h-[90vh] overflow-y-auto">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold">查看历史</h3>
                 <button
@@ -584,19 +584,19 @@ export default function MasterOrdersPage() {
                     setHistoryBooking(null);
                     setHistoryMessages([]);
                   }}
-                  className="text-white/50 hover:text-white/70"
+                  className="text-stone-400 hover:text-stone-600"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
               {/* 用户问题 */}
-              <div className="bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] border border-white/15 rounded-lg p-4 mb-4">
+              <div className="bg-stone-50 border border-stone-200 rounded-lg p-4 mb-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <User className="w-4 h-4 text-white/50" />
-                  <span className="text-sm font-medium text-white/70">用户提问</span>
+                  <User className="w-4 h-4 text-stone-400" />
+                  <span className="text-sm font-medium text-stone-600">用户提问</span>
                 </div>
-                <p className="text-sm text-white/80 whitespace-pre-wrap">
+                <p className="text-sm text-stone-700 whitespace-pre-wrap">
                   {historyBooking.question_text || '（无文字描述）'}
                 </p>
                 {historyBooking.question_images && historyBooking.question_images.length > 0 && (
@@ -617,26 +617,26 @@ export default function MasterOrdersPage() {
 
               {/* 师傅回复 */}
               <div className="mb-4">
-                <h4 className="text-sm font-medium text-white/80 mb-2">师傅回复</h4>
+                <h4 className="text-sm font-medium text-stone-700 mb-2">师傅回复</h4>
                 {historyLoading ? (
                   <div className="flex items-center justify-center py-8">
-                    <Loader2 className="w-5 h-5 animate-spin text-white/50" />
+                    <Loader2 className="w-5 h-5 animate-spin text-stone-400" />
                   </div>
                 ) : historyMessages.length === 0 ? (
-                  <div className="text-center py-8 bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] rounded-lg">
-                    <p className="text-white/60 text-sm">暂无回复</p>
+                  <div className="text-center py-8 bg-stone-50 rounded-lg">
+                    <p className="text-stone-500 text-sm">暂无回复</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
                     {historyMessages.map((msg: any) => (
-                      <div key={msg.id} className="bg-violet-50 border border-violet-500/30 rounded-lg p-3">
+                      <div key={msg.id} className="bg-violet-50 border border-violet-200 rounded-lg p-3">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="text-xs font-medium text-violet-700">{msg.sender_name}</span>
                           <span className="text-xs text-violet-400">
                             {new Date(msg.created_at).toLocaleString()}
                           </span>
                         </div>
-                        <p className="text-sm text-white/80 whitespace-pre-wrap">{msg.content}</p>
+                        <p className="text-sm text-stone-700 whitespace-pre-wrap">{msg.content}</p>
                         {msg.image_url && (
                           <img
                             src={msg.image_url}
@@ -659,7 +659,7 @@ export default function MasterOrdersPage() {
                     setHistoryBooking(null);
                     setHistoryMessages([]);
                   }}
-                  className="px-4 py-2 text-sm bg-white/10 text-white/70 rounded-lg hover:bg-stone-200 transition-colors"
+                  className="px-4 py-2 text-sm bg-stone-100 text-stone-600 rounded-lg hover:bg-stone-200 transition-colors"
                 >
                   关闭
                 </button>
