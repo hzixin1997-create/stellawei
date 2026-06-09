@@ -88,7 +88,7 @@ export default function Testimonials() {
         </div>
 
         <div className="relative">
-          <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-8 sm:p-10 shadow-sm border border-white/10">
+          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 sm:p-10 shadow-sm border border-white/10">
             <Quote className="w-10 h-10 text-sw-accent/20 mb-4" />
             
             <p className="text-lg sm:text-xl text-white/90 leading-relaxed mb-8 min-h-[80px]">
