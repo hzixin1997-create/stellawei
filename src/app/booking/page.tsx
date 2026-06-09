@@ -588,6 +588,7 @@ export default function BookingPage() {
                               alt={isZh ? m.nameCn : m.name}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                               loading="lazy"
+                              decoding="async"
                             />
                             <div className="absolute top-3 right-3">
                               <Badge variant="outline" className={`${s.color} bg-white/90 backdrop-blur-sm`}>
@@ -657,6 +658,7 @@ export default function BookingPage() {
                     alt={isZh ? master.nameCn : master.name}
                     className="w-20 h-20 rounded-xl object-cover"
                     loading="lazy"
+                    decoding="async"
                   />
                   <div className="flex-1">
                     <h3 className="text-xl font-bold text-stone-900">{isZh ? master.nameCn : master.name}</h3>

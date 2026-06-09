@@ -306,6 +306,9 @@ export default function Home() {
                           src={master.image}
                           alt={isZh ? master.nameCn : master.name}
                           className="w-full h-full object-cover"
+                          loading="lazy"
+                          decoding="async"
+                          fetchpriority="low"
                         />
                         <div className="absolute bottom-0 left-0 right-0 p-3 z-20">
                           <div className="text-white font-semibold text-sm">{isZh ? master.nameCn : master.name}</div>
@@ -393,6 +396,9 @@ export default function Home() {
                       src={master.image}
                       alt={isZh ? master.nameCn : master.name}
                       className="w-full h-full object-cover"
+                      loading="lazy"
+                      decoding="async"
+                      fetchpriority="low"
                     />
                     <div className="absolute bottom-0 left-0 right-0 p-5 z-20">
                       <div className="text-white font-semibold text-base">{isZh ? master.nameCn : master.name}</div>
@@ -435,6 +441,9 @@ export default function Home() {
                     src={master.image} 
                     alt={isZh ? master.nameCn : master.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                    decoding="async"
+                    fetchpriority="low"
                   />
                   <div className="absolute top-4 right-4 z-20 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1">
                     <Star className="w-3 h-3 text-sw-gold fill-sw-gold" />
