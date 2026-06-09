@@ -9,13 +9,13 @@ const inter = Inter({ subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
   title: "Stellawei - Professional Fortune Telling & Spiritual Guidance",
-  description: "Connect with experienced masters for Tarot, BaZi, Feng Shui, and spiritual guidance. Professional fortune telling services blending Eastern and Western wisdom.",
+  description: "Real human masters for Tarot, BaZi, Feng Shui, and spiritual guidance. Transparent fixed pricing, verified credentials, and a 7-day money-back guarantee.",
   keywords: "fortune telling, tarot reading, bazi analysis, feng shui, spiritual guidance, qi men dun jia, liu yao, astrology, chinese metaphysics",
   viewport: "width=device-width, initial-scale=1, maximum-scale=5",
   robots: "index, follow",
   openGraph: {
     title: "Stellawei - Professional Fortune Telling & Spiritual Guidance",
-    description: "Connect with experienced masters for Tarot, BaZi, Feng Shui, and spiritual guidance.",
+    description: "Real human masters for Tarot, BaZi, Feng Shui, and spiritual guidance. Transparent fixed pricing, verified credentials.",
     url: "https://stellawei.org",
     siteName: "Stellawei",
     locale: "en_US",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Stellawei - Professional Fortune Telling",
-    description: "Connect with experienced masters for spiritual guidance.",
+    description: "Real human masters for spiritual guidance. Transparent fixed pricing, verified credentials.",
   },
   alternates: {
     canonical: "https://stellawei.org",
