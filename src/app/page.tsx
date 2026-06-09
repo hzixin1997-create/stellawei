@@ -480,7 +480,7 @@ export default function Home() {
 
           <div className="grid md:grid-cols-3 gap-6">
             {services.map((service) => (
-              <Card key={service.id} className="group hover:shadow-lg transition-shadow rounded-2xl overflow-hidden border-white/10 bg-white/35">
+              <Card key={service.id} className="group hover:shadow-lg transition-shadow rounded-2xl overflow-hidden border-white/10 bg-black/70">
                 <CardContent className="p-6 sm:p-8">
                   <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${service.gradient} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
                     <service.icon className="w-7 h-7 text-white" />
@@ -508,7 +508,7 @@ export default function Home() {
       {/* Trust Section */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white/35 backdrop-blur-sm rounded-3xl p-8 sm:p-12 lg:p-16 text-white border border-white/10">
+          <div className="bg-black/70 backdrop-blur-sm rounded-3xl p-8 sm:p-12 lg:p-16 text-white border border-white/10">
             <div className="text-center mb-12">
               <h2 className="text-3xl sm:text-4xl font-serif font-bold mb-4">
                 {isZh ? '为什么信任 Stellawei？' : 'Why Trust Stellawei?'}
