@@ -454,7 +454,7 @@ export default function Home() {
                     {isZh ? master.taglineCn : master.tagline}
                   </p>
                   <Link href={`/masters/${master.id}`} className="inline-block mt-4">
-                    <Button variant="outline" size="sm" className="rounded-full bg-stellawei-purple text-white border-stellawei-purple hover:bg-stellawei-purple-dark">
+                    <Button variant="outline" size="sm" className="rounded-full bg-stellawei-purple text-white/80 border-stellawei-purple hover:bg-stellawei-purple-dark">
                       {isZh ? '查看资料' : 'View Profile'}
                     </Button>
                   </Link>
@@ -493,7 +493,7 @@ export default function Home() {
                   </p>
                   <div className="flex justify-end">
                     <Link href={service.id === 'eastern' ? '/services/bazi' : `/services/${service.id}`}>
-                      <Button variant="outline" size="sm" className="rounded-full border-stellawei-purple/30 text-stellawei-purple hover:bg-stellawei-purple/5">
+                      <Button variant="outline" size="sm" className="rounded-full bg-stellawei-purple text-white/80 border-stellawei-purple hover:bg-stellawei-purple-dark">
                         {isZh ? '了解更多' : 'Learn More'}
                       </Button>
                     </Link>
