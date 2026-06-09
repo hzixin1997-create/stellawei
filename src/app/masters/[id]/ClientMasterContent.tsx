@@ -5,7 +5,7 @@ import { reviews as mockReviews } from "@/lib/data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Star, Clock, Award, CheckCircle } from "lucide-react"
+import { Star, Clock, CheckCircle } from "lucide-react"
 import Link from "next/link"
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -57,6 +57,23 @@ export function ClientMasterContent({ master }: Props) {
   const [masterStatus, setMasterStatus] = useState<string>('online');
   const [masterReviews, setMasterReviews] = useState<any[]>([]);
   const [loadingReviews, setLoadingReviews] = useState(true);
+
+  // 用户名隐私处理
+  function maskName(name: string): string {
+    if (!name) return 'A**B';
+    if (name === '洛桑') return 'Lisa';
+    if (name.length <= 2) return name[0] + '**';
+    return name[0] + '**' + name[name.length - 1];
+  }
+
+  // 语言显示
+  function displayLanguage(lang: string): string {
+    const map: Record<string, string> = {
+      'en': 'English',
+      'zh': 'Chinese',
+    };
+    return map[lang] || lang;
+  }
 
   const specialtyLabels: Record<string, string> = {
     tarot: "Tarot Reading",
@@ -191,19 +208,23 @@ export function ClientMasterContent({ master }: Props) {
   };
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen" style={{
+      background: 'radial-gradient(ellipse at 70% 20%, #1a0a2e 0%, #0d0618 50%, #050510 100%)'
+    }}>
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-cream/80 backdrop-blur-md border-b border-stellawei-purple/10">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-stellawei-purple to-stellawei-gold"></div>
-              <span className="text-xl font-serif font-bold text-stellawei-purple">Stellawei</span>
+              <div className="w-8 h-8 rounded-full bg-sw-accent flex items-center justify-center">
+                <Star className="w-4 h-4 text-white" />
+              </div>
+              <span className="text-xl font-serif font-bold text-white">{t('brand')}</span>
             </Link>
             <div className="flex items-center space-x-4">
               <LanguageSwitcher />
               <Link href="/">
-                <Button variant="outline" size="sm">{currentLang === 'zh' ? '返回主页' : 'Home'}</Button>
+                <Button variant="outline" size="sm" className="border-white/20 text-white hover:bg-white/10">{currentLang === 'zh' ? '返回主页' : 'Home'}</Button>
               </Link>
             </div>
           </div>
@@ -215,7 +236,7 @@ export function ClientMasterContent({ master }: Props) {
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Left Column - Profile */}
             <div className="lg:col-span-1">
-              <Card className="sticky top-24">
+              <Card className="sticky top-24 bg-black/70 border-white/10 text-white">
                 <div className="aspect-square bg-gradient-to-br from-stellawei-purple/20 to-stellawei-gold/20 relative">
                   <img
                     src={master.avatar_url}
@@ -233,8 +254,8 @@ export function ClientMasterContent({ master }: Props) {
                 
                 <CardHeader>
                   <div className="flex items-center gap-2">
-                    <CardTitle className="font-serif">{displayName}</CardTitle>
-                    <Badge variant="outline" className={`text-xs ${statusConfig[masterStatus]?.color || statusConfig.online.color}`}>
+                    <CardTitle className="font-serif text-white">{displayName}</CardTitle>
+                    <Badge variant="outline" className={`text-xs border-white/20 text-white ${statusConfig[masterStatus]?.color || statusConfig.online.color}`}>
                       {currentLang === 'zh' 
                         ? (statusConfig[masterStatus]?.label || statusConfig.online.label)
                         : (statusConfig[masterStatus]?.labelEn || statusConfig.online.labelEn)
@@ -243,37 +264,37 @@ export function ClientMasterContent({ master }: Props) {
                   </div>
                   <div className="flex items-center space-x-1">
                     <Star className="w-4 h-4 text-stellawei-gold fill-stellawei-gold" />
-                    <span className="font-semibold">{master.rating_average}</span>
-                    <span className="text-muted-foreground text-sm">({master.rating_count})</span>
+                    <span className="font-semibold text-white">{master.rating_average}</span>
+                    <span className="text-white/70 text-sm">({master.rating_count})</span>
                   </div>
                   
-                  <p className="text-sm text-muted-foreground italic">"{tagline}"</p>
+                  <p className="text-sm text-white/70 italic">"{tagline}"</p>
                 </CardHeader>
                 
                 <CardContent className="space-y-4">
                   {/* 预约咨询按钮 */}
                   <Link href="/booking">
-                    <Button className="w-full" size="lg">
+                    <Button className="w-full bg-stellawei-purple hover:bg-stellawei-purple-dark" size="lg">
                       {currentLang === 'zh' ? '预约咨询' : 'Book Consultation'}
                     </Button>
                   </Link>
                   
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">{labels.experience}</span>
-                    <span className="font-medium">{master.experience_years}+ {labels.years}</span>
+                    <span className="text-white/70">{labels.experience}</span>
+                    <span className="font-medium text-white">{master.experience_years}+ {labels.years}</span>
                   </div>
                   
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">{labels.sessions}</span>
-                    <span className="font-medium">{master.completed_sessions}+</span>
+                    <span className="text-white/70">{labels.sessions}</span>
+                    <span className="font-medium text-white">{master.completed_sessions}+</span>
                   </div>
                   
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">{labels.languages}</span>
+                    <span className="text-white/70">{labels.languages}</span>
                     <div className="flex space-x-1">
                       {master.languages.map(lang => (
-                        <Badge key={lang} variant="secondary" className="text-xs">
-                          {lang.toUpperCase()}
+                        <Badge key={lang} variant="secondary" className="text-xs bg-white/10 text-white border-white/10">
+                          {displayLanguage(lang)}
                         </Badge>
                       ))}
                     </div>
@@ -285,28 +306,28 @@ export function ClientMasterContent({ master }: Props) {
             {/* Right Column - Details */}
             <div className="lg:col-span-2 space-y-8">
               {/* About */}
-              <Card>
+              <Card className="bg-black/70 border-white/10 text-white">
                 <CardHeader>
-                  <CardTitle className="font-serif">{labels.about}</CardTitle>
+                  <CardTitle className="font-serif text-white">{labels.about}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground leading-relaxed">{bio}</p>
+                  <p className="text-white/80 leading-relaxed">{bio}</p>
                 </CardContent>
               </Card>
 
               {/* Specialties */}
-              <Card>
+              <Card className="bg-black/70 border-white/10 text-white">
                 <CardHeader>
-                  <CardTitle className="font-serif">{labels.specialties}</CardTitle>
+                  <CardTitle className="font-serif text-white">{labels.specialties}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
                     {Array.isArray(specialties) ? specialties.map((specialty, index) => (
-                      <Badge key={index} className="bg-stellawei-purple/10 text-stellawei-purple hover:bg-stellawei-purple/20">
+                      <Badge key={index} className="bg-stellawei-purple/20 text-white border-white/10 hover:bg-stellawei-purple/30">
                         {specialty}
                       </Badge>
                     )) : master.specialties.map(specialty => (
-                      <Badge key={specialty} className="bg-stellawei-purple/10 text-stellawei-purple hover:bg-stellawei-purple/20">
+                      <Badge key={specialty} className="bg-stellawei-purple/20 text-white border-white/10 hover:bg-stellawei-purple/30">
                         {specialtyLabels[specialty] || specialty}
                       </Badge>
                     ))}
@@ -314,39 +335,15 @@ export function ClientMasterContent({ master }: Props) {
                 </CardContent>
               </Card>
 
-              {/* Certifications */}
-              {master.certifications.length > 0 && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="font-serif">{labels.certifications}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      {master.certifications.map((cert, i) => (
-                        <div key={i} className="flex items-start space-x-3">
-                          <Award className="w-5 h-5 text-stellawei-gold mt-0.5" />
-                          <div>
-                            <p className="font-medium">{cert.name}</p>
-                            <p className="text-sm text-muted-foreground">
-                              {cert.issuer} • {cert.year}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-
               {/* Reviews */}
-              <Card>
+              <Card className="bg-black/70 border-white/10 text-white">
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <CardTitle className="font-serif">{labels.reviews}</CardTitle>
+                    <CardTitle className="font-serif text-white">{labels.reviews}</CardTitle>
                     <div className="flex items-center space-x-2">
                       <Star className="w-5 h-5 text-stellawei-gold fill-stellawei-gold" />
-                      <span className="font-bold">{master.rating_average}</span>
-                      <span className="text-muted-foreground">({master.rating_count} {currentLang === 'zh' ? '条评价' : 'reviews'})</span>
+                      <span className="font-bold text-white">{master.rating_average}</span>
+                      <span className="text-white/70">({master.rating_count} {currentLang === 'zh' ? '条评价' : 'reviews'})</span>
                     </div>
                   </div>
                 </CardHeader>
@@ -354,28 +351,28 @@ export function ClientMasterContent({ master }: Props) {
                   <div className="space-y-4">
                     {masterReviews.length > 0 ? (
                       masterReviews.map(review => (
-                        <div key={review.id} className="border-b last:border-0 pb-4 last:pb-0">
+                        <div key={review.id} className="border-b border-white/10 last:border-0 pb-4 last:pb-0">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center space-x-2">
-                              <div className="w-8 h-8 rounded-full bg-stellawei-purple/20 flex items-center justify-center text-sm font-medium text-stellawei-purple">
+                              <div className="w-8 h-8 rounded-full bg-stellawei-purple/20 flex items-center justify-center text-sm font-medium text-white">
                                 {(review.user?.full_name || 'A').charAt(0)}
                               </div>
-                              <span className="font-medium">{review.user?.full_name || (currentLang === 'zh' ? '匿名用户' : 'Anonymous')}</span>
+                              <span className="font-medium text-white">{maskName(review.user?.full_name || (currentLang === 'zh' ? '匿名用户' : 'Anonymous'))}</span>
                             </div>
                             <div className="flex items-center space-x-1">
                               {Array.from({ length: 5 }).map((_, i) => (
                                 <Star
                                   key={i}
-                                  className={`w-4 h-4 ${i < review.overall_rating ? 'text-stellawei-gold fill-stellawei-gold' : 'text-gray-300'}`}
+                                  className={`w-4 h-4 ${i < review.overall_rating ? 'text-stellawei-gold fill-stellawei-gold' : 'text-white/20'}`}
                                 />
                               ))}
                             </div>
                           </div>
                           
-                          <p className="font-medium mb-1">{review.title}</p>
-                          <p className="text-sm text-muted-foreground">{review.content}</p>
+                          <p className="font-medium mb-1 text-white">{review.title}</p>
+                          <p className="text-sm text-white/70">{review.content}</p>
                           
-                          <p className="text-xs text-muted-foreground mt-2">
+                          <p className="text-xs text-white/50 mt-2">
                             {new Date(review.created_at).toLocaleDateString('en-US', {
                               month: 'long',
                               year: 'numeric',
@@ -384,7 +381,7 @@ export function ClientMasterContent({ master }: Props) {
                         </div>
                       ))
                     ) : (
-                      <p className="text-muted-foreground text-center py-8">{currentLang === 'zh' ? '暂无评价' : 'No reviews yet'}</p>
+                      <p className="text-white/70 text-center py-8">{currentLang === 'zh' ? '暂无评价' : 'No reviews yet'}</p>
                     )}
                   </div>
                 </CardContent>
