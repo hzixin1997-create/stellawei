@@ -69,7 +69,7 @@ const masters = [
     experience: "10+ years",
     experienceCn: "10年以上经验",
     rating: 4.9,
-    reviews: 312,
+    reviews: 24,
     image: "/masters/master_luna.jpg",
     tagline: "Illuminating your path through the wisdom of the stars",
     taglineCn: "通过星辰的智慧照亮您的人生道路",
@@ -83,7 +83,7 @@ const masters = [
     experience: "8 years",
     experienceCn: "8年经验",
     rating: 4.9,
-    reviews: 156,
+    reviews: 35,
     image: "/masters/master_zhang_yihua.jpg",
     tagline: "Revealing the unseen patterns of timing and destiny",
     taglineCn: "揭露时空能量学的密码",
@@ -97,7 +97,7 @@ const masters = [
     experience: "12+ years",
     experienceCn: "12年以上经验",
     rating: 4.9,
-    reviews: 248,
+    reviews: 28,
     image: "/masters/master_wu_yang.jpg",
     tagline: "Align your path with the flow of cosmic energy",
     taglineCn: "通过八字与环境能量分析",
@@ -445,12 +445,12 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="px-2">
-                  <div className="flex items-center gap-4 text-sm text-white/70 mb-3">
+                  <div className="flex items-center gap-4 text-sm text-white mb-3">
                     <span>{isZh ? master.experienceCn : master.experience}</span>
                     <span>·</span>
                     <span>{master.reviews} {isZh ? '条评价' : 'reviews'}</span>
                   </div>
-                  <p className="text-sm text-white/70 line-clamp-2">
+                  <p className="text-sm text-white line-clamp-2">
                     {isZh ? master.taglineCn : master.tagline}
                   </p>
                   <Link href={`/masters/${master.id}`} className="inline-block mt-4">
@@ -568,7 +568,7 @@ export default function Home() {
             <Button 
               variant="outline"
               size="lg" 
-              className="rounded-full px-10 h-14 text-base border-2 border-stellawei-purple text-stellawei-purple bg-black hover:bg-stellawei-purple/10"
+              className="rounded-full px-10 h-14 text-base border-2 border-stellawei-purple text-stellawei-purple hover:bg-stellawei-purple/10"
               onClick={() => {
                 const servicesSection = document.getElementById('services');
                 if (servicesSection) {
