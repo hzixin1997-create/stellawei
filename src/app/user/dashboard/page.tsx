@@ -818,7 +818,7 @@ export default function UserDashboard() {
           <div className="mb-6">
             <Link href="/booking">
               <Button className="w-full bg-violet-600 hover:bg-violet-700 h-12">
-                {isZh ? '发起新的咨询' : 'Start New Consultation'}
+                {isZh ? '预约咨询' : 'Book Consultation'}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </Link>

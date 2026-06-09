@@ -201,7 +201,13 @@ export default function Home() {
 
             {/* Right Side */}
             <div className="flex items-center space-x-3">
+              {/* Desktop language switcher */}
               <div className="hidden sm:block">
+                <LanguageSwitcher />
+              </div>
+              
+              {/* Mobile language switcher — shown only on mobile */}
+              <div className="sm:hidden">
                 <LanguageSwitcher />
               </div>
               
@@ -222,14 +228,6 @@ export default function Home() {
                   {isZh ? '登录' : 'Login'}
                 </Button>
               )}
-
-              {/* Mobile menu button */}
-              <button
-                className="md:hidden p-2"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              >
-                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </button>
             </div>
           </div>
         </div>
