@@ -193,6 +193,7 @@ export default function Home() {
                 <Star className="w-4 h-4 text-white" />
               </div>
               <span className="text-xl font-serif font-bold text-white">{t('brand')}</span>
+              <span className="text-sm text-white/70 hidden sm:inline">| {isZh ? '在线咨询平台' : 'Online Divination Platform'}</span>
             </Link>
 
             {/* Desktop Nav - empty */}
