@@ -997,7 +997,7 @@ export default function MasterDashboard() {
                       <Button
                         size="sm"
                         variant="outline"
-                        className="bg-white/10 text-white/80 border-white/20 hover:bg-white/20"
+                        className="bg-violet-600 text-white border-violet-600 hover:bg-violet-700"
                         onClick={() => saveAvailabilityForDate(selectedAvailabilityDate, ALL_TIME_SLOTS)}
                         disabled={savingSlots}
                       >
@@ -1006,7 +1006,7 @@ export default function MasterDashboard() {
                       <Button
                         size="sm"
                         variant="outline"
-                        className="bg-white/10 text-white/80 border-white/20 hover:bg-white/20"
+                        className="bg-violet-600 text-white border-violet-600 hover:bg-violet-700"
                         onClick={() => saveAvailabilityForDate(selectedAvailabilityDate, [])}
                         disabled={savingSlots}
                       >
@@ -1015,7 +1015,7 @@ export default function MasterDashboard() {
                       <Button
                         size="sm"
                         variant="outline"
-                        className="bg-white/10 text-white/80 border-white/20 hover:bg-white/20"
+                        className="bg-violet-600 text-white border-violet-600 hover:bg-violet-700"
                         onClick={() => {
                           const morning = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30']
                           saveAvailabilityForDate(selectedAvailabilityDate, morning)
@@ -1027,7 +1027,7 @@ export default function MasterDashboard() {
                       <Button
                         size="sm"
                         variant="outline"
-                        className="bg-white/10 text-white/80 border-white/20 hover:bg-white/20"
+                        className="bg-violet-600 text-white border-violet-600 hover:bg-violet-700"
                         onClick={() => {
                           const afternoon = ['14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30']
                           saveAvailabilityForDate(selectedAvailabilityDate, afternoon)
@@ -1039,7 +1039,7 @@ export default function MasterDashboard() {
                       <Button
                         size="sm"
                         variant="outline"
-                        className="bg-white/10 text-white/80 border-white/20 hover:bg-white/20"
+                        className="bg-violet-600 text-white border-violet-600 hover:bg-violet-700"
                         onClick={() => {
                           const evening = ['19:00', '19:30', '20:00', '20:30']
                           saveAvailabilityForDate(selectedAvailabilityDate, evening)
@@ -1051,7 +1051,7 @@ export default function MasterDashboard() {
                       <Button
                         size="sm"
                         variant="outline"
-                        className="bg-white/10 text-white/80 border-white/20 hover:bg-white/20"
+                        className="bg-violet-600 text-white border-violet-600 hover:bg-violet-700"
                         onClick={syncToMonth}
                         disabled={syncingMonth || !availableSlots || availableSlots.length === 0}
                       >
@@ -1152,7 +1152,7 @@ export default function MasterDashboard() {
           {/* 最近订单 */}
           <Card className="mb-6 bg-black/40 border-white/10 backdrop-blur-sm">
             <CardHeader className="flex flex-row items-center justify-between flex-wrap gap-3">
-              <CardTitle className="flex items-center gap-2 text-white">
+              <CardTitle className="flex items-center gap-2 text-violet-300 !text-violet-300">
                 <ShoppingBag className="w-5 h-5" />
                 {isZh ? '最近订单' : 'Recent Orders'}
               </CardTitle>
@@ -1216,7 +1216,7 @@ export default function MasterDashboard() {
                         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-2">
-                              <span className="font-semibold text-sm sm:text-base truncate text-white">
+                              <span className="font-semibold text-sm sm:text-base truncate text-white !text-white">
                                 {booking.user_name || booking.user_email || booking.user_id}
                               </span>
                               <Badge variant="outline" className={`text-xs ${booking.consultation_type === 'message' ? 'bg-white/10 text-white/70 border-white/15' : 'bg-violet-500/10 text-violet-300 border-violet-500/30'}`}>
@@ -1453,7 +1453,7 @@ export default function MasterDashboard() {
           {/* 我的客户 */}
           <Card className="bg-black/40 border-white/10 backdrop-blur-sm">
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="flex items-center gap-2 text-white">
+              <CardTitle className="flex items-center gap-2 text-violet-300 !text-violet-300">
                 <User className="w-5 h-5" />
                 {isZh ? '我的客户' : 'My Customers'}
               </CardTitle>
@@ -1481,7 +1481,7 @@ export default function MasterDashboard() {
                       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="font-semibold text-sm sm:text-base truncate text-white">
+                            <span className="font-semibold text-sm sm:text-base truncate text-white !text-white">
                               {customer.user.full_name || customer.user.email}
                             </span>
                             <Badge variant="outline" className="text-xs bg-white/10 text-white/70 border-white/15">
