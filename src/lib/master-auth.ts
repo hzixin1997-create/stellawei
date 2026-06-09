@@ -15,7 +15,7 @@ export const MASTER_WHITELIST = [
     name: "张易桦",
     slug: "zhang-yihua",
     specialties: ["奇门遁甲", "六爻占卜"],
-    experience: "8年"
+    experience: "8年+"
   },
   {
     email: "lunalintarot@163.com",

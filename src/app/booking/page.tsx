@@ -68,7 +68,7 @@ const MASTERS = [
     avatar: '/masters/master_zhang_yihua.jpg',
     tagline: '揭露时空能量学的密码，通过决策学来选择正确的风向',
     taglineEn: 'Revealing the unseen patterns of timing and destiny',
-    experience: '8年',
+    experience: '8年+',
     specialties: ['奇门遁甲', '六爻占卜'],
     specialtiesEn: ['Qi Men Dun Jia', 'Liu Yao'],
   },
