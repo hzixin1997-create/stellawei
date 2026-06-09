@@ -50,15 +50,15 @@ interface MessageOrder {
 }
 
 const statusMap: Record<string, { label: string; color: string; icon: any }> = {
-  pending: { label: '待付款', color: 'bg-yellow-100 text-yellow-800', icon: Clock },
-  expired: { label: '已过期', color: 'bg-gray-100 text-gray-500', icon: AlertCircle },
-  paid: { label: '已付款', color: 'bg-blue-500/20 text-blue-800', icon: CheckCircle },
-  confirmed: { label: '已接单', color: 'bg-green-500/20 text-green-800', icon: CheckCircle },
-  in_progress: { label: '进行中', color: 'bg-purple-100 text-purple-800', icon: Video },
-  completed: { label: '已完成', color: 'bg-green-500/20 text-green-800', icon: CheckCircle },
-  cancelled: { label: '已取消', color: 'bg-gray-100 text-gray-800', icon: AlertCircle },
-  refund_requested: { label: '退款申请', color: 'bg-orange-500/20 text-orange-800', icon: AlertCircle },
-  refunded: { label: '已退款', color: 'bg-gray-100 text-gray-800', icon: AlertCircle },
+  pending: { label: '待付款', color: 'bg-yellow-500/20 text-yellow-300', icon: Clock },
+  expired: { label: '已过期', color: 'bg-white/10 text-white/50', icon: AlertCircle },
+  paid: { label: '已付款', color: 'bg-blue-500/20 text-blue-300', icon: CheckCircle },
+  confirmed: { label: '已接单', color: 'bg-green-500/20 text-green-300', icon: CheckCircle },
+  in_progress: { label: '进行中', color: 'bg-purple-500/20 text-purple-300', icon: Video },
+  completed: { label: '已完成', color: 'bg-green-500/20 text-green-300', icon: CheckCircle },
+  cancelled: { label: '已取消', color: 'bg-white/10 text-white/50', icon: AlertCircle },
+  refund_requested: { label: '退款申请', color: 'bg-orange-500/20 text-orange-300', icon: AlertCircle },
+  refunded: { label: '已退款', color: 'bg-white/10 text-white/50', icon: AlertCircle },
 };
 
 const categoryMap: Record<string, string> = {
@@ -316,7 +316,7 @@ export default function MasterOrdersPage() {
                             {order.consultation_type === 'message' ? '留言咨询' : order.tier === 'deep' ? '深度咨询' : '普通咨询'}
                           </span>
                           {order.question_text && (
-                            <span className="px-2 py-0.5 text-xs rounded-full bg-red-500/20 text-red-700">
+                            <span className="px-2 py-0.5 text-xs rounded-full bg-red-500/20 text-red-300">
                               新消息
                             </span>
                           )}

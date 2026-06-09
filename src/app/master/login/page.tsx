@@ -61,19 +61,19 @@ export default function MasterLogin() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-stone-800">Stellawei</h1>
-          <p className="text-stone-500 mt-1">{isZh ? '师傅登录' : 'Master Login'}</p>
+          <h1 className="text-2xl font-bold text-white">Stellawei</h1>
+          <p className="text-white/50 mt-1">{isZh ? '师傅登录' : 'Master Login'}</p>
         </div>
 
         {/* 登录表单 */}
-        <div className="bg-white rounded-xl border border-stone-200 p-8">
+        <div className="bg-black/40 backdrop-blur-sm border border-white/10 p-8">
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1.5">
+              <label className="block text-sm font-medium text-white/70 mb-1.5">
                 {isZh ? '邮箱' : 'Email'}
               </label>
               <input
@@ -82,12 +82,12 @@ export default function MasterLogin() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={isZh ? '请输入邮箱' : 'Enter email'}
                 required
-                className="w-full px-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-stone-700"
+                className="w-full px-4 py-2.5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 text-white/70"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1.5">
+              <label className="block text-sm font-medium text-white/70 mb-1.5">
                 {isZh ? '密码' : 'Password'}
               </label>
               <div className="relative">
@@ -97,12 +97,12 @@ export default function MasterLogin() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder={isZh ? '请输入密码' : 'Enter password'}
                   required
-                  className="w-full px-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-stone-700 pr-12"
+                  className="w-full px-4 py-2.5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 text-white/70 pr-12"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/60"
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -110,7 +110,7 @@ export default function MasterLogin() {
             </div>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-sm text-red-700">
+              <div className="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 text-sm text-red-300">
                 {error}
               </div>
             )}
@@ -118,7 +118,7 @@ export default function MasterLogin() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 bg-amber-700 text-white rounded-lg font-medium hover:bg-amber-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+              className="w-full py-2.5 bg-violet-600 text-white rounded-lg font-medium hover:bg-violet-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
             >
               <LogIn size={18} />
               {loading ? (isZh ? "登录中..." : "Logging in...") : (isZh ? "登录" : "Log In")}
@@ -126,14 +126,14 @@ export default function MasterLogin() {
           </form>
 
           <div className="mt-6 text-center">
-            <Link href="/" className="text-sm text-stone-500 hover:text-amber-700">
+            <Link href="/" className="text-sm text-white/50 hover:text-violet-300">
               ← {isZh ? '返回首页' : 'Back to Home'}
             </Link>
           </div>
         </div>
 
         {/* 占位提示 */}
-        <div className="mt-6 bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-amber-800">
+        <div className="mt-6 bg-amber-500/10 border border-amber-500/30 rounded-lg p-4 text-sm text-amber-300">
           <p className="font-medium mb-1">{isZh ? '师傅账号说明' : 'Master Account Info'}</p>
           <p>{isZh 
             ? '师傅账号需要先在 Supabase Dashboard 中创建 auth.users 用户，然后将 user_id 关联到 masters 表。'

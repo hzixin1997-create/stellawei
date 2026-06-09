@@ -997,6 +997,7 @@ export default function MasterDashboard() {
                       <Button
                         size="sm"
                         variant="outline"
+                        className="bg-white/10 text-white/80 border-white/20 hover:bg-white/20"
                         onClick={() => saveAvailabilityForDate(selectedAvailabilityDate, ALL_TIME_SLOTS)}
                         disabled={savingSlots}
                       >
@@ -1005,6 +1006,7 @@ export default function MasterDashboard() {
                       <Button
                         size="sm"
                         variant="outline"
+                        className="bg-white/10 text-white/80 border-white/20 hover:bg-white/20"
                         onClick={() => saveAvailabilityForDate(selectedAvailabilityDate, [])}
                         disabled={savingSlots}
                       >
@@ -1013,6 +1015,7 @@ export default function MasterDashboard() {
                       <Button
                         size="sm"
                         variant="outline"
+                        className="bg-white/10 text-white/80 border-white/20 hover:bg-white/20"
                         onClick={() => {
                           const morning = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30']
                           saveAvailabilityForDate(selectedAvailabilityDate, morning)
@@ -1024,6 +1027,7 @@ export default function MasterDashboard() {
                       <Button
                         size="sm"
                         variant="outline"
+                        className="bg-white/10 text-white/80 border-white/20 hover:bg-white/20"
                         onClick={() => {
                           const afternoon = ['14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30']
                           saveAvailabilityForDate(selectedAvailabilityDate, afternoon)
@@ -1035,6 +1039,7 @@ export default function MasterDashboard() {
                       <Button
                         size="sm"
                         variant="outline"
+                        className="bg-white/10 text-white/80 border-white/20 hover:bg-white/20"
                         onClick={() => {
                           const evening = ['19:00', '19:30', '20:00', '20:30']
                           saveAvailabilityForDate(selectedAvailabilityDate, evening)
@@ -1046,6 +1051,7 @@ export default function MasterDashboard() {
                       <Button
                         size="sm"
                         variant="outline"
+                        className="bg-white/10 text-white/80 border-white/20 hover:bg-white/20"
                         onClick={syncToMonth}
                         disabled={syncingMonth || !availableSlots || availableSlots.length === 0}
                       >
@@ -1146,7 +1152,7 @@ export default function MasterDashboard() {
           {/* 最近订单 */}
           <Card className="mb-6 bg-black/40 border-white/10 backdrop-blur-sm">
             <CardHeader className="flex flex-row items-center justify-between flex-wrap gap-3">
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-white">
                 <ShoppingBag className="w-5 h-5" />
                 {isZh ? '最近订单' : 'Recent Orders'}
               </CardTitle>
@@ -1205,12 +1211,12 @@ export default function MasterDashboard() {
                     return (
                       <div
                         key={booking.id}
-                        className="border rounded-lg p-4 hover:bg-white/5 transition-colors"
+                        className="border border-white/15 rounded-lg p-4 hover:bg-white/5 transition-colors"
                       >
                         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-2">
-                              <span className="font-semibold text-sm sm:text-base truncate">
+                              <span className="font-semibold text-sm sm:text-base truncate text-white">
                                 {booking.user_name || booking.user_email || booking.user_id}
                               </span>
                               <Badge variant="outline" className={`text-xs ${booking.consultation_type === 'message' ? 'bg-white/10 text-white/70 border-white/15' : 'bg-violet-500/10 text-violet-300 border-violet-500/30'}`}>
@@ -1447,7 +1453,7 @@ export default function MasterDashboard() {
           {/* 我的客户 */}
           <Card className="bg-black/40 border-white/10 backdrop-blur-sm">
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-white">
                 <User className="w-5 h-5" />
                 {isZh ? '我的客户' : 'My Customers'}
               </CardTitle>
@@ -1470,15 +1476,15 @@ export default function MasterDashboard() {
                   {customers.map((customer: any) => (
                     <div
                       key={customer.user.id}
-                      className="border rounded-lg p-4 hover:bg-white/5 transition-colors"
+                      className="border border-white/15 rounded-lg p-4 hover:bg-white/5 transition-colors"
                     >
                       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="font-semibold text-sm sm:text-base truncate">
+                            <span className="font-semibold text-sm sm:text-base truncate text-white">
                               {customer.user.full_name || customer.user.email}
                             </span>
-                            <Badge variant="outline" className="text-xs">
+                            <Badge variant="outline" className="text-xs bg-white/10 text-white/70 border-white/15">
                               {customer.bookings.length} {isZh ? '次咨询' : 'sessions'}
                             </Badge>
                           </div>
@@ -1488,7 +1494,7 @@ export default function MasterDashboard() {
                           </p>
                           <div className="flex gap-2 mt-2">
                             {customer.bookings.slice(0, 3).map((b: any, i: number) => (
-                              <Badge key={i} variant="outline" className="text-xs">
+                              <Badge key={i} variant="outline" className="text-xs bg-white/10 text-white/70 border-white/15">
                                 {b.consultation_type === 'message'
                                   ? (isZh ? '留言' : 'Msg')
                                   : (isZh ? '实时' : 'Live')}
@@ -1500,7 +1506,7 @@ export default function MasterDashboard() {
                           <Button
                             size="sm"
                             variant="outline"
-                            className="text-violet-300 border-violet-500/30 hover:bg-violet-500/100/100/10"
+                            className="text-violet-300 border-violet-500/30 hover:bg-violet-500/10"
                             onClick={() => handleViewCustomerMessages(customer)}
                           >
                             <MessageSquare className="w-4 h-4 mr-1" />
