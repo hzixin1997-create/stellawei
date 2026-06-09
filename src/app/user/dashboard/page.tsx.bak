@@ -353,31 +353,31 @@ export default function UserDashboard() {
     const expired = isExpired(booking)
     
     if (expired && (payment_status === 'pending' || payment_status === 'pending_payment')) {
-      return <Badge variant="outline" className="bg-white/10 text-white/50 border-white/15">{isZh ? '已过期' : 'Expired'}</Badge>
+      return <Badge variant="outline" className="bg-stone-100 text-stone-400 border-stone-200">{isZh ? '已过期' : 'Expired'}</Badge>
     }
     // 优先使用新的 refund_status 字段
     if (refund_status && refund_status !== 'none') {
       const refundStatusMap: Record<string, { text: string; color: string }> = {
-        requested: { text: '退款申请中', color: 'bg-orange-50 text-orange-700 border-orange-500/30' },
+        requested: { text: '退款申请中', color: 'bg-orange-50 text-orange-700 border-orange-200' },
         under_review: { text: '审核中', color: 'bg-yellow-50 text-yellow-700 border-yellow-200' },
-        approved: { text: '已批准', color: 'bg-blue-50 text-blue-700 border-blue-500/30' },
-        rejected: { text: '已拒绝', color: 'bg-red-50 text-red-700 border-red-500/30' },
-        processing: { text: '处理中', color: 'bg-blue-50 text-blue-700 border-blue-500/30' },
+        approved: { text: '已批准', color: 'bg-blue-50 text-blue-700 border-blue-200' },
+        rejected: { text: '已拒绝', color: 'bg-red-50 text-red-700 border-red-200' },
+        processing: { text: '处理中', color: 'bg-blue-50 text-blue-700 border-blue-200' },
         refunded: { text: '已退款', color: 'bg-gray-100 text-gray-500 border-gray-200' },
-        failed: { text: '退款失败', color: 'bg-red-50 text-red-700 border-red-500/30' },
+        failed: { text: '退款失败', color: 'bg-red-50 text-red-700 border-red-200' },
       }
       const config = refundStatusMap[refund_status] || { text: refund_status, color: 'bg-gray-100 text-gray-500 border-gray-200' }
       return <Badge variant="outline" className={config.color}>{isZh ? config.text : config.text}</Badge>
     }
     // 兼容旧数据
     if (payment_status === 'refund_requested' || status === 'refund_requested') {
-      return <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-500/30">{isZh ? '退款申请中' : 'Refund Requested'}</Badge>
+      return <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">{isZh ? '退款申请中' : 'Refund Requested'}</Badge>
     }
     if (payment_status === 'refunded' || status === 'refunded') {
       return <Badge variant="outline" className="bg-gray-100 text-gray-500 border-gray-200">{isZh ? '已退款' : 'Refunded'}</Badge>
     }
     if (payment_status === 'pending' || payment_status === 'pending_payment') {
-      return <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-500/30">{isZh ? '待支付' : 'Pending Payment'}</Badge>
+      return <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">{isZh ? '待支付' : 'Pending Payment'}</Badge>
     }
     if (payment_status === 'paid') {
       if (displayStatus === 'in_progress') {
@@ -387,21 +387,21 @@ export default function UserDashboard() {
         return <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">{isZh ? '即将开始' : 'Upcoming'}</Badge>
       }
       if (displayStatus === 'ended') {
-        return <Badge variant="outline" className="bg-white/10 text-white/70 border-white/15">{isZh ? '已结束' : 'Ended'}</Badge>
+        return <Badge variant="outline" className="bg-stone-100 text-stone-600 border-stone-200">{isZh ? '已结束' : 'Ended'}</Badge>
       }
       if (displayStatus === 'confirmed') {
         return <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">{isZh ? '已确认' : 'Confirmed'}</Badge>
       }
       if (displayStatus === 'completed') {
-        return <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-500/30">{isZh ? '已完成' : 'Completed'}</Badge>
+        return <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">{isZh ? '已完成' : 'Completed'}</Badge>
       }
-      return <Badge variant="outline" className="bg-violet-50 text-violet-700 border-violet-500/30">{isZh ? '已支付' : 'Paid'}</Badge>
+      return <Badge variant="outline" className="bg-violet-50 text-violet-700 border-violet-200">{isZh ? '已支付' : 'Paid'}</Badge>
     }
     if (payment_status === 'failed') {
-      return <Badge variant="outline" className="bg-red-50 text-red-700 border-red-500/30">{isZh ? '支付失败' : 'Failed'}</Badge>
+      return <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">{isZh ? '支付失败' : 'Failed'}</Badge>
     }
     if (status === 'cancelled' || payment_status === 'cancelled') {
-      return <Badge variant="outline" className="bg-white/10 text-white/60 border-white/15">{isZh ? '已取消' : 'Cancelled'}</Badge>
+      return <Badge variant="outline" className="bg-stone-100 text-stone-500 border-stone-200">{isZh ? '已取消' : 'Cancelled'}</Badge>
     }
     return <Badge variant="outline">{status}</Badge>
   }
@@ -702,37 +702,37 @@ export default function UserDashboard() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-stone-50 to-stone-100 flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-600" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460]">
+    <div className="min-h-screen bg-gradient-to-br from-stone-50 to-stone-100">
       {/* 顶部导航 */}
-      <div className="bg-black/40 backdrop-blur-md border-b border-white/10 px-4 py-3">
+      <div className="bg-white border-b border-stone-200 px-4 py-3">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <Link href="/" className="flex items-center text-white/70 hover:text-white shrink-0">
+          <Link href="/" className="flex items-center text-stone-600 hover:text-stone-900 shrink-0">
             <Home className="w-5 h-5 mr-1 sm:mr-2" />
             <span className="font-medium text-sm sm:text-base">{isZh ? '返回首页' : 'Back to Home'}</span>
           </Link>
           <div className="flex items-center gap-2 sm:gap-4 min-w-0">
-            <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-white/60 truncate">
+            <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-stone-500 truncate">
               <User className="w-4 h-4 shrink-0" />
               <span className="truncate hidden sm:inline">{user?.email}</span>
             </div>
             <button
               onClick={toggleLanguage}
-              className="flex items-center gap-1 text-xs sm:text-sm text-white/60 hover:text-violet-300 transition-colors shrink-0"
+              className="flex items-center gap-1 text-xs sm:text-sm text-stone-500 hover:text-violet-600 transition-colors shrink-0"
             >
-              <span className="w-5 h-5 rounded-full border border-white/20 flex items-center justify-center text-xs">
+              <span className="w-5 h-5 rounded-full border border-stone-300 flex items-center justify-center text-xs">
                 {isZh ? 'EN' : '中'}
               </span>
             </button>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-1 text-xs sm:text-sm text-white/60 hover:text-red-400 transition-colors shrink-0"
+              className="flex items-center gap-1 text-xs sm:text-sm text-stone-500 hover:text-red-600 transition-colors shrink-0"
             >
               <LogOut className="w-4 h-4" />
               <span className="hidden sm:inline">{isZh ? '退出登录' : 'Logout'}</span>
@@ -745,10 +745,10 @@ export default function UserDashboard() {
         <div className="max-w-4xl mx-auto">
           {/* 欢迎语 */}
           <div className="mb-8">
-            <h1 className="text-3xl font-serif font-bold text-white">
+            <h1 className="text-3xl font-serif font-bold text-stone-900">
               {isZh ? '欢迎回来' : 'Welcome Back'}
             </h1>
-            <p className="text-base text-white/70 mt-2">
+            <p className="text-base text-stone-600 mt-2">
               💬 {isZh
                 ? '咨询前请添加客服微信号：Stellawei2026，或发送邮件至：stellawei@support，以确保咨询能正常进行。'
                 : 'Please add our customer service WeChat: Stellawei2026, or email: stellawei@support before your consultation to ensure everything goes smoothly.'}
@@ -757,28 +757,28 @@ export default function UserDashboard() {
 
           {/* 统计卡片 */}
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <Card className="bg-black/40 border-white/10 backdrop-blur-sm">
+            <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-violet-500/20 flex items-center justify-center">
-                    <ShoppingBag className="w-5 h-5 text-violet-300" />
+                  <div className="w-10 h-10 rounded-full bg-violet-100 flex items-center justify-center">
+                    <ShoppingBag className="w-5 h-5 text-violet-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-white/60">{isZh ? '我的订单' : 'My Orders'}</p>
-                    <p className="text-2xl font-bold text-white">{bookings.length}</p>
+                    <p className="text-sm text-stone-500">{isZh ? '我的订单' : 'My Orders'}</p>
+                    <p className="text-2xl font-bold">{bookings.length}</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
-            <Card className="bg-black/40 border-white/10 backdrop-blur-sm">
+            <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center">
-                    <MessageCircle className="w-5 h-5 text-amber-300" />
+                  <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
+                    <MessageCircle className="w-5 h-5 text-amber-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-white/60">{isZh ? '实时咨询' : 'Live Consults'}</p>
-                    <p className="text-2xl font-bold text-white">
+                    <p className="text-sm text-stone-500">{isZh ? '实时咨询' : 'Live Consults'}</p>
+                    <p className="text-2xl font-bold">
                       {bookings.filter(b => b.status !== 'cancelled' && b.payment_status !== 'cancelled' && b.payment_status !== 'expired').length}
                     </p>
                   </div>
@@ -788,16 +788,16 @@ export default function UserDashboard() {
           </div>
 
           {/* 账户设置：时区 */}
-          <Card className="mb-6 bg-black/40 border-white/10 backdrop-blur-sm">
+          <Card className="mb-6">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
-                    <Clock className="w-5 h-5 text-blue-300" />
+                  <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-white/60">{isZh ? '我的时区' : 'My Timezone'}</p>
-                    <p className="text-sm font-medium text-white">{userTimezone || Intl.DateTimeFormat().resolvedOptions().timeZone}</p>
+                    <p className="text-sm text-stone-500">{isZh ? '我的时区' : 'My Timezone'}</p>
+                    <p className="text-sm font-medium">{userTimezone || Intl.DateTimeFormat().resolvedOptions().timeZone}</p>
                   </div>
                 </div>
                 <Button
@@ -825,9 +825,9 @@ export default function UserDashboard() {
           </div>
 
           {/* 我的订单 */}
-          <Card className="mb-6 bg-black/40 border-white/10 backdrop-blur-sm">
+          <Card className="mb-6">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-white">
+              <CardTitle className="flex items-center gap-2">
                 <ShoppingBag className="w-5 h-5" />
                 {isZh ? '我的订单' : 'My Orders'}
               </CardTitle>
@@ -835,9 +835,9 @@ export default function UserDashboard() {
             <CardContent>
               {bookings.length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-white/60 mb-4">{isZh ? '暂无订单' : 'No orders yet'}</p>
+                  <p className="text-stone-500 mb-4">{isZh ? '暂无订单' : 'No orders yet'}</p>
                   <Link href="/booking">
-                    <Button variant="outline" size="sm" className="border-white/20 text-white/80 hover:bg-white/10 hover:text-white">
+                    <Button variant="outline" size="sm">
                       {isZh ? '去预约' : 'Book Now'}
                     </Button>
                   </Link>
@@ -852,17 +852,17 @@ export default function UserDashboard() {
                     const isUrgent = remainingSeconds > 0 && remainingSeconds <= 180 // 3分钟内
                     const displayStatus = getConsultationDisplayStatus(booking)
                     return (
-                      <div key={booking.id} className="border border-white/10 rounded-lg p-4 hover:bg-white/5 transition-colors">
+                      <div key={booking.id} className="border rounded-lg p-4 hover:bg-stone-50 transition-colors">
                         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-2">
-                              <span className="font-semibold text-sm sm:text-base truncate text-white">{isZh ? master.nameCn : master.name}</span>
+                              <span className="font-semibold text-sm sm:text-base truncate">{isZh ? master.nameCn : master.name}</span>
                               {getStatusBadge(booking)}
                             </div>
-                            <p className="text-sm text-white/70 mb-1">
+                            <p className="text-sm text-stone-600 mb-1">
                               {isZh ? service.nameCn : service.name}
                             </p>
-                            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm text-white/60">
+                            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm text-stone-500">
                                 {booking.consultation_type !== 'message' && (
                                   <span className="flex items-center gap-1">
                                     <Clock className="w-3.5 h-3.5" />
@@ -870,35 +870,35 @@ export default function UserDashboard() {
                                   </span>
                                 )}
                               {booking.consultation_type === 'message' && (
-                                <span className="px-2 py-0.5 rounded bg-white/10 text-white/60 text-xs">
+                                <span className="px-2 py-0.5 rounded bg-stone-100 text-stone-500 text-xs">
                                   {isZh ? '留言咨询' : 'Message'}
                                 </span>
                               )}
                               <span>{booking.duration_minutes} min</span>
                             </div>
-                            <p className="text-sm font-medium text-violet-300 mt-2">
+                            <p className="text-sm font-medium text-violet-600 mt-2">
                               ${booking.total_amount}
                               {booking.is_first_time && (
-                                <span className="text-xs text-white/50 ml-2">({isZh ? '首单优惠' : 'First-time'})</span>
+                                <span className="text-xs text-stone-400 ml-2">({isZh ? '首单优惠' : 'First-time'})</span>
                               )}
                             </p>
                             {/* 倒计时显示 */}
                             {(booking.payment_status === 'pending' || booking.payment_status === 'pending_payment') && !expired && remainingSeconds > 0 && (
-                              <div className={`flex items-center gap-1 mt-2 text-xs font-mono ${isUrgent ? 'text-red-600' : 'text-amber-300'}`}>
+                              <div className={`flex items-center gap-1 mt-2 text-xs font-mono ${isUrgent ? 'text-red-600' : 'text-amber-600'}`}>
                                 {isUrgent && <AlertTriangle className="w-3 h-3" />}
                                 <span>
                                   {isZh ? '支付倒计时：' : 'Payment expires in: '}
                                   {formatCountdown(remainingSeconds)}
                                 </span>
                                 {isUrgent && (
-                                  <span className="text-red-400 font-medium ml-1">
+                                  <span className="text-red-500 font-medium ml-1">
                                     {isZh ? '（请尽快完成）' : '(Hurry!)'}
                                   </span>
                                 )}
                               </div>
                             )}
                             {expired && (
-                              <p className="text-xs text-white/50 mt-2">
+                              <p className="text-xs text-stone-400 mt-2">
                                 {isZh ? '该订单已过期，请重新预约' : 'This order has expired. Please book again.'}
                               </p>
                             )}
@@ -911,7 +911,7 @@ export default function UserDashboard() {
                                   <Button
                                     size="sm"
                                     variant="outline"
-                                    className="text-white/70 border-white/20 hover:bg-white/10 w-full"
+                                    className="text-stone-600 border-stone-300 hover:bg-stone-100 w-full"
                                   >
                                     <MessageCircle className="w-4 h-4 mr-1" />
                                     {booking.consultation_type === 'message'
@@ -922,7 +922,7 @@ export default function UserDashboard() {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="text-amber-300 border-amber-500/30 hover:bg-amber-500/10 hover:text-amber-200 flex-1 sm:flex-none"
+                                  className="text-amber-600 border-amber-200 hover:bg-amber-50 hover:text-amber-700 flex-1 sm:flex-none"
                                   onClick={() => openReviewModal(booking)}
                                 >
                                   <Star className="w-4 h-4 mr-1" />
@@ -931,7 +931,7 @@ export default function UserDashboard() {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="text-white/60 border-white/15 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30 flex-1 sm:flex-none"
+                                  className="text-stone-500 border-stone-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200 flex-1 sm:flex-none"
                                   onClick={() => handleDelete(booking.id)}
                                   disabled={deletingId === booking.id}
                                 >
@@ -946,7 +946,7 @@ export default function UserDashboard() {
                                   <Button
                                     size="sm"
                                     variant="outline"
-                                    className="text-violet-300 border-violet-500/30 hover:bg-violet-500/10 hover:text-violet-200 w-full"
+                                    className="text-violet-600 border-violet-200 hover:bg-violet-50 hover:text-violet-700 w-full"
                                   >
                                     <MessageCircle className="w-4 h-4 mr-1" />
                                     {isZh ? '进入咨询' : 'Enter Chat'}
@@ -955,7 +955,7 @@ export default function UserDashboard() {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="text-amber-300 border-amber-500/30 hover:bg-amber-500/10 hover:text-amber-200 flex-1 sm:flex-none"
+                                  className="text-amber-600 border-amber-200 hover:bg-amber-50 hover:text-amber-700 flex-1 sm:flex-none"
                                   onClick={() => openReviewModal(booking)}
                                 >
                                   <Star className="w-4 h-4 mr-1" />
@@ -970,7 +970,7 @@ export default function UserDashboard() {
                                   <Button
                                     size="sm"
                                     variant="outline"
-                                    className="text-violet-300 border-violet-500/30 hover:bg-violet-500/10 hover:text-violet-200 w-full"
+                                    className="text-violet-600 border-violet-200 hover:bg-violet-50 hover:text-violet-700 w-full"
                                   >
                                     <MessageCircle className="w-4 h-4 mr-1" />
                                     {isZh ? '查看留言' : 'View Message'}
@@ -979,7 +979,7 @@ export default function UserDashboard() {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="text-amber-300 border-amber-500/30 hover:bg-amber-500/10 hover:text-amber-200 flex-1 sm:flex-none"
+                                  className="text-amber-600 border-amber-200 hover:bg-amber-50 hover:text-amber-700 flex-1 sm:flex-none"
                                   onClick={() => openReviewModal(booking)}
                                 >
                                   <Star className="w-4 h-4 mr-1" />
@@ -994,7 +994,7 @@ export default function UserDashboard() {
                                   <Button
                                     size="sm"
                                     variant="outline"
-                                    className="text-violet-300 border-violet-500/30 hover:bg-violet-500/10 hover:text-violet-200 w-full"
+                                    className="text-violet-600 border-violet-200 hover:bg-violet-50 hover:text-violet-700 w-full"
                                   >
                                     <MessageCircle className="w-4 h-4 mr-1" />
                                     {isZh ? '进入咨询' : 'Enter Chat'}
@@ -1003,7 +1003,7 @@ export default function UserDashboard() {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="text-blue-300 border-blue-500/30 hover:bg-blue-500/10 hover:text-blue-200 flex-1 sm:flex-none"
+                                  className="text-blue-600 border-blue-200 hover:bg-blue-50 hover:text-blue-700 flex-1 sm:flex-none"
                                   onClick={() => openRescheduleModal(booking)}
                                 >
                                   <CalendarIcon className="w-4 h-4 mr-1" />
@@ -1012,7 +1012,7 @@ export default function UserDashboard() {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="text-orange-600 border-orange-500/30 hover:bg-orange-500/10 hover:text-orange-200 flex-1 sm:flex-none"
+                                  className="text-orange-600 border-orange-200 hover:bg-orange-50 hover:text-orange-700 flex-1 sm:flex-none"
                                   onClick={() => handleRefund(booking.id)}
                                   disabled={refundingId === booking.id}
                                 >
@@ -1027,7 +1027,7 @@ export default function UserDashboard() {
                                   <Button
                                     size="sm"
                                     variant="outline"
-                                    className="text-violet-300 border-violet-500/30 hover:bg-violet-500/10 hover:text-violet-200 w-full"
+                                    className="text-violet-600 border-violet-200 hover:bg-violet-50 hover:text-violet-700 w-full"
                                   >
                                     <MessageCircle className="w-4 h-4 mr-1" />
                                     {isZh ? '进入咨询' : 'Enter Chat'}
@@ -1036,7 +1036,7 @@ export default function UserDashboard() {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="text-orange-600 border-orange-500/30 hover:bg-orange-500/10 hover:text-orange-200 flex-1 sm:flex-none"
+                                  className="text-orange-600 border-orange-200 hover:bg-orange-50 hover:text-orange-700 flex-1 sm:flex-none"
                                   onClick={() => handleRefund(booking.id)}
                                   disabled={refundingId === booking.id}
                                 >
@@ -1051,7 +1051,7 @@ export default function UserDashboard() {
                                   <Button
                                     size="sm"
                                     variant="outline"
-                                    className="text-violet-300 border-violet-500/30 hover:bg-violet-500/10 hover:text-violet-200 w-full"
+                                    className="text-violet-600 border-violet-200 hover:bg-violet-50 hover:text-violet-700 w-full"
                                   >
                                     <MessageCircle className="w-4 h-4 mr-1" />
                                     {isZh ? '查看留言' : 'View Message'}
@@ -1060,7 +1060,7 @@ export default function UserDashboard() {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="text-orange-600 border-orange-500/30 hover:bg-orange-500/10 hover:text-orange-200 flex-1 sm:flex-none"
+                                  className="text-orange-600 border-orange-200 hover:bg-orange-50 hover:text-orange-700 flex-1 sm:flex-none"
                                   onClick={() => handleRefund(booking.id)}
                                   disabled={refundingId === booking.id}
                                 >
@@ -1075,7 +1075,7 @@ export default function UserDashboard() {
                                   <Button
                                     size="sm"
                                     variant="outline"
-                                    className="text-violet-300 border-violet-500/30 hover:bg-violet-500/10 hover:text-violet-200 w-full"
+                                    className="text-violet-600 border-violet-200 hover:bg-violet-50 hover:text-violet-700 w-full"
                                   >
                                     <MessageCircle className="w-4 h-4 mr-1" />
                                     {isZh ? '查看留言' : 'View Message'}
@@ -1084,7 +1084,7 @@ export default function UserDashboard() {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="text-orange-600 border-orange-500/30 hover:bg-orange-500/10 hover:text-orange-200 flex-1 sm:flex-none"
+                                  className="text-orange-600 border-orange-200 hover:bg-orange-50 hover:text-orange-700 flex-1 sm:flex-none"
                                   onClick={() => handleRefund(booking.id)}
                                   disabled={refundingId === booking.id}
                                 >
@@ -1099,7 +1099,7 @@ export default function UserDashboard() {
                                   size="sm"
                                   variant="outline"
                                   disabled
-                                  className="text-white/50 border-white/15 bg-white/5 flex-1 sm:flex-none"
+                                  className="text-stone-400 border-stone-200 bg-stone-50 flex-1 sm:flex-none"
                                 >
                                   <Clock className="w-4 h-4 mr-1" />
                                   {isZh ? '等待师傅接单' : 'Waiting for Master'}
@@ -1107,7 +1107,7 @@ export default function UserDashboard() {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="text-red-400 border-red-500/30 hover:bg-red-500/10 hover:text-red-400 flex-1 sm:flex-none"
+                                  className="text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600 flex-1 sm:flex-none"
                                   onClick={() => handleCancel(booking.id)}
                                   disabled={cancellingId === booking.id}
                                 >
@@ -1116,7 +1116,7 @@ export default function UserDashboard() {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="text-orange-600 border-orange-500/30 hover:bg-orange-500/10 hover:text-orange-200 flex-1 sm:flex-none"
+                                  className="text-orange-600 border-orange-200 hover:bg-orange-50 hover:text-orange-700 flex-1 sm:flex-none"
                                   onClick={() => handleRefund(booking.id)}
                                   disabled={refundingId === booking.id}
                                 >
@@ -1139,7 +1139,7 @@ export default function UserDashboard() {
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="text-red-400 border-red-500/30 hover:bg-red-500/10 hover:text-red-400 flex-1 sm:flex-none"
+                                  className="text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600 flex-1 sm:flex-none"
                                   onClick={() => handleCancel(booking.id)}
                                   disabled={cancellingId === booking.id}
                                 >
@@ -1151,14 +1151,14 @@ export default function UserDashboard() {
                             {(expired || booking.status === 'cancelled' || booking.payment_status === 'cancelled') && (
                               <>
                                 <Link href="/booking" className="inline-flex flex-1 sm:flex-none">
-                                  <Button size="sm" variant="outline" className="w-full border-white/20 text-white/80 hover:bg-white/10 hover:text-white">
+                                  <Button size="sm" variant="outline" className="w-full">
                                     {isZh ? '重新预约' : 'Rebook'}
                                   </Button>
                                 </Link>
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="text-white/60 border-white/15 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30 flex-1 sm:flex-none"
+                                  className="text-stone-500 border-stone-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200 flex-1 sm:flex-none"
                                   onClick={() => handleDelete(booking.id)}
                                   disabled={deletingId === booking.id}
                                 >
@@ -1177,9 +1177,9 @@ export default function UserDashboard() {
           </Card>
 
           {/* 我的留言 */}
-          <Card className="bg-black/40 border-white/10 backdrop-blur-sm">
+          <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-white">
+              <CardTitle className="flex items-center gap-2">
                 <MessageSquare className="w-5 h-5" />
                 {isZh ? '我的留言' : 'My Messages'}
               </CardTitle>
@@ -1191,9 +1191,9 @@ export default function UserDashboard() {
                 </div>
               ) : userMessages.length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-white/60 mb-4">{isZh ? '暂无留言' : 'No messages yet'}</p>
+                  <p className="text-stone-500 mb-4">{isZh ? '暂无留言' : 'No messages yet'}</p>
                   <Link href="/booking">
-                    <Button variant="outline" size="sm" className="border-white/20 text-white/80 hover:bg-white/10 hover:text-white">
+                    <Button variant="outline" size="sm">
                       {isZh ? '去预约' : 'Book Now'}
                     </Button>
                   </Link>
@@ -1206,19 +1206,19 @@ export default function UserDashboard() {
                     return (
                       <div
                         key={msg.id}
-                        className="border border-white/10 rounded-lg p-3 hover:bg-white/5 transition-colors cursor-pointer"
+                        className="border rounded-lg p-3 hover:bg-stone-50 transition-colors cursor-pointer"
                         onClick={() => openMessageModal(msg.booking_id)}
                       >
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs font-medium text-violet-300">{masterName || msg.sender_name}</span>
-                          <span className="text-xs text-white/50">{new Date(msg.created_at).toLocaleDateString('zh-CN')}</span>
+                          <span className="text-xs font-medium text-violet-600">{masterName || msg.sender_name}</span>
+                          <span className="text-xs text-stone-400">{new Date(msg.created_at).toLocaleDateString('zh-CN')}</span>
                         </div>
-                        <p className="text-sm text-white/80 line-clamp-2">{msg.content || (msg.image_url ? '[图片]' : '[语音]')}</p>
+                        <p className="text-sm text-stone-700 line-clamp-2">{msg.content || (msg.image_url ? '[图片]' : '[语音]')}</p>
                       </div>
                     )
                   })}
                   {userMessages.length > 10 && (
-                    <p className="text-center text-xs text-white/50 py-2">
+                    <p className="text-center text-xs text-stone-400 py-2">
                       {isZh ? `还有 ${userMessages.length - 10} 条消息` : `${userMessages.length - 10} more messages`}
                     </p>
                   )}
@@ -1234,7 +1234,7 @@ export default function UserDashboard() {
                 <h3 className="text-xl font-bold text-center mb-4">
                   {isZh ? '评价本次咨询' : 'Rate this Consultation'}
                 </h3>
-                <p className="text-white/60 text-center mb-6">
+                <p className="text-stone-500 text-center mb-6">
                   {isZh
                     ? `您对 ${masters[reviewTargetBooking.master_id]?.nameCn || reviewTargetBooking.master_id} 师傅的服务满意吗？`
                     : `How was your experience with ${masters[reviewTargetBooking.master_id]?.name || reviewTargetBooking.master_id}?`}
@@ -1258,7 +1258,7 @@ export default function UserDashboard() {
                             className={`w-8 h-8 ${
                               star <= reviewRating
                                 ? 'text-amber-400 fill-amber-400'
-                                : 'text-white/40'
+                                : 'text-stone-300'
                             }`}
                           />
                         </button>
@@ -1269,7 +1269,7 @@ export default function UserDashboard() {
                       value={reviewText}
                       onChange={(e) => setReviewText(e.target.value)}
                       placeholder={isZh ? '写下您的评价（可选）' : 'Write your review (optional)'}
-                      className="w-full border border-white/10 rounded-lg p-3 text-sm mb-4 resize-none"
+                      className="w-full border rounded-lg p-3 text-sm mb-4 resize-none"
                       rows={4}
                       maxLength={500}
                       disabled={reviewData !== null}
@@ -1314,22 +1314,22 @@ export default function UserDashboard() {
                 <h3 className="text-xl font-bold text-center mb-4">
                   {isZh ? '修改预约时间' : 'Reschedule Booking'}
                 </h3>
-                <p className="text-white/60 text-center mb-2 text-sm">
+                <p className="text-stone-500 text-center mb-2 text-sm">
                   {isZh
                     ? `当前预约：${rescheduleBooking.scheduled_date} ${rescheduleBooking.scheduled_time}`
                     : `Current: ${rescheduleBooking.scheduled_date} ${rescheduleBooking.scheduled_time}`}
                 </p>
-                <p className="text-white/50 text-center mb-6 text-xs">
+                <p className="text-stone-400 text-center mb-6 text-xs">
                   {isZh
                     ? `师傅时间：${TIMEZONE_LABELS[masters[rescheduleBooking.master_id]?.timezone]?.zh || masters[rescheduleBooking.master_id]?.timezone || ''}`
                     : `Advisor time: ${TIMEZONE_LABELS[masters[rescheduleBooking.master_id]?.timezone]?.en || masters[rescheduleBooking.master_id]?.timezone || ''}`}
                 </p>
 
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-white/80 mb-2">
+                  <label className="block text-sm font-medium text-stone-700 mb-2">
                     {isZh ? '选择日期' : 'Select Date'}
                   </label>
-                  <div className="border border-white/20 rounded-lg p-2 inline-block">
+                  <div className="border border-stone-300 rounded-lg p-2 inline-block">
                     <Calendar
                       mode="single"
                       selected={rescheduleDate ? new Date(rescheduleDate) : undefined}
@@ -1355,7 +1355,7 @@ export default function UserDashboard() {
                 </div>
 
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-white/80 mb-2">
+                  <label className="block text-sm font-medium text-stone-700 mb-2">
                     {isZh ? '选择时段' : 'Select Time Slot'}
                   </label>
                   {rescheduleLoading ? (
@@ -1363,7 +1363,7 @@ export default function UserDashboard() {
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-violet-600" />
                     </div>
                   ) : rescheduleSlots.length === 0 ? (
-                    <p className="text-sm text-white/50 text-center py-4">
+                    <p className="text-sm text-stone-400 text-center py-4">
                       {isZh ? '该日期暂无可用时段' : 'No available slots for this date'}
                     </p>
                   ) : (
@@ -1375,7 +1375,7 @@ export default function UserDashboard() {
                           className={`text-xs py-2 px-1 rounded-lg border transition-colors ${
                             rescheduleSelectedTime === slot
                               ? 'bg-violet-600 text-white border-violet-600'
-                              : 'bg-white text-white/80 border-white/15 hover:border-violet-400 hover:text-violet-300'
+                              : 'bg-white text-stone-700 border-stone-200 hover:border-violet-400 hover:text-violet-600'
                           }`}
                         >
                           {slot}
@@ -1417,14 +1417,14 @@ export default function UserDashboard() {
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
               <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center">
-                    <Clock className="w-5 h-5 text-amber-300" />
+                  <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-amber-600" />
                   </div>
-                  <h3 className="text-lg font-bold text-white">
+                  <h3 className="text-lg font-bold text-stone-900">
                     {isZh ? '预约时间变更' : 'Booking Time Changed'}
                   </h3>
                 </div>
-                <p className="text-white/70 mb-2">
+                <p className="text-stone-600 mb-2">
                   {isZh
                     ? `${masters[noticeBooking.master_id]?.nameCn || noticeBooking.master_id} 师傅调整了您的预约时间：`
                     : `${masters[noticeBooking.master_id]?.name || noticeBooking.master_id} has changed your appointment time:`}
@@ -1449,7 +1449,7 @@ export default function UserDashboard() {
                 <h3 className="text-lg font-bold text-center mb-4">
                   {isZh ? '留言记录' : 'Message History'}
                 </h3>
-                <p className="text-sm text-white/60 text-center mb-4">
+                <p className="text-sm text-stone-500 text-center mb-4">
                   {isZh
                     ? `${masters[selectedMessageBooking.master_id]?.nameCn || selectedMessageBooking.master_id || '师傅'} 的回复`
                     : `Replies from ${masters[selectedMessageBooking.master_id]?.name || selectedMessageBooking.master_id || 'Master'}`}
@@ -1461,8 +1461,8 @@ export default function UserDashboard() {
                   </div>
                 ) : selectedMessageHistory.length === 0 ? (
                   <div className="text-center py-8">
-                    <MessageSquare className="w-8 h-8 text-white/40 mx-auto mb-2" />
-                    <p className="text-white/60 text-sm">{isZh ? '暂无留言记录' : 'No messages yet'}</p>
+                    <MessageSquare className="w-8 h-8 text-stone-300 mx-auto mb-2" />
+                    <p className="text-stone-500 text-sm">{isZh ? '暂无留言记录' : 'No messages yet'}</p>
                   </div>
                 ) : (
                   <div className="space-y-3 mb-4 max-h-[50vh] overflow-y-auto">
@@ -1474,8 +1474,8 @@ export default function UserDashboard() {
                         <div
                           className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm ${
                             msg.sender_type === 'master'
-                              ? 'bg-white/10 text-white/90 rounded-tl-none'
-                              : 'bg-violet-500/20 text-violet-800 rounded-tr-none'
+                              ? 'bg-stone-100 text-stone-800 rounded-tl-none'
+                              : 'bg-violet-100 text-violet-800 rounded-tr-none'
                           }`}
                         >
                           {msg.image_url ? (
@@ -1485,7 +1485,7 @@ export default function UserDashboard() {
                           ) : (
                             <p>{msg.content}</p>
                           )}
-                          <p className="text-xs text-white/50 mt-1 text-right">
+                          <p className="text-xs text-stone-400 mt-1 text-right">
                             {new Date(msg.created_at).toLocaleString('zh-CN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                           </p>
                         </div>
@@ -1495,7 +1495,7 @@ export default function UserDashboard() {
                 )}
 
                 <div className="border-t pt-4">
-                  <p className="text-xs text-white/50 text-center mb-3">
+                  <p className="text-xs text-stone-400 text-center mb-3">
                     {isZh ? '如需继续咨询，请重新下单' : 'To continue consulting, please place a new order'}
                   </p>
                   <Button
@@ -1523,13 +1523,13 @@ export default function UserDashboard() {
                 <h3 className="text-lg font-bold text-center mb-4">
                   {isZh ? '修改时区' : 'Change Timezone'}
                 </h3>
-                <p className="text-sm text-white/60 mb-4">
+                <p className="text-sm text-stone-500 mb-4">
                   {isZh ? '请选择您的所在时区' : 'Select your timezone'}
                 </p>
                 <select
                   value={timezoneInput}
                   onChange={(e) => setTimezoneInput(e.target.value)}
-                  className="w-full border border-white/10 rounded-lg p-3 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
+                  className="w-full border rounded-lg p-3 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
                 >
                   <option value="">{isZh ? '-- 选择时区 --' : '-- Select timezone --'}</option>
                   <option value="Asia/Shanghai">{isZh ? '中国 (北京/上海)' : 'China (Beijing/Shanghai)'}</option>
