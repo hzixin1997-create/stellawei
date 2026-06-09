@@ -54,7 +54,7 @@ const MASTERS = [
     avatar: '/masters/master_luna.jpg',
     tagline: '看见您内心已知的一切，以及前方的道路',
     taglineEn: 'Seeing what your heart already knows, and what lies ahead',
-    experience: '10年+',
+    experience: '8年+',
     specialties: ['塔罗占卜', '灵性探索'],
     specialtiesEn: ['Tarot', 'Spiritual'],
   },

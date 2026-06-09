@@ -66,8 +66,8 @@ const masters = [
     nameCn: "卢娜师傅",
     specialty: "Tarot & Astrology",
     specialtyCn: "塔罗与占星",
-    experience: "10+ years",
-    experienceCn: "10年以上经验",
+    experience: "8+ years",
+    experienceCn: "8年以上经验",
     rating: 4.9,
     reviews: 24,
     image: "/masters/master_luna.jpg",
@@ -155,6 +155,8 @@ export default function Home() {
     <div className="min-h-screen relative isolate">
       {/* Background images — desktop with photo, mobile with gradient */}
       <div className="absolute inset-0">
+        {/* Base dark background to prevent white flash during transition */}
+        <div className="absolute inset-0 bg-black" />
         {/* Desktop: Luna background photo */}
         <div 
           className="absolute inset-0 transition-opacity duration-700 ease-in-out bg-cover bg-center bg-no-repeat bg-fixed hidden md:block"

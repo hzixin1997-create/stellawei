@@ -22,7 +22,7 @@ export const MASTER_WHITELIST = [
     name: "Luna",
     slug: "master-luna",
     specialties: ["塔罗占卜"],
-    experience: "10年+"
+    experience: "8年+"
   }
 ];
 
