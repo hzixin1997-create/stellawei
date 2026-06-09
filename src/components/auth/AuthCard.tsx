@@ -116,56 +116,56 @@ export function AuthCard() {
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-stone-200/50 p-8">
+      <div className="bg-black/40 backdrop-blur-xl rounded-2xl shadow-xl border border-white/10 p-8">
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-600 to-violet-800 mb-4">
             <Sparkles className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-2xl font-serif font-semibold text-stone-900">
+          <h1 className="text-2xl font-serif font-semibold text-white">
             {isZh ? '出海命理' : 'StellaWei'}
           </h1>
-          <p className="text-stone-500 mt-2">
+          <p className="text-white/50 mt-2">
             {isZh ? '探索命运的奥秘，连接东西方的智慧' : 'Explore destiny, connect Eastern & Western wisdom'}
           </p>
         </div>
 
         {/* Error Message */}
         {error && (
-          <div className="mb-4 p-4 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">
+          <div className="mb-4 p-4 rounded-xl border-red-500/10 border border-red-500/30 text-red-300 text-sm">
             {error}
           </div>
         )}
 
         {/* Success Message */}
         {message && (
-          <div className="mb-4 p-4 rounded-xl bg-green-50 border border-green-200 text-green-600 text-sm">
+          <div className="mb-4 p-4 rounded-xl border-green-500/10 border border-green-500/30 text-green-300 text-sm">
             {message}
           </div>
         )}
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
-            <TabsTrigger value="login">{isZh ? '登录' : 'Sign In'}</TabsTrigger>
-            <TabsTrigger value="register">{isZh ? '注册' : 'Sign Up'}</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 mb-8 bg-white/10 border border-white/10">
+            <TabsTrigger value="login" className="data-[state=active]:bg-violet-600 data-[state=active]:text-white text-white/60">{isZh ? '登录' : 'Sign In'}</TabsTrigger>
+            <TabsTrigger value="register" className="data-[state=active]:bg-violet-600 data-[state=active]:text-white text-white/60">{isZh ? '注册' : 'Sign Up'}</TabsTrigger>
           </TabsList>
 
           {/* Login Tab */}
           <TabsContent value="login">
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-stone-700">
+                <Label htmlFor="email" className="text-white/70">
                   {isZh ? '邮箱地址' : 'Email'}
                 </Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
                   <Input
                     id="email"
                     type="email"
                     placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 h-12 bg-stone-50 border-stone-200 focus:border-violet-500 focus:ring-violet-500/20"
+                    className="pl-10 h-12 bg-white/5 border-white/10 focus:border-violet-500 focus:ring-violet-500/20"
                     required
                   />
                 </div>
@@ -173,31 +173,31 @@ export function AuthCard() {
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password" className="text-stone-700">
+                  <Label htmlFor="password" className="text-white/70">
                     {isZh ? '密码' : 'Password'}
                   </Label>
                   <Link
                     href="/auth/forgot-password"
-                    className="text-sm text-violet-600 hover:text-violet-700"
+                    className="text-sm text-violet-300 hover:text-violet-300"
                   >
                     {isZh ? '忘记密码？' : 'Forgot password?'}
                   </Link>
                 </div>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
                   <Input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 pr-10 h-12 bg-stone-50 border-stone-200 focus:border-violet-500 focus:ring-violet-500/20"
+                    className="pl-10 pr-10 h-12 bg-white/5 border-white/10 focus:border-violet-500 focus:ring-violet-500/20"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 focus:outline-none"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/60 focus:outline-none"
                     tabIndex={-1}
                   >
                     {showPassword ? (
@@ -230,60 +230,60 @@ export function AuthCard() {
           <TabsContent value="register">
             <form onSubmit={handleRegister} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="fullName" className="text-stone-700">
+                <Label htmlFor="fullName" className="text-white/70">
                   {isZh ? '姓名' : 'Full Name'}
                 </Label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
                   <Input
                     id="fullName"
                     type="text"
                     placeholder={isZh ? '你的名字' : 'Your name'}
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="pl-10 h-12 bg-stone-50 border-stone-200 focus:border-violet-500 focus:ring-violet-500/20"
+                    className="pl-10 h-12 bg-white/5 border-white/10 focus:border-violet-500 focus:ring-violet-500/20"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="registerEmail" className="text-stone-700">
+                <Label htmlFor="registerEmail" className="text-white/70">
                   {isZh ? '邮箱地址' : 'Email'}
                 </Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
                   <Input
                     id="registerEmail"
                     type="email"
                     placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 h-12 bg-stone-50 border-stone-200 focus:border-violet-500 focus:ring-violet-500/20"
+                    className="pl-10 h-12 bg-white/5 border-white/10 focus:border-violet-500 focus:ring-violet-500/20"
                     required
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="registerPassword" className="text-stone-700">
+                <Label htmlFor="registerPassword" className="text-white/70">
                   {isZh ? '密码' : 'Password'}
                 </Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
                   <Input
                     id="registerPassword"
                     type={showRegisterPassword ? 'text' : 'password'}
                     placeholder={isZh ? '至少8位字符' : 'At least 8 characters'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 pr-10 h-12 bg-stone-50 border-stone-200 focus:border-violet-500 focus:ring-violet-500/20"
+                    className="pl-10 pr-10 h-12 bg-white/5 border-white/10 focus:border-violet-500 focus:ring-violet-500/20"
                     required
                     minLength={8}
                   />
                   <button
                     type="button"
                     onClick={() => setShowRegisterPassword(!showRegisterPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 focus:outline-none"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/60 focus:outline-none"
                     tabIndex={-1}
                   >
                     {showRegisterPassword ? (
@@ -314,13 +314,13 @@ export function AuthCard() {
         </Tabs>
 
         {/* Footer */}
-        <p className="mt-6 text-center text-sm text-stone-500">
+        <p className="mt-6 text-center text-sm text-white/50">
           {isZh ? '继续即表示您同意我们的' : 'By continuing, you agree to our'}{' '}
-          <Link href="/terms" className="text-violet-600 hover:text-violet-700">
+          <Link href="/terms" className="text-violet-300 hover:text-violet-300">
             {isZh ? '服务条款' : 'Terms'}
           </Link>
           {' '}{isZh ? '和' : 'and'}{' '}
-          <Link href="/privacy" className="text-violet-600 hover:text-violet-700">
+          <Link href="/privacy" className="text-violet-300 hover:text-violet-300">
             {isZh ? '隐私政策' : 'Privacy Policy'}
           </Link>
         </p>

@@ -91,9 +91,9 @@ interface MasterInfo {
 }
 
 const statusConfig = {
-  online: { label: '在线', labelEn: 'Online', color: 'bg-green-500/20 text-green-700 border-green-500/30', icon: Wifi },
-  offline: { label: '离线', labelEn: 'Offline', color: 'bg-white/10 text-white/60 border-white/15', icon: WifiOff },
-  rest: { label: '休息中', labelEn: 'Resting', color: 'bg-orange-500/20 text-orange-700 border-orange-500/30', icon: Moon },
+  online: { label: '在线', labelEn: 'Online', color: 'bg-green-600 text-white border-green-600', icon: Wifi },
+  offline: { label: '离线', labelEn: 'Offline', color: 'bg-gray-700 text-white border-gray-700', icon: WifiOff },
+  rest: { label: '休息中', labelEn: 'Resting', color: 'bg-orange-600 text-white border-orange-600', icon: Moon },
 }
 
 export default function MasterDashboard() {

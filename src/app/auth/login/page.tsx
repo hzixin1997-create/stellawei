@@ -17,13 +17,13 @@ export default function LoginPage() {
 
   return (
     <AuthProvider>
-      <div className="min-h-screen bg-gradient-to-br from-stone-50 to-stone-100 flex flex-col">
+      <div className="min-h-screen bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] flex flex-col">
         {/* Header */}
         <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between">
           {/* Back to Home */}
-          <Link 
+        <Link 
             href="/"
-            className="flex items-center space-x-2 text-stone-600 hover:text-stellawei-purple transition-colors"
+            className="flex items-center space-x-2 text-white/60 hover:text-white transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
             <span className="text-sm font-medium">{isZh ? '返回主页' : 'Back to Home'}</span>
