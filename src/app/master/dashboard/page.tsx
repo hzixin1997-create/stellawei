@@ -540,7 +540,7 @@ export default function MasterDashboard() {
     }
     if (displayStatus === 'in_progress') {
       return (
-        <Badge variant="outline" className="bg-violet-500/10 text-violet-700 border-violet-500/30">
+        <Badge variant="outline" className="bg-violet-500/10 text-violet-300 border-violet-500/30">
           {isZh ? '进行中' : 'In Progress'}
         </Badge>
       )
@@ -937,7 +937,7 @@ export default function MasterDashboard() {
                         className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors border ${
                           isActive
                             ? `${config.color} border-current`
-                            : 'bg-white text-white/70 border-white/15 hover:bg-white/5'
+                            : 'bg-white/10 text-white/70 border-white/15 hover:bg-white/5'
                         } disabled:opacity-50`}
                       >
                         <Icon className="w-4 h-4" />
@@ -1068,8 +1068,8 @@ export default function MasterDashboard() {
                           disabled={savingSlots}
                           className={`px-2 py-2 rounded-lg text-sm font-medium border transition-colors ${
                             availableSlots?.includes(slot)
-                              ? 'bg-violet-500/20 text-violet-700 border-violet-500/30'
-                              : 'bg-white text-white/50 border-white/15 hover:bg-white/5'
+                              ? 'bg-violet-500/20 text-violet-300 border-violet-500/30'
+                              : 'bg-white/10 text-white/50 border-white/15 hover:bg-white/5'
                           } disabled:opacity-50`}
                         >
                           {slot}
@@ -1151,7 +1151,7 @@ export default function MasterDashboard() {
                 {isZh ? '最近订单' : 'Recent Orders'}
               </CardTitle>
               <Link href="/master/orders">
-                <span className="text-sm text-violet-300 hover:text-violet-700 flex items-center gap-1">
+                <span className="text-sm text-violet-300 hover:text-violet-300 flex items-center gap-1">
                   {isZh ? '查看全部' : 'View All'}
                   <ArrowRight className="w-4 h-4" />
                 </span>
@@ -1166,8 +1166,8 @@ export default function MasterDashboard() {
                     onClick={() => setOrderFilter(f.key as any)}
                     className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors border ${
                       orderFilter === f.key
-                        ? 'bg-violet-500/20 text-violet-700 border-violet-500/30'
-                        : 'bg-white text-white/70 border-white/15 hover:bg-white/5'
+                        ? 'bg-violet-500/20 text-violet-300 border-violet-500/30'
+                        : 'bg-white/10 text-white/70 border-white/15 hover:bg-white/5'
                     }`}
                   >
                     {isZh ? f.label : f.labelEn}
@@ -1213,7 +1213,7 @@ export default function MasterDashboard() {
                               <span className="font-semibold text-sm sm:text-base truncate">
                                 {booking.user_name || booking.user_email || booking.user_id}
                               </span>
-                              <Badge variant="outline" className={`text-xs ${booking.consultation_type === 'message' ? 'bg-white/10 text-white/70 border-white/15' : 'bg-violet-500/10 text-violet-700 border-violet-500/30'}`}>
+                              <Badge variant="outline" className={`text-xs ${booking.consultation_type === 'message' ? 'bg-white/10 text-white/70 border-white/15' : 'bg-violet-500/10 text-violet-300 border-violet-500/30'}`}>
                                 {booking.consultation_type === 'message'
                                   ? (isZh ? '留言咨询' : 'Message')
                                   : booking.tier === 'deep'
@@ -1445,7 +1445,7 @@ export default function MasterDashboard() {
           </Card>
 
           {/* 我的客户 */}
-          <Card>
+          <Card className="bg-black/40 border-white/10 backdrop-blur-sm">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="flex items-center gap-2">
                 <User className="w-5 h-5" />
@@ -1570,7 +1570,7 @@ export default function MasterDashboard() {
                   <div key={msg.id} className="bg-violet-500/10 border border-violet-500/30 rounded-lg p-3">
                     <div className="flex items-center gap-2 mb-1">
                       <Crown className="w-3 h-3 text-violet-300" />
-                      <span className="text-xs font-medium text-violet-700">{msg.sender_name}</span>
+                      <span className="text-xs font-medium text-violet-300">{msg.sender_name}</span>
                       <span className="text-xs text-violet-400">
                         {new Date(msg.created_at).toLocaleString()}
                       </span>
@@ -1741,7 +1741,7 @@ export default function MasterDashboard() {
                     <div key={msg.id} className="bg-violet-500/10 border border-violet-500/30 rounded-lg p-3">
                       <div className="flex items-center gap-2 mb-1">
                         <Crown className="w-3 h-3 text-violet-300" />
-                        <span className="text-xs font-medium text-violet-700">{msg.sender_name}</span>
+                        <span className="text-xs font-medium text-violet-300">{msg.sender_name}</span>
                         <span className="text-xs text-violet-400">
                           {new Date(msg.created_at).toLocaleString()}
                         </span>
@@ -2108,7 +2108,7 @@ export default function MasterDashboard() {
                       className={`text-xs py-2 px-1 rounded-lg border transition-colors ${
                         rescheduleSelectedTime === slot
                           ? 'bg-violet-600 text-white border-violet-600'
-                          : 'bg-white text-white/80 border-white/15 hover:border-violet-400 hover:text-violet-300'
+                          : 'bg-white/10 text-white/80 border-white/15 hover:border-violet-400 hover:text-violet-300'
                       }`}
                     >
                       {slot}
