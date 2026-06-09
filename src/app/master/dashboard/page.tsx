@@ -1074,7 +1074,7 @@ export default function MasterDashboard() {
                           disabled={savingSlots}
                           className={`px-2 py-2 rounded-lg text-sm font-medium border transition-colors ${
                             availableSlots?.includes(slot)
-                              ? 'bg-violet-500/20 text-violet-300 border-violet-500/30'
+                              ? 'bg-violet-600 text-white border-violet-600'
                               : 'bg-white/10 text-white/50 border-white/15 hover:bg-white/5'
                           } disabled:opacity-50`}
                         >
@@ -1124,7 +1124,7 @@ export default function MasterDashboard() {
             <Card className="bg-black/40 border-white/10 backdrop-blur-sm">
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-violet-500/100/20 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-violet-500/20 flex items-center justify-center">
                     <MessageCircle className="w-5 h-5 text-violet-300" />
                   </div>
                   <div>
@@ -1172,7 +1172,7 @@ export default function MasterDashboard() {
                     onClick={() => setOrderFilter(f.key as any)}
                     className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors border ${
                       orderFilter === f.key
-                        ? 'bg-violet-500/20 text-violet-300 border-violet-500/30'
+                        ? 'bg-violet-600 text-white border-violet-600'
                         : 'bg-white/10 text-white/70 border-white/15 hover:bg-white/5'
                     }`}
                   >
@@ -1281,7 +1281,7 @@ export default function MasterDashboard() {
                                   <Button
                                     size="sm"
                                     variant="outline"
-                                    className="text-violet-300 border-violet-500/30 hover:bg-violet-500/100/100/10 w-full"
+                                    className="text-violet-300 border-violet-500/30 hover:bg-violet-500/10 w-full"
                                     onClick={() => {
                                       setSelectedBooking(booking)
                                       setShowMessageModal(true)
@@ -1296,7 +1296,7 @@ export default function MasterDashboard() {
                                       <Button
                                         size="sm"
                                         variant="outline"
-                                        className="text-violet-300 border-violet-500/30 hover:bg-violet-500/100/100/10 w-full"
+                                        className="text-violet-300 border-violet-500/30 hover:bg-violet-500/10 w-full"
                                       >
                                         <MessageCircle className="w-4 h-4 mr-1" />
                                         {isZh ? '进入咨询' : 'Enter Chat'}
@@ -1322,7 +1322,7 @@ export default function MasterDashboard() {
                                   <Button
                                     size="sm"
                                     variant="outline"
-                                    className="text-violet-300 border-violet-500/30 hover:bg-violet-500/100/100/10 w-full"
+                                    className="text-violet-300 border-violet-500/30 hover:bg-violet-500/10 w-full"
                                     onClick={() => {
                                       setSelectedBooking(booking)
                                       setShowMessageModal(true)
@@ -1336,7 +1336,7 @@ export default function MasterDashboard() {
                                     <Button
                                       size="sm"
                                       variant="outline"
-                                      className="text-violet-300 border-violet-500/30 hover:bg-violet-500/100/100/10 w-full"
+                                      className="text-violet-300 border-violet-500/30 hover:bg-violet-500/10 w-full"
                                     >
                                       <MessageCircle className="w-4 h-4 mr-1" />
                                       {isZh ? '进入咨询' : 'Enter Chat'}
@@ -1515,7 +1515,7 @@ export default function MasterDashboard() {
                           <Button
                             size="sm"
                             variant="outline"
-                            className="text-violet-300 border-violet-500/30 hover:bg-violet-500/100/100/10"
+                            className="text-violet-300 border-violet-500/30 hover:bg-violet-500/10"
                             onClick={() => {
                               setSelectedCustomer(customer)
                               setShowCustomerMessageModal(true)

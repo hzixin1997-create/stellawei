@@ -80,13 +80,13 @@ export function SimpleCalendar({ selected, onSelect, disabled }: SimpleCalendarP
   return (
     <div className="w-fit">
       <div className="flex items-center justify-between mb-2">
-        <button onClick={prevMonth} className="p-1 hover:bg-white/10 rounded">
+        <button onClick={prevMonth} className="p-1 hover:bg-white/10 rounded text-white">
           <ChevronLeft className="w-4 h-4" />
         </button>
-        <span className="text-sm font-medium">
+        <span className="text-sm font-medium text-white">
           {year}年{month + 1}月
         </span>
-        <button onClick={nextMonth} className="p-1 hover:bg-white/10 rounded">
+        <button onClick={nextMonth} className="p-1 hover:bg-white/10 rounded text-white">
           <ChevronRight className="w-4 h-4" />
         </button>
       </div>
