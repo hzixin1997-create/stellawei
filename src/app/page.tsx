@@ -631,6 +631,7 @@ export default function Home() {
               <ul className="space-y-2 text-sm text-white/60">
                 <li><span className="hover:text-white cursor-default">{isZh ? '关于我们' : 'About Us'}</span></li>
                 <li><span className="hover:text-white cursor-default">{isZh ? '联系我们' : 'Contact'}</span></li>
+                <li><a href="mailto:support@stellawei.org" className="hover:text-white/80 text-xs">support@stellawei.org</a></li>
               </ul>
             </div>
           </div>
