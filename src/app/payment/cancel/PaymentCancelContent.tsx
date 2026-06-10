@@ -99,8 +99,8 @@ export default function PaymentCancelContent() {
 
             <p className="text-center text-sm text-stone-500 mt-6">
               {isZh 
-                ? '如有任何问题，请联系 support@stellawei.com'
-                : 'For any questions, please contact support@stellawei.com'}
+                ? '如有任何问题，请联系 support@stellawei.org'
+                : 'For any questions, please contact support@stellawei.org'}
             </p>
           </CardContent>
         </Card>

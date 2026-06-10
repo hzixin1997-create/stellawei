@@ -890,8 +890,8 @@ export default function MasterDashboard() {
             </div>
             <p className="text-sm text-white/70 mb-2">
               💬 {isZh
-                ? '咨询前请添加客服微信号：Stellawei2026，或发送邮件至：stellawei@support，以确保咨询能正常进行。'
-                : 'Please add our customer service WeChat: Stellawei2026, or email: stellawei@support before your consultation to ensure everything goes smoothly.'}
+                ? '咨询前请添加客服微信号：Stellawei2026，或发送邮件至：support@stellawei.org，以确保咨询能正常进行。'
+                : 'Please add our customer service WeChat: Stellawei2026, or email: support@stellawei.org before your consultation to ensure everything goes smoothly.'}
             </p>
             <p className="text-white/70">
               {masterInfo

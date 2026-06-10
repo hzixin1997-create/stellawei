@@ -750,8 +750,8 @@ export default function UserDashboard() {
             </h1>
             <p className="text-base text-white/70 mt-2">
               💬 {isZh
-                ? '咨询前请添加客服微信号：Stellawei2026，或发送邮件至：stellawei@support，以确保咨询能正常进行。'
-                : 'Please add our customer service WeChat: Stellawei2026, or email: stellawei@support before your consultation to ensure everything goes smoothly.'}
+                ? '咨询前请添加客服微信号：Stellawei2026，或发送邮件至：support@stellawei.org，以确保咨询能正常进行。'
+                : 'Please add our customer service WeChat: Stellawei2026, or email: support@stellawei.org before your consultation to ensure everything goes smoothly.'}
             </p>
           </div>
 
@@ -904,7 +904,7 @@ export default function UserDashboard() {
                             )}
                           </div>
                           <div className="flex flex-wrap sm:flex-nowrap sm:flex-col gap-2 sm:min-w-[80px]">
-                            {/* 已完成订单：查看历史/留言 + 查看评价 + 删除 */}
+                            {/* 已完成订单：查看历史/留言 + 评价 + 删除 */}
                             {displayStatus === 'completed' && booking.payment_status === 'paid' && (
                               <>
                                 <Link href={`/chat/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
@@ -926,7 +926,7 @@ export default function UserDashboard() {
                                   onClick={() => openReviewModal(booking)}
                                 >
                                   <Star className="w-4 h-4 mr-1" />
-                                  {isZh ? '查看评价' : 'Review'}
+                                  {isZh ? '评价' : 'Review'}
                                 </Button>
                                 <Button
                                   size="sm"
@@ -959,7 +959,7 @@ export default function UserDashboard() {
                                   onClick={() => openReviewModal(booking)}
                                 >
                                   <Star className="w-4 h-4 mr-1" />
-                                  {isZh ? '查看评价' : 'Review'}
+                                  {isZh ? '评价' : 'Review'}
                                 </Button>
                               </>
                             )}
@@ -983,7 +983,7 @@ export default function UserDashboard() {
                                   onClick={() => openReviewModal(booking)}
                                 >
                                   <Star className="w-4 h-4 mr-1" />
-                                  {isZh ? '查看评价' : 'Review'}
+                                  {isZh ? '评价' : 'Review'}
                                 </Button>
                               </>
                             )}
