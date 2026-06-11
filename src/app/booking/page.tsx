@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Calendar, zhCN, enUS } from '@/components/ui/calendar'
+import BookingCalendar from '@/components/BookingCalendar'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
@@ -764,19 +764,10 @@ export default function BookingPage() {
                     <Label className="block font-semibold">{isZh ? '选择预约时间' : 'Select Appointment Time'}</Label>
                     <div className="flex flex-col lg:flex-row gap-6">
                       <div className="w-fit">
-                        <Calendar
-                          mode="single"
-                          selected={selectedDate}
+                        <BookingCalendar
+                          isZh={isZh}
+                          selectedDate={selectedDate}
                           onSelect={setSelectedDate}
-                          locale={isZh ? zhCN : enUS}
-                          disabled={(date) => {
-                            const today = new Date()
-                            today.setHours(0, 0, 0, 0)
-                            const d = new Date(date)
-                            d.setHours(0, 0, 0, 0)
-                            return d.getTime() < today.getTime()
-                          }}
-                          className="rounded-md border"
                         />
                       </div>
                       <div className="flex-1">
