@@ -1,17 +1,20 @@
 'use client';
 
+import { Suspense, lazy } from 'react';
 import Image from 'next/image'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Star, Shield, Clock, Sparkles, Moon, Sun, Users, Heart, Briefcase, Coins, Sparkles as SparklesIcon, User, X, Menu, MessageCircle, Video, Compass, ChevronRight, Mic } from "lucide-react"
 import Link from "next/link"
-import { ActiveBookingBanner } from "@/components/ActiveBookingBanner";
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import Testimonials from "@/components/Testimonials";
+
+// Lazy load banner — only needed for logged-in users
+const ActiveBookingBanner = lazy(() => import('@/components/ActiveBookingBanner').then(mod => ({ default: mod.ActiveBookingBanner })));
 
 // 角色路由映射
 const ROUTE_MAP: Record<string, string> = {
@@ -91,7 +94,7 @@ const masters = [
   },
   {
     id: "master-luna",
-    name: "Luna",
+    name: "Master Luna",
     nameCn: "卢娜",
     specialty: "Tarot & Astrology",
     specialtyCn: "塔罗与占星",
@@ -279,7 +282,9 @@ export default function Home() {
 
       {/* Active Booking Banner */}
       <div className="pt-4">
-        <ActiveBookingBanner isZh={isZh} />
+        <Suspense fallback={<div className="h-16 w-full" />}>
+          <ActiveBookingBanner isZh={isZh} />
+        </Suspense>
       </div>
 
       {/* Hero Section */}
@@ -337,10 +342,10 @@ export default function Home() {
                 )}
               </h1>
 
-              <p className="text-base sm:text-lg text-white/90 mb-6 leading-relaxed whitespace-pre-line">
+              <p className="text-base sm:text-lg text-white/90 mb-6 leading-relaxed">
                 {isZh
-                  ? '通过东方命理、西方塔罗与真人咨询,\n帮助你看清感情、事业与人生方向。'
-                  : 'Discover clarity in love, career, and life through eastern wisdom,\nwestern tarot, and real master consultations.'
+                  ? '通过东方命理、西方塔罗与真人咨询，\n帮助你看清感情、事业与人生方向。'
+                  : 'Discover clarity in love, career, and life through eastern wisdom, western tarot, and real master consultations.'
                 }
               </p>
 
