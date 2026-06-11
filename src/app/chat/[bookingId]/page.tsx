@@ -132,7 +132,7 @@ function compressImage(
       return
     }
 
-    const img = new Image()
+    const img = new window.Image()
     const url = URL.createObjectURL(file)
     
     img.onload = () => {

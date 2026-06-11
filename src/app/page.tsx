@@ -133,7 +133,7 @@ export default function Home() {
   // 预加载背景图
   useEffect(() => {
     const preload = (src: string, key: 'luna' | 'eastern') => {
-      const img = new Image()
+      const img = new window.Image()
       img.onload = () => setBgLoaded(prev => ({ ...prev, [key]: true }))
       img.src = src
     }
