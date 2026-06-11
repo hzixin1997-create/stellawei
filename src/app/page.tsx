@@ -141,7 +141,7 @@ export default function Home() {
   }, [])
 
   // 背景图根据选中的师傅切换
-  const isLunaBg = activeMasterIdx === 0
+  const isLunaBg = activeMasterIdx === 2
 
   const handleBookingClick = () => {
     if (!user) {
