@@ -1,6 +1,7 @@
 'use client'
 // cache-bust: 2026-06-03-voice-debug
 
+import Image from 'next/image'
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -1734,15 +1735,17 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
                     </span>
                   </div>
                   {msg.content && <p className="text-sm whitespace-pre-wrap">{msg.content}</p>}
-                  {msg.image_url && (
-                    <img
-                      src={msg.image_url}
-                      alt="Chat image"
-                      className="mt-2 max-w-full rounded-lg cursor-pointer"
-                      loading="lazy"
-                      onClick={() => setPreviewImage(msg.image_url!)}
-                    />
-                  )}
+                    {msg.image_url && (
+                      <Image
+                        src={msg.image_url}
+                        alt="Chat image"
+                        width={400}
+                        height={300}
+                        className="mt-2 max-w-full rounded-lg cursor-pointer object-cover"
+                        loading="lazy"
+                        onClick={() => setPreviewImage(msg.image_url!)}
+                      />
+                    )}
                   {msg.audio_url && (
                     <div className="mt-2">
                       {/* Voice Engine v1.0: 状态机渲染 */}
@@ -2077,9 +2080,11 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
           className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
           onClick={() => setPreviewImage(null)}
         >
-          <img
+          <Image
             src={previewImage}
             alt="Preview"
+            width={800}
+            height={600}
             className="max-w-full max-h-[85vh] rounded-lg object-contain"
             onClick={(e) => e.stopPropagation()}
           />

@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image'
 import { useEffect, useState } from "react"
 import { reviews as mockReviews } from "@/lib/data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -205,11 +206,13 @@ export function ClientMasterContent({ master }: Props) {
             <div className="lg:col-span-1">
               <Card className="sticky top-24 bg-black/70 border-white/10 text-white">
                 <div className="aspect-square bg-gradient-to-br from-stellawei-purple/20 to-stellawei-gold/20 relative">
-                  <img
+                  <Image
                     src={master.avatar_url}
                     alt={displayName}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                     loading="lazy"
+                    sizes="(max-width: 1024px) 100vw, 33vw"
                   />
                   {master.is_verified && (
                     <div className="absolute top-4 right-4 bg-stellawei-gold text-stellawei-purple-dark px-3 py-1 rounded-full text-xs font-semibold flex items-center space-x-1">

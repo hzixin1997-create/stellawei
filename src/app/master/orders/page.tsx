@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image'
 import { useState, useEffect } from 'react';
 // v2
 import { createClient } from '@/lib/supabase/client';
@@ -602,11 +603,13 @@ export default function MasterOrdersPage() {
                 {historyBooking.question_images && historyBooking.question_images.length > 0 && (
                   <div className="flex gap-2 mt-3 flex-wrap">
                     {historyBooking.question_images.map((url: string, index: number) => (
-                      <img
+                      <Image
                         key={index}
                         src={url}
                         alt={`Question image ${index + 1}`}
-                        className="w-24 h-24 object-cover rounded-lg cursor-pointer border"
+                        width={96}
+                        height={96}
+                        className="object-cover rounded-lg cursor-pointer border"
                         loading="lazy"
                         onClick={() => window.open(url, '_blank')}
                       />
@@ -638,10 +641,12 @@ export default function MasterOrdersPage() {
                         </div>
                         <p className="text-sm text-white/80 whitespace-pre-wrap">{msg.content}</p>
                         {msg.image_url && (
-                          <img
+                          <Image
                             src={msg.image_url}
                             alt="Reply image"
-                            className="mt-2 max-w-full rounded-lg cursor-pointer"
+                            width={400}
+                            height={300}
+                            className="mt-2 max-w-full rounded-lg cursor-pointer object-cover"
                             loading="lazy"
                             onClick={() => window.open(msg.image_url, '_blank')}
                           />

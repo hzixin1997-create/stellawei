@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Star, Shield, Clock, Sparkles, Moon, Sun, Users, Heart, Briefcase, Coins, Sparkles as SparklesIcon, User, X, Menu, MessageCircle, Video, Compass, ChevronRight, Mic } from "lucide-react"
@@ -49,14 +50,14 @@ const services = [
 ]
 
 const hotQuestions = [
-  { text: "When will I meet my soulmate?", textZh: "我什么时候会遇到灵魂伴侣？", icon: Heart },
-  { text: "Is he/she the right person for me?", textZh: "他/她是对的人吗？", icon: Heart },
-  { text: "Should I change my career path?", textZh: "我应该转行吗？", icon: Briefcase },
-  { text: "Will I get a promotion this year?", textZh: "今年我会升职吗？", icon: Briefcase },
-  { text: "How can I improve my financial situation?", textZh: "如何改善我的财务状况？", icon: Coins },
-  { text: "What is my spiritual path?", textZh: "我的灵性道路是什么？", icon: SparklesIcon },
-  { text: "Am I on the right life path?", textZh: "我走在正确的人生道路上吗？", icon: SparklesIcon },
-  { text: "How to heal from past trauma?", textZh: "如何治愈过去的创伤？", icon: Heart },
+  { text: "When will I meet my soulmate?", textZh: "我什么时候会遇到灵魂伴侣?", icon: Heart },
+  { text: "Is he/she the right person for me?", textZh: "他/她是对的人吗?", icon: Heart },
+  { text: "Should I change my career path?", textZh: "我应该转行吗?", icon: Briefcase },
+  { text: "Will I get a promotion this year?", textZh: "今年我会升职吗?", icon: Briefcase },
+  { text: "How can I improve my financial situation?", textZh: "如何改善我的财务状况?", icon: Coins },
+  { text: "What is my spiritual path?", textZh: "我的灵性道路是什么?", icon: SparklesIcon },
+  { text: "Am I on the right life path?", textZh: "我走在正确的人生道路上吗?", icon: SparklesIcon },
+  { text: "How to heal from past trauma?", textZh: "如何治愈过去的创伤?", icon: Heart },
 ];
 
 const masters = [
@@ -90,8 +91,8 @@ const masters = [
   },
   {
     id: "master-luna",
-    name: "Master Luna",
-    nameCn: "卢娜师傅",
+    name: "Luna",
+    nameCn: "卢娜",
     specialty: "Tarot & Astrology",
     specialtyCn: "塔罗与占星",
     experience: "8+ years",
@@ -116,13 +117,13 @@ export default function Home() {
     supabase.auth.getSession().then(({ data }: { data: { session: any } }) => {
       setUser(data.session?.user ?? null);
     });
-    
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event: any, session: any) => {
         setUser(session?.user ?? null);
       }
     );
-    
+
     return () => subscription.unsubscribe();
   }, []);
 
@@ -153,35 +154,35 @@ export default function Home() {
 
   return (
     <div className="min-h-screen relative isolate">
-      {/* Background images — desktop with photo, mobile with gradient */}
+      {/* Background images - desktop with photo, mobile with gradient */}
       <div className="absolute inset-0">
         {/* Base dark background to prevent white flash during transition */}
         <div className="absolute inset-0 bg-black" />
         {/* Desktop: Luna background photo */}
-        <div 
+        <div
           className="absolute inset-0 transition-opacity duration-700 ease-in-out bg-cover bg-center bg-no-repeat bg-fixed hidden md:block"
-          style={{ 
+          style={{
             backgroundImage: `url(/images/hero-bg-luna.webp)`,
             opacity: isLunaBg ? 1 : 0
-          }} 
+          }}
         />
         {/* Desktop: Eastern background photo */}
-        <div 
+        <div
           className="absolute inset-0 transition-opacity duration-700 ease-in-out bg-cover bg-center bg-no-repeat bg-fixed hidden md:block"
-          style={{ 
+          style={{
             backgroundImage: `url(/images/hero-bg-eastern.webp)`,
             opacity: isLunaBg ? 0 : 1
-          }} 
+          }}
         />
         {/* Mobile: Gradient background */}
-        <div 
+        <div
           className="absolute inset-0 block md:hidden transition-opacity duration-700 ease-in-out"
-          style={{ 
-            background: isLunaBg 
+          style={{
+            background: isLunaBg
               ? 'radial-gradient(ellipse at 30% 20%, #1a0a3a 0%, #0d0618 50%, #050510 100%)'
               : 'radial-gradient(ellipse at 70% 20%, #1a0a2e 0%, #0d0618 50%, #050510 100%)',
             opacity: 1
-          }} 
+          }}
         />
       </div>
       <div className="relative z-10">
@@ -208,14 +209,14 @@ export default function Home() {
               <div className="hidden sm:block">
                 <LanguageSwitcher />
               </div>
-              
-              {/* Mobile language switcher — shown only on mobile */}
+
+              {/* Mobile language switcher - shown only on mobile */}
               <div className="sm:hidden">
                 <LanguageSwitcher />
               </div>
-              
+
               {user ? (
-                <Link 
+                <Link
                   href={user?.email ? getDashboardRoute(user.email) : '/auth/login'}
                   className="text-sm text-white/80 hover:text-white truncate max-w-[160px]"
                   title={user?.email || ''}
@@ -223,8 +224,8 @@ export default function Home() {
                   {user?.email || ''}
                 </Link>
               ) : (
-                <Button 
-                  size="sm" 
+                <Button
+                  size="sm"
                   className="bg-stellawei-purple text-white hover:bg-stellawei-purple-dark rounded-full px-6"
                   onClick={() => router.push('/auth/login')}
                 >
@@ -256,17 +257,17 @@ export default function Home() {
         </div>
       )}
 
-      {/* Infinite Marquee — 热门问题滚动 */}
+      {/* Infinite Marquee - 热门问题滚动 */}
       <section className="relative overflow-hidden bg-black py-5 mt-16">
         {/* 左侧渐隐 */}
         <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-black to-transparent z-10" />
         {/* 右侧渐隐 */}
         <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-black to-transparent z-10" />
-        
+
         <div className="flex animate-marquee-scroll whitespace-nowrap">
           {[...hotQuestions, ...hotQuestions, ...hotQuestions].map((q, idx) => (
-            <div 
-              key={idx} 
+            <div
+              key={idx}
               className="inline-flex items-center gap-2 mx-6 px-5 py-2 rounded-full bg-white/10 backdrop-blur-sm text-white/90 text-sm"
             >
               <q.icon className="w-4 h-4 text-stellawei-gold" />
@@ -287,7 +288,7 @@ export default function Home() {
           <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 items-center">
             {/* Left: Text */}
             <div className="lg:flex-1 lg:min-w-0">
-              {/* Mobile Master Images — Accordion (top on mobile) */}
+              {/* Mobile Master Images - Accordion (top on mobile) */}
               <div className="lg:hidden mb-6">
                 <div className="flex gap-2 h-[260px]">
                   {masters.map((master, i) => {
@@ -302,13 +303,13 @@ export default function Home() {
                         style={{ flex: isActive ? 10 : 2 }}
                       >
                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent z-10" />
-                        <img
+                        <Image
                           src={master.image}
                           alt={isZh ? master.nameCn : master.name}
-                          className="w-full h-full object-cover"
+                          fill
+                          className="object-cover"
                           loading="lazy"
-                          decoding="async"
-                          fetchPriority="low"
+                          sizes="(max-width: 768px) 50vw, 25vw"
                         />
                         <div className="absolute bottom-0 left-0 right-0 p-3 z-20">
                           <div className="text-white font-semibold text-sm">{isZh ? master.nameCn : master.name}</div>
@@ -337,15 +338,15 @@ export default function Home() {
               </h1>
 
               <p className="text-base sm:text-lg text-white/90 mb-6 leading-relaxed whitespace-pre-line">
-                {isZh 
-                  ? '通过东方命理、西方塔罗与真人咨询，\n帮助你看清感情、事业与人生方向。'
+                {isZh
+                  ? '通过东方命理、西方塔罗与真人咨询,\n帮助你看清感情、事业与人生方向。'
                   : 'Discover clarity in love, career, and life through eastern wisdom,\nWestern Tarot, and real master consultations.'
                 }
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 mb-4">
-                <Button 
-                  size="lg" 
+                <Button
+                  size="lg"
                   className="bg-[#6944b3] hover:bg-[#5a3a9e] text-white rounded-2xl px-8 h-16 text-lg font-semibold w-[85%] max-w-[420px] relative z-20 shadow-lg"
                   onClick={handleBookingClick}
                 >
@@ -378,7 +379,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right: Master Images — Accordion Click Switch */}
+            {/* Right: Master Images - Accordion Click Switch */}
             <div className="hidden lg:flex lg:flex-[1.5] gap-6 h-[560px]">
               {masters.map((master, i) => {
                 const isActive = i === activeMasterIdx;
@@ -392,13 +393,13 @@ export default function Home() {
                     style={{ flex: isActive ? 18 : 6 }}
                   >
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent z-10" />
-                    <img
+                    <Image
                       src={master.image}
                       alt={isZh ? master.nameCn : master.name}
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-cover"
                       loading="lazy"
-                      decoding="async"
-                      fetchPriority="low"
+                      sizes="(max-width: 1024px) 50vw, 25vw"
                     />
                     <div className="absolute bottom-0 left-0 right-0 p-5 z-20">
                       <div className="text-white font-semibold text-base">{isZh ? master.nameCn : master.name}</div>
@@ -426,8 +427,8 @@ export default function Home() {
               {isZh ? '认识我们的师傅' : 'Meet Our Masters'}
             </h2>
             <p className="text-white/70 max-w-2xl mx-auto">
-              {isZh 
-                ? '所有师傅均经过严格审核，拥有认证资质和多年经验'
+              {isZh
+                ? '所有师傅均经过严格审核,拥有认证资质和多年经验'
                 : 'All masters are carefully vetted with verified credentials and years of experience'}
             </p>
           </div>
@@ -437,13 +438,13 @@ export default function Home() {
               <div key={master.id} className="group">
                 <div className="relative rounded-2xl overflow-hidden aspect-[4/5] mb-6">
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent z-10" />
-                  <img 
-                    src={master.image} 
+                  <Image
+                    src={master.image}
                     alt={isZh ? master.nameCn : master.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
-                    decoding="async"
-                    fetchPriority="low"
+                    sizes="(max-width: 768px) 100vw, 33vw"
                   />
                   <div className="absolute top-4 right-4 z-20 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1">
                     <Star className="w-3 h-3 text-sw-gold fill-sw-gold" />
@@ -482,8 +483,8 @@ export default function Home() {
               {isZh ? '我们的服务' : 'Our Services'}
             </h2>
             <p className="text-white/70 max-w-2xl mx-auto">
-              {isZh 
-                ? '从灵性指导服务中选择，全部采用透明的固定价格'
+              {isZh
+                ? '从灵性指导服务中选择,全部采用透明的固定价格'
                 : 'Choose from our spiritual guidance services, all with transparent fixed pricing'}
             </p>
           </div>
@@ -521,29 +522,29 @@ export default function Home() {
           <div className="bg-black/70 backdrop-blur-sm rounded-3xl p-8 sm:p-12 lg:p-16 text-white border border-white/10">
             <div className="text-center mb-12">
               <h2 className="text-3xl sm:text-4xl font-serif font-bold mb-4">
-                {isZh ? '为什么信任 Stellawei？' : 'Why Trust Stellawei?'}
+                {isZh ? '为什么信任 Stellawei?' : 'Why Trust Stellawei?'}
               </h2>
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {[
-                { 
-                  icon: User, 
+                {
+                  icon: User,
                   title: isZh ? '真人服务' : 'Real Human Masters',
-                  desc: isZh ? '真人师傅一对一咨询，拒绝AI生成' : 'Every reading delivered by a real person, not AI'
+                  desc: isZh ? '真人师傅一对一咨询,拒绝AI生成' : 'Every reading delivered by a real person, not AI'
                 },
-                { 
-                  icon: Shield, 
+                {
+                  icon: Shield,
                   title: isZh ? '隐私保护' : 'Privacy Protected',
                   desc: isZh ? '所有咨询内容严格保密' : 'All consultations are strictly confidential'
                 },
-                { 
-                  icon: Star, 
+                {
+                  icon: Star,
                   title: isZh ? '7天退款' : '7-Day Refund',
-                  desc: isZh ? '咨询开始前随时取消，全额退款' : 'Full refund before session starts'
+                  desc: isZh ? '咨询开始前随时取消,全额退款' : 'Full refund before session starts'
                 },
-                { 
-                  icon: Users, 
+                {
+                  icon: Users,
                   title: isZh ? '认证师傅' : 'Verified Masters',
                   desc: isZh ? '所有师傅均持有5年以上认证' : 'All certified with 5+ years experience'
                 },
@@ -565,19 +566,19 @@ export default function Home() {
       <section className="py-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl font-serif font-bold text-white mb-6">
-            {isZh ? '准备好开始你的旅程了吗？' : 'Ready to Start Your Journey?'}
+            {isZh ? '准备好开始你的旅程了吗?' : 'Ready to Start Your Journey?'}
           </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               className="bg-[#6a45b9] text-white hover:bg-[#5a3ba0] rounded-full px-10 h-14 text-base"
               onClick={handleBookingClick}
             >
-              {isZh ? '首次咨询仅需 $9.9' : 'Get Your First Reading – $9.9'}
+              {isZh ? '首次咨询仅需 $9.9' : 'Get Your First Reading - $9.9'}
             </Button>
-            <Button 
+            <Button
               variant="outline"
-              size="lg" 
+              size="lg"
               className="rounded-full px-10 h-14 text-base border-2 border-stellawei-purple text-stellawei-purple !bg-black/70 hover:bg-stellawei-purple/10"
               onClick={() => {
                 const servicesSection = document.getElementById('services');
@@ -607,7 +608,7 @@ export default function Home() {
                 {isZh ? '您值得信赖的灵性指导伙伴' : 'Your trusted companion for spiritual guidance'}
               </p>
             </div>
-            
+
             <div>
               <h4 className="font-semibold mb-4 text-sm">{isZh ? '服务' : 'Services'}</h4>
               <ul className="space-y-2 text-sm text-white/60">
@@ -616,7 +617,7 @@ export default function Home() {
                 <li><a href="/services/spiritual" className="hover:text-white">{t('services.spiritual.name')}</a></li>
               </ul>
             </div>
-            
+
             <div>
               <h4 className="font-semibold mb-4 text-sm">{isZh ? '支持' : 'Support'}</h4>
               <ul className="space-y-2 text-sm text-white/60">
@@ -635,7 +636,7 @@ export default function Home() {
               </ul>
             </div>
           </div>
-          
+
           <div className="border-t border-white/10 pt-8 text-center text-sm text-white/40">
             <p>© 2026 Stellawei. {isZh ? '保留所有权利' : 'All rights reserved'}</p>
           </div>

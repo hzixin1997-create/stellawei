@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image'
 import { useState, useEffect } from "react";
 import { masters } from "@/lib/data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -105,11 +106,13 @@ export default function MastersPage() {
                 <Link key={master.id} href={`/masters/${master.id}`}>
                   <Card className="overflow-hidden hover:shadow-lg transition-all cursor-pointer group h-full">
                     <div className="aspect-square bg-gradient-to-br from-stellawei-purple/20 to-stellawei-gold/20 relative">
-                      <img
+                      <Image
                         src={master.avatar_url}
                         alt={master.display_name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
                         loading="lazy"
+                        sizes="(max-width: 768px) 50vw, 25vw"
                       />
                       
                       <div className="absolute top-4 right-4 flex gap-2">
