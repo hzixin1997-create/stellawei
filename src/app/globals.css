@@ -140,7 +140,7 @@
   background-clip: text;
   padding: 0.05em 0;
   line-height: 1.2;
-  display: inline-block;
+  display: block;
   overflow: visible;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
