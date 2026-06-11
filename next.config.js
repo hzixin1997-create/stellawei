@@ -5,7 +5,7 @@ const nextConfig = {
   output: 'standalone',
   images: {
     domains: ['localhost', 'images.unsplash.com', 'i.pravatar.cc'],
-    // unoptimized: true, // 已开启 Vercel 图片优化
+    unoptimized: true, // Vercel 图片优化在国内无 Edge 节点，先关闭保证速度
   },
   generateBuildId: async () => {
     return 'build-' + Date.now() + '-v05031-refund-engine-2';
