@@ -340,7 +340,7 @@ export default function Home() {
               <p className="text-base sm:text-lg text-white/90 mb-6 leading-relaxed whitespace-pre-line">
                 {isZh
                   ? '通过东方命理、西方塔罗与真人咨询,\n帮助你看清感情、事业与人生方向。'
-                  : 'Discover clarity in love, career, and life through eastern wisdom,\nWestern Tarot, and real master consultations.'
+                  : 'Discover clarity in love, career, and life through eastern wisdom,\nwestern tarot, and real master consultations.'
                 }
               </p>
 
