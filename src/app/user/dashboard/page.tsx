@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/client'
 import { ShoppingBag, MessageSquare, ArrowRight, Clock, User, Home, LogOut, MessageCircle, AlertTriangle, Star, Calendar as CalendarIcon } from 'lucide-react'
 import Image from 'next/image'
-import { Calendar, zhCN, enUS } from '@/components/ui/calendar'
+import RescheduleCalendar from '@/components/RescheduleCalendar'
 import Link from 'next/link'
 
 import { isConsultationExpired, getConsultationDisplayStatus, formatBookingTimeDisplay } from '@/lib/utils'
@@ -1331,26 +1331,10 @@ export default function UserDashboard() {
                     {isZh ? '选择日期' : 'Select Date'}
                   </label>
                   <div className="border border-white/20 rounded-lg p-2 inline-block">
-                    <Calendar
-                      mode="single"
-                      selected={rescheduleDate ? new Date(rescheduleDate) : undefined}
-                      onSelect={(date) => {
-                        if (date) {
-                          const year = date.getFullYear()
-                          const month = String(date.getMonth() + 1).padStart(2, '0')
-                          const day = String(date.getDate()).padStart(2, '0')
-                          handleRescheduleDateChange(`${year}-${month}-${day}`)
-                        }
-                      }}
-                      locale={isZh ? zhCN : enUS}
-                      disabled={(date) => {
-                        const today = new Date()
-                        today.setHours(0, 0, 0, 0)
-                        const d = new Date(date)
-                        d.setHours(0, 0, 0, 0)
-                        return d.getTime() < today.getTime()
-                      }}
-                      className="rounded-md"
+                    <RescheduleCalendar
+                      isZh={isZh}
+                      rescheduleDate={rescheduleDate}
+                      onDateChange={handleRescheduleDateChange}
                     />
                   </div>
                 </div>

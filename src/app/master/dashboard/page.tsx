@@ -31,7 +31,7 @@ import {
 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { SimpleCalendar } from '@/components/SimpleCalendar'
+import AvailabilityCalendar from '@/components/AvailabilityCalendar'
 
 // 服务数据
 const services: Record<string, { name: string; nameCn: string }> = {
@@ -975,7 +975,7 @@ export default function MasterDashboard() {
                 <div className="flex flex-col md:flex-row gap-6">
                   {/* 日历 */}
                   <div>
-                    <SimpleCalendar
+                    <AvailabilityCalendar
                       selected={selectedAvailabilityDate}
                       onSelect={(date) => handleDateSelect(date)}
                       disabled={(date) => {
