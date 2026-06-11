@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/client'
 import { ShoppingBag, MessageSquare, ArrowRight, Clock, User, Home, LogOut, MessageCircle, AlertTriangle, Star, Calendar as CalendarIcon } from 'lucide-react'
+import Image from 'next/image'
 import { Calendar, zhCN, enUS } from '@/components/ui/calendar'
 import Link from 'next/link'
 
@@ -1479,7 +1480,9 @@ export default function UserDashboard() {
                           }`}
                         >
                           {msg.image_url ? (
-                            <img src={msg.image_url} alt="" className="max-w-full rounded-lg" loading="lazy" />
+                            <div className="relative max-w-full">
+                              <Image src={msg.image_url} alt="" fill className="rounded-lg object-contain" loading="lazy" />
+                            </div>
                           ) : msg.audio_url ? (
                             <audio src={msg.audio_url} controls className="w-full" />
                           ) : (

@@ -29,6 +29,7 @@ import {
   Star,
   Trash,
 } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { SimpleCalendar } from '@/components/SimpleCalendar'
 
@@ -1583,10 +1584,12 @@ export default function MasterDashboard() {
                     </div>
                     <p className="text-sm text-white/80 whitespace-pre-wrap">{msg.content}</p>
                     {msg.image_url && (
-                      <img
+                    <Image
                         src={msg.image_url}
                         alt="Message image"
-                        className="mt-2 max-w-full rounded-lg cursor-pointer"
+                        width={400}
+                        height={300}
+                        className="rounded-lg cursor-pointer object-contain max-w-full h-auto"
                         loading="lazy"
                         onClick={() => window.open(msg.image_url, '_blank')}
                       />
@@ -1713,11 +1716,13 @@ export default function MasterDashboard() {
               {historyBooking.question_images && historyBooking.question_images.length > 0 && (
                 <div className="flex gap-2 mt-3 flex-wrap">
                   {historyBooking.question_images.map((url: string, index: number) => (
-                    <img
+                    <Image
                       key={index}
                       src={url}
                       alt={`Question image ${index + 1}`}
-                      className="w-24 h-24 object-cover rounded-lg cursor-pointer border"
+                      width={96}
+                      height={96}
+                      className="object-cover rounded-lg cursor-pointer border"
                       loading="lazy"
                       onClick={() => window.open(url, '_blank')}
                     />
@@ -1754,10 +1759,12 @@ export default function MasterDashboard() {
                       </div>
                       <p className="text-sm text-white/80 whitespace-pre-wrap">{msg.content}</p>
                       {msg.image_url && (
-                        <img
+                        <Image
                           src={msg.image_url}
                           alt="Reply image"
-                          className="mt-2 max-w-full rounded-lg cursor-pointer"
+                          width={400}
+                          height={300}
+                          className="rounded-lg cursor-pointer object-contain max-w-full h-auto"
                           loading="lazy"
                           onClick={() => window.open(msg.image_url, '_blank')}
                         />
@@ -1891,11 +1898,13 @@ export default function MasterDashboard() {
               {selectedBooking.question_images && selectedBooking.question_images.length > 0 && (
                 <div className="flex gap-2 mt-3 flex-wrap">
                   {selectedBooking.question_images.map((url: string, index: number) => (
-                    <img
+                    <Image
                       key={index}
                       src={url}
                       alt={`Question image ${index + 1}`}
-                      className="w-24 h-24 object-cover rounded-lg cursor-pointer border"
+                      width={96}
+                      height={96}
+                      className="object-cover rounded-lg cursor-pointer border"
                       loading="lazy"
                       onClick={() => window.open(url, '_blank')}
                     />

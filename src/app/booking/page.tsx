@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { useTranslation } from 'react-i18next'
 import { ArrowLeft, ArrowRight, Calendar as CalendarIcon, Clock, Sparkles, Compass, Sun, Video, MessageSquare, Loader2, Tag, Image as ImageIcon } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
@@ -583,12 +584,12 @@ export default function BookingPage() {
                         >
                           {/* 头像区域 */}
                           <div className="aspect-square bg-gradient-to-br from-stone-100 to-stone-200 relative overflow-hidden">
-                            <img
+                            <Image
                               src={m.avatar}
                               alt={isZh ? m.nameCn : m.name}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              fill
+                              className="object-cover group-hover:scale-105 transition-transform duration-500"
                               loading="lazy"
-                              decoding="async"
                             />
                             <div className="absolute top-3 right-3">
                               <Badge variant="outline" className={`${s.color} bg-white/90 backdrop-blur-sm`}>
@@ -653,12 +654,13 @@ export default function BookingPage() {
               <div className="space-y-6">
                 {/* 师傅头部信息 */}
                 <div className="flex items-start gap-4 pb-6 border-b border-stone-200">
-                  <img
+                  <Image
                     src={master.avatar}
                     alt={isZh ? master.nameCn : master.name}
-                    className="w-20 h-20 rounded-xl object-cover"
+                    width={80}
+                    height={80}
+                    className="rounded-xl object-cover"
                     loading="lazy"
-                    decoding="async"
                   />
                   <div className="flex-1">
                     <h3 className="text-xl font-bold text-stone-900">{isZh ? master.nameCn : master.name}</h3>
