@@ -323,15 +323,15 @@ export default function Home() {
               <h1 className="hidden lg:block text-3xl sm:text-5xl lg:text-6xl font-serif font-bold leading-[1.1] mb-4">
                 {isZh ? (
                   <>
-                    <span className="block safe-gradient-text">感到迷茫？</span>
-                    <span className="block safe-gradient-text">想不清方向？</span>
-                    <span className="block safe-gradient-text">寻找答案？</span>
+                    <span className="block safe-gradient-text">知命。</span>
+                    <span className="block safe-gradient-text">借势。</span>
+                    <span className="block safe-gradient-text">破局。</span>
                   </>
                 ) : (
                   <>
-                    <span className="block safe-gradient-text">Feel Lost?</span>
-                    <span className="block safe-gradient-text">Need Clarity?</span>
-                    <span className="block safe-gradient-text">Seek Answers?</span>
+                    <span className="block safe-gradient-text">Tell us less.</span>
+                    <span className="block safe-gradient-text">We'll see more.</span>
+                    <span className="block safe-gradient-text">Find clarity for what's next.</span>
                   </>
                 )}
               </h1>
