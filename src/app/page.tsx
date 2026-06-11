@@ -329,9 +329,9 @@ export default function Home() {
                   </>
                 ) : (
                   <>
-                    <span className="block safe-gradient-text">Tell us less.</span>
-                    <span className="block safe-gradient-text">We'll see more.</span>
-                    <span className="block safe-gradient-text">Find clarity for what's next.</span>
+                    <span className="block safe-gradient-text">Clarity.</span>
+                    <span className="block safe-gradient-text">Alignment.</span>
+                    <span className="block safe-gradient-text">Breakthrough.</span>
                   </>
                 )}
               </h1>
