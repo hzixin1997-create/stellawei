@@ -303,7 +303,8 @@ export default function AdminOrders() {
     const matchStatus = statusFilter === 'all' ||
       (statusFilter === 'ready' && order.payment_status === 'paid' && (order.status === 'confirmed' || order.status === 'in_progress') && !isTimePassed) ||
       (statusFilter === 'in_progress' && order.status === 'in_progress') ||
-      (statusFilter === 'overdue' && order.payment_status === 'paid' && !['completed', 'refunded', 'cancelled'].includes(order.status) && isTimePassed) ||
+      (statusFilter === 'overdue' && order.payment_status === 'paid' && !['completed', 'refunded', 'cancelled'].includes(order.status) && isTimePassed && !(order.status === 'confirmed' && order.payment_status === 'paid' && isTimePassed)) ||
+      (statusFilter === 'completed' && (order.status === 'completed' || order.status === 'paid' || (order.payment_status === 'paid' && isTimePassed))) ||
       order.payment_status === statusFilter ||
       order.status === statusFilter;
     return matchQuery && matchMaster && matchStatus;
@@ -317,8 +318,8 @@ export default function AdminOrders() {
     confirmed: orders.filter(o => o.status === 'confirmed').length,
     ready: orders.filter(o => o.payment_status === 'paid' && (o.status === 'confirmed' || o.status === 'in_progress') && !(o.scheduled_at ? new Date(o.scheduled_at).getTime() < now : false)).length,
     in_progress: orders.filter(o => o.status === 'in_progress').length,
-    completed: orders.filter(o => o.status === 'completed' || o.status === 'paid').length,
-    overdue: orders.filter(o => o.payment_status === 'paid' && !['completed', 'refunded', 'cancelled'].includes(o.status) && (o.scheduled_at ? new Date(o.scheduled_at).getTime() < now : false)).length,
+    completed: orders.filter(o => o.status === 'completed' || o.status === 'paid' || (o.payment_status === 'paid' && o.scheduled_at && new Date(o.scheduled_at).getTime() < now)).length,
+    overdue: orders.filter(o => o.payment_status === 'paid' && !['completed', 'refunded', 'cancelled'].includes(o.status) && (o.scheduled_at ? new Date(o.scheduled_at).getTime() < now : false) && !(o.status === 'confirmed' && o.payment_status === 'paid' && o.scheduled_at && new Date(o.scheduled_at).getTime() < now)).length,
     refund_requested: orders.filter(o => o.status === 'refund_requested' || o.payment_status === 'refund_requested').length,
     refunded: orders.filter(o => o.payment_status === 'refunded').length,
   };
