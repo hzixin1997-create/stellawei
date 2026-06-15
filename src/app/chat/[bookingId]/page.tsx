@@ -219,6 +219,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   const [user, setUser] = useState<any>(null)
   const [isMaster, setIsMaster] = useState(false)
   const [uploadingImage, setUploadingImage] = useState(false)
+  const [imageUploadProgress, setImageUploadProgress] = useState(0)
 
   const [uploadingAudio, setUploadingAudio] = useState(false)
   const [voiceError, setVoiceError] = useState<string | null>(null)
@@ -902,54 +903,112 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       return
     }
 
+    // 1. 前端压缩图片
+    const compressedFile = await compressImage(file, 1920, 0.8)
+    if (!compressedFile) {
+      alert(isZh ? '图片压缩失败，请重试' : 'Image compression failed, please retry')
+      return
+    }
+
+    const finalFile = compressedFile || file
+
     setUploadingImage(true)
+    setImageUploadProgress(0)
+
+    let lastError: any = null
+
     try {
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-      if (!session?.access_token) {
-        console.error('[chat] uploadImageFile: no session')
-        alert(isZh ? '登录已过期，请重新登录' : 'Session expired, please login again')
-        return
+      // 最多重试3次
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+          const { data: { session } } = await supabase.auth.getSession()
+          if (!session?.access_token) {
+            console.error('[chat] uploadImageFile: no session')
+            alert(isZh ? '登录已过期，请重新登录' : 'Session expired, please login again')
+            return
+          }
+
+          // 2. 获取预签名上传 URL
+          const urlRes = await fetch(`/api/chat/${bookingId}/upload-url`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              authorization: `Bearer ${session.access_token}`,
+            },
+            credentials: 'include',
+            body: JSON.stringify({ fileExt: finalFile.name.split('.').pop() || 'jpg' }),
+          })
+
+          if (!urlRes.ok) {
+            const err = await urlRes.json()
+            throw new Error(err.error || 'Failed to get upload URL')
+          }
+
+          const { signedUrl, path } = await urlRes.json()
+
+          // 3. 直传 Supabase Storage，带进度跟踪
+          const uploadedUrl = await new Promise<string>((resolve, reject) => {
+            const xhr = new XMLHttpRequest()
+
+            xhr.upload.addEventListener('progress', (event) => {
+              if (event.lengthComputable) {
+                const progress = Math.round((event.loaded / event.total) * 100)
+                setImageUploadProgress(progress)
+              }
+            })
+
+            xhr.addEventListener('load', () => {
+              if (xhr.status >= 200 && xhr.status < 300) {
+                // 上传成功，构造 public URL
+                const { data: urlData } = supabase.storage.from('chat-images').getPublicUrl(path)
+                resolve(urlData.publicUrl)
+              } else {
+                reject(new Error(`Upload failed: ${xhr.status}`))
+              }
+            })
+
+            xhr.addEventListener('error', () => reject(new Error('Network error during upload')))
+            xhr.addEventListener('abort', () => reject(new Error('Upload aborted')))
+
+            xhr.open('PUT', signedUrl, true)
+            xhr.setRequestHeader('Content-Type', finalFile.type || 'image/jpeg')
+            xhr.send(finalFile)
+          })
+
+          // 4. 发送消息
+          const res = await fetch(`/api/chat/${bookingId}/messages`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              authorization: `Bearer ${session.access_token}`,
+            },
+            credentials: 'include',
+            body: JSON.stringify({ image_url: uploadedUrl }),
+          })
+
+          if (!res.ok) {
+            const err = await res.json()
+            throw new Error(err.error || 'Image send failed')
+          }
+
+          // 成功，退出重试循环
+          return
+        } catch (err: any) {
+          lastError = err
+          console.error(`[chat] Image upload attempt ${attempt} failed:`, err)
+          // 如果不是最后一次尝试，延迟后重试
+          if (attempt < 3) {
+            await new Promise(r => setTimeout(r, attempt * 1000))
+            setImageUploadProgress(0)
+          }
+        }
       }
-      
-      const formData = new FormData()
-      formData.append('file', file)
 
-      const uploadRes = await fetch(`/api/chat/${bookingId}/upload-image`, {
-        method: 'POST',
-        headers: {
-          authorization: `Bearer ${session.access_token}`,
-        },
-        credentials: 'include',
-        body: formData,
-      })
-
-      if (!uploadRes.ok) {
-        const err = await uploadRes.json()
-        throw new Error(err.error || 'Upload failed')
-      }
-
-      const uploadData = await uploadRes.json()
-      const imageUrl = uploadData.image_url
-
-      const res = await fetch(`/api/chat/${bookingId}/messages`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          authorization: `Bearer ${session.access_token}`,
-        },
-        credentials: 'include',
-        body: JSON.stringify({ image_url: imageUrl }),
-      })
-
-      if (!res.ok) {
-        const err = await res.json()
-        alert(err.error || 'Image send failed')
-      }
-    } catch (err: any) {
-      console.error('Image upload error:', err)
-      alert(`Upload failed: ${err.message}`)
+      // 3次都失败了
+      alert(isZh ? `上传失败: ${lastError?.message || '请检查网络后重试'}` : `Upload failed: ${lastError?.message || 'Please check network and retry'}`)
     } finally {
       setUploadingImage(false)
+      setImageUploadProgress(0)
     }
   }
 
@@ -1885,14 +1944,22 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
               <Button
                 variant="outline"
                 size="icon"
-                className="shrink-0"
+                className="shrink-0 relative"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploadingImage}
               >
                 {uploadingImage ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <div className="relative w-4 h-4">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span className="absolute -top-1 -right-1 w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
+                  </div>
                 ) : (
                   <ImageIcon className="w-4 h-4" />
+                )}
+                {uploadingImage && imageUploadProgress > 0 && (
+                  <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[10px] bg-stone-800 text-white px-1.5 py-0.5 rounded whitespace-nowrap">
+                    {imageUploadProgress}%
+                  </span>
                 )}
               </Button>
               {/* 录音按钮 */}
