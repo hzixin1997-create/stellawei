@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/client'
 import { getConsultationDisplayStatus, formatBookingTimeDisplay } from '@/lib/utils'
+import { isMasterEmail } from '@/lib/master-auth'
 import {
   ShoppingBag,
   Clock,
@@ -301,6 +302,19 @@ export default function MasterDashboard() {
       setAvailableSlots(data.available_slots || [])
     }
   }
+
+  // 先检查角色：非师傅跳首页
+  useEffect(() => {
+    const checkRole = async () => {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user || !isMasterEmail(user.email)) {
+        router.push('/')
+        return
+      }
+    }
+    checkRole()
+  }, [router])
 
   useEffect(() => {
     const getDashboardData = async () => {

@@ -16,8 +16,9 @@ import {
   Menu,
   X,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { useState } from 'react';
+import { isAdminEmail } from '@/lib/admin-auth'
+import { cn } from '@/lib/utils'
+import { useEffect, useState } from 'react';
 
 const navItems = [
   { label: '概览', href: '/admin/dashboard', icon: LayoutDashboard },
@@ -37,10 +38,33 @@ export default function AdminLayout({
   const router = useRouter();
   const supabase = createClient();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isCheckingRole, setIsCheckingRole] = useState(true);
+
+  // 角色检查：只有管理员可以访问
+  useEffect(() => {
+    const checkRole = async () => {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user || !isAdminEmail(user.email)) {
+        router.push('/')
+        return
+      }
+      setIsCheckingRole(false)
+    }
+    checkRole()
+  }, [router])
 
   async function handleLogout() {
     await supabase.auth.signOut();
     router.push('/auth/login');
+  }
+
+  if (isCheckingRole) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-stone-50">
+        <div className="text-stone-400">验证权限中...</div>
+      </div>
+    )
   }
 
   return (
