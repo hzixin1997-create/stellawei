@@ -30,6 +30,13 @@ import {
   onNetworkChange,
   type OfflineMessage,
 } from '@/lib/chatOfflineQueue'
+import {
+  importKey,
+  storeChatKey,
+  getChatKey,
+  encryptMessage,
+  decryptMessage,
+} from '@/lib/chatCrypto'
 
 interface Message {
   id: string
@@ -333,6 +340,9 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
   const [showReview, setShowReview] = useState(false)
   const [expandedMessages, setExpandedMessages] = useState<Set<string>>(new Set())
+  // 端到端加密密钥
+  const [chatKey, setChatKey] = useState<CryptoKey | null>(null)
+  const [chatKeyLoading, setChatKeyLoading] = useState(true)
   const [reviewRating, setReviewRating] = useState(0)
   const [reviewText, setReviewText] = useState('')
   const [isSubmittingReview, setIsSubmittingReview] = useState(false)
@@ -361,10 +371,114 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     }
   }, [showReview])
 
+  // 加载端到端加密密钥
+  useEffect(() => {
+    if (!bookingId) return
+
+    const loadKey = async () => {
+      try {
+        // 先检查 localStorage
+        const localKey = getChatKey(bookingId)
+        if (localKey) {
+          const key = await importKey(localKey)
+          setChatKey(key)
+          setChatKeyLoading(false)
+          return
+        }
+
+        // 从服务端获取
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session?.access_token) {
+          setChatKeyLoading(false)
+          return
+        }
+
+        const res = await fetch(`/api/chat/${bookingId}/key`, {
+          headers: { authorization: `Bearer ${session.access_token}` },
+          credentials: 'include',
+        })
+
+        if (res.ok) {
+          const json = await res.json()
+          if (json.key) {
+            storeChatKey(bookingId, json.key)
+            const key = await importKey(json.key)
+            setChatKey(key)
+          }
+        }
+      } catch (e) {
+        console.error('[chat] load encryption key error:', e)
+      } finally {
+        setChatKeyLoading(false)
+      }
+    }
+
+    loadKey()
+  }, [bookingId])
+
+  // 加密发送的消息
+  const encryptContent = async (content: string): Promise<{ ciphertext: string; iv: string } | null> => {
+    if (!chatKey) return null
+    try {
+      return await encryptMessage(chatKey, content)
+    } catch (e) {
+      console.error('[chat] encrypt error:', e)
+      return null
+    }
+  }
+
+  // 解密接收的消息
+  const decryptContent = async (content: string): Promise<string | null> => {
+    if (!chatKey) return null
+    // 检测是否是加密格式
+    try {
+      const parsed = JSON.parse(content)
+      if (parsed.enc && parsed.data && parsed.iv) {
+        return await decryptMessage(chatKey, parsed.data, parsed.iv)
+      }
+    } catch {
+      // 不是 JSON，可能是明文（旧消息）
+    }
+    return content
+  }
+
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const supabase = createClient()
+
+  // 解密后的消息内容缓存
+  const [decryptedContents, setDecryptedContents] = useState<Record<string, string>>({})
+
+  // 自动解密消息内容
+  useEffect(() => {
+    if (!chatKey) return
+
+    const decryptAll = async () => {
+      const newDecrypted: Record<string, string> = {}
+      let changed = false
+
+      for (const msg of messages) {
+        if (!msg.content || decryptedContents[msg.id] !== undefined) continue
+
+        try {
+          const decrypted = await decryptContent(msg.content)
+          if (decrypted !== null) {
+            newDecrypted[msg.id] = decrypted
+            changed = true
+          }
+        } catch (e) {
+          console.error('[chat] decrypt error for msg', msg.id, e)
+        }
+      }
+
+      if (changed) {
+        setDecryptedContents((prev) => ({ ...prev, ...newDecrypted }))
+      }
+    }
+
+    decryptAll()
+  }, [messages, chatKey])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -1126,6 +1240,15 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         return
       }
 
+      // 加密重试的内容
+      let bodyContent = msg.content
+      if (chatKey) {
+        const encrypted = await encryptMessage(chatKey, msg.content)
+        if (encrypted) {
+          bodyContent = JSON.stringify({ enc: true, data: encrypted.ciphertext, iv: encrypted.iv })
+        }
+      }
+
       const res = await fetch(`/api/chat/${bookingId}/messages`, {
         method: 'POST',
         headers: {
@@ -1133,7 +1256,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
           authorization: `Bearer ${session.access_token}`,
         },
         credentials: 'include',
-        body: JSON.stringify({ content: msg.content }),
+        body: JSON.stringify({ content: bodyContent }),
       })
 
       if (res.ok) {
@@ -1528,6 +1651,15 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         return
       }
       
+      // 端到端加密：加密消息内容
+      let bodyContent = content
+      if (chatKey) {
+        const encrypted = await encryptMessage(chatKey, content)
+        if (encrypted) {
+          bodyContent = JSON.stringify({ enc: true, data: encrypted.ciphertext, iv: encrypted.iv })
+        }
+      }
+      
       const res = await fetch(`/api/chat/${bookingId}/messages`, {
         method: 'POST',
         headers: {
@@ -1535,7 +1667,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
           authorization: `Bearer ${session.access_token}`,
         },
         credentials: 'include',
-        body: JSON.stringify({ content }),
+        body: JSON.stringify({ content: bodyContent }),
       })
 
       if (res.ok) {
@@ -1986,15 +2118,15 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
                     <div className="text-sm whitespace-pre-wrap">
                       {(() => {
                         const MAX_LEN = 300
-                        const content = msg.content
-                        const isLong = content.length > MAX_LEN
+                        const displayContent = decryptedContents[msg.id] || msg.content
+                        const isLong = displayContent.length > MAX_LEN
                         const isExpanded = expandedMessages.has(msg.id)
                         
-                        if (!isLong) return content
+                        if (!isLong) return displayContent
                         
                         return (
                           <div>
-                            {isExpanded ? content : content.slice(0, MAX_LEN) + '...'}
+                            {isExpanded ? displayContent : displayContent.slice(0, MAX_LEN) + '...'}
                             <button
                               className="text-xs ml-1 underline opacity-70 hover:opacity-100"
                               onClick={(e) => {
