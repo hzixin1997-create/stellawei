@@ -332,6 +332,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   }, [messages, consultStatus, booking])
 
   const [showReview, setShowReview] = useState(false)
+  const [expandedMessages, setExpandedMessages] = useState<Set<string>>(new Set())
   const [reviewRating, setReviewRating] = useState(0)
   const [reviewText, setReviewText] = useState('')
   const [isSubmittingReview, setIsSubmittingReview] = useState(false)
@@ -1981,7 +1982,41 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
                       {formatTime(msg.created_at)}
                     </span>
                   </div>
-                  {msg.content && <p className="text-sm whitespace-pre-wrap">{msg.content}</p>}
+                  {msg.content && (
+                    <div className="text-sm whitespace-pre-wrap">
+                      {(() => {
+                        const MAX_LEN = 300
+                        const content = msg.content
+                        const isLong = content.length > MAX_LEN
+                        const isExpanded = expandedMessages.has(msg.id)
+                        
+                        if (!isLong) return content
+                        
+                        return (
+                          <div>
+                            {isExpanded ? content : content.slice(0, MAX_LEN) + '...'}
+                            <button
+                              className="text-xs ml-1 underline opacity-70 hover:opacity-100"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setExpandedMessages((prev) => {
+                                  const next = new Set(prev)
+                                  if (next.has(msg.id)) {
+                                    next.delete(msg.id)
+                                  } else {
+                                    next.add(msg.id)
+                                  }
+                                  return next
+                                })
+                              }}
+                            >
+                              {isExpanded ? (isZh ? '收起' : 'Collapse') : (isZh ? '展开' : 'Expand')}
+                            </button>
+                          </div>
+                        )
+                      })()}
+                    </div>
+                  )}
                     {msg.image_url && (
                       <Image
                         src={msg.image_url}
