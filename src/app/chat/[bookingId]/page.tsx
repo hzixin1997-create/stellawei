@@ -21,6 +21,15 @@ import {
 import Link from 'next/link'
 import { isMasterEmail } from '@/lib/master-auth'
 import { TimeEngine } from '@/lib/timeEngine'
+import {
+  addToOfflineQueue,
+  getOfflineQueue,
+  removeFromOfflineQueue,
+  updateOfflineQueue,
+  isNetworkOnline,
+  onNetworkChange,
+  type OfflineMessage,
+} from '@/lib/chatOfflineQueue'
 
 interface Message {
   id: string
@@ -1012,6 +1021,140 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     }
   }
 
+  const [isNetworkOffline, setIsNetworkOffline] = useState(false)
+  const [pendingMessages, setPendingMessages] = useState<Set<string>>(new Set())
+  const retryInProgressRef = useRef(false)
+
+  // 网络状态监听 + 离线队列自动重试
+  useEffect(() => {
+    const cleanup = onNetworkChange((online) => {
+      setIsNetworkOffline(!online)
+      if (online && !retryInProgressRef.current) {
+        retryOfflineMessages()
+      }
+    })
+    // 初始化时检查一次
+    setIsNetworkOffline(!isNetworkOnline())
+    return cleanup
+  }, [bookingId])
+
+  // 加载时恢复离线队列消息到列表
+  useEffect(() => {
+    if (!bookingId || messages.length > 0) return
+    const queue = getOfflineQueue(bookingId)
+    if (queue.length > 0) {
+      const offlineMsgs: Message[] = queue.map((q) => ({
+        id: q.id,
+        booking_id: q.bookingId,
+        sender_id: q.sender_id,
+        sender_type: q.sender_type,
+        sender_name: q.sender_name,
+        content: q.content,
+        image_url: q.image_url,
+        audio_url: q.audio_url,
+        audio_duration: q.audio_duration,
+        created_at: q.created_at,
+        read_at: null,
+        source: 'offline',
+      }))
+      setMessages((prev) => {
+        if (prev.length > 0) return prev
+        return offlineMsgs
+      })
+      setPendingMessages(new Set(queue.map((q) => q.id)))
+    }
+  }, [bookingId])
+
+  // 自动重试离线队列中的消息
+  const retryOfflineMessages = async () => {
+    if (!bookingId || retryInProgressRef.current) return
+    const queue = getOfflineQueue(bookingId)
+    if (queue.length === 0) return
+
+    retryInProgressRef.current = true
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session?.access_token) return
+
+      for (const msg of queue) {
+        try {
+          const body: any = {}
+          if (msg.content) body.content = msg.content
+          if (msg.image_url) body.image_url = msg.image_url
+          if (msg.audio_url) body.audio_url = msg.audio_url
+          if (msg.audio_duration) body.audio_duration = msg.audio_duration
+
+          const res = await fetch(`/api/chat/${bookingId}/messages`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              authorization: `Bearer ${session.access_token}`,
+            },
+            credentials: 'include',
+            body: JSON.stringify(body),
+          })
+
+          if (res.ok) {
+            removeFromOfflineQueue(bookingId, msg.id)
+            setPendingMessages((prev) => {
+              const next = new Set(prev)
+              next.delete(msg.id)
+              return next
+            })
+          } else {
+            updateOfflineQueue(bookingId, msg.id, { attempts: msg.attempts + 1 })
+          }
+        } catch (e) {
+          updateOfflineQueue(bookingId, msg.id, { attempts: msg.attempts + 1 })
+        }
+      }
+    } finally {
+      retryInProgressRef.current = false
+    }
+  }
+
+  // 手动重试单条消息
+  const retrySingleMessage = async (msg: Message) => {
+    if (!bookingId || !msg.content) return
+    setPendingMessages((prev) => new Set(prev).add(msg.id))
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session?.access_token) {
+        alert(isZh ? '登录已过期' : 'Session expired')
+        return
+      }
+
+      const res = await fetch(`/api/chat/${bookingId}/messages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${session.access_token}`,
+        },
+        credentials: 'include',
+        body: JSON.stringify({ content: msg.content }),
+      })
+
+      if (res.ok) {
+        const json = await res.json()
+        if (json.message) {
+          removeFromOfflineQueue(bookingId, msg.id)
+          setMessages((prev) => prev.map((m) => (m.id === msg.id ? json.message : m)))
+          setPendingMessages((prev) => {
+            const next = new Set(prev)
+            next.delete(msg.id)
+            return next
+          })
+        }
+      } else {
+        alert(isZh ? '重试失败' : 'Retry failed')
+      }
+    } catch (e) {
+      console.error('[chat] retrySingleMessage error:', e)
+      alert(isZh ? '重试失败，请检查网络' : 'Retry failed, check network')
+    }
+  }
+
   // ===== Voice Engine v1.0: Stable Voice Message System =====
   const startRecording = async () => {
     const logPrefix = '[VoiceEngine]';
@@ -1404,19 +1547,64 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
             return prev.map((m) => m.id === tempId ? json.message : m)
           })
         } else {
-          // 后端返回200但message为null — 保留临时消息，标记为"发送中"失败
+          // 后端返回200但message为null — 标记为失败，存入离线队列
           console.error('[chat] API returned 200 but no message:', json)
-          alert(isZh ? '发送失败，请重试' : 'Send failed, please retry')
+          addToOfflineQueue(bookingId, {
+            id: tempId,
+            bookingId,
+            content,
+            image_url: null,
+            audio_url: null,
+            audio_duration: null,
+            sender_type: isMaster ? 'master' : 'user',
+            sender_name: optimisticMsg.sender_name,
+            sender_id: user?.id || '',
+            created_at: optimisticMsg.created_at,
+            attempts: 1,
+          })
+          setPendingMessages((prev) => new Set(prev).add(tempId))
+          alert(isZh ? '发送失败，已暂存到本地，网络恢复后自动重试' : 'Send failed, saved locally. Will retry when network recovers.')
         }
       } else {
         const err = await res.json()
-        // 发送失败 — 保留临时消息（带错误标记），让用户知道失败
+        // 发送失败 — 存入离线队列，显示重试提示
         console.error('[chat] Send failed:', err)
-        alert(err.error || 'Send failed')
+        addToOfflineQueue(bookingId, {
+          id: tempId,
+          bookingId,
+          content,
+          image_url: null,
+          audio_url: null,
+          audio_duration: null,
+          sender_type: isMaster ? 'master' : 'user',
+          sender_name: optimisticMsg.sender_name,
+          sender_id: user?.id || '',
+          created_at: optimisticMsg.created_at,
+          attempts: 1,
+          lastError: err.error || 'Send failed',
+        })
+        setPendingMessages((prev) => new Set(prev).add(tempId))
+        alert(isZh ? '发送失败，已暂存到本地，可点击消息重试' : 'Send failed, saved locally. Click message to retry.')
       }
     } catch (err) {
       console.error('Send error:', err)
-      alert(isZh ? '发送失败，请重试' : 'Send failed, please retry')
+      // 网络异常 — 存入离线队列
+      addToOfflineQueue(bookingId, {
+        id: tempId,
+        bookingId,
+        content,
+        image_url: null,
+        audio_url: null,
+        audio_duration: null,
+        sender_type: isMaster ? 'master' : 'user',
+        sender_name: optimisticMsg.sender_name,
+        sender_id: user?.id || '',
+        created_at: optimisticMsg.created_at,
+        attempts: 1,
+        lastError: err instanceof Error ? err.message : 'Network error',
+      })
+      setPendingMessages((prev) => new Set(prev).add(tempId))
+      alert(isZh ? '网络异常，消息已暂存到本地，恢复后自动重试' : 'Network error, message saved locally. Will retry when network recovers.')
     } finally {
       setIsSending(false)
     }
@@ -1877,8 +2065,22 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
                       })()}
                     </div>
                   )}
-                  {/* 已读状态 - 仅自己消息显示 */}
-                  {isMe && (
+                  {/* 未发送状态 - 仅自己消息且未发送成功时显示 */}
+                  {isMe && pendingMessages.has(msg.id) && (
+                    <div className="flex justify-end mt-1 gap-1 items-center">
+                      <span className="text-[10px] text-red-300 flex items-center gap-1">
+                        ⚠️ {isZh ? '未发送' : 'Not sent'}
+                      </span>
+                      <button
+                        className="text-[10px] text-white underline hover:text-violet-200 px-1"
+                        onClick={() => retrySingleMessage(msg)}
+                      >
+                        {isZh ? '重试' : 'Retry'}
+                      </button>
+                    </div>
+                  )}
+                  {/* 已读状态 - 仅自己消息且已发送成功时显示 */}
+                  {isMe && !pendingMessages.has(msg.id) && (
                     <div className="flex justify-end mt-1">
                       <span className="text-[10px] text-violet-200">
                         {msg.read_at ? '✓✓' : '✓'}
