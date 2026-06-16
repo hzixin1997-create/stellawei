@@ -78,11 +78,11 @@ export async function POST(
     const mimeType = file.type || 'audio/webm';
     const format = mimeType.includes('mp4') || mimeType.includes('m4a') ? 'm4a' : 'webm';
 
-    // 2.5 Validate duration (60 seconds max for Vercel Hobby)
+    // 2.5 Validate duration (180 seconds max for Vercel Hobby)
     const audioDuration = parseInt(duration) || 0;
-    if (audioDuration > 60) {
+    if (audioDuration > 180) {
       return NextResponse.json(
-        { error: getMessage('AUDIO_TOO_LONG', request), maxDuration: '60s' },
+        { error: getMessage('AUDIO_TOO_LONG', request), maxDuration: '180s' },
         { status: 400 }
       );
     }

@@ -110,8 +110,8 @@ export const i18nMessages = {
     en: 'Maximum 3 minutes audio supported.',
   },
   AUDIO_TOO_LONG: {
-    zh: '语音最长60秒，请缩短后重试',
-    en: 'Audio maximum 60 seconds. Please shorten and retry.',
+    zh: '语音最长3分钟，请缩短后重试',
+    en: 'Audio maximum 3 minutes. Please shorten and retry.',
   },
   SEND_FAILED: {
     zh: '发送失败，请重试',

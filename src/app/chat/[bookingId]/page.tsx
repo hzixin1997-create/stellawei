@@ -261,8 +261,9 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   const objectURLsRef = useRef<string[]>([])
   // 15MB max for 180s audio
   const MAX_AUDIO_SIZE = 15 * 1024 * 1024
-  // 60秒限制：Vercel Hobby 函数超时10秒，大文件容易超时
-  const MAX_RECORDING_SECONDS = 60
+  // 3分钟限制：Vercel Hobby 函数超时10秒，但音频文件15MB足够录8-12分钟
+  // 实际限制是文件大小而非时长，180秒是合理上限
+  const MAX_RECORDING_SECONDS = 180
 
   // 检测浏览器类型和推荐格式
   const getAudioFormat = (): { mimeType: string, ext: string } => {
@@ -504,6 +505,12 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       scrollToBottom()
     }
   }, [messages])
+
+  // 移动端语音录制：按住状态
+  const [isPressing, setIsPressing] = useState(false)
+  const [isCanceling, setIsCanceling] = useState(false)
+  const touchStartYRef = useRef<number>(0)
+  const touchStartXRef = useRef<number>(0)
 
   // 音频预加载：当 messages 中有新音频时，提前加载
   useEffect(() => {
@@ -2343,7 +2350,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
                       {Array.from({ length: 12 }).map((_, i) => (
                         <div
                           key={i}
-                          className="w-1 bg-red-500 rounded-full animate-pulse"
+                          className={`w-1 rounded-full animate-pulse ${isCanceling ? 'bg-stone-400' : 'bg-red-500'}`}
                           style={{
                             height: `${Math.max(20, Math.random() * 100)}%`,
                             animationDelay: `${i * 80}ms`,
@@ -2352,14 +2359,16 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
                       ))}
                     </div>
                     <p className="text-lg font-bold text-stone-800">{formatDuration(recordingDuration)}</p>
-                    <p className="text-sm text-stone-500">
-                      {recordingDuration >= MAX_RECORDING_SECONDS
-                        ? (isZh ? '已达到最长录制时间' : 'Maximum recording time reached')
-                        : (isZh ? '录音请勿超过60秒，松手停止录音' : 'Recording max 60s, release to stop')}
+                    <p className={`text-sm ${isCanceling ? 'text-red-500 font-bold' : 'text-stone-500'}`}>
+                      {isCanceling
+                        ? (isZh ? '松开手指取消发送' : 'Release to cancel')
+                        : recordingDuration >= MAX_RECORDING_SECONDS
+                          ? (isZh ? '已达到最长录制时间' : 'Maximum recording time reached')
+                          : (isZh ? '录音请勿超过3分钟，松手停止录音' : 'Recording max 3min, release to stop')}
                     </p>
                     <Button
                       size="lg"
-                      className="bg-red-500 hover:bg-red-600 text-white rounded-full w-16 h-16 flex items-center justify-center"
+                      className={`rounded-full w-16 h-16 flex items-center justify-center ${isCanceling ? 'bg-stone-400' : 'bg-red-500 hover:bg-red-600'} text-white`}
                       onClick={stopRecording}
                     >
                       <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
@@ -2374,6 +2383,46 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
                 size="icon"
                 className={`shrink-0 ${isRecording ? 'bg-red-500 hover:bg-red-600 text-white' : ''}`}
                 onClick={isRecording ? undefined : startRecording}
+                onTouchStart={(e) => {
+                  // 移动端：按住开始录制
+                  if (!isRecording && !uploadingImage && !uploadingAudio) {
+                    e.preventDefault()
+                    touchStartYRef.current = e.touches[0].clientY
+                    touchStartXRef.current = e.touches[0].clientX
+                    setIsPressing(true)
+                    setIsCanceling(false)
+                    startRecording()
+                  }
+                }}
+                onTouchEnd={(e) => {
+                  if (isRecording) {
+                    e.preventDefault()
+                    setIsPressing(false)
+                    if (isCanceling) {
+                      // 取消录制：停止但不发送
+                      stopRecording()
+                      // 清空已录制的 blob
+                      setRetryAudio(null)
+                      setVoiceError(null)
+                      setVoiceState({ status: 'idle' })
+                    } else {
+                      stopRecording()
+                    }
+                    setIsCanceling(false)
+                  }
+                }}
+                onTouchMove={(e) => {
+                  if (isRecording && touchStartYRef.current !== 0) {
+                    const currentY = e.touches[0].clientY
+                    const deltaY = touchStartYRef.current - currentY
+                    // 上滑超过 80px 标记为取消
+                    if (deltaY > 80) {
+                      setIsCanceling(true)
+                    } else if (deltaY < 40) {
+                      setIsCanceling(false)
+                    }
+                  }
+                }}
                 disabled={uploadingImage || uploadingAudio}
               >
                 {isRecording ? (
