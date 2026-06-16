@@ -35,7 +35,6 @@ async function seedMasters() {
         certifications: master.certifications,
         is_verified: master.is_verified,
         verification_status: master.verification_status,
-        base_price_tier: master.base_price_tier,
         rating_average: master.rating_average,
         rating_count: master.rating_count,
         completed_sessions: master.completed_sessions,
