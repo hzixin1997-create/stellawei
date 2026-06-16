@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import { services, masters, reviews } from '../src/lib/data.js'
+import { masters, reviews } from '../src/lib/data.js'
 
 // 需要 SERVICE_ROLE_KEY 来绕过 RLS
 const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -11,45 +11,6 @@ if (!supabaseUrl || !supabaseKey) {
 }
 
 const supabase = createClient(supabaseUrl, supabaseKey)
-
-// ============================================
-// Seed Services
-// ============================================
-async function seedServices() {
-  console.log('🌱 Seeding services...')
-  
-  for (const service of services) {
-    const { error } = await supabase
-      .from('services')
-      .upsert({
-        id: service.id,
-        type: service.type,
-        name_en: service.name_en,
-        name_zh: service.name_zh,
-        slug: service.slug,
-        description: service.description,
-        short_description: service.short_description,
-        price_min: service.price_min,
-        price_max: service.price_max,
-        duration_minutes: service.duration_minutes,
-        features: service.features,
-        requirements: service.requirements,
-        sort_order: service.sort_order,
-        is_active: service.is_active,
-        image_url: service.image_url,
-      }, {
-        onConflict: 'id'
-      })
-    
-    if (error) {
-      console.error(`❌ Error seeding service ${service.id}:`, error.message)
-    } else {
-      console.log(`✅ Service: ${service.name_en}`)
-    }
-  }
-  
-  console.log('✅ Services seeded\n')
-}
 
 // ============================================
 // Seed Masters
@@ -240,7 +201,6 @@ async function main() {
   console.log('🚀 Starting database seed...\n')
   
   try {
-    await seedServices()
     await seedMasters()
     await seedReviews()
     await seedMasterSchedules()
