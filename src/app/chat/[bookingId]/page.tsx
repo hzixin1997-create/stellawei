@@ -2157,11 +2157,9 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
                     </div>
                   )}
                     {msg.image_url && (
-                      <Image
+                      <img
                         src={msg.image_url}
                         alt="Chat image"
-                        width={400}
-                        height={300}
                         className="mt-2 max-w-full rounded-lg cursor-pointer object-cover"
                         loading="lazy"
                         onClick={() => setPreviewImage(msg.image_url!)}
@@ -2565,11 +2563,9 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
           className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
           onClick={() => setPreviewImage(null)}
         >
-          <Image
+          <img
             src={previewImage}
             alt="Preview"
-            width={800}
-            height={600}
             className="max-w-full max-h-[85vh] rounded-lg object-contain"
             onClick={(e) => e.stopPropagation()}
           />

@@ -4,7 +4,14 @@ const { withSentryConfig } = require('@sentry/nextjs');
 const nextConfig = {
   output: 'standalone',
   images: {
-    domains: ['localhost', 'images.unsplash.com', 'i.pravatar.cc'],
+    domains: ['localhost', 'images.unsplash.com', 'i.pravatar.cc', '*.supabase.co'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.supabase.co',
+        pathname: '/storage/v1/object/public/**',
+      },
+    ],
     // unoptimized: true, // Vercel 图片优化已开启
   },
   generateBuildId: async () => {
