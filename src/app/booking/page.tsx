@@ -51,6 +51,7 @@ const MASTERS = [
     nameCn: '卢娜师傅',
     categories: ['tarot', 'spiritual'],
     pricing: { first: 9.9, basic: 28, deep: 55 },
+    originalPricing: { basic: 38, deep: 68 },
     timezone: 'Asia/Shanghai',
     avatar: '/masters/master_luna.jpg',
     tagline: '看见您内心已知的一切，以及前方的道路',
@@ -65,6 +66,7 @@ const MASTERS = [
     nameCn: '张易桦',
     categories: ['eastern'],
     pricing: { first: 9.9, basic: 38, deep: 68 },
+    originalPricing: { basic: 48, deep: 79 },
     timezone: 'Asia/Shanghai',
     avatar: '/masters/master_zhang_yihua.jpg',
     tagline: '揭露时空能量学的密码，通过决策学来选择正确的风向',
@@ -79,6 +81,7 @@ const MASTERS = [
     nameCn: '戊阳',
     categories: ['eastern'],
     pricing: { first: 9.9, basic: 48, deep: 78, fengshui: 95 },
+    originalPricing: { basic: 58, deep: 89, fengshui: 129 },
     timezone: 'Asia/Shanghai',
     avatar: '/masters/master_wu_yang.jpg',
     tagline: '通过八字与环境能量分析，帮助您顺应有利时机行事',
@@ -621,8 +624,10 @@ export default function BookingPage() {
                               <span className="text-stone-500">
                                 {isZh ? `${m.experience}经验` : `${m.experience} exp`}
                               </span>
-                              <span className="font-semibold text-violet-600">
-                                ${m.pricing.basic} {isZh ? '起' : 'up'}
+                              <span className="text-sm">
+                                <span className="text-stone-400 line-through mr-1">${m.originalPricing?.basic || m.pricing.basic}</span>
+                                <span className="font-semibold text-violet-600">${m.pricing.basic}</span>
+                                <span className="text-xs text-red-500 ml-1">{isZh ? '限时福利价' : 'Limited Offer'}</span>
                               </span>
                             </div>
                           </div>
@@ -727,7 +732,13 @@ export default function BookingPage() {
                           <h4 className="font-semibold">{isZh ? '基础咨询' : 'Basic'}</h4>
                           <p className="text-sm text-stone-500">{isZh ? '25 分钟 · 针对具体问题' : '25 min · For specific questions'}</p>
                         </div>
-                        <span className="text-xl font-bold text-violet-600">${master.pricing.basic}</span>
+                        <div className="flex flex-col items-end">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-stone-400 line-through">${master.originalPricing?.basic || master.pricing.basic}</span>
+                            <span className="text-xl font-bold text-violet-600">${master.pricing.basic}</span>
+                          </div>
+                          <span className="text-xs text-red-500">{isZh ? '限时福利价' : 'Limited Offer'}</span>
+                        </div>
                       </Label>
                     </div>
                     <div>
@@ -737,7 +748,13 @@ export default function BookingPage() {
                           <h4 className="font-semibold">{isZh ? '深度咨询' : 'Deep'}</h4>
                           <p className="text-sm text-stone-500">{isZh ? '50 分钟 · 全面深入分析' : '50 min · Comprehensive analysis'}</p>
                         </div>
-                        <span className="text-xl font-bold text-violet-600">${master.pricing.deep}</span>
+                        <div className="flex flex-col items-end">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-stone-400 line-through">${master.originalPricing?.deep || master.pricing.deep}</span>
+                            <span className="text-xl font-bold text-violet-600">${master.pricing.deep}</span>
+                          </div>
+                          <span className="text-xs text-red-500">{isZh ? '限时福利价' : 'Limited Offer'}</span>
+                        </div>
                       </Label>
                     </div>
                     {master.pricing.fengshui && (
@@ -751,7 +768,13 @@ export default function BookingPage() {
                             </div>
                             <p className="text-sm text-stone-500">{isZh ? '60+ 分钟 · 含空间分析' : '60+ min · Includes space analysis'}</p>
                           </div>
-                          <span className="text-xl font-bold text-violet-600">${master.pricing.fengshui}</span>
+                          <div className="flex flex-col items-end">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-stone-400 line-through">${master.originalPricing?.fengshui || master.pricing.fengshui}</span>
+                            <span className="text-xl font-bold text-violet-600">${master.pricing.fengshui}</span>
+                          </div>
+                          <span className="text-xs text-red-500">{isZh ? '限时福利价' : 'Limited Offer'}</span>
+                        </div>
                         </Label>
                       </div>
                     )}
