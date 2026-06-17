@@ -4,6 +4,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { I18nProvider } from "@/components/I18nProvider";
 import { AuthProvider } from "@/components/auth/AuthProvider";
+import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
+import GoogleTagManager from "@/components/analytics/GoogleTagManager";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
@@ -60,7 +62,11 @@ export default function RootLayout({
   
   return (
     <html lang={lang} suppressHydrationWarning>
+      <head>
+        <GoogleAnalytics />
+      </head>
       <body className={inter.className}>
+        <GoogleTagManager />
         <I18nProvider initialLang={lang}>
           <AuthProvider>
             {children}
