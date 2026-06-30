@@ -165,7 +165,7 @@ export function AuthCard() {
                     placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 h-12 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-violet-500 focus:ring-violet-500/20"
+                    className="pl-10 h-12 bg-white/5 border-white/10 focus:border-violet-500 focus:ring-violet-500/20"
                     required
                   />
                 </div>
@@ -191,7 +191,7 @@ export function AuthCard() {
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 pr-10 h-12 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-violet-500 focus:ring-violet-500/20"
+                    className="pl-10 pr-10 h-12 bg-white/5 border-white/10 focus:border-violet-500 focus:ring-violet-500/20"
                     required
                   />
                   <button
@@ -241,7 +241,7 @@ export function AuthCard() {
                     placeholder={isZh ? '你的名字' : 'Your name'}
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="pl-10 h-12 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-violet-500 focus:ring-violet-500/20"
+                    className="pl-10 h-12 bg-white/5 border-white/10 focus:border-violet-500 focus:ring-violet-500/20"
                   />
                 </div>
               </div>
@@ -258,7 +258,7 @@ export function AuthCard() {
                     placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 h-12 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-violet-500 focus:ring-violet-500/20"
+                    className="pl-10 h-12 bg-white/5 border-white/10 focus:border-violet-500 focus:ring-violet-500/20"
                     required
                   />
                 </div>
@@ -276,7 +276,7 @@ export function AuthCard() {
                     placeholder={isZh ? '至少8位字符' : 'At least 8 characters'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 pr-10 h-12 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-violet-500 focus:ring-violet-500/20"
+                    className="pl-10 pr-10 h-12 bg-white/5 border-white/10 focus:border-violet-500 focus:ring-violet-500/20"
                     required
                     minLength={8}
                   />

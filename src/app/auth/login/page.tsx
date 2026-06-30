@@ -17,7 +17,7 @@ export default function LoginPage() {
 
   return (
     <AuthProvider>
-      <div className="min-h-screen bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] flex flex-col">
+      <div className="dark min-h-screen bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] flex flex-col">
         {/* Header */}
         <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between">
           {/* Back to Home */}
