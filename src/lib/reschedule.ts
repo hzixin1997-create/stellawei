@@ -297,7 +297,7 @@ async function sendRescheduleFeishuNotification({
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         msg_type: 'text',
-        content: JSON.stringify({ text: content }),
+        content: { text: content },
       }),
     });
 

@@ -351,13 +351,10 @@ export default function BookingPage() {
           throw new Error('Please select date and time for real-time consultation')
         }
 
-        const scheduledDateTime = new Date(selectedDate)
-        const [hours, minutes] = selectedTime.split(':')
-        scheduledDateTime.setHours(parseInt(hours), parseInt(minutes))
-
-        // 使用本地日期，避免 toISOString() 返回 UTC 日期导致时区偏差（UTC+8 可能前一天）
+        const masterTz = master?.timezone || 'Asia/Shanghai'
+        const timeStr = selectedTime.split(':').slice(0, 2).join(':')
         const dateStr = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`
-        
+
         // 时间槽占用检查（通过 API 绕过 RLS，带时长参数做区间重叠检测）
         const checkRes = await fetch(`/api/bookings/check-slot?master_id=${selectedMaster}&date=${dateStr}&time=${selectedTime}&duration_minutes=${durationMinutes}`)
         const checkData = await checkRes.json()
@@ -370,7 +367,20 @@ export default function BookingPage() {
           throw new Error(isZh ? '该时间段已被预约，请选择其他时间' : 'This time slot is already booked')
         }
 
-        bookingData.scheduled_at = scheduledDateTime.toISOString()
+        // 获取指定时区在指定日期的偏移（如 +08:00, -07:00）
+        // 修复：之前用用户本地时区 toISOString()，导致跨时区预约时间错误
+        const getTimezoneOffset = (tz: string, d: Date): string => {
+          try {
+            const str = d.toLocaleString('en-US', { timeZone: tz, timeZoneName: 'longOffset' })
+            const match = str.match(/([+-]\d{2}:\d{2})$/)
+            return match ? match[1] : '+08:00'
+          } catch {
+            return '+08:00'
+          }
+        }
+
+        const offset = getTimezoneOffset(masterTz, selectedDate)
+        bookingData.scheduled_at = `${dateStr}T${timeStr}:00${offset}`
         bookingData.scheduled_date = dateStr
         bookingData.scheduled_time = selectedTime
         // 实时咨询：支付期限10分钟
