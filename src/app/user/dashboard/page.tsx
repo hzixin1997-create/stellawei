@@ -751,8 +751,8 @@ export default function UserDashboard() {
             </h1>
             <p className="text-base text-white/70 mt-2">
               💬 {isZh
-                ? '咨询前请添加客服微信号：Stellawei2026，或发送邮件至：support@stellawei.org，以确保咨询能正常进行。'
-                : 'Please add our customer service WeChat: Stellawei2026, or email: support@stellawei.org before your consultation to ensure everything goes smoothly.'}
+                ? '咨询前请添加客服微信号：95567745，或发送邮件至：support@stellawei.org，以确保咨询能正常进行。'
+                : 'Please add our customer service WeChat: 95567745, or email: support@stellawei.org before your consultation to ensure everything goes smoothly.'}
             </p>
           </div>
 
