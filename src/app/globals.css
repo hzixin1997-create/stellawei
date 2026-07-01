@@ -69,6 +69,16 @@
   }
 }
 
+/* Fix browser autofill colors in dark mode */
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus,
+.dark input:-webkit-autofill:active {
+  -webkit-text-fill-color: hsl(var(--foreground)) !important;
+  -webkit-box-shadow: 0 0 0 30px hsl(var(--input)) inset !important;
+  caret-color: hsl(var(--foreground));
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
