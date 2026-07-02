@@ -961,18 +961,17 @@ export default function UserDashboard() {
                             {/* 已完成订单：查看历史/留言 + 评价 + 删除 */}
                             {displayStatus === 'completed' && booking.payment_status === 'paid' && (
                               <>
-                                <Link href={`/chat/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    className="text-white/70 border-white/20 hover:bg-white/10 w-full"
-                                  >
-                                    <MessageCircle className="w-4 h-4 mr-1" />
-                                    {booking.consultation_type === 'message'
-                                      ? (isZh ? '查看留言' : 'View Message')
-                                      : (isZh ? '查看历史' : 'View History')}
-                                  </Button>
-                                </Link>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-white/70 border-white/20 hover:bg-white/10 w-full"
+                                  onClick={() => openMessageModal(booking.id)}
+                                >
+                                  <MessageCircle className="w-4 h-4 mr-1" />
+                                  {booking.consultation_type === 'message'
+                                    ? (isZh ? '查看留言' : 'View Message')
+                                    : (isZh ? '查看历史' : 'View History')}
+                                </Button>
                                 <Button
                                   size="sm"
                                   variant="outline"
@@ -1020,16 +1019,15 @@ export default function UserDashboard() {
                             {/* 已结束/收尾期：留言咨询 */}
                             {booking.payment_status === 'paid' && displayStatus === 'ended' && booking.consultation_type === 'message' && (
                               <>
-                                <Link href={`/chat/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    className="text-violet-300 border-violet-500/30 hover:bg-violet-500/10 hover:text-violet-200 w-full"
-                                  >
-                                    <MessageCircle className="w-4 h-4 mr-1" />
-                                    {isZh ? '查看留言' : 'View Message'}
-                                  </Button>
-                                </Link>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-violet-300 border-violet-500/30 hover:bg-violet-500/10 hover:text-violet-200 w-full"
+                                  onClick={() => openMessageModal(booking.id)}
+                                >
+                                  <MessageCircle className="w-4 h-4 mr-1" />
+                                  {isZh ? '查看留言' : 'View Message'}
+                                </Button>
                                 <Button
                                   size="sm"
                                   variant="outline"
@@ -1101,16 +1099,15 @@ export default function UserDashboard() {
                             {/* 已确认/即将开始：留言咨询 - 可修改时间 */}
                             {booking.payment_status === 'paid' && (displayStatus === 'confirmed' || displayStatus === 'upcoming') && booking.consultation_type === 'message' && (
                               <>
-                                <Link href={`/chat/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    className="text-violet-300 border-violet-500/30 hover:bg-violet-500/10 hover:text-violet-200 w-full"
-                                  >
-                                    <MessageCircle className="w-4 h-4 mr-1" />
-                                    {isZh ? '查看留言' : 'View Message'}
-                                  </Button>
-                                </Link>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-violet-300 border-violet-500/30 hover:bg-violet-500/10 hover:text-violet-200 w-full"
+                                  onClick={() => openMessageModal(booking.id)}
+                                >
+                                  <MessageCircle className="w-4 h-4 mr-1" />
+                                  {isZh ? '查看留言' : 'View Message'}
+                                </Button>
                                 <Button
                                   size="sm"
                                   variant="outline"
@@ -1125,16 +1122,15 @@ export default function UserDashboard() {
                             {/* 进行中：留言咨询 - 不可修改时间 */}
                             {booking.payment_status === 'paid' && displayStatus === 'in_progress' && booking.consultation_type === 'message' && (
                               <>
-                                <Link href={`/chat/${booking.id}`} className="inline-flex flex-1 sm:flex-none">
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    className="text-violet-300 border-violet-500/30 hover:bg-violet-500/10 hover:text-violet-200 w-full"
-                                  >
-                                    <MessageCircle className="w-4 h-4 mr-1" />
-                                    {isZh ? '查看留言' : 'View Message'}
-                                  </Button>
-                                </Link>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-violet-300 border-violet-500/30 hover:bg-violet-500/10 hover:text-violet-200 w-full"
+                                  onClick={() => openMessageModal(booking.id)}
+                                >
+                                  <MessageCircle className="w-4 h-4 mr-1" />
+                                  {isZh ? '查看留言' : 'View Message'}
+                                </Button>
                                 <Button
                                   size="sm"
                                   variant="outline"
