@@ -67,6 +67,8 @@ interface Booking {
   reschedule_notice_read?: boolean
   refund_status?: string
   refund_reason?: string
+  question_text?: string | null
+  question_images?: string[] | null
   refund_requested_at?: string
   refund_processed_at?: string
   stripe_refund_id?: string
@@ -314,7 +316,23 @@ export default function UserDashboard() {
       const msgData = await msgRes.json()
       const countData = await countRes.json()
       if (msgData.messages) {
-        setSelectedMessageHistory(msgData.messages)
+        // 将初始咨询问题作为第一条消息 prepend
+        const initialMessages = []
+        if (relatedBooking?.question_text) {
+          initialMessages.push({
+            id: 'initial-question',
+            booking_id: bookingId,
+            sender_id: relatedBooking.user_id || '',
+            sender_type: 'user',
+            sender_name: isZh ? '我的咨询' : 'My Question',
+            content: relatedBooking.question_text,
+            image_url: null,
+            audio_url: null,
+            source: 'initial',
+            created_at: relatedBooking.created_at,
+          })
+        }
+        setSelectedMessageHistory([...initialMessages, ...msgData.messages])
       }
       if (countData.userRemaining !== undefined) {
         setFollowUpCount({
@@ -353,7 +371,22 @@ export default function UserDashboard() {
         })
         const msgData = await msgRes.json()
         if (msgData.messages) {
-          setSelectedMessageHistory(msgData.messages)
+          const initialMessages = []
+          if (selectedMessageBooking?.question_text) {
+            initialMessages.push({
+              id: 'initial-question',
+              booking_id: selectedMessageBooking.id,
+              sender_id: selectedMessageBooking.user_id || '',
+              sender_type: 'user',
+              sender_name: isZh ? '我的咨询' : 'My Question',
+              content: selectedMessageBooking.question_text,
+              image_url: null,
+              audio_url: null,
+              source: 'initial',
+              created_at: selectedMessageBooking.created_at,
+            })
+          }
+          setSelectedMessageHistory([...initialMessages, ...msgData.messages])
         }
       } else {
         alert(data.error || 'Failed to send')
