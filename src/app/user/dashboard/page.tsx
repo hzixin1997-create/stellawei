@@ -1545,7 +1545,7 @@ export default function UserDashboard() {
                           className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm ${
                             msg.sender_type === 'master'
                               ? 'bg-white/10 text-white/90 rounded-tl-none'
-                              : 'bg-violet-500/20 text-violet-800 rounded-tr-none'
+                              : 'bg-violet-600/30 text-white/95 rounded-tr-none'
                           }`}
                         >
                           {msg.image_url ? (
