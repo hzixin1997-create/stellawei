@@ -1232,7 +1232,7 @@ export default function UserDashboard() {
           {showReviewModal && reviewTargetBooking && (
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
               <div className="bg-[#1a1a2e] rounded-2xl p-4 sm:p-6 max-w-md w-full max-h-[85vh] overflow-y-auto">
-                <h3 className="text-xl font-bold text-center mb-4">
+                <h3 className="text-xl font-bold text-center text-white mb-4">
                   {isZh ? '评价本次咨询' : 'Rate this Consultation'}
                 </h3>
                 <p className="text-white/60 text-center mb-6">
@@ -1312,7 +1312,7 @@ export default function UserDashboard() {
           {showRescheduleModal && rescheduleBooking && (
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
               <div className="bg-[#1a1a2e] rounded-2xl p-4 sm:p-6 max-w-md w-full max-h-[85vh] overflow-y-auto">
-                <h3 className="text-xl font-bold text-center mb-4">
+                <h3 className="text-xl font-bold text-center text-white mb-4">
                   {isZh ? '修改预约时间' : 'Reschedule Booking'}
                 </h3>
                 <p className="text-white/60 text-center mb-2 text-sm">

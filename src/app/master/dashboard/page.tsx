@@ -1555,7 +1555,7 @@ export default function MasterDashboard() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
           <div className="bg-[#1a1a2e] rounded-xl p-6 w-full max-w-lg mx-4 shadow-xl max-h-[80vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">
+              <h3 className="text-lg font-semibold text-white">
                 {isZh ? '历史消息' : 'Message History'}
               </h3>
               <button
@@ -1634,7 +1634,7 @@ export default function MasterDashboard() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
           <div className="bg-[#1a1a2e] rounded-xl p-6 w-full max-w-md mx-4 shadow-xl">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">
+              <h3 className="text-lg font-semibold text-white">
                 {isZh ? '给客户发消息' : 'Send Message'}
               </h3>
               <button
@@ -1701,7 +1701,7 @@ export default function MasterDashboard() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
           <div className="bg-[#1a1a2e] rounded-xl p-6 w-full max-w-lg mx-4 shadow-xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">
+              <h3 className="text-lg font-semibold text-white">
                 {isZh ? '查看历史' : 'View History'}
               </h3>
               <button
@@ -1810,7 +1810,7 @@ export default function MasterDashboard() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
           <div className="bg-[#1a1a2e] rounded-xl p-6 w-full max-w-lg mx-4 shadow-xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">
+              <h3 className="text-lg font-semibold text-white">
                 {isZh ? '查看评价' : 'View Review'}
               </h3>
               <button
@@ -1883,7 +1883,7 @@ export default function MasterDashboard() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
           <div className="bg-[#1a1a2e] rounded-xl p-6 w-full max-w-lg mx-4 shadow-xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">
+              <h3 className="text-lg font-semibold text-white">
                 {isZh ? '查看留言' : 'View Message'}
               </h3>
               <button
@@ -2089,7 +2089,7 @@ export default function MasterDashboard() {
       {showRescheduleModal && rescheduleBooking && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
           <div className="bg-[#1a1a2e] rounded-2xl p-4 sm:p-6 max-w-md w-full max-h-[85vh] overflow-y-auto">
-            <h3 className="text-xl font-bold text-center mb-4">
+            <h3 className="text-xl font-bold text-center text-white mb-4">
               {isZh ? '修改预约时间' : 'Reschedule Booking'}
             </h3>
             <p className="text-white/60 text-center mb-2 text-sm">
