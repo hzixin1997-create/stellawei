@@ -1231,7 +1231,7 @@ export default function UserDashboard() {
           {/* 评价弹窗 */}
           {showReviewModal && reviewTargetBooking && (
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
-              <div className="bg-white rounded-2xl p-4 sm:p-6 max-w-md w-full max-h-[85vh] overflow-y-auto">
+              <div className="bg-[#1a1a2e] rounded-2xl p-4 sm:p-6 max-w-md w-full max-h-[85vh] overflow-y-auto">
                 <h3 className="text-xl font-bold text-center mb-4">
                   {isZh ? '评价本次咨询' : 'Rate this Consultation'}
                 </h3>
@@ -1311,7 +1311,7 @@ export default function UserDashboard() {
           {/* 修改预约时间弹窗 */}
           {showRescheduleModal && rescheduleBooking && (
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
-              <div className="bg-white rounded-2xl p-4 sm:p-6 max-w-md w-full max-h-[85vh] overflow-y-auto">
+              <div className="bg-[#1a1a2e] rounded-2xl p-4 sm:p-6 max-w-md w-full max-h-[85vh] overflow-y-auto">
                 <h3 className="text-xl font-bold text-center mb-4">
                   {isZh ? '修改预约时间' : 'Reschedule Booking'}
                 </h3>
@@ -1360,7 +1360,7 @@ export default function UserDashboard() {
                           className={`text-xs py-2 px-1 rounded-lg border transition-colors ${
                             rescheduleSelectedTime === slot
                               ? 'bg-violet-600 text-white border-violet-600'
-                              : 'bg-white text-white/80 border-white/15 hover:border-violet-400 hover:text-violet-300'
+                              : 'bg-white/10 text-white/80 border-white/15 hover:border-violet-400 hover:text-violet-300'
                           }`}
                         >
                           {slot}
@@ -1400,7 +1400,7 @@ export default function UserDashboard() {
           {/* Reschedule 通知弹窗 */}
           {showNoticeModal && noticeBooking && (
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
-              <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl">
+              <div className="bg-[#1a1a2e] rounded-2xl p-6 max-w-sm w-full shadow-xl">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center">
                     <Clock className="w-5 h-5 text-amber-300" />
@@ -1430,7 +1430,7 @@ export default function UserDashboard() {
           {/* 查看留言历史弹窗 */}
           {showMessageModal && selectedMessageBooking && (
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
-              <div className="bg-white rounded-2xl p-4 sm:p-6 max-w-md w-full max-h-[85vh] overflow-y-auto">
+              <div className="bg-[#1a1a2e] rounded-2xl p-4 sm:p-6 max-w-md w-full max-h-[85vh] overflow-y-auto">
                 <h3 className="text-lg font-bold text-center mb-4">
                   {isZh ? '留言记录' : 'Message History'}
                 </h3>
@@ -1506,7 +1506,7 @@ export default function UserDashboard() {
       {/* 时区修改弹窗 */}
           {showTimezoneModal && (
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
-              <div className="bg-white rounded-2xl p-4 sm:p-6 max-w-md w-full shadow-xl">
+              <div className="bg-[#1a1a2e] rounded-2xl p-4 sm:p-6 max-w-md w-full shadow-xl">
                 <h3 className="text-lg font-bold text-center mb-4">
                   {isZh ? '修改时区' : 'Change Timezone'}
                 </h3>
@@ -1516,7 +1516,7 @@ export default function UserDashboard() {
                 <select
                   value={timezoneInput}
                   onChange={(e) => setTimezoneInput(e.target.value)}
-                  className="w-full border border-white/10 rounded-lg p-3 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
+                  className="w-full border border-white/10 rounded-lg p-3 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-violet-500 bg-[#1a1a2e] text-white/80"
                 >
                   <option value="">{isZh ? '-- 选择时区 --' : '-- Select timezone --'}</option>
                   <option value="Asia/Shanghai">{isZh ? '中国 (北京/上海)' : 'China (Beijing/Shanghai)'}</option>
