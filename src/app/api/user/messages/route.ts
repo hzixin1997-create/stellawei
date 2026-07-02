@@ -38,12 +38,13 @@ export async function GET(request: Request) {
       return NextResponse.json({ messages: [], bookings: [] });
     }
 
-    // 2. 获取师傅发的所有消息
+    // 2. 获取师傅发的 follow_up 消息（从"我的顾客"板块发的）
     const { data: messages, error: messagesError } = await supabase
       .from('messages')
       .select('*')
       .in('booking_id', bookingIds)
       .eq('sender_type', 'master')
+      .eq('source', 'follow_up')
       .order('created_at', { ascending: false });
 
     if (messagesError) {
