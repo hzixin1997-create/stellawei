@@ -302,7 +302,20 @@ export default function UserDashboard() {
     try {
       const parsed = JSON.parse(content)
       if (parsed.enc && parsed.data && parsed.iv) {
-        const keyBase64 = getChatKey(bookingId)
+        let keyBase64 = getChatKey(bookingId)
+        if (!keyBase64) {
+          // 本地没有密钥，尝试从 API 获取
+          try {
+            const keyRes = await fetch(`/api/chat/${bookingId}/key`)
+            const keyData = await keyRes.json()
+            if (keyData.key) {
+              keyBase64 = keyData.key
+              storeChatKey(bookingId, keyData.key)
+            }
+          } catch (e) {
+            console.error('[decrypt] fetch key error:', e)
+          }
+        }
         if (!keyBase64) return content
         const key = await importKey(keyBase64)
         return await decryptMessage(key, parsed.data, parsed.iv)
