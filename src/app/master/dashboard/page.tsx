@@ -1438,7 +1438,6 @@ export default function MasterDashboard() {
                                     className="text-violet-300 border-violet-500/30 hover:bg-violet-500/10 w-full"
                                     onClick={() => openMessageModal(booking)}
                                   >
-                                  >
                                     <MessageSquare className="w-4 h-4 mr-1" />
                                     {isZh ? '查看留言' : 'View Message'}
                                   </Button>
