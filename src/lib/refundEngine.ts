@@ -229,7 +229,14 @@ export class RefundEngine {
       })
       .eq('id', bookingId);
 
-    // 4. 记录退款日志
+    // 4. 发送退款通知（飞书）
+    try {
+      await this.sendRefundFeishuNotification(bookingId, requestedBy, requestedByEmail, reason, eligibility.autoRefund, supabase);
+    } catch (notifyErr) {
+      console.error('[RefundEngine] Feishu notification failed:', notifyErr);
+    }
+
+    // 5. 记录退款日志
     await this.logRefundAction({
       refundRequestId: refundRequest.id,
       bookingId,
@@ -440,6 +447,85 @@ export class RefundEngine {
       .order('created_at', { ascending: false });
 
     return data || [];
+  }
+
+  // ==================== 退款通知 ====================
+
+  /**
+   * 发送退款申请通知到飞书
+   */
+  static async sendRefundFeishuNotification(
+    bookingId: string,
+    requestedBy: RefundRequester,
+    requestedByEmail: string | undefined,
+    reason: string | undefined,
+    autoRefund: boolean,
+    supabase: any
+  ) {
+    const FEISHU_WEBHOOK = process.env.FEISHU_WEBHOOK_URL;
+    if (!FEISHU_WEBHOOK) {
+      console.warn('[RefundEngine] FEISHU_WEBHOOK_URL not configured');
+      return;
+    }
+
+    try {
+      // 获取订单信息
+      const { data: booking } = await supabase
+        .from('bookings')
+        .select('id, order_number, master_id, user_id, total_amount, currency, consultation_type, scheduled_date, scheduled_time')
+        .eq('id', bookingId)
+        .single();
+
+      if (!booking) return;
+
+      // 获取师傅名称
+      const { data: master } = await supabase
+        .from('masters')
+        .select('display_name, display_nameCn')
+        .eq('id', booking.master_id)
+        .single();
+
+      // 获取用户信息
+      const { data: user } = await supabase
+        .from('profiles')
+        .select('full_name, email')
+        .eq('id', booking.user_id)
+        .single();
+
+      const orderNumber = booking.order_number || booking.id.slice(0, 8);
+      const masterName = master?.display_nameCn || master?.display_name || booking.master_id;
+      const userName = user?.full_name || user?.email || 'Unknown';
+      const amount = booking.total_amount || 0;
+      const refundType = requestedBy === 'user' ? '用户申请' : requestedBy === 'master' ? '师傅申请' : '管理员操作';
+      const actionText = autoRefund ? '已自动批准' : '待人工审核';
+
+      const content = `⚠️ 退款申请通知
+
+订单号：${orderNumber}
+师傅：${masterName}
+用户：${userName}
+金额：$${amount.toFixed(2)} ${booking.currency || 'USD'}
+申请类型：${refundType}
+退款原因：${reason || '未填写'}
+处理状态：${actionText}
+
+${autoRefund ? '⚠️ 此订单已自动退款，无需人工处理' : '请登录总裁后台审核'}
+
+查看订单：https://stellawei.org/admin/orders`;
+
+      await fetch(FEISHU_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          msg_type: 'text',
+          content: { text: content },
+        }),
+      });
+
+      console.log('[RefundEngine] Feishu refund notification sent for booking:', bookingId);
+    } catch (err) {
+      console.error('[RefundEngine] Failed to send Feishu refund notification:', err);
+    }
   }
 
   // ==================== 退款日志 ====================
