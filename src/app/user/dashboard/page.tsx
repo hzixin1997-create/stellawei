@@ -1487,14 +1487,9 @@ export default function UserDashboard() {
           {showMessageModal && selectedMessageBooking && (
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
               <div className="bg-[#1a1a2e] rounded-2xl p-4 sm:p-6 max-w-md w-full max-h-[85vh] overflow-y-auto">
-                <h3 className="text-lg font-bold text-center mb-4">
-                  {isZh ? '留言记录' : 'Message History'}
+                <h3 className="text-lg font-bold text-center mb-4 text-white">
+                  {isZh ? '留言咨询' : 'Message Consultation'}
                 </h3>
-                <p className="text-sm text-white/60 text-center mb-4">
-                  {isZh
-                    ? `${masters[selectedMessageBooking.master_id]?.nameCn || selectedMessageBooking.master_id || '师傅'} 的回复`
-                    : `Replies from ${masters[selectedMessageBooking.master_id]?.name || selectedMessageBooking.master_id || 'Master'}`}
-                </p>
 
                 {historyLoading ? (
                   <div className="flex justify-center py-8">
@@ -1503,7 +1498,7 @@ export default function UserDashboard() {
                 ) : selectedMessageHistory.length === 0 ? (
                   <div className="text-center py-8">
                     <MessageSquare className="w-8 h-8 text-white/40 mx-auto mb-2" />
-                    <p className="text-white/60 text-sm">{isZh ? '暂无留言记录' : 'No messages yet'}</p>
+                    <p className="text-white/60 text-sm">{isZh ? '等待师傅24小时内回复' : 'Waiting for advisor reply within 24 hours'}</p>
                   </div>
                 ) : (
                   <div className="space-y-3 mb-4 max-h-[50vh] overflow-y-auto">
