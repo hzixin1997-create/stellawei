@@ -52,7 +52,31 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: getMessage('FORBIDDEN_NOT_MASTER', request) }, { status: 403 });
     }
 
-    // 2. 插入消息
+    // 2. 如果是留言咨询回复，检查师傅回复次数限制
+    if (message_source === 'order_reply') {
+      const { data: masterReplies, error: countError } = await supabase
+        .from('messages')
+        .select('id')
+        .eq('booking_id', bookingId)
+        .eq('sender_type', 'master')
+        .eq('source', 'order_reply');
+
+      if (countError) {
+        console.error('Count master replies error:', countError);
+        return NextResponse.json({ error: 'Failed to count replies' }, { status: 500 });
+      }
+
+      const MAX_REPLIES = 3;
+      const usedCount = masterReplies?.length || 0;
+      if (usedCount >= MAX_REPLIES) {
+        return NextResponse.json(
+          { error: 'Reply limit reached', code: 'LIMIT_REACHED', used: usedCount, max: MAX_REPLIES },
+          { status: 400 }
+        );
+      }
+    }
+
+    // 3. 插入消息
     const { data: message, error: msgError } = await supabase
       .from('messages')
       .insert({
@@ -72,19 +96,6 @@ export async function POST(request: Request) {
         { error: getMessage('SEND_FAILED', request), message: msgError.message },
         { status: 500 }
       );
-    }
-
-    // 3. 如果是留言咨询，自动完成订单
-    try {
-      const { error: updateError } = await supabase
-        .from('bookings')
-        .update({ status: 'completed', updated_at: new Date().toISOString() })
-        .eq('id', bookingId)
-        .eq('consultation_type', 'message');
-      
-      if (updateError) {
-      }
-    } catch (err) {
     }
 
     return NextResponse.json({ success: true, message });

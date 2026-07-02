@@ -126,6 +126,9 @@ export default function MasterDashboard() {
   const [selectedBooking, setSelectedBooking] = useState<any>(null)
   const [messageReply, setMessageReply] = useState('')
   const [sendingReply, setSendingReply] = useState(false)
+  const [masterReplyCount, setMasterReplyCount] = useState(0)
+  const [messageHistory, setMessageHistory] = useState<any[]>([])
+  const [completingMessage, setCompletingMessage] = useState(false)
   const [customers, setCustomers] = useState<any[]>([])
   const [customersLoading, setCustomersLoading] = useState(false)
   const [bookingsPage, setBookingsPage] = useState(1)
@@ -855,6 +858,33 @@ export default function MasterDashboard() {
     }
   }
 
+  // 打开留言弹窗
+  const openMessageModal = async (booking: any) => {
+    setSelectedBooking(booking)
+    setShowMessageModal(true)
+    setMessageReply('')
+    setMessageHistory([])
+    setMasterReplyCount(0)
+    // 加载消息列表并统计师傅回复次数
+    try {
+      const supabase = createClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch(`/api/chat/${booking.id}/messages`, {
+        headers: { authorization: `Bearer ${session?.access_token || ''}` },
+      })
+      if (res.ok) {
+        const data = await res.json()
+        const messages = data.messages || []
+        setMessageHistory(messages)
+        // 统计师傅的 order_reply 消息数
+        const masterReplies = messages.filter((m: any) => m.sender_type === 'master' && m.source === 'order_reply')
+        setMasterReplyCount(masterReplies.length)
+      }
+    } catch (err) {
+      console.error('Load message history error:', err)
+    }
+  }
+
   // 回复留言咨询
   const handleReplyMessage = async () => {
     if (!selectedBooking || !messageReply.trim()) return
@@ -874,14 +904,63 @@ export default function MasterDashboard() {
       if (!res.ok) {
         throw new Error(data.error || 'Reply failed')
       }
-      alert(isZh ? '回复已发送' : 'Reply sent')
       setMessageReply('')
-      setShowMessageModal(false)
-      setSelectedBooking(null)
+      setMasterReplyCount(prev => prev + 1)
+      // 刷新弹窗中的消息列表
+      await refreshMessageHistory(selectedBooking.id)
     } catch (err: any) {
       alert(isZh ? `回复失败: ${err.message}` : `Reply failed: ${err.message}`)
     } finally {
       setSendingReply(false)
+    }
+  }
+
+  // 结束留言咨询
+  const handleCompleteMessage = async () => {
+    if (!selectedBooking) return
+    setCompletingMessage(true)
+    try {
+      const supabase = createClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch('/api/master/complete-message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${session?.access_token || ''}`,
+        },
+        body: JSON.stringify({ bookingId: selectedBooking.id }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data.error || 'Complete failed')
+      }
+      alert(isZh ? '咨询已结束' : 'Consultation completed')
+      setShowMessageModal(false)
+      setSelectedBooking(null)
+      setMessageReply('')
+      // 刷新订单列表
+      setBookings(prev => prev.map(b => b.id === selectedBooking.id ? { ...b, status: 'completed' } : b))
+    } catch (err: any) {
+      alert(isZh ? `结束失败: ${err.message}` : `Complete failed: ${err.message}`)
+    } finally {
+      setCompletingMessage(false)
+    }
+  }
+
+  // 刷新弹窗消息历史
+  const refreshMessageHistory = async (bookingId: string) => {
+    try {
+      const supabase = createClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch(`/api/chat/${bookingId}/messages`, {
+        headers: { authorization: `Bearer ${session?.access_token || ''}` },
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setMessageHistory(data.messages || [])
+      }
+    } catch (err) {
+      console.error('Refresh message history error:', err)
     }
   }
 
@@ -1357,10 +1436,8 @@ export default function MasterDashboard() {
                                     size="sm"
                                     variant="outline"
                                     className="text-violet-300 border-violet-500/30 hover:bg-violet-500/10 w-full"
-                                    onClick={() => {
-                                      setSelectedBooking(booking)
-                                      setShowMessageModal(true)
-                                    }}
+                                    onClick={() => openMessageModal(booking)}
+                                  >
                                   >
                                     <MessageSquare className="w-4 h-4 mr-1" />
                                     {isZh ? '查看留言' : 'View Message'}
@@ -1398,10 +1475,7 @@ export default function MasterDashboard() {
                                     size="sm"
                                     variant="outline"
                                     className="text-violet-300 border-violet-500/30 hover:bg-violet-500/10 w-full"
-                                    onClick={() => {
-                                      setSelectedBooking(booking)
-                                      setShowMessageModal(true)
-                                    }}
+                                    onClick={() => openMessageModal(booking)}
                                   >
                                     <MessageSquare className="w-4 h-4 mr-1" />
                                     {isZh ? '查看留言' : 'View Message'}
@@ -1981,98 +2055,155 @@ export default function MasterDashboard() {
       {/* 查看留言弹窗 */}
       {showMessageModal && selectedBooking && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
-          <div className="bg-[#1a1a2e] rounded-xl p-6 w-full max-w-lg mx-4 shadow-xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-white">
-                {isZh ? '查看留言' : 'View Message'}
-              </h3>
-              <button
-                onClick={() => {
-                  setShowMessageModal(false)
-                  setSelectedBooking(null)
-                  setMessageReply('')
-                }}
-                className="text-white/50 hover:text-white/70"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            {/* 用户问题 */}
-            <div className="bg-white/5 border border-white/15 rounded-lg p-4 mb-4">
-              <div className="flex items-center gap-2 mb-2">
-                <User className="w-4 h-4 text-white/50" />
-                <span className="text-sm font-medium text-white/70">
-                  {isZh ? '用户提问' : 'User Question'}
-                </span>
-              </div>
-              <p className="text-sm text-white/80 whitespace-pre-wrap">
-                {selectedBooking.question_text || (isZh ? '（无文字描述）' : '(No text description)')}
-              </p>
-              {selectedBooking.question_images && selectedBooking.question_images.length > 0 && (
-                <div className="flex gap-2 mt-3 flex-wrap">
-                  {selectedBooking.question_images.map((url: string, index: number) => (
-                    <Image
-                      key={index}
-                      src={url}
-                      alt={`Question image ${index + 1}`}
-                      width={96}
-                      height={96}
-                      className="object-cover rounded-lg cursor-pointer border"
-                      loading="lazy"
-                      onClick={() => window.open(url, '_blank')}
-                    />
-                  ))}
+          <div className="bg-[#1a1a2e] rounded-2xl p-4 sm:p-6 max-w-md w-full max-h-[85vh] overflow-y-auto">
+            <h3 className="text-lg font-bold text-center mb-4 text-white">
+              {isZh ? '查看留言' : 'View Message'}
+            </h3>
+
+            {/* 消息列表 */}
+            <div className="space-y-3 mb-4 max-h-[40vh] overflow-y-auto">
+              {/* 用户初始问题 */}
+              {selectedBooking.question_text && (
+                <div className="flex justify-end">
+                  <div className="max-w-[80%] rounded-2xl px-4 py-2 text-sm bg-violet-600/30 text-white/95 rounded-tr-none">
+                    <p className="whitespace-pre-wrap">{selectedBooking.question_text}</p>
+                    {selectedBooking.question_images && selectedBooking.question_images.length > 0 && (
+                      <div className="flex gap-2 mt-2 flex-wrap">
+                        {selectedBooking.question_images.map((url: string, index: number) => (
+                          <Image
+                            key={index}
+                            src={url}
+                            alt={`Question image ${index + 1}`}
+                            width={96}
+                            height={96}
+                            className="object-cover rounded-lg cursor-pointer border"
+                            loading="lazy"
+                            onClick={() => window.open(url, '_blank')}
+                          />
+                        ))}
+                      </div>
+                    )}
+                    <p className="text-xs text-white/50 mt-1 text-right">
+                      {selectedBooking.created_at ? new Date(selectedBooking.created_at).toLocaleString('zh-CN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''}
+                    </p>
+                  </div>
                 </div>
               )}
+              {/* 历史消息 */}
+              {messageHistory.map((msg: any) => (
+                <div
+                  key={msg.id}
+                  className={`flex ${msg.sender_type === 'master' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div
+                    className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm ${
+                      msg.sender_type === 'master'
+                        ? 'bg-violet-600/30 text-white/95 rounded-tr-none'
+                        : 'bg-white/10 text-white/90 rounded-tl-none'
+                    }`}
+                  >
+                    {msg.image_url ? (
+                      <Image
+                        src={msg.image_url}
+                        alt="Message image"
+                        width={200}
+                        height={150}
+                        className="rounded-lg cursor-pointer object-contain max-w-full h-auto"
+                        loading="lazy"
+                        onClick={() => window.open(msg.image_url, '_blank')}
+                      />
+                    ) : msg.audio_url ? (
+                      <audio src={msg.audio_url} controls className="w-full" />
+                    ) : (
+                      <p className="whitespace-pre-wrap">{msg.content}</p>
+                    )}
+                    <p className="text-xs text-white/50 mt-1 text-right">
+                      {new Date(msg.created_at).toLocaleString('zh-CN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
-            
-            {/* 师傅回复 */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-white/80 mb-2">
-                {isZh ? '您的回复' : 'Your Reply'}
-              </label>
-              <textarea
-                value={messageReply}
-                onChange={(e) => setMessageReply(e.target.value)}
-                placeholder={isZh ? '请写下您的回复...' : 'Write your reply...'}
-                className="w-full border rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 min-h-[120px] resize-y"
-                maxLength={1000}
-              />
-              <p className="text-xs text-white/50 mt-1 text-right">
-                {messageReply.length}/1000
+
+            {/* 剩余次数提示 */}
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-xs text-amber-300 font-medium">
+                {isZh
+                  ? `剩余回复次数：${Math.max(0, 3 - masterReplyCount)}/3`
+                  : `Replies remaining: ${Math.max(0, 3 - masterReplyCount)}/3`}
               </p>
             </div>
-            
-            <div className="flex justify-end gap-2">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setShowMessageModal(false)
-                  setSelectedBooking(null)
-                  setMessageReply('')
-                }}
-              >
-                {isZh ? '关闭' : 'Close'}
-              </Button>
-              <Button
-                className="bg-violet-600 hover:bg-violet-700"
-                onClick={handleReplyMessage}
-                disabled={!messageReply.trim() || sendingReply}
-              >
-                {sendingReply ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-1 animate-spin" />
-                    {isZh ? '发送中...' : 'Sending...'}
-                  </>
-                ) : (
-                  <>
-                    <Send className="w-4 h-4 mr-1" />
-                    {isZh ? '发送回复' : 'Send Reply'}
-                  </>
-                )}
-              </Button>
-            </div>
+
+            {/* 回复输入区 */}
+            {masterReplyCount < 3 ? (
+              <>
+                <textarea
+                  value={messageReply}
+                  onChange={(e) => setMessageReply(e.target.value)}
+                  placeholder={isZh ? '请写下您的回复...' : 'Write your reply...'}
+                  className="w-full border border-white/20 rounded-lg p-3 text-sm bg-white/5 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-violet-500 min-h-[80px] resize-y"
+                  maxLength={1000}
+                />
+                <p className="text-xs text-white/50 mt-1 text-right">
+                  {messageReply.length}/1000
+                </p>
+                <Button
+                  className="w-full bg-violet-600 hover:bg-violet-700 mt-2"
+                  onClick={handleReplyMessage}
+                  disabled={!messageReply.trim() || sendingReply}
+                >
+                  {sendingReply ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                      {isZh ? '发送中...' : 'Sending...'}
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4 mr-1" />
+                      {isZh ? '发送回复' : 'Send Reply'}
+                    </>
+                  )}
+                </Button>
+              </>
+            ) : (
+              <p className="text-xs text-white/40 text-center mb-3">
+                {isZh ? '回复次数已用完' : 'Reply limit reached'}
+              </p>
+            )}
+
+            {/* 结束咨询按钮 */}
+            <Button
+              variant="outline"
+              className="w-full mt-2 border-green-500/30 text-green-300 hover:bg-green-500/10 hover:text-green-200"
+              onClick={handleCompleteMessage}
+              disabled={completingMessage}
+            >
+              {completingMessage ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                  {isZh ? '处理中...' : 'Processing...'}
+                </>
+              ) : (
+                <>
+                  <CheckCircle className="w-4 h-4 mr-1" />
+                  {isZh ? '结束咨询' : 'Complete Consultation'}
+                </>
+              )}
+            </Button>
+
+            <Button
+              variant="outline"
+              className="w-full mt-2"
+              onClick={() => {
+                setShowMessageModal(false)
+                setSelectedBooking(null)
+                setMessageReply('')
+                setMessageHistory([])
+                setMasterReplyCount(0)
+              }}
+            >
+              {isZh ? '关闭' : 'Close'}
+            </Button>
           </div>
         </div>
       )}
