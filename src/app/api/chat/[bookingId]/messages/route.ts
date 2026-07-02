@@ -61,10 +61,12 @@ export async function GET(
     }
 
     // 查询消息 - Voice Engine: 包含所有 audio 相关字段
+    // 排除师傅从"我的顾客"板块发的 follow_up 消息（不在实时聊天中显示）
     const { data: messages, error } = await supabase
       .from('messages')
       .select('*')
       .eq('booking_id', bookingId)
+      .or('source.eq.chat,source.is.null')
       .order('created_at', { ascending: true });
 
     if (error) {
