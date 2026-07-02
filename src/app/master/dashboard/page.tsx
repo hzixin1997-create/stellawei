@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/client'
 import { getConsultationDisplayStatus, formatBookingTimeDisplay } from '@/lib/utils'
 import { isMasterEmail } from '@/lib/master-auth'
+import { decryptMessage, importKey, getChatKey } from '@/lib/chatCrypto'
 import {
   ShoppingBag,
   Clock,
@@ -741,6 +742,23 @@ export default function MasterDashboard() {
   }
 
   // 给客户发消息
+  // 解密消息内容
+  const decryptMessageContent = async (content: string, bookingId: string): Promise<string> => {
+    if (!content) return content
+    try {
+      const parsed = JSON.parse(content)
+      if (parsed.enc && parsed.data && parsed.iv) {
+        const keyBase64 = getChatKey(bookingId)
+        if (!keyBase64) return content
+        const key = await importKey(keyBase64)
+        return await decryptMessage(key, parsed.data, parsed.iv)
+      }
+    } catch {
+      // 不是加密格式，返回原始内容
+    }
+    return content
+  }
+
   // 查看客户历史消息
   const handleViewCustomerMessages = async (customer: any) => {
     setSelectedCustomer(customer)
@@ -764,7 +782,16 @@ export default function MasterDashboard() {
       const msgData = await msgRes.json()
       const countData = await countRes.json()
       if (msgRes.ok) {
-        setCustomerMessages(msgData.messages || [])
+        const msgs = msgData.messages || []
+        // 解密加密消息
+        const decryptedMsgs = await Promise.all(
+          msgs.map(async (msg: any) => {
+            if (!msg.content) return msg
+            const decrypted = await decryptMessageContent(msg.content, msg.booking_id)
+            return { ...msg, content: decrypted }
+          })
+        )
+        setCustomerMessages(decryptedMsgs)
       }
       if (countData.masterRemaining !== undefined) {
         setFollowUpCount({
@@ -807,7 +834,17 @@ export default function MasterDashboard() {
           headers: { authorization: `Bearer ${session?.access_token || ''}` },
         })
         const msgData = await msgRes.json()
-        if (msgRes.ok) setCustomerMessages(msgData.messages || [])
+        if (msgRes.ok) {
+          const msgs = msgData.messages || []
+          const decryptedMsgs = await Promise.all(
+            msgs.map(async (msg: any) => {
+              if (!msg.content) return msg
+              const decrypted = await decryptMessageContent(msg.content, msg.booking_id)
+              return { ...msg, content: decrypted }
+            })
+          )
+          setCustomerMessages(decryptedMsgs)
+        }
       } else {
         alert(data.error || 'Failed to send')
       }

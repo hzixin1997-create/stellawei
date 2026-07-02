@@ -10,6 +10,7 @@ import { ShoppingBag, MessageSquare, ArrowRight, Clock, User, Home, LogOut, Mess
 import Image from 'next/image'
 import RescheduleCalendar from '@/components/RescheduleCalendar'
 import Link from 'next/link'
+import { decryptMessage, importKey, getChatKey } from '@/lib/chatCrypto'
 
 import { isConsultationExpired, getConsultationDisplayStatus, formatBookingTimeDisplay } from '@/lib/utils'
 import {
@@ -295,6 +296,23 @@ export default function UserDashboard() {
     return session?.access_token || ''
   }
 
+  // 解密消息内容
+  const decryptMessageContent = async (content: string, bookingId: string): Promise<string> => {
+    if (!content) return content
+    try {
+      const parsed = JSON.parse(content)
+      if (parsed.enc && parsed.data && parsed.iv) {
+        const keyBase64 = getChatKey(bookingId)
+        if (!keyBase64) return content
+        const key = await importKey(keyBase64)
+        return await decryptMessage(key, parsed.data, parsed.iv)
+      }
+    } catch {
+      // 不是加密格式，返回原始内容
+    }
+    return content
+  }
+
   // 打开消息历史弹窗
   const openMessageModal = async (bookingId: string) => {
     const relatedBooking = bookings.find((b: Booking) => b.id === bookingId)
@@ -314,7 +332,17 @@ export default function UserDashboard() {
       ])
       const msgData = await msgRes.json()
       const countData = await countRes.json()
-      if (msgData.messages) setSelectedMessageHistory(msgData.messages)
+      if (msgData.messages) {
+        const msgs = msgData.messages
+        const decryptedMsgs = await Promise.all(
+          msgs.map(async (msg: any) => {
+            if (!msg.content) return msg
+            const decrypted = await decryptMessageContent(msg.content, bookingId)
+            return { ...msg, content: decrypted }
+          })
+        )
+        setSelectedMessageHistory(decryptedMsgs)
+      }
       if (countData.userRemaining !== undefined) {
         setFollowUpCount({
           userRemaining: countData.userRemaining,
@@ -351,7 +379,17 @@ export default function UserDashboard() {
           headers: { authorization: `Bearer ${token}` },
         })
         const msgData = await msgRes.json()
-        if (msgData.messages) setSelectedMessageHistory(msgData.messages)
+        if (msgData.messages) {
+          const msgs = msgData.messages
+          const decryptedMsgs = await Promise.all(
+            msgs.map(async (msg: any) => {
+              if (!msg.content) return msg
+              const decrypted = await decryptMessageContent(msg.content, selectedMessageBooking.id)
+              return { ...msg, content: decrypted }
+            })
+          )
+          setSelectedMessageHistory(decryptedMsgs)
+        }
       } else {
         alert(data.error || 'Failed to send')
       }
