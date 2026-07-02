@@ -1542,7 +1542,7 @@ export default function UserDashboard() {
                   {followUpCount.userRemaining > 0 ? (
                     <>
                       <div className="flex items-center justify-between mb-2">
-                        <p className="text-xs text-white/50">
+                        <p className="text-xs text-amber-300 font-medium">
                           {isZh
                             ? `剩余补充次数：${followUpCount.userRemaining}/3`
                             : `Follow-ups remaining: ${followUpCount.userRemaining}/3`}

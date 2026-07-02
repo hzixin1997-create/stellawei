@@ -1678,7 +1678,7 @@ export default function MasterDashboard() {
               {followUpCount.masterRemaining > 0 ? (
                 <>
                   <div className="flex items-center justify-between mb-2">
-                    <p className="text-xs text-white/50">
+                    <p className="text-xs text-amber-300 font-medium">
                       {isZh
                         ? `剩余回复次数：${followUpCount.masterRemaining}/3`
                         : `Replies remaining: ${followUpCount.masterRemaining}/3`}
