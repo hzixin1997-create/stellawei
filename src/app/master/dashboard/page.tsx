@@ -8,7 +8,6 @@ import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/client'
 import { getConsultationDisplayStatus, formatBookingTimeDisplay } from '@/lib/utils'
 import { isMasterEmail } from '@/lib/master-auth'
-import { decryptMessage, importKey, getChatKey, storeChatKey, decryptChatMessages } from '@/lib/chatCrypto'
 import {
   ShoppingBag,
   Clock,
@@ -765,10 +764,7 @@ export default function MasterDashboard() {
       const msgData = await msgRes.json()
       const countData = await countRes.json()
       if (msgRes.ok) {
-        const msgs = msgData.messages || []
-        // 使用通用解密工具
-        const decryptedMsgs = await decryptChatMessages(msgs, bookingId)
-        setCustomerMessages(decryptedMsgs)
+        setCustomerMessages(msgData.messages || [])
       }
       if (countData.masterRemaining !== undefined) {
         setFollowUpCount({
@@ -812,9 +808,7 @@ export default function MasterDashboard() {
         })
         const msgData = await msgRes.json()
         if (msgRes.ok) {
-          const msgs = msgData.messages || []
-          const decryptedMsgs = await decryptChatMessages(msgs, bookingId)
-          setCustomerMessages(decryptedMsgs)
+          setCustomerMessages(msgData.messages || [])
         }
       } else {
         alert(data.error || 'Failed to send')
@@ -1445,10 +1439,7 @@ export default function MasterDashboard() {
                                         })
                                         if (res.ok) {
                                           const data = await res.json()
-                                          const msgs = data.messages || []
-                                          // 使用通用解密工具
-                                          const decryptedMsgs = await decryptChatMessages(msgs, booking.id)
-                                          setHistoryMessages(decryptedMsgs)
+                                          setHistoryMessages(data.messages || [])
                                         }
                                       } catch (err) {
                                       } finally {

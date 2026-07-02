@@ -10,8 +10,6 @@ import { ShoppingBag, MessageSquare, ArrowRight, Clock, User, Home, LogOut, Mess
 import Image from 'next/image'
 import RescheduleCalendar from '@/components/RescheduleCalendar'
 import Link from 'next/link'
-import { decryptMessage, importKey, getChatKey, storeChatKey, decryptChatMessages } from '@/lib/chatCrypto'
-
 import { isConsultationExpired, getConsultationDisplayStatus, formatBookingTimeDisplay } from '@/lib/utils'
 import {
   WeChatBrowserModal,
@@ -316,10 +314,7 @@ export default function UserDashboard() {
       const msgData = await msgRes.json()
       const countData = await countRes.json()
       if (msgData.messages) {
-        const msgs = msgData.messages
-        // 使用通用解密工具
-        const decryptedMsgs = await decryptChatMessages(msgs, bookingId)
-        setSelectedMessageHistory(decryptedMsgs)
+        setSelectedMessageHistory(msgData.messages)
       }
       if (countData.userRemaining !== undefined) {
         setFollowUpCount({
@@ -358,9 +353,7 @@ export default function UserDashboard() {
         })
         const msgData = await msgRes.json()
         if (msgData.messages) {
-          const msgs = msgData.messages
-          const decryptedMsgs = await decryptChatMessages(msgs, selectedMessageBooking.id)
-          setSelectedMessageHistory(decryptedMsgs)
+          setSelectedMessageHistory(msgData.messages)
         }
       } else {
         alert(data.error || 'Failed to send')
