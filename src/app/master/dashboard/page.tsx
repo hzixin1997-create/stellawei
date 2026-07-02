@@ -1813,99 +1813,85 @@ export default function MasterDashboard() {
       {/* 查看历史弹窗（已完成订单） */}
       {showHistoryModal && historyBooking && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pb-[env(safe-area-inset-bottom)]">
-          <div className="bg-[#1a1a2e] rounded-xl p-6 w-full max-w-lg mx-4 shadow-xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-white">
-                {isZh ? '查看历史' : 'View History'}
-              </h3>
-              <button
-                onClick={() => {
-                  setShowHistoryModal(false)
-                  setHistoryBooking(null)
-                  setHistoryMessages([])
-                }}
-                className="text-white/50 hover:text-white/70"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+          <div className="bg-[#1a1a2e] rounded-2xl p-4 sm:p-6 max-w-md w-full max-h-[85vh] overflow-y-auto">
+            <h3 className="text-lg font-bold text-center mb-4 text-white">
+              {isZh ? '查看历史' : 'View History'}
+            </h3>
 
-            {/* 用户问题 */}
-            <div className="bg-white/5 border border-white/15 rounded-lg p-4 mb-4">
-              <div className="flex items-center gap-2 mb-2">
-                <User className="w-4 h-4 text-white/50" />
-                <span className="text-sm font-medium text-white/70">
-                  {isZh ? '用户提问' : 'User Question'}
-                </span>
+            {historyLoading ? (
+              <div className="flex justify-center py-8">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-violet-600" />
               </div>
-              <p className="text-sm text-white/80 whitespace-pre-wrap">
-                {historyBooking.question_text || (isZh ? '（无文字描述）' : '(No text description)')}
-              </p>
-              {historyBooking.question_images && historyBooking.question_images.length > 0 && (
-                <div className="flex gap-2 mt-3 flex-wrap">
-                  {historyBooking.question_images.map((url: string, index: number) => (
-                    <Image
-                      key={index}
-                      src={url}
-                      alt={`Question image ${index + 1}`}
-                      width={96}
-                      height={96}
-                      className="object-cover rounded-lg cursor-pointer border"
-                      loading="lazy"
-                      onClick={() => window.open(url, '_blank')}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* 师傅回复 */}
-            <div className="mb-4">
-              <h4 className="text-sm font-medium text-white/80 mb-2">
-                {isZh ? '师傅回复' : "Master's Reply"}
-              </h4>
-              {historyLoading ? (
-                <div className="flex items-center justify-center py-8">
-                  <Loader2 className="w-5 h-5 animate-spin text-white/50" />
-                </div>
-              ) : historyMessages.length === 0 ? (
-                <div className="text-center py-8 bg-white/5 rounded-lg">
-                  <p className="text-white/60 text-sm">
-                    {isZh ? '暂无回复' : 'No reply yet'}
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {historyMessages.map((msg: any) => (
-                    <div key={msg.id} className="bg-violet-500/10 border border-violet-500/30 rounded-lg p-3">
-                      <div className="flex items-center gap-2 mb-1">
-                        <Crown className="w-3 h-3 text-violet-300" />
-                        <span className="text-xs font-medium text-violet-300">{msg.sender_name}</span>
-                        <span className="text-xs text-violet-400">
-                          {new Date(msg.created_at).toLocaleString()}
-                        </span>
-                      </div>
-                      <p className="text-sm text-white/80 whitespace-pre-wrap">{msg.content}</p>
-                      {msg.image_url && (
+            ) : (
+              <div className="space-y-3 mb-4 max-h-[50vh] overflow-y-auto">
+                {/* 用户初始问题 */}
+                {historyBooking.question_text && (
+                  <div className="flex justify-end">
+                    <div className="max-w-[80%] rounded-2xl px-4 py-2 text-sm bg-violet-600/30 text-white/95 rounded-tr-none">
+                      <p>{historyBooking.question_text}</p>
+                      {historyBooking.question_images && historyBooking.question_images.length > 0 && (
+                        <div className="flex gap-2 mt-2 flex-wrap">
+                          {historyBooking.question_images.map((url: string, index: number) => (
+                            <Image
+                              key={index}
+                              src={url}
+                              alt={`Question image ${index + 1}`}
+                              width={96}
+                              height={96}
+                              className="object-cover rounded-lg cursor-pointer border"
+                              loading="lazy"
+                              onClick={() => window.open(url, '_blank')}
+                            />
+                          ))}
+                        </div>
+                      )}
+                      <p className="text-xs text-white/50 mt-1 text-right">
+                        {historyBooking.created_at ? new Date(historyBooking.created_at).toLocaleString('zh-CN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''}
+                      </p>
+                    </div>
+                  </div>
+                )}
+                {/* 消息列表 */}
+                {historyMessages.map((msg: any) => (
+                  <div
+                    key={msg.id}
+                    className={`flex ${msg.sender_type === 'master' ? 'justify-start' : 'justify-end'}`}
+                  >
+                    <div
+                      className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm ${
+                        msg.sender_type === 'master'
+                          ? 'bg-white/10 text-white/90 rounded-tl-none'
+                          : 'bg-violet-600/30 text-white/95 rounded-tr-none'
+                      }`}
+                    >
+                      {msg.image_url ? (
                         <Image
                           src={msg.image_url}
-                          alt="Reply image"
-                          width={400}
-                          height={300}
+                          alt="Message image"
+                          width={200}
+                          height={150}
                           className="rounded-lg cursor-pointer object-contain max-w-full h-auto"
                           loading="lazy"
                           onClick={() => window.open(msg.image_url, '_blank')}
                         />
+                      ) : msg.audio_url ? (
+                        <audio src={msg.audio_url} controls className="w-full" />
+                      ) : (
+                        <p className="whitespace-pre-wrap">{msg.content}</p>
                       )}
+                      <p className="text-xs text-white/50 mt-1 text-right">
+                        {new Date(msg.created_at).toLocaleString('zh-CN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                      </p>
                     </div>
-                  ))}
-                </div>
-              )}
-            </div>
+                  </div>
+                ))}
+              </div>
+            )}
 
             <div className="flex justify-end">
               <Button
                 variant="outline"
+                className="w-full"
                 onClick={() => {
                   setShowHistoryModal(false)
                   setHistoryBooking(null)
