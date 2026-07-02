@@ -49,6 +49,7 @@ const PAYMENT_TIMEOUT_MINUTES = 10
 
 interface Booking {
   id: string
+  user_id: string
   master_id: string
   service_id: string
   scheduled_date: string
