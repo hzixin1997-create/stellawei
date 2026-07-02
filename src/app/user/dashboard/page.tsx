@@ -10,7 +10,7 @@ import { ShoppingBag, MessageSquare, ArrowRight, Clock, User, Home, LogOut, Mess
 import Image from 'next/image'
 import RescheduleCalendar from '@/components/RescheduleCalendar'
 import Link from 'next/link'
-import { decryptMessage, importKey, getChatKey } from '@/lib/chatCrypto'
+import { decryptMessage, importKey, getChatKey, storeChatKey } from '@/lib/chatCrypto'
 
 import { isConsultationExpired, getConsultationDisplayStatus, formatBookingTimeDisplay } from '@/lib/utils'
 import {

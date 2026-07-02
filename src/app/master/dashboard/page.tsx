@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/client'
 import { getConsultationDisplayStatus, formatBookingTimeDisplay } from '@/lib/utils'
 import { isMasterEmail } from '@/lib/master-auth'
-import { decryptMessage, importKey, getChatKey } from '@/lib/chatCrypto'
+import { decryptMessage, importKey, getChatKey, storeChatKey } from '@/lib/chatCrypto'
 import {
   ShoppingBag,
   Clock,
