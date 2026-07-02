@@ -1223,6 +1223,13 @@ export default function UserDashboard() {
                       {isZh ? `还有 ${userMessages.length - 10} 条消息` : `${userMessages.length - 10} more messages`}
                     </p>
                   )}
+                  <div className="pt-3 border-t border-white/10 text-center">
+                    <Link href="/booking">
+                      <Button variant="outline" size="sm" className="border-white/20 text-white/80 hover:bg-white/10 hover:text-white">
+                        {isZh ? '去预约咨询' : 'Book a Consultation'}
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
               )}
             </CardContent>
