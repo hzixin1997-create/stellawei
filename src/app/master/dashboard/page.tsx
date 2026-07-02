@@ -146,7 +146,7 @@ export default function MasterDashboard() {
   const [customerMessagesLoading, setCustomerMessagesLoading] = useState(false)
   const [followUpCount, setFollowUpCount] = useState({ userRemaining: 3, masterRemaining: 3 })
   const [replyInput, setReplyInput] = useState('')
-  const [sendingReply, setSendingReply] = useState(false)
+  const [sendingFollowUpReply, setSendingFollowUpReply] = useState(false)
   const [showHistoryModal, setShowHistoryModal] = useState(false)
   const [historyBooking, setHistoryBooking] = useState<any>(null)
   const [historyMessages, setHistoryMessages] = useState<any[]>([])
@@ -786,7 +786,7 @@ export default function MasterDashboard() {
       alert(isZh ? '该客户没有可回复的订单' : 'No available booking for this customer')
       return
     }
-    setSendingReply(true)
+    setSendingFollowUpReply(true)
     try {
       const supabase = createClient()
       const { data: { session } } = await supabase.auth.getSession()
@@ -814,7 +814,7 @@ export default function MasterDashboard() {
     } catch (err) {
       console.error('Send follow-up reply error:', err)
     } finally {
-      setSendingReply(false)
+      setSendingFollowUpReply(false)
     }
   }
 
@@ -1694,9 +1694,9 @@ export default function MasterDashboard() {
                     <Button
                       className="flex-1 bg-violet-600 hover:bg-violet-700"
                       onClick={handleSendFollowUpReply}
-                      disabled={sendingReply || !replyInput.trim()}
+                      disabled={sendingFollowUpReply || !replyInput.trim()}
                     >
-                      {sendingReply ? (
+                      {sendingFollowUpReply ? (
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
                       ) : (
                         isZh ? '发送回复' : 'Send Reply'
