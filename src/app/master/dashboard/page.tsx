@@ -144,6 +144,9 @@ export default function MasterDashboard() {
   const [showCustomerHistoryModal, setShowCustomerHistoryModal] = useState(false)
   const [customerMessages, setCustomerMessages] = useState<any[]>([])
   const [customerMessagesLoading, setCustomerMessagesLoading] = useState(false)
+  const [followUpCount, setFollowUpCount] = useState({ userRemaining: 3, masterRemaining: 3 })
+  const [replyInput, setReplyInput] = useState('')
+  const [sendingReply, setSendingReply] = useState(false)
   const [showHistoryModal, setShowHistoryModal] = useState(false)
   const [historyBooking, setHistoryBooking] = useState<any>(null)
   const [historyMessages, setHistoryMessages] = useState<any[]>([])
@@ -743,20 +746,75 @@ export default function MasterDashboard() {
     setSelectedCustomer(customer)
     setShowCustomerHistoryModal(true)
     setCustomerMessagesLoading(true)
+    setReplyInput('')
     try {
       const supabase = createClient()
       const { data: { session } } = await supabase.auth.getSession()
-      const res = await fetch(`/api/master/messages?user_id=${customer.user.id}`, {
-        headers: { authorization: `Bearer ${session?.access_token || ''}` },
-      })
-      const data = await res.json()
-      if (res.ok) {
-        setCustomerMessages(data.messages || [])
-      } else {
+      const bookingId = customer.bookings?.[0]?.id
+      const [msgRes, countRes] = await Promise.all([
+        fetch(`/api/master/messages?user_id=${customer.user.id}`, {
+          headers: { authorization: `Bearer ${session?.access_token || ''}` },
+        }),
+        bookingId
+          ? fetch(`/api/master/bookings/${bookingId}/follow-up-reply`, {
+              headers: { authorization: `Bearer ${session?.access_token || ''}` },
+            })
+          : Promise.resolve({ json: async () => ({}) } as Response),
+      ])
+      const msgData = await msgRes.json()
+      const countData = await countRes.json()
+      if (msgRes.ok) {
+        setCustomerMessages(msgData.messages || [])
+      }
+      if (countData.masterRemaining !== undefined) {
+        setFollowUpCount({
+          userRemaining: countData.userRemaining,
+          masterRemaining: countData.masterRemaining,
+        })
       }
     } catch (err) {
     } finally {
       setCustomerMessagesLoading(false)
+    }
+  }
+
+  // 师傅回复用户追问
+  const handleSendFollowUpReply = async () => {
+    if (!selectedCustomer || !replyInput.trim()) return
+    const bookingId = selectedCustomer.bookings?.[0]?.id
+    if (!bookingId) {
+      alert(isZh ? '该客户没有可回复的订单' : 'No available booking for this customer')
+      return
+    }
+    setSendingReply(true)
+    try {
+      const supabase = createClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      const res = await fetch(`/api/master/bookings/${bookingId}/follow-up-reply`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${session?.access_token || ''}`,
+        },
+        body: JSON.stringify({ content: replyInput.trim() }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        setReplyInput('')
+        setFollowUpCount(prev => ({ ...prev, masterRemaining: data.remaining }))
+        // 刷新消息历史
+        const msgRes = await fetch(`/api/master/messages?user_id=${selectedCustomer.user.id}`, {
+          headers: { authorization: `Bearer ${session?.access_token || ''}` },
+        })
+        const msgData = await msgRes.json()
+        if (msgRes.ok) setCustomerMessages(msgData.messages || [])
+      } else {
+        alert(data.error || 'Failed to send')
+      }
+    } catch (err) {
+      console.error('Send follow-up reply error:', err)
+    } finally {
+      setSendingReply(false)
     }
   }
 
@@ -1613,17 +1671,71 @@ export default function MasterDashboard() {
               </div>
             )}
             
-            <div className="flex justify-end mt-4">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setShowCustomerHistoryModal(false)
-                  setSelectedCustomer(null)
-                  setCustomerMessages([])
-                }}
-              >
-                {isZh ? '关闭' : 'Close'}
-              </Button>
+            {/* 回复输入区 */}
+            <div className="border-t border-white/10 pt-4 mt-4">
+              {followUpCount.masterRemaining > 0 ? (
+                <>
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs text-white/50">
+                      {isZh
+                        ? `剩余回复次数：${followUpCount.masterRemaining}/3`
+                        : `Replies remaining: ${followUpCount.masterRemaining}/3`}
+                    </p>
+                  </div>
+                  <textarea
+                    value={replyInput}
+                    onChange={(e) => setReplyInput(e.target.value)}
+                    placeholder={isZh ? '回复用户...' : 'Reply to user...'}
+                    className="w-full border border-white/10 rounded-lg p-3 text-sm mb-2 resize-none text-white bg-white/5 placeholder:text-white/30"
+                    rows={3}
+                    maxLength={1000}
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      className="flex-1 bg-violet-600 hover:bg-violet-700"
+                      onClick={handleSendFollowUpReply}
+                      disabled={sendingReply || !replyInput.trim()}
+                    >
+                      {sendingReply ? (
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                      ) : (
+                        isZh ? '发送回复' : 'Send Reply'
+                      )}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setShowCustomerHistoryModal(false)
+                        setSelectedCustomer(null)
+                        setCustomerMessages([])
+                        setReplyInput('')
+                      }}
+                    >
+                      {isZh ? '关闭' : 'Close'}
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="text-xs text-white/40 text-center mb-3">
+                    {isZh
+                      ? '回复次数已用完'
+                      : 'Reply limit reached'}
+                  </p>
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => {
+                      setShowCustomerHistoryModal(false)
+                      setSelectedCustomer(null)
+                      setCustomerMessages([])
+                      setReplyInput('')
+                    }}
+                  >
+                    {isZh ? '关闭' : 'Close'}
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>

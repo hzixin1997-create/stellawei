@@ -145,6 +145,9 @@ export default function UserDashboard() {
   const [selectedMessageBooking, setSelectedMessageBooking] = useState<any>(null)
   const [selectedMessageHistory, setSelectedMessageHistory] = useState<any[]>([])
   const [historyLoading, setHistoryLoading] = useState(false)
+  const [followUpCount, setFollowUpCount] = useState({ userRemaining: 3, masterRemaining: 3 })
+  const [followUpInput, setFollowUpInput] = useState('')
+  const [sendingFollowUp, setSendingFollowUp] = useState(false)
 
   const handleLogout = async () => {
     const supabase = createClient()
@@ -298,17 +301,64 @@ export default function UserDashboard() {
     setSelectedMessageBooking(relatedBooking || { id: bookingId })
     setShowMessageModal(true)
     setHistoryLoading(true)
+    setFollowUpInput('')
     try {
       const token = await getSessionToken()
-      const res = await fetch(`/api/chat/${bookingId}/messages`, {
-        headers: { authorization: `Bearer ${token}` },
-      })
-      const data = await res.json()
-      if (data.messages) setSelectedMessageHistory(data.messages)
+      const [msgRes, countRes] = await Promise.all([
+        fetch(`/api/chat/${bookingId}/messages`, {
+          headers: { authorization: `Bearer ${token}` },
+        }),
+        fetch(`/api/user/bookings/${bookingId}/follow-up`, {
+          headers: { authorization: `Bearer ${token}` },
+        }),
+      ])
+      const msgData = await msgRes.json()
+      const countData = await countRes.json()
+      if (msgData.messages) setSelectedMessageHistory(msgData.messages)
+      if (countData.userRemaining !== undefined) {
+        setFollowUpCount({
+          userRemaining: countData.userRemaining,
+          masterRemaining: countData.masterRemaining,
+        })
+      }
     } catch (err) {
       console.error('Fetch message history error:', err)
     } finally {
       setHistoryLoading(false)
+    }
+  }
+
+  // 用户发送追问（补充信息）
+  const handleSendFollowUp = async () => {
+    if (!selectedMessageBooking || !followUpInput.trim()) return
+    setSendingFollowUp(true)
+    try {
+      const token = await getSessionToken()
+      const res = await fetch(`/api/user/bookings/${selectedMessageBooking.id}/follow-up`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ content: followUpInput.trim() }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        setFollowUpInput('')
+        setFollowUpCount(prev => ({ ...prev, userRemaining: data.remaining }))
+        // 刷新消息历史
+        const msgRes = await fetch(`/api/chat/${selectedMessageBooking.id}/messages`, {
+          headers: { authorization: `Bearer ${token}` },
+        })
+        const msgData = await msgRes.json()
+        if (msgData.messages) setSelectedMessageHistory(msgData.messages)
+      } else {
+        alert(data.error || 'Failed to send')
+      }
+    } catch (err) {
+      console.error('Send follow-up error:', err)
+    } finally {
+      setSendingFollowUp(false)
     }
   }
 
@@ -1488,17 +1538,52 @@ export default function UserDashboard() {
                   </div>
                 )}
 
-                <div className="border-t pt-4">
-                  <p className="text-xs text-white/50 text-center mb-3">
-                    {isZh ? '如需继续咨询，请重新下单' : 'To continue consulting, please place a new order'}
-                  </p>
+                {/* 追问输入区 */}
+                <div className="border-t border-white/10 pt-4">
+                  {followUpCount.userRemaining > 0 ? (
+                    <>
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-xs text-white/50">
+                          {isZh
+                            ? `剩余补充次数：${followUpCount.userRemaining}/3`
+                            : `Follow-ups remaining: ${followUpCount.userRemaining}/3`}
+                        </p>
+                      </div>
+                      <textarea
+                        value={followUpInput}
+                        onChange={(e) => setFollowUpInput(e.target.value)}
+                        placeholder={isZh ? '补充信息给师傅...' : 'Add more details for the advisor...'}
+                        className="w-full border border-white/10 rounded-lg p-3 text-sm mb-2 resize-none text-white bg-white/5 placeholder:text-white/30"
+                        rows={3}
+                        maxLength={500}
+                      />
+                      <Button
+                        className="w-full bg-violet-600 hover:bg-violet-700"
+                        onClick={handleSendFollowUp}
+                        disabled={sendingFollowUp || !followUpInput.trim()}
+                      >
+                        {sendingFollowUp ? (
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                        ) : (
+                          isZh ? '发送补充信息' : 'Send Follow-up'
+                        )}
+                      </Button>
+                    </>
+                  ) : (
+                    <p className="text-xs text-white/40 text-center mb-3">
+                      {isZh
+                        ? '补充次数已用完，如需深入沟通请预约实时咨询'
+                        : 'Follow-up limit reached. Book a live session for more in-depth guidance.'}
+                    </p>
+                  )}
                   <Button
                     variant="outline"
-                    className="w-full"
+                    className="w-full mt-2"
                     onClick={() => {
                       setShowMessageModal(false)
                       setSelectedMessageBooking(null)
                       setSelectedMessageHistory([])
+                      setFollowUpInput('')
                     }}
                   >
                     {isZh ? '关闭' : 'Close'}
