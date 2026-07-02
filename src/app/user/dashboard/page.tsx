@@ -297,13 +297,8 @@ export default function UserDashboard() {
     return session?.access_token || ''
   }
 
-  // 打开消息历史弹窗
-  const openMessageModal = async (bookingId: string) => {
-    const relatedBooking = bookings.find((b: Booking) => b.id === bookingId)
-    setSelectedMessageBooking(relatedBooking || { id: bookingId })
-    setShowMessageModal(true)
-    setHistoryLoading(true)
-    setFollowUpInput('')
+  // 刷新消息历史（用于弹窗轮询和发送后刷新）
+  const refreshMessageHistory = async (bookingId: string, relatedBooking?: Booking | null) => {
     try {
       const token = await getSessionToken()
       const [msgRes, countRes] = await Promise.all([
@@ -317,20 +312,20 @@ export default function UserDashboard() {
       const msgData = await msgRes.json()
       const countData = await countRes.json()
       if (msgData.messages) {
-        // 将初始咨询问题作为第一条消息 prepend
         const initialMessages = []
-        if (relatedBooking?.question_text) {
+        const booking = relatedBooking || bookings.find((b: Booking) => b.id === bookingId)
+        if (booking?.question_text) {
           initialMessages.push({
             id: 'initial-question',
             booking_id: bookingId,
-            sender_id: relatedBooking.user_id || '',
+            sender_id: booking.user_id || '',
             sender_type: 'user',
             sender_name: isZh ? '我的咨询' : 'My Question',
-            content: relatedBooking.question_text,
+            content: booking.question_text,
             image_url: null,
             audio_url: null,
             source: 'initial',
-            created_at: relatedBooking.created_at,
+            created_at: booking.created_at,
           })
         }
         setSelectedMessageHistory([...initialMessages, ...msgData.messages])
@@ -342,11 +337,29 @@ export default function UserDashboard() {
         })
       }
     } catch (err) {
-      console.error('Fetch message history error:', err)
-    } finally {
-      setHistoryLoading(false)
+      console.error('Refresh message history error:', err)
     }
   }
+
+  // 打开消息历史弹窗
+  const openMessageModal = async (bookingId: string) => {
+    const relatedBooking = bookings.find((b: Booking) => b.id === bookingId)
+    setSelectedMessageBooking(relatedBooking || { id: bookingId })
+    setShowMessageModal(true)
+    setHistoryLoading(true)
+    setFollowUpInput('')
+    await refreshMessageHistory(bookingId, relatedBooking)
+    setHistoryLoading(false)
+  }
+
+  // 弹窗轮询：每5秒刷新消息
+  useEffect(() => {
+    if (!showMessageModal || !selectedMessageBooking) return
+    const interval = setInterval(() => {
+      refreshMessageHistory(selectedMessageBooking.id, selectedMessageBooking)
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [showMessageModal, selectedMessageBooking?.id])
 
   // 用户发送追问（补充信息）
   const handleSendFollowUp = async () => {
@@ -367,28 +380,7 @@ export default function UserDashboard() {
         setFollowUpInput('')
         setFollowUpCount(prev => ({ ...prev, userRemaining: data.remaining }))
         // 刷新消息历史
-        const msgRes = await fetch(`/api/chat/${selectedMessageBooking.id}/messages`, {
-          headers: { authorization: `Bearer ${token}` },
-        })
-        const msgData = await msgRes.json()
-        if (msgData.messages) {
-          const initialMessages = []
-          if (selectedMessageBooking?.question_text) {
-            initialMessages.push({
-              id: 'initial-question',
-              booking_id: selectedMessageBooking.id,
-              sender_id: selectedMessageBooking.user_id || '',
-              sender_type: 'user',
-              sender_name: isZh ? '我的咨询' : 'My Question',
-              content: selectedMessageBooking.question_text,
-              image_url: null,
-              audio_url: null,
-              source: 'initial',
-              created_at: selectedMessageBooking.created_at,
-            })
-          }
-          setSelectedMessageHistory([...initialMessages, ...msgData.messages])
-        }
+        await refreshMessageHistory(selectedMessageBooking.id, selectedMessageBooking)
       } else {
         alert(data.error || 'Failed to send')
       }
@@ -1563,6 +1555,14 @@ export default function UserDashboard() {
                         </div>
                       </div>
                     ))}
+                    {/* 如果没有师傅回复，显示等待提示 */}
+                    {!selectedMessageHistory.some((m: any) => m.sender_type === 'master') && (
+                      <div className="text-center py-4">
+                        <p className="text-white/40 text-sm">
+                          {isZh ? '等待师傅24小时内回复' : 'Waiting for advisor reply within 24 hours'}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
 
