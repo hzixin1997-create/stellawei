@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/client'
 import { getConsultationDisplayStatus, formatBookingTimeDisplay } from '@/lib/utils'
 import { isMasterEmail } from '@/lib/master-auth'
-import { decryptMessage, importKey, getChatKey, storeChatKey } from '@/lib/chatCrypto'
+import { decryptMessage, importKey, getChatKey, storeChatKey, decryptChatMessages } from '@/lib/chatCrypto'
 import {
   ShoppingBag,
   Clock,
@@ -742,36 +742,6 @@ export default function MasterDashboard() {
   }
 
   // 给客户发消息
-  // 解密消息内容
-  const decryptMessageContent = async (content: string, bookingId: string): Promise<string> => {
-    if (!content) return content
-    try {
-      const parsed = JSON.parse(content)
-      if (parsed.enc && parsed.data && parsed.iv) {
-        let keyBase64 = getChatKey(bookingId)
-        if (!keyBase64) {
-          // 本地没有密钥，尝试从 API 获取
-          try {
-            const keyRes = await fetch(`/api/chat/${bookingId}/key`)
-            const keyData = await keyRes.json()
-            if (keyData.key) {
-              keyBase64 = keyData.key
-              storeChatKey(bookingId, keyData.key)
-            }
-          } catch (e) {
-            console.error('[decrypt] fetch key error:', e)
-          }
-        }
-        if (!keyBase64) return content
-        const key = await importKey(keyBase64)
-        return await decryptMessage(key, parsed.data, parsed.iv)
-      }
-    } catch {
-      // 不是加密格式，返回原始内容
-    }
-    return content
-  }
-
   // 查看客户历史消息
   const handleViewCustomerMessages = async (customer: any) => {
     setSelectedCustomer(customer)
@@ -796,14 +766,8 @@ export default function MasterDashboard() {
       const countData = await countRes.json()
       if (msgRes.ok) {
         const msgs = msgData.messages || []
-        // 解密加密消息
-        const decryptedMsgs = await Promise.all(
-          msgs.map(async (msg: any) => {
-            if (!msg.content) return msg
-            const decrypted = await decryptMessageContent(msg.content, msg.booking_id)
-            return { ...msg, content: decrypted }
-          })
-        )
+        // 使用通用解密工具
+        const decryptedMsgs = await decryptChatMessages(msgs, bookingId)
         setCustomerMessages(decryptedMsgs)
       }
       if (countData.masterRemaining !== undefined) {
@@ -849,13 +813,7 @@ export default function MasterDashboard() {
         const msgData = await msgRes.json()
         if (msgRes.ok) {
           const msgs = msgData.messages || []
-          const decryptedMsgs = await Promise.all(
-            msgs.map(async (msg: any) => {
-              if (!msg.content) return msg
-              const decrypted = await decryptMessageContent(msg.content, msg.booking_id)
-              return { ...msg, content: decrypted }
-            })
-          )
+          const decryptedMsgs = await decryptChatMessages(msgs, bookingId)
           setCustomerMessages(decryptedMsgs)
         }
       } else {
@@ -1487,7 +1445,10 @@ export default function MasterDashboard() {
                                         })
                                         if (res.ok) {
                                           const data = await res.json()
-                                          setHistoryMessages(data.messages || [])
+                                          const msgs = data.messages || []
+                                          // 使用通用解密工具
+                                          const decryptedMsgs = await decryptChatMessages(msgs, booking.id)
+                                          setHistoryMessages(decryptedMsgs)
                                         }
                                       } catch (err) {
                                       } finally {

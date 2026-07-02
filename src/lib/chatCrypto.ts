@@ -131,3 +131,57 @@ export function removeChatKey(bookingId: string): void {
     // ignore
   }
 }
+
+/**
+ * 通用：解密单条消息内容
+ * 检查是否为加密格式，自动获取密钥并解密，失败时返回原始内容
+ */
+export async function decryptChatMessageContent(
+  content: string | null,
+  bookingId: string
+): Promise<string> {
+  if (!content) return ''
+  try {
+    const parsed = JSON.parse(content)
+    if (parsed.enc && parsed.data && parsed.iv) {
+      let keyBase64 = getChatKey(bookingId)
+      if (!keyBase64) {
+        // 本地没有密钥，尝试从 API 获取
+        try {
+          const keyRes = await fetch(`/api/chat/${bookingId}/key`)
+          const keyData = await keyRes.json()
+          if (keyData.key) {
+            keyBase64 = keyData.key
+            storeChatKey(bookingId, keyData.key)
+          }
+        } catch (e) {
+          console.error('[decryptChatMessageContent] fetch key error:', e)
+        }
+      }
+      if (!keyBase64) return content
+      const key = await importKey(keyBase64)
+      return await decryptMessage(key, parsed.data, parsed.iv)
+    }
+  } catch {
+    // 不是加密格式，返回原始内容
+  }
+  return content
+}
+
+/**
+ * 通用：批量解密消息列表
+ */
+export async function decryptChatMessages(
+  messages: Array<{ content: string | null; booking_id?: string }>,
+  bookingId?: string
+): Promise<Array<any>> {
+  return Promise.all(
+    messages.map(async (msg) => {
+      if (!msg.content) return msg
+      const id = bookingId || msg.booking_id || ''
+      if (!id) return msg
+      const decrypted = await decryptChatMessageContent(msg.content, id)
+      return { ...msg, content: decrypted }
+    })
+  )
+}
