@@ -61,12 +61,12 @@ export async function GET(
     }
 
     // 查询消息 - Voice Engine: 包含所有 audio 相关字段
-    // 包含实时聊天和留言追问消息
+    // 包含实时聊天、留言追问和留言咨询回复消息
     const { data: messages, error } = await supabase
       .from('messages')
       .select('*')
       .eq('booking_id', bookingId)
-      .or('source.eq.chat,source.eq.follow_up,source.is.null')
+      .or('source.eq.chat,source.eq.follow_up,source.eq.order_reply,source.is.null')
       .order('created_at', { ascending: true });
 
     if (error) {
