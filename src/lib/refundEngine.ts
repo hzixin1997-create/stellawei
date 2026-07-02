@@ -153,6 +153,11 @@ export class RefundEngine {
     // 7. 退款规则判断
     if (requestedBy === 'user') {
       // 用户主动退款
+      // 留言咨询（无 scheduled_at）或已过期订单：需要人工审核，不能自动退款
+      if (!booking.scheduled_at) {
+        return { canRefund: true, autoRefund: false, reason: 'Message consultation requires admin review', code: 'REVIEW_REQUIRED', hoursUntilStart, sessionState };
+      }
+      
       if (hoursUntilStart > AUTO_REFUND_MAX_HOURS) {
         // 距离开始 > 24小时：自动退款
         return { canRefund: true, autoRefund: true, reason: 'More than 24 hours before consultation', code: 'AUTO_REFUND', hoursUntilStart, sessionState };
