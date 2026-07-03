@@ -17,10 +17,10 @@ export async function POST(
   try {
     const { id: bookingId } = params;
     const body = await request.json();
-    const { content } = body;
+    const { content, image_url } = body;
 
-    if (!content?.trim()) {
-      return NextResponse.json({ error: 'Content is required' }, { status: 400 });
+    if (!content?.trim() && !image_url) {
+      return NextResponse.json({ error: 'Content or image_url is required' }, { status: 400 });
     }
 
     const authSupabase = await createClient();
@@ -77,7 +77,8 @@ export async function POST(
         sender_id: user.id,
         sender_type: 'user',
         sender_name: user.user_metadata?.full_name || user.email || 'User',
-        content: content.trim(),
+        content: content?.trim() || null,
+        image_url: image_url || null,
         source: 'follow_up',
         created_at: new Date().toISOString(),
       })

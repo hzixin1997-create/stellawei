@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/client'
-import { ShoppingBag, MessageSquare, ArrowRight, Clock, User, Home, LogOut, MessageCircle, AlertTriangle, Star, Calendar as CalendarIcon } from 'lucide-react'
+import { ShoppingBag, MessageSquare, ArrowRight, Clock, User, Home, LogOut, MessageCircle, AlertTriangle, Star, Calendar as CalendarIcon, ImageIcon, Loader2 } from 'lucide-react'
 import Image from 'next/image'
 import RescheduleCalendar from '@/components/RescheduleCalendar'
 import Link from 'next/link'
@@ -150,6 +150,8 @@ export default function UserDashboard() {
   const [followUpCount, setFollowUpCount] = useState({ userRemaining: 3, masterRemaining: 3 })
   const [followUpInput, setFollowUpInput] = useState('')
   const [sendingFollowUp, setSendingFollowUp] = useState(false)
+  const [followUpImage, setFollowUpImage] = useState<string | null>(null)
+  const [uploadingFollowUpImage, setUploadingFollowUpImage] = useState(false)
 
   const handleLogout = async () => {
     const supabase = createClient()
@@ -363,7 +365,7 @@ export default function UserDashboard() {
 
   // 用户发送追问（补充信息）
   const handleSendFollowUp = async () => {
-    if (!selectedMessageBooking || !followUpInput.trim()) return
+    if (!selectedMessageBooking || (!followUpInput.trim() && !followUpImage)) return
     setSendingFollowUp(true)
     try {
       const token = await getSessionToken()
@@ -373,11 +375,15 @@ export default function UserDashboard() {
           'Content-Type': 'application/json',
           authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ content: followUpInput.trim() }),
+        body: JSON.stringify({
+          content: followUpInput.trim() || undefined,
+          image_url: followUpImage || undefined,
+        }),
       })
       const data = await res.json()
       if (res.ok) {
         setFollowUpInput('')
+        setFollowUpImage(null)
         setFollowUpCount(prev => ({ ...prev, userRemaining: data.remaining }))
         // 刷新消息历史
         await refreshMessageHistory(selectedMessageBooking.id, selectedMessageBooking)
@@ -388,6 +394,56 @@ export default function UserDashboard() {
       console.error('Send follow-up error:', err)
     } finally {
       setSendingFollowUp(false)
+    }
+  }
+
+  // 上传追问图片
+  const handleUploadFollowUpImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !selectedMessageBooking) return
+
+    setUploadingFollowUpImage(true)
+    try {
+      const token = await getSessionToken()
+
+      // 1. 获取预签名上传 URL
+      const urlRes = await fetch(`/api/chat/${selectedMessageBooking.id}/upload-url`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ fileExt: file.name.split('.').pop() || 'jpg' }),
+      })
+
+      if (!urlRes.ok) {
+        const err = await urlRes.json()
+        throw new Error(err.error || 'Failed to get upload URL')
+      }
+
+      const { signedUrl, path } = await urlRes.json()
+
+      // 2. 直传 Supabase Storage
+      const uploadRes = await fetch(signedUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': file.type || 'image/jpeg' },
+        body: file,
+      })
+
+      if (!uploadRes.ok) {
+        throw new Error('Upload failed')
+      }
+
+      // 3. 获取 public URL
+      const supabase = createClient()
+      const { data: urlData } = supabase.storage.from('chat-images').getPublicUrl(path)
+      setFollowUpImage(urlData.publicUrl)
+    } catch (err: any) {
+      alert(isZh ? `上传失败: ${err.message}` : `Upload failed: ${err.message}`)
+    } finally {
+      setUploadingFollowUpImage(false)
+      // 清空 input 以便可以再次选择同一文件
+      if (e.target) e.target.value = ''
     }
   }
 
@@ -1576,7 +1632,40 @@ export default function UserDashboard() {
                             ? `剩余补充次数：${followUpCount.userRemaining}/3`
                             : `Follow-ups remaining: ${followUpCount.userRemaining}/3`}
                         </p>
+                        <label className="cursor-pointer text-xs text-violet-300 hover:text-violet-200 flex items-center gap-1">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={handleUploadFollowUpImage}
+                            disabled={uploadingFollowUpImage}
+                          />
+                          {uploadingFollowUpImage ? (
+                            <Loader2 className="w-3 h-3 animate-spin" />
+                          ) : (
+                            <ImageIcon className="w-3 h-3" />
+                          )}
+                          {isZh ? '上传图片' : 'Upload Image'}
+                        </label>
                       </div>
+                      {/* 图片预览 */}
+                      {followUpImage && (
+                        <div className="relative mb-2">
+                          <Image
+                            src={followUpImage}
+                            alt="Preview"
+                            width={200}
+                            height={150}
+                            className="rounded-lg object-contain max-w-full h-auto border border-white/10"
+                          />
+                          <button
+                            onClick={() => setFollowUpImage(null)}
+                            className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      )}
                       <textarea
                         value={followUpInput}
                         onChange={(e) => setFollowUpInput(e.target.value)}
@@ -1588,7 +1677,7 @@ export default function UserDashboard() {
                       <Button
                         className="w-full bg-violet-600 hover:bg-violet-700"
                         onClick={handleSendFollowUp}
-                        disabled={sendingFollowUp || !followUpInput.trim()}
+                        disabled={sendingFollowUp || (!followUpInput.trim() && !followUpImage)}
                       >
                         {sendingFollowUp ? (
                           <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
@@ -1612,6 +1701,7 @@ export default function UserDashboard() {
                       setSelectedMessageBooking(null)
                       setSelectedMessageHistory([])
                       setFollowUpInput('')
+                      setFollowUpImage(null)
                     }}
                   >
                     {isZh ? '关闭' : 'Close'}

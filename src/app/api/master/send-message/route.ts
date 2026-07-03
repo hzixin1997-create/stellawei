@@ -13,11 +13,11 @@ export const dynamic = 'force-dynamic';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { bookingId, content, message_source = 'follow_up' } = body;
+    const { bookingId, content, image_url, message_source = 'follow_up' } = body;
 
-    if (!bookingId || !content?.trim()) {
+    if (!bookingId || (!content?.trim() && !image_url)) {
       return NextResponse.json(
-        { error: 'Missing required parameters: bookingId, content' },
+        { error: 'Missing required parameters: bookingId, content or image_url' },
         { status: 400 }
       );
     }
@@ -84,7 +84,8 @@ export async function POST(request: Request) {
         sender_id: user.id,
         sender_type: 'master',
         sender_name: masterInfo.name || 'Master',
-        content: content.trim(),
+        content: content?.trim() || null,
+        image_url: image_url || null,
         source: message_source,
         created_at: new Date().toISOString(),
       })

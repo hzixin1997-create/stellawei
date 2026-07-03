@@ -24,6 +24,7 @@ import {
   Moon,
   Send,
   Loader2,
+  ImageIcon,
   X,
   Crown,
   Calendar,
@@ -126,6 +127,8 @@ export default function MasterDashboard() {
   const [selectedBooking, setSelectedBooking] = useState<any>(null)
   const [messageReply, setMessageReply] = useState('')
   const [sendingReply, setSendingReply] = useState(false)
+  const [messageReplyImage, setMessageReplyImage] = useState<string | null>(null)
+  const [uploadingReplyImage, setUploadingReplyImage] = useState(false)
   const [masterReplyCount, setMasterReplyCount] = useState(0)
   const [messageHistory, setMessageHistory] = useState<any[]>([])
   const [completingMessage, setCompletingMessage] = useState(false)
@@ -887,7 +890,7 @@ export default function MasterDashboard() {
 
   // 回复留言咨询
   const handleReplyMessage = async () => {
-    if (!selectedBooking || !messageReply.trim()) return
+    if (!selectedBooking || (!messageReply.trim() && !messageReplyImage)) return
     setSendingReply(true)
     try {
       const supabase = createClient()
@@ -898,13 +901,19 @@ export default function MasterDashboard() {
           'Content-Type': 'application/json',
           authorization: `Bearer ${session?.access_token || ''}`,
         },
-        body: JSON.stringify({ bookingId: selectedBooking.id, content: messageReply.trim(), message_source: 'order_reply' }),
+        body: JSON.stringify({
+          bookingId: selectedBooking.id,
+          content: messageReply.trim() || undefined,
+          image_url: messageReplyImage || undefined,
+          message_source: 'order_reply',
+        }),
       })
       const data = await res.json()
       if (!res.ok) {
         throw new Error(data.error || 'Reply failed')
       }
       setMessageReply('')
+      setMessageReplyImage(null)
       setMasterReplyCount(prev => prev + 1)
       // 刷新弹窗中的消息列表
       await refreshMessageHistory(selectedBooking.id)
@@ -912,6 +921,56 @@ export default function MasterDashboard() {
       alert(isZh ? `回复失败: ${err.message}` : `Reply failed: ${err.message}`)
     } finally {
       setSendingReply(false)
+    }
+  }
+
+  // 上传回复图片
+  const handleUploadReplyImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !selectedBooking) return
+
+    setUploadingReplyImage(true)
+    try {
+      const supabase = createClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      const token = session?.access_token || ''
+
+      // 1. 获取预签名上传 URL
+      const urlRes = await fetch(`/api/chat/${selectedBooking.id}/upload-url`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ fileExt: file.name.split('.').pop() || 'jpg' }),
+      })
+
+      if (!urlRes.ok) {
+        const err = await urlRes.json()
+        throw new Error(err.error || 'Failed to get upload URL')
+      }
+
+      const { signedUrl, path } = await urlRes.json()
+
+      // 2. 直传 Supabase Storage
+      const uploadRes = await fetch(signedUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': file.type || 'image/jpeg' },
+        body: file,
+      })
+
+      if (!uploadRes.ok) {
+        throw new Error('Upload failed')
+      }
+
+      // 3. 获取 public URL
+      const { data: urlData } = supabase.storage.from('chat-images').getPublicUrl(path)
+      setMessageReplyImage(urlData.publicUrl)
+    } catch (err: any) {
+      alert(isZh ? `上传失败: ${err.message}` : `Upload failed: ${err.message}`)
+    } finally {
+      setUploadingReplyImage(false)
+      if (e.target) e.target.value = ''
     }
   }
 
@@ -2136,6 +2195,42 @@ export default function MasterDashboard() {
             {/* 回复输入区 */}
             {masterReplyCount < 3 ? (
               <>
+                {/* 图片上传按钮 */}
+                <div className="flex justify-end mb-2">
+                  <label className="cursor-pointer text-xs text-violet-300 hover:text-violet-200 flex items-center gap-1">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleUploadReplyImage}
+                      disabled={uploadingReplyImage}
+                    />
+                    {uploadingReplyImage ? (
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                    ) : (
+                      <ImageIcon className="w-3 h-3" />
+                    )}
+                    {isZh ? '上传图片' : 'Upload Image'}
+                  </label>
+                </div>
+                {/* 图片预览 */}
+                {messageReplyImage && (
+                  <div className="relative mb-2">
+                    <Image
+                      src={messageReplyImage}
+                      alt="Preview"
+                      width={200}
+                      height={150}
+                      className="rounded-lg object-contain max-w-full h-auto border border-white/10"
+                    />
+                    <button
+                      onClick={() => setMessageReplyImage(null)}
+                      className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center"
+                    >
+                      ×
+                    </button>
+                  </div>
+                )}
                 <textarea
                   value={messageReply}
                   onChange={(e) => setMessageReply(e.target.value)}
@@ -2149,7 +2244,7 @@ export default function MasterDashboard() {
                 <Button
                   className="w-full bg-violet-600 hover:bg-violet-700 mt-2"
                   onClick={handleReplyMessage}
-                  disabled={!messageReply.trim() || sendingReply}
+                  disabled={sendingReply || (!messageReply.trim() && !messageReplyImage)}
                 >
                   {sendingReply ? (
                     <>
@@ -2197,6 +2292,7 @@ export default function MasterDashboard() {
                 setShowMessageModal(false)
                 setSelectedBooking(null)
                 setMessageReply('')
+                setMessageReplyImage(null)
                 setMessageHistory([])
                 setMasterReplyCount(0)
               }}
