@@ -144,7 +144,7 @@ export function ActiveBookingBanner({ isZh }: ActiveBookingBannerProps) {
               </p>
             </div>
           </div>
-          <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white text-xs h-7 px-2 shrink-0" onClick={() => router.push(`/chat/${booking.id}`)}>
+          <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white text-xs h-7 px-2 shrink-0" onClick={() => router.push(`/user/dashboard`)}>
             {isZh ? '查看' : 'View'}
           </Button>
         </div>
