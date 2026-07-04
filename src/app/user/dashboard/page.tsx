@@ -1596,13 +1596,15 @@ export default function UserDashboard() {
                               : 'bg-violet-600/30 text-white/95 rounded-tr-none'
                           }`}
                         >
-                          {msg.image_url ? (
-                            <div className="relative max-w-full">
+                          {msg.image_url && (
+                            <div className="relative w-full" style={{ minHeight: '150px' }}>
                               <Image src={msg.image_url} alt="" fill className="rounded-lg object-contain" loading="lazy" />
                             </div>
-                          ) : msg.audio_url ? (
+                          )}
+                          {msg.audio_url && (
                             <audio src={msg.audio_url} controls className="w-full" />
-                          ) : (
+                          )}
+                          {msg.content && (
                             <p>{msg.content}</p>
                           )}
                           <p className="text-xs text-white/50 mt-1 text-right">

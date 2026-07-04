@@ -2160,7 +2160,7 @@ export default function MasterDashboard() {
                         : 'bg-white/10 text-white/90 rounded-tl-none'
                     }`}
                   >
-                    {msg.image_url ? (
+                    {msg.image_url && (
                       <Image
                         src={msg.image_url}
                         alt="Message image"
@@ -2170,9 +2170,11 @@ export default function MasterDashboard() {
                         loading="lazy"
                         onClick={() => window.open(msg.image_url, '_blank')}
                       />
-                    ) : msg.audio_url ? (
+                    )}
+                    {msg.audio_url && (
                       <audio src={msg.audio_url} controls className="w-full" />
-                    ) : (
+                    )}
+                    {msg.content && (
                       <p className="whitespace-pre-wrap">{msg.content}</p>
                     )}
                     <p className="text-xs text-white/50 mt-1 text-right">
