@@ -16,6 +16,15 @@ import { createClient } from '@/lib/supabase/client'
 
 // ===== 数据结构 =====
 
+// 咨询方向
+const CONSULTATION_TOPICS = [
+  { id: 'love', nameZh: '感情', nameEn: 'Love & Relationships', placeholderZh: '例如：最近和对象关系紧张，不知道是否该继续...', placeholderEn: 'e.g., My relationship has been tense lately...' },
+  { id: 'career', nameZh: '事业', nameEn: 'Career', placeholderZh: '例如：面临两个工作机会，不知道哪个更适合我...', placeholderEn: 'e.g., I have two job offers and am unsure which to choose...' },
+  { id: 'wealth', nameZh: '财运', nameEn: 'Wealth', placeholderZh: '例如：最近投资不顺，想问问未来半年的财运走向...', placeholderEn: 'e.g., My investments have not been going well lately...' },
+  { id: 'health', nameZh: '健康', nameEn: 'Health', placeholderZh: '例如：最近睡眠质量差，想知道是不是和运势有关...', placeholderEn: 'e.g., I have been having poor sleep quality lately...' },
+  { id: 'other', nameZh: '其他', nameEn: 'Other', placeholderZh: '例如：我最近在工作上遇到了瓶颈，想问问关于职业发展的建议...', placeholderEn: 'e.g., I have been facing a bottleneck at work...' },
+]
+
 // 咨询大类
 const CATEGORIES = [
   { id: 'tarot', nameZh: '塔罗占卜', nameEn: 'Tarot Reading', icon: Sparkles, color: 'from-violet-500 to-purple-600' },
@@ -144,6 +153,7 @@ export default function BookingPage() {
   const [questionText, setQuestionText] = useState('')
   const [questionImages, setQuestionImages] = useState<string[]>([])
   const [uploadingQuestionImage, setUploadingQuestionImage] = useState(false)
+  const [consultationTopic, setConsultationTopic] = useState('')
 
   const isZh = i18n.language === 'zh'
 
@@ -392,8 +402,10 @@ export default function BookingPage() {
       // 留言咨询：支付期限10分钟
       if (consultationType === 'message') {
         bookingData.expires_at = new Date(Date.now() + 10 * 60 * 1000).toISOString()
+        // 把咨询方向作为前缀附加到问题文本中
+        const topicPrefix = consultationTopic ? `[${CONSULTATION_TOPICS.find(t => t.id === consultationTopic)?.nameZh || consultationTopic}] ` : ''
         if (questionText.trim()) {
-          bookingData.question_text = questionText.trim()
+          bookingData.question_text = topicPrefix + questionText.trim()
         }
         if (questionImages.length > 0) {
           bookingData.question_images = questionImages
@@ -883,19 +895,41 @@ export default function BookingPage() {
                 {/* 留言咨询：问题输入 */}
                 {consultationType === 'message' && (
                   <div className="space-y-4">
-                    <Label className="block font-semibold">{isZh ? '您的问题' : 'Your Question'}</Label>
-                    <div className="bg-stone-50 p-4 rounded-xl">
-                      <p className="text-stone-600 text-sm mb-3">
-                        {isZh ? '请描述您想咨询的问题，师傅会在24小时内回复。' : 'Please describe your question. The master will reply within 24 hours.'}
-                      </p>
-                      <textarea
-                        value={questionText}
-                        onChange={(e) => setQuestionText(e.target.value)}
-                        placeholder={isZh ? '例如：我最近在工作上遇到了瓶颈，想问问关于职业发展的建议...' : 'e.g., I have been facing a bottleneck at work...'}
-                        className="w-full border rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 min-h-[120px] resize-y"
-                        maxLength={1000}
-                      />
-                      <p className="text-xs text-stone-400 mt-1 text-right">{questionText.length}/1000</p>
+                    {/* 咨询方向选择 */}
+                    <div>
+                      <Label className="block font-semibold mb-3">{isZh ? '您想咨询的方向？' : 'What would you like to consult about?'}</Label>
+                      <RadioGroup value={consultationTopic} onValueChange={setConsultationTopic} className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        {CONSULTATION_TOPICS.map((topic) => (
+                          <div key={topic.id}>
+                            <RadioGroupItem value={topic.id} id={`topic-${topic.id}`} className="peer sr-only" />
+                            <Label
+                              htmlFor={`topic-${topic.id}`}
+                              className="flex items-center justify-center p-3 border-2 rounded-xl cursor-pointer transition-all peer-data-[state=checked]:border-violet-600 peer-data-[state=checked]:bg-violet-50 peer-data-[state=checked]:text-violet-700 hover:border-violet-300 text-sm font-medium"
+                            >
+                              {isZh ? topic.nameZh : topic.nameEn}
+                            </Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    </div>
+
+                    {/* 问题描述 */}
+                    <div>
+                      <Label className="block font-semibold mb-3">{isZh ? '请描述您的问题' : 'Please describe your question'}</Label>
+                      <div className="bg-stone-50 p-4 rounded-xl">
+                        <textarea
+                          value={questionText}
+                          onChange={(e) => setQuestionText(e.target.value)}
+                          placeholder={(() => {
+                            const topic = CONSULTATION_TOPICS.find(t => t.id === consultationTopic)
+                            if (topic) return isZh ? topic.placeholderZh : topic.placeholderEn
+                            return isZh ? '请选择咨询方向后，描述您的具体问题...' : 'Please select a topic and describe your question...'
+                          })()}
+                          className="w-full border rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 min-h-[120px] resize-y"
+                          maxLength={1000}
+                        />
+                        <p className="text-xs text-stone-400 mt-1 text-right">{questionText.length}/1000</p>
+                      </div>
                     </div>
                   </div>
                 )}
