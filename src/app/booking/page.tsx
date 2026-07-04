@@ -421,7 +421,7 @@ export default function BookingPage() {
           if (supplementaryInfo.birthDateTime) supplementary += `出生年月日时: ${supplementaryInfo.birthDateTime}\n`
           if (supplementaryInfo.birthLocation) supplementary += `出生地点: ${supplementaryInfo.birthLocation}\n`
           if (supplementaryInfo.currentStatus) {
-            const sLabels: Record<string, string> = { single: '单身', married: '已婚', employed: '在职', unemployed: '待业', startup: '创业', student: '学生' }
+            const sLabels: Record<string, string> = { single: '单身', in_relationship: '恋爱中', married: '已婚', divorced: '离婚', breakup: '分手/失恋', complicated: '感情复杂', employed: '在职', unemployed: '待业', startup: '创业', freelancer: '自由职业', student: '学生', retired: '退休' }
             supplementary += `目前状态: ${sLabels[supplementaryInfo.currentStatus] || supplementaryInfo.currentStatus}\n`
           }
         }
@@ -1014,11 +1014,17 @@ export default function BookingPage() {
                             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                               {[
                                 { id: 'single', labelZh: '单身', labelEn: 'Single' },
+                                { id: 'in_relationship', labelZh: '恋爱中', labelEn: 'In a Relationship' },
                                 { id: 'married', labelZh: '已婚', labelEn: 'Married' },
+                                { id: 'divorced', labelZh: '离婚', labelEn: 'Divorced' },
+                                { id: 'breakup', labelZh: '分手/失恋', labelEn: 'Break Up' },
+                                { id: 'complicated', labelZh: '感情复杂', labelEn: 'Complicated' },
                                 { id: 'employed', labelZh: '在职', labelEn: 'Employed' },
                                 { id: 'unemployed', labelZh: '待业', labelEn: 'Unemployed' },
                                 { id: 'startup', labelZh: '创业', labelEn: 'Entrepreneur' },
+                                { id: 'freelancer', labelZh: '自由职业', labelEn: 'Freelancer' },
                                 { id: 'student', labelZh: '学生', labelEn: 'Student' },
+                                { id: 'retired', labelZh: '退休', labelEn: 'Retired' },
                               ].map((s) => (
                                 <label key={s.id} className="flex items-center gap-2 cursor-pointer">
                                   <input
