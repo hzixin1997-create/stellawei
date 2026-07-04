@@ -1807,7 +1807,16 @@ export default function MasterDashboard() {
             
             {/* 回复输入区 */}
             <div className="border-t border-white/10 pt-4 mt-4">
-              {followUpCount.masterRemaining > 0 ? (
+              {selectedBooking?.status === 'completed' ? (
+                <div className="text-center py-3">
+                  <p className="text-sm text-white/50 font-medium">
+                    {isZh ? '对话已结束' : 'Conversation Ended'}
+                  </p>
+                  <p className="text-xs text-white/30 mt-1">
+                    {isZh ? '订单已完成' : 'Order completed.'}
+                  </p>
+                </div>
+              ) : followUpCount.masterRemaining > 0 ? (
                 <>
                   <div className="flex items-center justify-between mb-2">
                     <p className="text-xs text-amber-300 font-medium">

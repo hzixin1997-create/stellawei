@@ -1626,7 +1626,16 @@ export default function UserDashboard() {
 
                 {/* 追问输入区 */}
                 <div className="border-t border-white/10 pt-4">
-                  {followUpCount.userRemaining > 0 ? (
+                  {selectedMessageBooking?.status === 'completed' ? (
+                    <div className="text-center py-3">
+                      <p className="text-sm text-white/50 font-medium">
+                        {isZh ? '对话已结束' : 'Conversation Ended'}
+                      </p>
+                      <p className="text-xs text-white/30 mt-1">
+                        {isZh ? '订单已完成，感谢使用星位咨询' : 'Order completed. Thank you for using Stellawei.'}
+                      </p>
+                    </div>
+                  ) : followUpCount.userRemaining > 0 ? (
                     <>
                       <div className="flex items-center justify-between mb-2">
                         <p className="text-xs text-amber-300 font-medium">
