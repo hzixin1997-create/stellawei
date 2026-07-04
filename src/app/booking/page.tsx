@@ -154,6 +154,13 @@ export default function BookingPage() {
   const [questionImages, setQuestionImages] = useState<string[]>([])
   const [uploadingQuestionImage, setUploadingQuestionImage] = useState(false)
   const [consultationTopic, setConsultationTopic] = useState('')
+  const [supplementaryInfo, setSupplementaryInfo] = useState({
+    gender: '',
+    birthDateTime: '',
+    birthLocation: '',
+    currentStatus: '',
+  })
+  const [showSupplementary, setShowSupplementary] = useState(false)
 
   const isZh = i18n.language === 'zh'
 
@@ -404,8 +411,23 @@ export default function BookingPage() {
         bookingData.expires_at = new Date(Date.now() + 10 * 60 * 1000).toISOString()
         // 把咨询方向作为前缀附加到问题文本中
         const topicPrefix = consultationTopic ? `[${CONSULTATION_TOPICS.find(t => t.id === consultationTopic)?.nameZh || consultationTopic}] ` : ''
+        // 补充信息
+        let supplementary = ''
+        if (supplementaryInfo.gender || supplementaryInfo.birthDateTime || supplementaryInfo.birthLocation || supplementaryInfo.currentStatus) {
+          supplementary = '\n\n--- 补充信息 ---\n'
+          if (supplementaryInfo.gender) {
+            const gLabel = { female: '女', male: '男', other: '其他' }[supplementaryInfo.gender] || supplementaryInfo.gender
+            supplementary += `性别: ${gLabel}\n`
+          }
+          if (supplementaryInfo.birthDateTime) supplementary += `出生年月日时: ${supplementaryInfo.birthDateTime}\n`
+          if (supplementaryInfo.birthLocation) supplementary += `出生地点: ${supplementaryInfo.birthLocation}\n`
+          if (supplementaryInfo.currentStatus) {
+            const sLabels: Record<string, string> = { single: '单身', married: '已婚', employed: '在职', unemployed: '待业', startup: '创业', student: '学生' }
+            supplementary += `目前状态: ${sLabels[supplementaryInfo.currentStatus] || supplementaryInfo.currentStatus}\n`
+          }
+        }
         if (questionText.trim()) {
-          bookingData.question_text = topicPrefix + questionText.trim()
+          bookingData.question_text = topicPrefix + questionText.trim() + supplementary
         }
         if (questionImages.length > 0) {
           bookingData.question_images = questionImages
@@ -930,6 +952,97 @@ export default function BookingPage() {
                         />
                         <p className="text-xs text-stone-400 mt-1 text-right">{questionText.length}/1000</p>
                       </div>
+                    </div>
+
+                    {/* 补充信息（可选） */}
+                    <div>
+                      <button
+                        type="button"
+                        onClick={() => setShowSupplementary(!showSupplementary)}
+                        className="flex items-center gap-2 text-sm text-violet-600 hover:text-violet-700 font-medium mb-3"
+                      >
+                        <span>{showSupplementary ? '▼' : '▶'}</span>
+                        {isZh ? '补充信息（可选，提升解析质量）' : 'Supplementary Info (Optional, improves accuracy)'}
+                      </button>
+                      {showSupplementary && (
+                        <div className="bg-stone-50 p-4 rounded-xl space-y-4">
+                          {/* 性别 */}
+                          <div>
+                            <Label className="block text-sm text-stone-600 mb-2">{isZh ? '性别' : 'Gender'}</Label>
+                            <div className="flex gap-4">
+                              {[
+                                { id: 'female', labelZh: '女', labelEn: 'Female' },
+                                { id: 'male', labelZh: '男', labelEn: 'Male' },
+                                { id: 'other', labelZh: '其他', labelEn: 'Other' },
+                              ].map((g) => (
+                                <label key={g.id} className="flex items-center gap-2 cursor-pointer">
+                                  <input
+                                    type="radio"
+                                    name="gender"
+                                    value={g.id}
+                                    checked={supplementaryInfo.gender === g.id}
+                                    onChange={(e) => setSupplementaryInfo({ ...supplementaryInfo, gender: e.target.value })}
+                                    className="text-violet-600"
+                                  />
+                                  <span className="text-sm">{isZh ? g.labelZh : g.labelEn}</span>
+                                </label>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* 出生年月日时 + 地区 */}
+                          <div>
+                            <Label className="block text-sm text-stone-600 mb-2">{isZh ? '出生年月日时（阳历）及出生地区' : 'Birth Date & Time (Gregorian) + Birth Region'}</Label>
+                            <input
+                              type="text"
+                              value={supplementaryInfo.birthDateTime}
+                              onChange={(e) => setSupplementaryInfo({ ...supplementaryInfo, birthDateTime: e.target.value })}
+                              placeholder={isZh ? '例如：1995年5月20日 14:30，北京' : 'e.g., May 20, 1995 14:30, Beijing'}
+                              className="w-full border rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                            />
+                            <p className="text-xs text-stone-400 mt-1">{isZh ? '八字命理必填，塔罗/灵性咨询可选' : 'Required for BaZi, optional for Tarot/Spiritual'}</p>
+                          </div>
+
+                          {/* 出生地点（时区校准） */}
+                          <div>
+                            <Label className="block text-sm text-stone-600 mb-2">{isZh ? '出生地点（用于时区校准）' : 'Birth Location (for timezone calibration)'}</Label>
+                            <input
+                              type="text"
+                              value={supplementaryInfo.birthLocation}
+                              onChange={(e) => setSupplementaryInfo({ ...supplementaryInfo, birthLocation: e.target.value })}
+                              placeholder={isZh ? '例如：北京市朝阳区' : 'e.g., Chaoyang District, Beijing'}
+                              className="w-full border rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                            />
+                          </div>
+
+                          {/* 目前状态 */}
+                          <div>
+                            <Label className="block text-sm text-stone-600 mb-2">{isZh ? '目前状态' : 'Current Status'}</Label>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                              {[
+                                { id: 'single', labelZh: '单身', labelEn: 'Single' },
+                                { id: 'married', labelZh: '已婚', labelEn: 'Married' },
+                                { id: 'employed', labelZh: '在职', labelEn: 'Employed' },
+                                { id: 'unemployed', labelZh: '待业', labelEn: 'Unemployed' },
+                                { id: 'startup', labelZh: '创业', labelEn: 'Entrepreneur' },
+                                { id: 'student', labelZh: '学生', labelEn: 'Student' },
+                              ].map((s) => (
+                                <label key={s.id} className="flex items-center gap-2 cursor-pointer">
+                                  <input
+                                    type="radio"
+                                    name="currentStatus"
+                                    value={s.id}
+                                    checked={supplementaryInfo.currentStatus === s.id}
+                                    onChange={(e) => setSupplementaryInfo({ ...supplementaryInfo, currentStatus: e.target.value })}
+                                    className="text-violet-600"
+                                  />
+                                  <span className="text-sm">{isZh ? s.labelZh : s.labelEn}</span>
+                                </label>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
