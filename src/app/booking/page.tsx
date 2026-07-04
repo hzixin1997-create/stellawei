@@ -214,7 +214,7 @@ export default function BookingPage() {
       setCheckingSlots(true)
       try {
         const tierInfo = TIERS.find(t => t.id === selectedTier)
-        const durationMinutes = tierInfo?.durationMinutes || 25
+        const durationMinutes = selectedTier === 'fengshui' ? 60 : (tierInfo?.durationMinutes || 25)
         // 使用本地日期，避免 UTC 时区偏差
         const dateStr = `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`
         
@@ -251,10 +251,12 @@ export default function BookingPage() {
     if (selectedTier === 'first') return master.pricing.first
     if (selectedTier === 'basic') return master.pricing.basic
     if (selectedTier === 'deep') return master.pricing.deep
+    if (selectedTier === 'fengshui') return master.pricing.fengshui
     return 0
   }
 
   const getDuration = () => {
+    if (selectedTier === 'fengshui') return isZh ? '60+ 分钟' : '60+ min'
     const tier = TIERS.find(t => t.id === selectedTier)
     if (!tier) return ''
     return isZh ? tier.durationZh : tier.durationEn
@@ -321,7 +323,7 @@ export default function BookingPage() {
       const finalPrice = getPrice()
       const durationText = getDuration()
       const tierInfo = TIERS.find(t => t.id === selectedTier)
-      const durationMinutes = tierInfo?.durationMinutes || 25
+      const durationMinutes = selectedTier === 'fengshui' ? 60 : (tierInfo?.durationMinutes || 25)
       
       const supabase = createClient()
 
