@@ -160,7 +160,6 @@ export default function BookingPage() {
     birthLocation: '',
     currentStatus: '',
   })
-  const [showSupplementary, setShowSupplementary] = useState(false)
 
   const isZh = i18n.language === 'zh'
 
@@ -956,16 +955,10 @@ export default function BookingPage() {
 
                     {/* 补充信息（可选） */}
                     <div>
-                      <button
-                        type="button"
-                        onClick={() => setShowSupplementary(!showSupplementary)}
-                        className="flex items-center gap-2 text-sm text-violet-600 hover:text-violet-700 font-medium mb-3"
-                      >
-                        <span>{showSupplementary ? '▼' : '▶'}</span>
+                      <p className="text-sm font-semibold text-violet-700 mb-3">
                         {isZh ? '补充信息（可选，提升解析质量）' : 'Supplementary Info (Optional, improves accuracy)'}
-                      </button>
-                      {showSupplementary && (
-                        <div className="bg-stone-50 p-4 rounded-xl space-y-4">
+                      </p>
+                      <div className="bg-stone-50 p-4 rounded-xl space-y-4">
                           {/* 性别 */}
                           <div>
                             <Label className="block text-sm text-stone-600 mb-2">{isZh ? '性别' : 'Gender'}</Label>
@@ -1042,7 +1035,6 @@ export default function BookingPage() {
                             </div>
                           </div>
                         </div>
-                      )}
                     </div>
                   </div>
                 )}
