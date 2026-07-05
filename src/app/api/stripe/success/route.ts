@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     const supabase = createServiceClient()
     const { data: booking, error: fetchError } = await supabase
       .from('bookings')
-      .select('id, status, payment_status, stripe_payment_intent_id, updated_at')
+      .select('id, status, payment_status, stripe_payment_intent_id, updated_at, total_amount, currency, master_id')
       .eq('id', bookingId)
       .single()
 
@@ -47,12 +47,22 @@ export async function POST(request: Request) {
       )
     }
 
+    // 获取师傅信息
+    const { data: master } = await supabase
+      .from('masters')
+      .select('display_name')
+      .eq('id', booking?.master_id)
+      .single()
+
     // 4. 返回当前状态
     return NextResponse.json({
       success: session.payment_status === 'paid',
       bookingId: booking?.id,
       paymentStatus: booking?.payment_status || session.payment_status,
       stripeStatus: session.payment_status,
+      masterName: master?.display_name || booking?.master_id,
+      price: booking?.total_amount || 0,
+      currency: booking?.currency || 'usd',
       message: session.payment_status === 'paid' 
         ? 'Payment verified' 
         : 'Payment pending, please wait for confirmation',

@@ -6,6 +6,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { CheckCircle, Loader2, AlertTriangle } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { track } from '@/lib/analytics'
 
 const POLL_INTERVAL = 2000 // 2 seconds
 const MAX_POLL_COUNT = 15 // 30 seconds total
@@ -60,6 +61,13 @@ function PaymentSuccessContent() {
           clearInterval(interval)
           setVerified(true)
           setPaymentStatus('paid')
+          // 发送 payment_success 事件（轮询路径）
+          track.paymentSuccess({
+            booking_id: bid,
+            master_name: data.booking?.master_id || '',
+            price: data.booking?.total_amount || 0,
+            currency: data.booking?.currency || 'usd',
+          })
           // 短暂显示成功状态后自动跳转
           setTimeout(() => {
             router.push('/user/dashboard')
@@ -68,6 +76,13 @@ function PaymentSuccessContent() {
           clearInterval(interval)
           setVerified(true)
           setPaymentStatus('paid')
+          // 发送 payment_success 事件（已支付但无需同步）
+          track.paymentSuccess({
+            booking_id: bid,
+            master_name: data.booking?.master_id || '',
+            price: data.booking?.total_amount || 0,
+            currency: data.booking?.currency || 'usd',
+          })
           setTimeout(() => {
             router.push('/user/dashboard')
           }, 1500)
@@ -116,6 +131,13 @@ function PaymentSuccessContent() {
         setVerified(isPaid)
         
         if (isPaid) {
+          // 发送 payment_success 事件
+          track.paymentSuccess({
+            booking_id: data.bookingId || '',
+            master_name: data.masterName || '',
+            price: data.price || 0,
+            currency: data.currency || 'usd',
+          })
           // 已支付，直接跳转
           setTimeout(() => {
             if (isMounted) router.push('/user/dashboard')

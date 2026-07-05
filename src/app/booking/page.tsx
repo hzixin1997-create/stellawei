@@ -13,6 +13,7 @@ import { ArrowLeft, ArrowRight, Calendar as CalendarIcon, Clock, Sparkles, Compa
 import Image from 'next/image'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import { track } from '@/lib/analytics'
 
 // ===== 数据结构 =====
 
@@ -339,7 +340,15 @@ export default function BookingPage() {
         throw new Error('Missing required booking information')
       }
 
-      const finalPrice = getPrice()
+      const finalPrice = getPrice() || 0
+
+      // 发送 booking_start 事件
+      track.bookingStart({
+        master_name: isZh ? master?.nameCn : master?.name || 'Unknown',
+        service_type: `${category}-${selectedTier}`,
+        price: finalPrice,
+      })
+
       const durationText = getDuration()
       const tierInfo = TIERS.find(t => t.id === selectedTier)
       const durationMinutes = selectedTier === 'fengshui' ? 60 : (tierInfo?.durationMinutes || 25)
@@ -451,6 +460,18 @@ export default function BookingPage() {
         const err = await createRes.json()
         throw new Error(err.error || err.message || 'Failed to create booking')
       }
+
+      // 解析 booking ID
+      const createdBooking = await createRes.json().catch(() => null)
+      const bookingId = createdBooking?.id || createdBooking?.booking?.id || 'unknown'
+
+      // 发送 booking_created 事件
+      track.bookingCreated({
+        booking_id: bookingId,
+        master_name: isZh ? master?.nameCn : master?.name || 'Unknown',
+        service_type: `${category}-${selectedTier}`,
+        price: finalPrice,
+      })
 
       // 成功，跳 Dashboard
       router.push('/user/dashboard')

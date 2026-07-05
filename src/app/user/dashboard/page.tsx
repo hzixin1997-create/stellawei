@@ -11,6 +11,7 @@ import Image from 'next/image'
 import RescheduleCalendar from '@/components/RescheduleCalendar'
 import Link from 'next/link'
 import { isConsultationExpired, getConsultationDisplayStatus, formatBookingTimeDisplay } from '@/lib/utils'
+import { track } from '@/lib/analytics'
 import {
   WeChatBrowserModal,
   isWeChatBrowser,
@@ -824,6 +825,12 @@ export default function UserDashboard() {
 
       // 跳转到 Stripe Checkout
       if (data.url) {
+        // 发送 payment_start 事件
+        track.paymentStart({
+          booking_id: booking.id,
+          master_name: isZh ? master?.nameCn : master?.name,
+          price: booking.total_amount,
+        })
         window.location.href = data.url
       } else {
         throw new Error('No checkout URL')

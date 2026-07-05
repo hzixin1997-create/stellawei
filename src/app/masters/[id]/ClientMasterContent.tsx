@@ -11,6 +11,7 @@ import Link from "next/link"
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { createClient } from "@/lib/supabase/client";
+import { track } from "@/lib/analytics";
 
 interface MasterService {
   id: string;
@@ -57,6 +58,14 @@ export function ClientMasterContent({ master }: Props) {
   const [authError, setAuthError] = useState(false);
   const [masterStatus, setMasterStatus] = useState<string>('online');
   const [masterReviews, setMasterReviews] = useState<any[]>([]);
+
+  // 发送 view_master 事件
+  useEffect(() => {
+    track.viewMaster({
+      master_name: master.display_name,
+      master_type: master.specialties?.[0] || 'general',
+    });
+  }, [master.display_name, master.specialties]);
 
   // 用户名隐私处理
   function maskName(name: string): string {

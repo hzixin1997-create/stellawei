@@ -1,10 +1,22 @@
 'use client';
 
 import Script from 'next/script';
+import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import { trackPageView } from '@/lib/analytics';
 
 const GA_MEASUREMENT_ID = 'G-MC61YGF78P';
 
 export default function GoogleAnalytics() {
+  const pathname = usePathname();
+
+  // 发送 SPA 页面浏览
+  useEffect(() => {
+    if (pathname) {
+      trackPageView(pathname, document.title, window.location.href);
+    }
+  }, [pathname]);
+
   if (!GA_MEASUREMENT_ID) return null;
 
   return (

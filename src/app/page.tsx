@@ -12,6 +12,7 @@ import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import Testimonials from "@/components/Testimonials";
+import { track } from '@/lib/analytics';
 
 // Lazy load banner — only needed for logged-in users
 const ActiveBookingBanner = lazy(() => import('@/components/ActiveBookingBanner').then(mod => ({ default: mod.ActiveBookingBanner })));
@@ -148,6 +149,11 @@ export default function Home() {
   const isLunaBg = activeMasterIdx === 2
 
   const handleBookingClick = () => {
+    track.clickHomeCTA({
+      button_name: isZh ? '开始首次咨询 $9.9' : 'Book Your First Reading From $9.9',
+      page: '/',
+      language: i18n.language,
+    });
     if (!user) {
       router.push('/auth/login');
     } else {

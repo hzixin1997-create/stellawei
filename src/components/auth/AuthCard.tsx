@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Sparkles, Mail, Lock, User, ArrowRight, Eye, EyeOff } from 'lucide-react'
+import { track } from '@/lib/analytics'
 
 // 路由映射：根据邮箱决定登录后跳到哪里
 const ROUTE_MAP: Record<string, string> = {
@@ -58,6 +59,8 @@ export function AuthCard() {
       if (error) {
         setError(error.message)
       } else {
+        // 发送 login 事件
+        track.login({ method: 'Email' })
         const target = getRedirectByEmail(email)
         // 使用硬跳转避免客户端路由卡顿
         window.location.href = target
@@ -107,6 +110,8 @@ export function AuthCard() {
 
       // 登录成功，直接跳转
       const target = getRedirectByEmail(email)
+      // 发送 register 事件
+      track.register({ method: 'Email', language: i18n.language })
       window.location.href = target
     } finally {
       setIsLoading(false)

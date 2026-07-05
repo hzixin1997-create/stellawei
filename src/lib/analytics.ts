@@ -1,15 +1,29 @@
 // Google Analytics / GTM 事件追踪工具
 
+// 事件类型定义
+type EventName =
+  | 'click_home_cta'
+  | 'view_master'
+  | 'booking_start'
+  | 'booking_created'
+  | 'register'
+  | 'login'
+  | 'payment_start'
+  | 'payment_success';
+
 type EventParams = {
   [key: string]: string | number | boolean | undefined;
 };
 
+// GA4 Key Events（原 Conversion）—— 在 GA4 后台标记
+export const KEY_EVENTS: EventName[] = ['register', 'booking_created', 'payment_success'];
+
 /**
  * 追踪自定义事件
- * @param eventName - 事件名称（如: 'begin_checkout', 'purchase'）
+ * @param eventName - 事件名称（GA4 Event）
  * @param params - 事件参数
  */
-export function trackEvent(eventName: string, params?: EventParams) {
+export function trackEvent(eventName: EventName, params?: EventParams) {
   if (typeof window === 'undefined') return;
 
   // GA4 gtag
@@ -35,19 +49,58 @@ export function trackEvent(eventName: string, params?: EventParams) {
  * 追踪页面浏览
  * @param pagePath - 页面路径
  * @param pageTitle - 页面标题
+ * @param pageLocation - 完整 URL（用于 UTM 参数捕获）
  */
-export function trackPageView(pagePath: string, pageTitle?: string) {
+export function trackPageView(pagePath: string, pageTitle?: string, pageLocation?: string) {
   if (typeof window === 'undefined') return;
 
+  const gaId = process.env.NEXT_PUBLIC_GA_ID || 'G-MC61YGF78P';
+  
   if (window.gtag) {
-    window.gtag('config', process.env.NEXT_PUBLIC_GA_ID || '', {
+    window.gtag('event', 'page_view', {
       page_path: pagePath,
       page_title: pageTitle || document.title,
+      page_location: pageLocation || window.location.href,
     });
   }
 }
 
-// 预定义的关键转化事件
+// 便捷事件函数
+export const track = {
+  /** 点击首页 CTA */
+  clickHomeCTA: (params: { button_name: string; page: string; language?: string }) => 
+    trackEvent('click_home_cta', params),
+
+  /** 查看师傅详情 */
+  viewMaster: (params: { master_name: string; master_type?: string }) => 
+    trackEvent('view_master', params),
+
+  /** 开始预约 */
+  bookingStart: (params: { master_name: string; service_type: string; price: number }) => 
+    trackEvent('booking_start', params),
+
+  /** 预约创建成功 */
+  bookingCreated: (params: { booking_id: string; master_name: string; service_type: string; price: number }) => 
+    trackEvent('booking_created', params),
+
+  /** 注册成功 */
+  register: (params: { method: string; language?: string }) => 
+    trackEvent('register', params),
+
+  /** 登录成功 */
+  login: (params: { method: string }) => 
+    trackEvent('login', params),
+
+  /** 开始支付 */
+  paymentStart: (params: { booking_id: string; master_name: string; price: number }) => 
+    trackEvent('payment_start', params),
+
+  /** 支付成功 */
+  paymentSuccess: (params: { booking_id: string; master_name: string; price: number; currency?: string }) => 
+    trackEvent('payment_success', params),
+};
+
+// 预定义的关键转化事件（旧兼容）
 export const Events = {
   // 用户行为
   VIEW_ITEM: 'view_item',           // 查看师傅详情
