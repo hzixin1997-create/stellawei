@@ -280,7 +280,7 @@ export default function BookingPage() {
 
   // 导航
   const handleNext = () => {
-    if (step < 5) setStep(step + 1)
+    if (step < 3) setStep(step + 1)
   }
 
   const handleBack = () => {
@@ -462,10 +462,9 @@ export default function BookingPage() {
   // 能否继续
   const canProceed = () => {
     switch (step) {
-      case 1: return category !== ''
+      case 1: return selectedMaster !== ''
       case 2: return consultationType !== ''
-      case 3: return selectedMaster !== ''
-      case 4: return selectedTier !== '' && (consultationType === 'message' || (selectedDate && selectedTime !== ''))
+      case 3: return selectedTier !== '' && (consultationType === 'message' || (selectedDate && selectedTime !== ''))
       default: return true
     }
   }
@@ -494,7 +493,7 @@ export default function BookingPage() {
             {isZh ? '预约咨询' : 'Book a Consultation'}
           </h1>
           <p className="text-stone-600 mt-2">
-            {isZh ? '选择您感兴趣的咨询类型和师傅' : 'Select the type of consultation and master you prefer'}
+            {isZh ? '选择您信任的师傅，开始您的咨询之旅' : 'Select your preferred advisor to begin your consultation'}
           </p>
           
           {isFirstTime && (
@@ -516,17 +515,17 @@ export default function BookingPage() {
           </div>
         )}
 
-        {/* Progress */}
+        {/* Progress - 3 steps */}
         <div className="flex items-center justify-between mb-8">
-          {[1, 2, 3, 4].map((s) => (
+          {[1, 2, 3].map((s) => (
             <div key={s} className="flex items-center">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
                 step >= s ? 'bg-violet-600 text-white' : 'bg-stone-200 text-stone-600'
               }`}>
                 {s}
               </div>
-              {s < 4 && (
-                <div className={`w-8 sm:w-12 h-1 mx-1 ${step > s ? 'bg-violet-600' : 'bg-stone-200'}`} />
+              {s < 3 && (
+                <div className={`w-16 sm:w-24 h-1 mx-2 ${step > s ? 'bg-violet-600' : 'bg-stone-200'}`} />
               )}
             </div>
           ))}
@@ -536,80 +535,24 @@ export default function BookingPage() {
         <Card className="mb-6">
           <CardHeader>
             <CardTitle>
-              {step === 1 && (isZh ? '选择咨询类型' : 'Select Consultation Type')}
+              {step === 1 && (isZh ? '选择师傅' : 'Select Master')}
               {step === 2 && (isZh ? '选择咨询方式' : 'Select Consultation Method')}
-              {step === 3 && (isZh ? '选择师傅' : 'Select Master')}
-              {step === 4 && (isZh ? '确认预约' : 'Confirm Booking')}
+              {step === 3 && (isZh ? '确认预约' : 'Confirm Booking')}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {/* Step 1: 大类 */}
+            {/* Step 1: 选择师傅 */}
             {step === 1 && (
-              <RadioGroup value={category} onValueChange={setCategory} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {CATEGORIES.map((cat) => {
-                  const Icon = cat.icon
-                  return (
-                    <div key={cat.id}>
-                      <RadioGroupItem value={cat.id} id={cat.id} className="peer sr-only" />
-                      <Label
-                        htmlFor={cat.id}
-                        className="flex flex-col items-center p-6 border-2 rounded-xl cursor-pointer transition-all peer-data-[state=checked]:border-violet-600 peer-data-[state=checked]:bg-violet-50 hover:border-violet-300 h-full"
-                      >
-                        <div className={`w-14 h-14 rounded-full bg-gradient-to-br ${cat.color} flex items-center justify-center text-white mb-3`}>
-                          <Icon className="w-7 h-7" />
-                        </div>
-                        <h3 className="font-semibold text-lg">{isZh ? cat.nameZh : cat.nameEn}</h3>
-                      </Label>
-                    </div>
-                  )
-                })}
-              </RadioGroup>
-            )}
-
-            {/* Step 2: 咨询方式 */}
-            {step === 2 && (
-              <RadioGroup value={consultationType} onValueChange={setConsultationType} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {CONSULTATION_TYPES.map((type) => {
-                  const Icon = type.icon
-                  return (
-                    <div key={type.id}>
-                      <RadioGroupItem value={type.id} id={type.id} className="peer sr-only" />
-                      <Label
-                        htmlFor={type.id}
-                        className="flex flex-col p-6 border-2 rounded-xl cursor-pointer transition-all peer-data-[state=checked]:border-violet-600 peer-data-[state=checked]:bg-violet-50 hover:border-violet-300 h-full"
-                      >
-                        <div className="flex items-center gap-3 mb-3">
-                          <Icon className="w-6 h-6 text-violet-600" />
-                          <h3 className="font-semibold text-lg">{isZh ? type.nameZh : type.nameEn}</h3>
-                        </div>
-                        <p className="text-stone-600 text-sm">{isZh ? type.descZh : type.descEn}</p>
-                      </Label>
-                    </div>
-                  )
-                })}
-              </RadioGroup>
-            )}
-
-            {step === 3 && (
               <div className="space-y-6">
-                {/* 已选条件显示 */}
-                <div className="flex items-center gap-2 text-sm text-stone-500 mb-4">
-                  <Badge variant="outline">
-                    {isZh ? CATEGORIES.find(c => c.id === category)?.nameZh : CATEGORIES.find(c => c.id === category)?.nameEn}
-                  </Badge>
-                  <span>·</span>
-                  <Badge variant="outline">
-                    {isZh ? CONSULTATION_TYPES.find(t => t.id === consultationType)?.nameZh : CONSULTATION_TYPES.find(t => t.id === consultationType)?.nameEn}
-                  </Badge>
-                </div>
+                <p className="text-stone-500 text-sm">
+                  {isZh ? '点击卡片选择您信任的师傅，每位师傅都有独特的专业领域' : 'Tap a card to select your preferred advisor'}
+                </p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                   {MASTERS
                     .filter(m => {
-                      if (!m.categories.includes(category)) return false
                       const status = masterStatuses[m.id] || 'online'
                       if (status === 'rest') return false
-                      if (consultationType === 'realtime' && status !== 'online') return false
                       return true
                     })
                     .map((m) => {
@@ -621,14 +564,24 @@ export default function BookingPage() {
                       }
                       const s = statusConfig[status] || statusConfig.online
                       
+                      // 从师傅的categories推导分类名称
+                      const masterCategories = m.categories.map(catId => {
+                        const cat = CATEGORIES.find(c => c.id === catId)
+                        return isZh ? cat?.nameZh : cat?.nameEn
+                      }).filter(Boolean)
+                      
                       return (
                         <div
                           key={m.id}
                           onClick={() => {
                             setSelectedMaster(m.id)
-                            setStep(4)
+                            // 自动设置category为师傅的第一个分类
+                            setCategory(m.categories[0] || '')
+                            handleNext()
                           }}
-                          className="group cursor-pointer bg-white border-2 border-stone-200 rounded-2xl overflow-hidden hover:border-violet-400 hover:shadow-lg transition-all"
+                          className={`group cursor-pointer bg-white border-2 rounded-2xl overflow-hidden hover:border-violet-400 hover:shadow-lg transition-all ${
+                            selectedMaster === m.id ? 'border-violet-600 ring-2 ring-violet-100' : 'border-stone-200'
+                          }`}
                         >
                           {/* 头像区域 */}
                           <div className="aspect-square bg-gradient-to-br from-stone-100 to-stone-200 relative overflow-hidden">
@@ -656,10 +609,19 @@ export default function BookingPage() {
                             </p>
                             
                             {/* 专长标签 */}
-                            <div className="flex flex-wrap gap-1.5 mb-4">
+                            <div className="flex flex-wrap gap-1.5 mb-3">
                               {(isZh ? m.specialties : m.specialtiesEn).map((spec, i) => (
                                 <Badge key={i} variant="secondary" className="text-xs">
                                   {spec}
+                                </Badge>
+                              ))}
+                            </div>
+                            
+                            {/* 分类标签 */}
+                            <div className="flex flex-wrap gap-1 mb-4">
+                              {masterCategories.map((catName, i) => (
+                                <Badge key={i} variant="outline" className="text-xs text-violet-600 border-violet-200">
+                                  {catName}
                                 </Badge>
                               ))}
                             </div>
@@ -682,10 +644,8 @@ export default function BookingPage() {
                 </div>
                 
                 {MASTERS.filter(m => {
-                  if (!m.categories.includes(category)) return false
                   const status = masterStatuses[m.id] || 'online'
                   if (status === 'rest') return false
-                  if (consultationType === 'realtime' && status !== 'online') return false
                   return true
                 }).length === 0 && (
                   <div className="text-center py-12 text-stone-500">
@@ -693,14 +653,38 @@ export default function BookingPage() {
                       {isZh ? '暂无可用师傅' : 'No masters available'}
                     </p>
                     <p className="text-sm">
-                      {isZh ? '请尝试其他咨询方式或稍后再试' : 'Please try another consultation type or check back later'}
+                      {isZh ? '请稍后再试' : 'Please check back later'}
                     </p>
                   </div>
                 )}
               </div>
             )}
 
-            {step === 4 && master && (
+            {/* Step 2: 咨询方式 */}
+            {step === 2 && (
+              <RadioGroup value={consultationType} onValueChange={setConsultationType} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {CONSULTATION_TYPES.map((type) => {
+                  const Icon = type.icon
+                  return (
+                    <div key={type.id}>
+                      <RadioGroupItem value={type.id} id={type.id} className="peer sr-only" />
+                      <Label
+                        htmlFor={type.id}
+                        className="flex flex-col p-6 border-2 rounded-xl cursor-pointer transition-all peer-data-[state=checked]:border-violet-600 peer-data-[state=checked]:bg-violet-50 hover:border-violet-300 h-full"
+                      >
+                        <div className="flex items-center gap-3 mb-3">
+                          <Icon className="w-6 h-6 text-violet-600" />
+                          <h3 className="font-semibold text-lg">{isZh ? type.nameZh : type.nameEn}</h3>
+                        </div>
+                        <p className="text-stone-600 text-sm">{isZh ? type.descZh : type.descEn}</p>
+                      </Label>
+                    </div>
+                  )
+                })}
+              </RadioGroup>
+            )}
+
+            {step === 3 && master && (
               <div className="space-y-6">
                 {/* 师傅头部信息 */}
                 <div className="flex items-start gap-4 pb-6 border-b border-stone-200">
@@ -721,7 +705,7 @@ export default function BookingPage() {
                       ))}
                     </div>
                   </div>
-                  <Button variant="outline" size="sm" onClick={() => {setStep(3); setSelectedMaster(''); setSelectedTier(''); setSelectedDate(undefined); setSelectedTime('')}}>
+                  <Button variant="outline" size="sm" onClick={() => {setStep(1); setSelectedMaster(''); setSelectedTier(''); setSelectedDate(undefined); setSelectedTime('')}}>
                     {isZh ? '换师傅' : 'Change'}
                   </Button>
                 </div>
@@ -1208,7 +1192,7 @@ export default function BookingPage() {
             <ArrowLeft className="w-4 h-4 mr-2" />
             {isZh ? '上一步' : 'Back'}
           </Button>
-          {step < 4 ? (
+          {step < 3 ? (
             <Button onClick={handleNext} disabled={!canProceed()} className="bg-violet-600 hover:bg-violet-700">
               {isZh ? '下一步' : 'Next'}
               <ArrowRight className="w-4 h-4 ml-2" />
