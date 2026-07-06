@@ -3,6 +3,7 @@ import { createServiceClient } from '@/lib/supabase';
 import { createClient } from '@/lib/supabase/server';
 import { getMasterByEmail } from '@/lib/master-auth';
 import { getMessage } from '@/lib/i18n';
+import { sendEmail, masterResponseNotificationEmail } from '@/lib/resend';
 
 export const dynamic = 'force-dynamic';
 
@@ -40,7 +41,7 @@ export async function POST(request: Request) {
     // 1. 验证 booking 属于这个师傅
     const { data: booking, error: bookingError } = await supabase
       .from('bookings')
-      .select('id, master_id, status')
+      .select('id, master_id, status, user_id, service_id')
       .eq('id', bookingId)
       .single();
 
@@ -97,6 +98,32 @@ export async function POST(request: Request) {
         { error: getMessage('SEND_FAILED', request), message: msgError.message },
         { status: 500 }
       );
+    }
+
+    // === 留言咨询回复：邮件通知用户 ===
+    if (message_source === 'order_reply') {
+      try {
+        // 获取用户邮箱
+        const { data: userProfile } = await supabase
+          .from('profiles')
+          .select('email, full_name')
+          .eq('id', booking.user_id)
+          .single();
+
+        if (userProfile?.email) {
+          const emailTemplate = masterResponseNotificationEmail(
+            userProfile.full_name || 'Stellawei User',
+            bookingId,
+            booking.service_id || 'Message Consultation',
+            masterInfo.name || 'Master'
+          );
+          await sendEmail(userProfile.email, emailTemplate);
+          console.log('[send-message] User notified via email for booking:', bookingId);
+        }
+      } catch (emailErr) {
+        // 邮件发送失败不阻塞主流程
+        console.error('[send-message] Failed to send user notification email:', emailErr);
+      }
     }
 
     return NextResponse.json({ success: true, message });
