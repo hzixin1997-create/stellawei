@@ -200,9 +200,6 @@ export default function FinancePage() {
             </div>
             <div className="flex-1">
               <h3 className="font-semibold text-stone-900">Stripe {isZh ? '收款账户' : 'Account'}</h3>
-              <p className="text-sm text-stone-500">
-                {isZh ? '香港个人账户 · 每周一自动提现至汇丰银行' : 'Hong Kong Individual • Auto-payout every Monday to HSBC'}
-              </p>
             </div>
             <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
               {isZh ? '正常收款' : 'Active'}
