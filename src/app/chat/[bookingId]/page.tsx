@@ -17,6 +17,7 @@ import {
   Crown,
   Clock,
   Star,
+  AlertTriangle,
 } from 'lucide-react'
 import Link from 'next/link'
 import { isMasterEmail } from '@/lib/master-auth'
@@ -227,6 +228,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   const [isZh, setIsZh] = useState(true)
   const [user, setUser] = useState<any>(null)
   const [isMaster, setIsMaster] = useState(false)
+  const [accessError, setAccessError] = useState<{status: number; message: string} | null>(null)
   const [uploadingImage, setUploadingImage] = useState(false)
   const [imageUploadProgress, setImageUploadProgress] = useState(0)
 
@@ -488,6 +490,15 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       } else {
         const errorText = await bookingRes.text()
         console.error('[chat] API error', bookingRes.status, errorText)
+        // 设置访问错误状态，阻止页面渲染空框架
+        setAccessError({
+          status: bookingRes.status,
+          message: bookingRes.status === 403
+            ? (isZh ? '您没有权限查看此订单' : 'You do not have permission to view this order')
+            : bookingRes.status === 404
+              ? (isZh ? '订单不存在' : 'Order not found')
+              : (isZh ? '加载失败，请稍后重试' : 'Failed to load, please try again later'),
+        })
       }
 
       setIsLoading(false)
@@ -1847,6 +1858,32 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     return (
       <div className="min-h-screen bg-gradient-to-br from-stone-50 to-stone-100 flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-violet-600" />
+      </div>
+    )
+  }
+
+  // 访问错误：显示错误页面而非空框架
+  if (accessError) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-stone-50 to-stone-100 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-xl border border-stone-200 p-8 max-w-md w-full text-center">
+          <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+            <AlertTriangle className="w-8 h-8 text-red-500" />
+          </div>
+          <h2 className="text-xl font-bold text-stone-900 mb-2">
+            {accessError.status === 403
+              ? (isZh ? '无权访问' : 'Access Denied')
+              : (isZh ? '加载失败' : 'Loading Failed')
+            }
+          </h2>
+          <p className="text-stone-500 mb-6">{accessError.message}</p>
+          <Link
+            href={isMaster ? '/master/dashboard' : '/user/dashboard'}
+            className="inline-flex items-center justify-center px-6 py-3 bg-violet-600 text-white rounded-xl font-medium hover:bg-violet-700 transition-colors"
+          >
+            {isZh ? '返回 dashboard' : 'Back to Dashboard'}
+          </Link>
+        </div>
       </div>
     )
   }
