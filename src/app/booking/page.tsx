@@ -797,14 +797,10 @@ export default function BookingPage() {
                         </div>
                         <div className="flex flex-col items-end">
                           <div className="flex items-center gap-2">
-                            {!isFirstTime && (
-                              <span className="text-sm text-stone-400 line-through">${master.originalPricing?.basic || master.pricing.basic}</span>
-                            )}
+                            <span className="text-sm text-stone-400 line-through">${master.originalPricing?.basic || master.pricing.basic}</span>
                             <span className="text-xl font-bold text-violet-600">${isFirstTime ? master.pricing.first : master.pricing.basic}</span>
                           </div>
-                          {!isFirstTime && (
-                            <span className="text-xs text-red-500">{isZh ? '限时福利价' : 'Limited Offer'}</span>
-                          )}
+                          <span className="text-xs text-red-500">{isFirstTime ? (isZh ? '首单体验价' : 'First-time Offer') : (isZh ? '限时福利价' : 'Limited Offer')}</span>
                         </div>
                       </Label>
                     </div>
@@ -817,14 +813,10 @@ export default function BookingPage() {
                         </div>
                         <div className="flex flex-col items-end">
                           <div className="flex items-center gap-2">
-                            {!isFirstTime && (
-                              <span className="text-sm text-stone-400 line-through">${master.originalPricing?.deep || master.pricing.deep}</span>
-                            )}
+                            <span className="text-sm text-stone-400 line-through">${master.originalPricing?.deep || master.pricing.deep}</span>
                             <span className="text-xl font-bold text-violet-600">${isFirstTime ? master.pricing.first : master.pricing.deep}</span>
                           </div>
-                          {!isFirstTime && (
-                            <span className="text-xs text-red-500">{isZh ? '限时福利价' : 'Limited Offer'}</span>
-                          )}
+                          <span className="text-xs text-red-500">{isFirstTime ? (isZh ? '首单体验价' : 'First-time Offer') : (isZh ? '限时福利价' : 'Limited Offer')}</span>
                         </div>
                       </Label>
                     </div>
@@ -841,14 +833,10 @@ export default function BookingPage() {
                           </div>
                           <div className="flex flex-col items-end">
                           <div className="flex items-center gap-2">
-                            {!isFirstTime && (
-                              <span className="text-sm text-stone-400 line-through">${master.originalPricing?.fengshui || master.pricing.fengshui}</span>
-                            )}
+                            <span className="text-sm text-stone-400 line-through">${master.originalPricing?.fengshui || master.pricing.fengshui}</span>
                             <span className="text-xl font-bold text-violet-600">${isFirstTime ? master.pricing.first : master.pricing.fengshui}</span>
                           </div>
-                          {!isFirstTime && (
-                            <span className="text-xs text-red-500">{isZh ? '限时福利价' : 'Limited Offer'}</span>
-                          )}
+                          <span className="text-xs text-red-500">{isFirstTime ? (isZh ? '首单体验价' : 'First-time Offer') : (isZh ? '限时福利价' : 'Limited Offer')}</span>
                         </div>
                         </Label>
                       </div>
