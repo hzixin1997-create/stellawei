@@ -957,7 +957,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
           }
 
           // 2. 获取预签名上传 URL
-          const urlRes = await fetch(`/api/chat/${bookingId}/upload-url`, {
+          const urlRes = await fetchWithTimeout(`/api/chat/${bookingId}/upload-url`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -965,7 +965,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
             },
             credentials: 'include',
             body: JSON.stringify({ fileExt: finalFile.name.split('.').pop() || 'jpg' }),
-          })
+          }, 10000)
 
           if (!urlRes.ok) {
             const err = await urlRes.json()
@@ -1132,20 +1132,21 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     }
   }
 
-  // 手动重试单条消息
+  // 手动重试单条消息（独立管理状态）
   const retrySingleMessage = async (msg: Message) => {
-    if (!bookingId || !msg.content) return
+    if (!bookingId || !msg.content || isSending) return
     setPendingMessages((prev) => new Set(prev).add(msg.id))
+    setIsSending(true) // 重试时锁定输入框
 
     try {
+      console.log('[chat:retry] Start', { msgId: msg.id, content: msg.content.slice(0, 20) })
       const { data: { session } } = await supabase.auth.getSession()
       if (!session?.access_token) {
         alert(isZh ? '登录已过期' : 'Session expired')
         return
       }
 
-      // 加密重试的内容
-      const res = await fetch(`/api/chat/${bookingId}/messages`, {
+      const res = await fetchWithTimeout(`/api/chat/${bookingId}/messages`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1153,7 +1154,9 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         },
         credentials: 'include',
         body: JSON.stringify({ content: msg.content }),
-      })
+      }, 10000)
+
+      console.log('[chat:retry] Response', { status: res.status, ok: res.ok })
 
       if (res.ok) {
         const json = await res.json()
@@ -1169,9 +1172,20 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       } else {
         alert(isZh ? '重试失败' : 'Retry failed')
       }
-    } catch (e) {
-      console.error('[chat] retrySingleMessage error:', e)
-      alert(isZh ? '重试失败，请检查网络' : 'Retry failed, check network')
+    } catch (e: any) {
+      console.error('[chat:retry] Error:', e)
+      if (e.message === 'Request timeout') {
+        alert(isZh ? '重试超时，请检查网络' : 'Retry timed out, check network')
+      } else {
+        alert(isZh ? '重试失败，请检查网络' : 'Retry failed, check network')
+      }
+    } finally {
+      setIsSending(false)
+      setPendingMessages((prev) => {
+        const next = new Set(prev)
+        next.delete(msg.id)
+        return next
+      })
     }
   }
 
@@ -1334,14 +1348,14 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
       console.log(`${logPrefix} Upload started`, { size: blob.size, duration, format });
 
-      const uploadRes = await fetch(`/api/chat/${bookingId}/upload-audio`, {
+      const uploadRes = await fetchWithTimeout(`/api/chat/${bookingId}/upload-audio`, {
         method: 'POST',
         headers: {
           authorization: `Bearer ${session.access_token}`,
         },
         credentials: 'include',
         body: formData,
-      });
+      }, 15000);
 
       const uploadDuration = Date.now() - uploadStart;
       console.log(`${logPrefix} Upload completed`, { duration: uploadDuration, status: uploadRes.status });
@@ -1372,7 +1386,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
       // 2. Send message with uploaded URL
       const msgStart = Date.now();
-      const res = await fetch(`/api/chat/${bookingId}/messages`, {
+      const res = await fetchWithTimeout(`/api/chat/${bookingId}/messages`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1383,7 +1397,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
           audio_url: uploadData.audio_url,
           audio_duration: uploadData.duration,
         }),
-      });
+      }, 10000);
 
       const msgDuration = Date.now() - msgStart;
       console.log(`${logPrefix} Message created`, { duration: msgDuration, status: res.status });
@@ -1487,7 +1501,30 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
   // 图片预览弹窗
   const [previewImage, setPreviewImage] = useState<string | null>(null)
-  // Force rebuild: chat core fix v6 - countdown via scheduled_at + message merge
+  // 通用 fetch 超时封装
+async function fetchWithTimeout(
+  url: string,
+  options: RequestInit,
+  timeoutMs: number = 10000
+): Promise<Response> {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), timeoutMs)
+  
+  try {
+    const res = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    })
+    clearTimeout(timeout)
+    return res
+  } catch (err: any) {
+    clearTimeout(timeout)
+    if (err.name === 'AbortError') {
+      throw new Error('Request timeout')
+    }
+    throw err
+  }
+}
 
   const handleSend = async () => {
     const content = inputValue.trim()
@@ -1547,8 +1584,9 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         return
       }
       
-      // 端到端加密：加密消息内容
-      const res = await fetch(`/api/chat/${bookingId}/messages`, {
+      console.log('[chat:send] API request start', { bookingId, content: content.slice(0, 20) })
+      
+      const res = await fetchWithTimeout(`/api/chat/${bookingId}/messages`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1556,7 +1594,9 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         },
         credentials: 'include',
         body: JSON.stringify({ content: content }),
-      })
+      }, 10000)
+
+      console.log('[chat:send] API response', { status: res.status, ok: res.ok })
 
       if (res.ok) {
         const json = await res.json()
@@ -1681,13 +1721,13 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       formData.append('file', uploadFile)
 
       console.log('[ImageUpload] Uploading to API...');
-      const uploadRes = await fetch(`/api/chat/${bookingId}/upload-image`, {
+      const uploadRes = await fetchWithTimeout(`/api/chat/${bookingId}/upload-image`, {
         method: 'POST',
         headers: {
           authorization: `Bearer ${session?.access_token || ''}`,
         },
         body: formData,
-      })
+      }, 15000)
 
       if (!uploadRes.ok) {
         const err = await uploadRes.json()
@@ -1713,14 +1753,14 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       const imageUrl = uploadData.image_url
 
       console.log('[ImageUpload] Upload success, sending message...');
-      const res = await fetch(`/api/chat/${bookingId}/messages`, {
+      const res = await fetchWithTimeout(`/api/chat/${bookingId}/messages`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           authorization: `Bearer ${session?.access_token || ''}`,
         },
         body: JSON.stringify({ image_url: imageUrl }),
-      })
+      }, 10000)
 
       if (!res.ok) {
         const err = await res.json()
@@ -1732,7 +1772,11 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       // preConsultMsgCount 已从 messages 派生，无需乐观更新
     } catch (err: any) {
       console.error('[ImageUpload] Error:', err)
-      alert(err.message || (isZh ? '上传失败，请重试' : 'Upload failed, please retry'))
+      if (err.message === 'Request timeout') {
+        alert(isZh ? '上传超时，请检查网络后重试' : 'Upload timed out, check network and retry')
+      } else {
+        alert(err.message || (isZh ? '上传失败，请重试' : 'Upload failed, please retry'))
+      }
     } finally {
       setUploadingImage(false)
       if (fileInputRef.current) {
