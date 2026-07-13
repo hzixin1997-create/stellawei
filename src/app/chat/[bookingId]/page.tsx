@@ -22,6 +22,7 @@ import {
 import Link from 'next/link'
 import { isMasterEmail } from '@/lib/master-auth'
 import { TimeEngine } from '@/lib/timeEngine'
+import { generateRequestId, logChatEvent, ChatEventTypes } from '@/lib/chat-observability'
 import {
   addToOfflineQueue,
   getOfflineQueue,
@@ -1499,6 +1500,33 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     };
   }, []);
 
+  // visibilitychange 监听：页面切后台/前台时记录事件
+  useEffect(() => {
+    const role = isMaster ? 'master' : 'user'
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        logChatEvent({
+          booking_id: bookingId,
+          role,
+          event_type: ChatEventTypes.PAGE_HIDDEN,
+          metadata: { visibility_state: 'hidden' },
+        }).catch(() => {})
+      } else {
+        logChatEvent({
+          booking_id: bookingId,
+          role,
+          event_type: ChatEventTypes.PAGE_VISIBLE,
+          metadata: { visibility_state: 'visible' },
+        }).catch(() => {})
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
+  }, [bookingId, isMaster])
+
   // 图片预览弹窗
   const [previewImage, setPreviewImage] = useState<string | null>(null)
   // 通用 fetch 超时封装
@@ -1549,6 +1577,18 @@ async function fetchWithTimeout(
       return
     }
 
+    const requestId = generateRequestId()
+    const role = isMaster ? 'master' : 'user'
+
+    // 发送事件：发送开始
+    logChatEvent({
+      booking_id: bookingId,
+      request_id: requestId,
+      role,
+      event_type: ChatEventTypes.SEND_START,
+      metadata: { content_type: 'text' },
+    }).catch(() => {})
+
     // 乐观更新：立即显示消息
     const tempId = `temp-${Date.now()}`
     const optimisticMsg: Message = {
@@ -1591,6 +1631,7 @@ async function fetchWithTimeout(
         headers: {
           'Content-Type': 'application/json',
           authorization: `Bearer ${session.access_token}`,
+          'X-Request-ID': requestId,
         },
         credentials: 'include',
         body: JSON.stringify({ content: content }),

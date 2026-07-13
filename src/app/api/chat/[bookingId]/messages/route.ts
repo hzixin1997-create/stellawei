@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase';
 import { getMasterByEmail } from '@/lib/master-auth';
 import { getMessage, getLang } from '@/lib/i18n';
+import { generateRequestId, logChatEvent, logApiDuration } from '@/lib/chat-observability';
 import * as Sentry from '@sentry/nextjs';
 
 export const dynamic = 'force-dynamic';
@@ -114,18 +115,26 @@ export async function GET(
 
 /**
  * POST /api/chat/[bookingId]/messages
- * Voice Engine v1.0 - 发送聊天消息（含语音状态机）
+ * Voice Engine v1.0 - 发送聊天消息（含语音状态机 + 可观测性）
  */
 export async function POST(
   request: Request,
   { params }: { params: { bookingId: string } }
 ) {
+  const requestId = generateRequestId();
+  const startTime = new Date();
+  const endpoint = `/api/chat/${params.bookingId}/messages`;
+  const method = 'POST';
+  let role: 'user' | 'master' | undefined;
+  let statusCode = 200;
+
   try {
     const { bookingId } = params;
     const body = await request.json();
     const { content, image_url, audio_url, audio_duration, audio_size, audio_format, voice_status } = body;
 
     if (!content && !image_url && !audio_url) {
+      statusCode = 400;
       return NextResponse.json(
         { error: getMessage('SEND_FAILED', request) },
         { status: 400 }
@@ -135,11 +144,13 @@ export async function POST(
     const supabase = createServiceClient();
     const authHeader = request.headers.get('authorization');
     if (!authHeader) {
+      statusCode = 401;
       return NextResponse.json({ error: getMessage('UNAUTHORIZED', request) }, { status: 401 });
     }
     const token = authHeader.replace('Bearer ', '');
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     if (authError || !user) {
+      statusCode = 401;
       return NextResponse.json({ error: getMessage('UNAUTHORIZED', request) }, { status: 401 });
     }
 
@@ -150,19 +161,32 @@ export async function POST(
       .single();
 
     if (bookingError || !booking) {
+      statusCode = 404;
       return NextResponse.json({ error: getMessage('BOOKING_NOT_FOUND', request) }, { status: 404 });
     }
 
     const masterInfo = getMasterByEmail(user.email || '');
     const isUser = booking.user_id === user.id;
     const isMaster = masterInfo && booking.master_id === masterInfo.slug;
+    role = isMaster ? 'master' : 'user';
+
+    // 发送事件：请求开始
+    logChatEvent({
+      booking_id: bookingId,
+      request_id: requestId,
+      role,
+      event_type: 'ApiRequest',
+      metadata: { endpoint: 'POST /messages', content_type: content ? 'text' : image_url ? 'image' : audio_url ? 'audio' : 'unknown' },
+    }).catch(() => {});
 
     if (!isUser && !isMaster) {
+      statusCode = 403;
       return NextResponse.json({ error: getMessage('FORBIDDEN_NOT_USER', request) }, { status: 403 });
     }
 
     if (isUser) {
       if (!['confirmed', 'in_progress'].includes(booking.status)) {
+        statusCode = 400;
         return NextResponse.json(
           { error: getMessage('CONSULTATION_ENDED', request), currentStatus: booking.status },
           { status: 400 }
@@ -171,12 +195,14 @@ export async function POST(
       if (booking.scheduled_at && booking.duration_minutes) {
         const endTime = new Date(booking.scheduled_at).getTime() + booking.duration_minutes * 60 * 1000;
         if (Date.now() > endTime) {
+          statusCode = 400;
           return NextResponse.json({ error: getMessage('CONSULTATION_ENDED', request) }, { status: 400 });
         }
       }
     }
 
     if (booking.payment_status !== 'paid') {
+      statusCode = 400;
       return NextResponse.json({ error: getMessage('UNPAID_BOOKING', request) }, { status: 400 });
     }
 
@@ -206,6 +232,7 @@ export async function POST(
 
     if (insertError) {
       console.error('[chat:POST] Insert message error:', insertError);
+      statusCode = 500;
       return NextResponse.json(
         { error: getMessage('SEND_FAILED', request), message: insertError.message },
         { status: 500 }
@@ -216,6 +243,7 @@ export async function POST(
 
     if (!message) {
       console.error('[chat:POST] Insert succeeded but no row returned');
+      statusCode = 500;
       return NextResponse.json(
         { error: getMessage('SEND_FAILED', request), message: 'Insert succeeded but no row returned' },
         { status: 500 }
@@ -224,13 +252,70 @@ export async function POST(
 
     return NextResponse.json({ success: true, message });
   } catch (error: any) {
+    statusCode = 500;
+    const endTime = new Date();
+    const durationMs = endTime.getTime() - startTime.getTime();
+
+    // 记录 API 耗时（失败）
+    logApiDuration({
+      request_id: requestId,
+      booking_id: params.bookingId,
+      endpoint,
+      method,
+      start_time: startTime,
+      end_time: endTime,
+      duration_ms: durationMs,
+      status_code: 500,
+      error_type: 'server',
+    }).catch(() => {});
+
+    // 记录事件
+    if (role) {
+      logChatEvent({
+        booking_id: params.bookingId,
+        request_id: requestId,
+        role,
+        event_type: 'ApiError',
+        duration_ms: durationMs,
+        error_code: 'SERVER_ERROR',
+        error_message: error.message,
+      }).catch(() => {});
+    }
+
     Sentry.captureException(error, {
       tags: { api: 'chat/messages', method: 'POST', component: 'chat' },
-      extra: { bookingId: params?.bookingId },
+      extra: { bookingId: params?.bookingId, requestId },
     });
     return NextResponse.json(
       { error: getMessage('INTERNAL_ERROR', request), message: error.message },
       { status: 500 }
     );
+  } finally {
+    // 成功情况在 return 前记录，失败在 catch 中记录
+    // 但还需要处理成功情况
+    if (statusCode === 200) {
+      const endTime = new Date();
+      const durationMs = endTime.getTime() - startTime.getTime();
+      logApiDuration({
+        request_id: requestId,
+        booking_id: params.bookingId,
+        endpoint,
+        method,
+        start_time: startTime,
+        end_time: endTime,
+        duration_ms: durationMs,
+        status_code: 200,
+      }).catch(() => {});
+
+      if (role) {
+        logChatEvent({
+          booking_id: params.bookingId,
+          request_id: requestId,
+          role,
+          event_type: 'ApiSuccess',
+          duration_ms: durationMs,
+        }).catch(() => {});
+      }
+    }
   }
 }
