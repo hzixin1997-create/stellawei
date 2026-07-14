@@ -51,6 +51,15 @@ export async function middleware(request: NextRequest) {
     },
   })
 
+  const { pathname } = request.nextUrl
+
+  // Staging 环境：禁止搜索引擎，返回 robots.txt
+  if (process.env.NEXT_PUBLIC_ENV === 'staging' && pathname === '/robots.txt') {
+    return new NextResponse('User-agent: *\nDisallow: /', {
+      headers: { 'Content-Type': 'text/plain' },
+    })
+  }
+
   const { supabase } = createClient(request, response)
   
   // Refresh session if expired - with timeout protection

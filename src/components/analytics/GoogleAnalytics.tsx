@@ -9,6 +9,10 @@ const GA_MEASUREMENT_ID = 'G-MC61YGF78P';
 
 export default function GoogleAnalytics() {
   const pathname = usePathname();
+  
+  // Staging 环境不加载 GA4
+  const isStaging = process.env.NEXT_PUBLIC_ENV === 'staging';
+  if (isStaging) return null;
 
   // 发送 SPA 页面浏览
   useEffect(() => {

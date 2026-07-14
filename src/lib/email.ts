@@ -22,8 +22,23 @@ interface SendEmailParams {
   bookingId?: string;
 }
 
+/**
+ * Staging 环境邮件重定向
+ * 所有邮件发送给固定开发邮箱，避免打扰真实用户
+ */
+function redirectStagingEmail(originalTo: string): { to: string; isRedirected: boolean } {
+  if (process.env.NEXT_PUBLIC_ENV !== 'staging') {
+    return { to: originalTo, isRedirected: false };
+  }
+  
+  // Staging 环境下，所有邮件重定向到开发邮箱
+  const stagingEmail = process.env.STAGING_EMAIL || 'staging@stellawei.dev';
+  console.log('[email:staging]', `Redirecting email from ${originalTo} to ${stagingEmail}`);
+  return { to: stagingEmail, isRedirected: true };
+}
+
 export async function sendConsultationReminder({
-  to,
+  to: originalTo,
   userName,
   masterName,
   serviceName,
@@ -35,6 +50,7 @@ export async function sendConsultationReminder({
   language = 'zh',
   bookingId,
 }: SendEmailParams): Promise<{ success: boolean; id?: string; provider?: string; error?: string }> {
+  const { to, isRedirected } = redirectStagingEmail(originalTo);
   const role: EmailRole = isMaster ? 'master' : 'user';
   const lang = (language === 'en' ? 'en' : 'zh') as 'zh' | 'en';
 
@@ -51,24 +67,28 @@ export async function sendConsultationReminder({
     chatUrl,
   });
 
+  // Staging 环境：邮件标题加标注
+  const finalSubject = isRedirected ? `[STAGING] ${subject}` : subject;
+
   // 2. 发送前日志
   console.log('[email:send]', JSON.stringify({
     bookingId: bookingId || 'unknown',
     role,
-    to,
+    to: originalTo,
+    redirectedTo: isRedirected ? to : undefined,
     language: lang,
     isMaster,
-    provider: 'brevo', // 先尝试 Brevo
+    provider: 'brevo',
     timestamp: new Date().toISOString(),
   }));
 
   // 3. Brevo 主发（5秒超时）
-  const brevoResult = await sendEmailViaBrevo({ to, subject, html });
+  const brevoResult = await sendEmailViaBrevo({ to, subject: finalSubject, html });
   if (brevoResult.success) {
     console.log('[email:send]', JSON.stringify({
       bookingId: bookingId || 'unknown',
       role,
-      to,
+      to: originalTo,
       result: 'success',
       provider: 'brevo',
       messageId: brevoResult.id,
@@ -80,7 +100,7 @@ export async function sendConsultationReminder({
   console.warn('[email:send]', JSON.stringify({
     bookingId: bookingId || 'unknown',
     role,
-    to,
+    to: originalTo,
     result: 'brevo_failed',
     error: brevoResult.error,
     fallback: 'resend',
@@ -102,7 +122,7 @@ export async function sendConsultationReminder({
     const { data, error } = await resend.emails.send({
       from: 'Stellawei <noreply@stellawei.org>',
       to,
-      subject,
+      subject: finalSubject,
       html,
     });
 

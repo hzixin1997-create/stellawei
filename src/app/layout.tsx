@@ -6,6 +6,7 @@ import { I18nProvider } from "@/components/I18nProvider";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 import GoogleTagManager from "@/components/analytics/GoogleTagManager";
+import StagingBanner from "@/components/StagingBanner";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
@@ -67,6 +68,7 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <GoogleTagManager />
+        <StagingBanner />
         <I18nProvider initialLang={lang}>
           <AuthProvider>
             {children}
