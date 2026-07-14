@@ -4,7 +4,20 @@
  * 2026-07-13
  */
 
-import { createServiceClient } from './supabase';
+import { createClient } from '@supabase/supabase-js';
+
+// 直接使用 service_role key 创建客户端，避免依赖 next/headers
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+
+function getServiceClient() {
+  if (!supabaseUrl || !supabaseServiceKey) {
+    throw new Error('Missing Supabase environment variables');
+  }
+  return createClient(supabaseUrl, supabaseServiceKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+}
 
 // ============================================
 // 1. Request ID 生成
@@ -29,7 +42,7 @@ export interface ChatEventPayload {
 
 export async function logChatEvent(payload: ChatEventPayload): Promise<void> {
   try {
-    const supabase = createServiceClient();
+    const supabase = getServiceClient();
     await supabase.from('chat_events').insert({
       booking_id: payload.booking_id,
       request_id: payload.request_id || null,
@@ -63,7 +76,7 @@ export interface ApiDurationPayload {
 
 export async function logApiDuration(payload: ApiDurationPayload): Promise<void> {
   try {
-    const supabase = createServiceClient();
+    const supabase = getServiceClient();
     await supabase.from('api_durations').insert({
       request_id: payload.request_id,
       booking_id: payload.booking_id || null,
