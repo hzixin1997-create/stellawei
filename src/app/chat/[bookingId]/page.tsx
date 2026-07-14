@@ -932,9 +932,29 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       return
     }
 
+    const requestId = generateRequestId()
+    const role = isMaster ? 'master' : 'user'
+
+    // 发送事件：开始上传图片
+    logChatEvent({
+      booking_id: bookingId,
+      request_id: requestId,
+      role,
+      event_type: ChatEventTypes.UPLOAD_IMAGE_START,
+      metadata: { file_name: file.name, file_size: file.size, file_type: file.type },
+    }).catch(() => {})
+
     // 1. 前端压缩图片
     const compressedFile = await compressImage(file, 1920, 0.8)
     if (!compressedFile) {
+      logChatEvent({
+        booking_id: bookingId,
+        request_id: requestId,
+        role,
+        event_type: ChatEventTypes.UPLOAD_IMAGE_FAILED,
+        error_code: 'COMPRESSION_FAILED',
+        error_message: 'Image compression failed',
+      }).catch(() => {})
       alert(isZh ? '图片压缩失败，请重试' : 'Image compression failed, please retry')
       return
     }
@@ -945,6 +965,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
     setImageUploadProgress(0)
 
     let lastError: any = null
+    const uploadStart = Date.now()
 
     try {
       // 最多重试3次
@@ -963,6 +984,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
             headers: {
               'Content-Type': 'application/json',
               authorization: `Bearer ${session.access_token}`,
+              'X-Request-ID': requestId,
             },
             credentials: 'include',
             body: JSON.stringify({ fileExt: finalFile.name.split('.').pop() || 'jpg' }),
@@ -1010,6 +1032,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
             headers: {
               'Content-Type': 'application/json',
               authorization: `Bearer ${session.access_token}`,
+              'X-Request-ID': requestId,
             },
             credentials: 'include',
             body: JSON.stringify({ image_url: uploadedUrl }),
@@ -1019,6 +1042,16 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
             const err = await res.json()
             throw new Error(err.error || 'Image send failed')
           }
+
+          // 成功，记录事件
+          const uploadDuration = Date.now() - uploadStart
+          logChatEvent({
+            booking_id: bookingId,
+            request_id: requestId,
+            role,
+            event_type: ChatEventTypes.UPLOAD_IMAGE_SUCCESS,
+            duration_ms: uploadDuration,
+          }).catch(() => {})
 
           // 成功，退出重试循环
           return
@@ -1034,6 +1067,15 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       }
 
       // 3次都失败了
+      logChatEvent({
+        booking_id: bookingId,
+        request_id: requestId,
+        role,
+        event_type: ChatEventTypes.UPLOAD_IMAGE_FAILED,
+        error_code: 'UPLOAD_FAILED',
+        error_message: lastError?.message || 'All attempts failed',
+      }).catch(() => {})
+
       alert(isZh ? `上传失败: ${lastError?.message || '请检查网络后重试'}` : `Upload failed: ${lastError?.message || 'Please check network and retry'}`)
     } finally {
       setUploadingImage(false)
@@ -1299,6 +1341,8 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
   const uploadAudioV2 = async (blob: Blob, duration: number, format: string, mimeType: string) => {
     const logPrefix = '[VoiceEngine]';
     const uploadStart = Date.now();
+    const requestId = generateRequestId();
+    const role = isMaster ? 'master' : 'user';
     
     if (consultStatus === 'completed' || (consultStatus === 'ended' && !isMaster)) return;
     if (consultStatus === 'not_started' && !isMaster && preConsultMsgCount >= PRE_CONSULT_LIMIT) {
@@ -1308,6 +1352,15 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       );
       return;
     }
+
+    // 发送事件：开始上传语音
+    logChatEvent({
+      booking_id: bookingId,
+      request_id: requestId,
+      role,
+      event_type: ChatEventTypes.UPLOAD_AUDIO_START,
+      metadata: { file_size: blob.size, duration, format, mime_type: mimeType },
+    }).catch(() => {})
 
     // 1. Create optimistic message placeholder
     const tempId = `temp-voice-${Date.now()}`;
@@ -1338,6 +1391,14 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       if (!session?.access_token) {
         console.error(`${logPrefix} No session`);
         setVoiceState({ status: 'failed', error: isZh ? '登录已过期' : 'Session expired' });
+        logChatEvent({
+          booking_id: bookingId,
+          request_id: requestId,
+          role,
+          event_type: ChatEventTypes.UPLOAD_AUDIO_FAILED,
+          error_code: 'NO_SESSION',
+          error_message: 'Session expired',
+        }).catch(() => {})
         return;
       }
       
@@ -1353,6 +1414,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         method: 'POST',
         headers: {
           authorization: `Bearer ${session.access_token}`,
+          'X-Request-ID': requestId,
         },
         credentials: 'include',
         body: formData,
@@ -1364,6 +1426,17 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       if (!uploadRes.ok) {
         const err = await uploadRes.json();
         console.error(`${logPrefix} Upload failed`, { status: uploadRes.status, error: err.error, code: err.code });
+        
+        logChatEvent({
+          booking_id: bookingId,
+          request_id: requestId,
+          role,
+          event_type: ChatEventTypes.UPLOAD_AUDIO_FAILED,
+          duration_ms: uploadDuration,
+          error_code: `HTTP_${uploadRes.status}`,
+          error_message: err.error || 'Upload failed',
+        }).catch(() => {})
+        
         throw new Error(err.error || 'Upload failed');
       }
 
@@ -1392,6 +1465,7 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
         headers: {
           'Content-Type': 'application/json',
           authorization: `Bearer ${session.access_token}`,
+          'X-Request-ID': requestId,
         },
         credentials: 'include',
         body: JSON.stringify({
@@ -1405,6 +1479,17 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
 
       if (!res.ok) {
         const err = await res.json();
+        
+        logChatEvent({
+          booking_id: bookingId,
+          request_id: requestId,
+          role,
+          event_type: ChatEventTypes.UPLOAD_AUDIO_FAILED,
+          duration_ms: uploadDuration + msgDuration,
+          error_code: `HTTP_${res.status}`,
+          error_message: err.error || 'Send failed',
+        }).catch(() => {})
+        
         throw new Error(err.error || 'Send failed');
       }
 
@@ -1419,6 +1504,16 @@ export default function ChatPage({ params }: { params: { bookingId: string } }) 
       setVoiceState({ status: 'sent' });
       setVoiceError(null);
       setRetryAudio(null);
+      
+      // 成功，记录事件
+      const totalDuration = Date.now() - uploadStart;
+      logChatEvent({
+        booking_id: bookingId,
+        request_id: requestId,
+        role,
+        event_type: ChatEventTypes.UPLOAD_AUDIO_SUCCESS,
+        duration_ms: totalDuration,
+      }).catch(() => {})
       
     } catch (err: any) {
       console.error(`${logPrefix} Voice chain failed:`, err.message);
