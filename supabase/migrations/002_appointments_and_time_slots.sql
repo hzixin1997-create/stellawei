@@ -25,7 +25,7 @@ CREATE TABLE master_time_slots (
 -- 索引优化
 CREATE INDEX idx_time_slots_master_date ON master_time_slots(master_id, slot_date);
 CREATE INDEX idx_time_slots_available ON master_time_slots(is_available, is_booked) WHERE is_available = TRUE AND is_booked = FALSE;
-CREATE INDEX idx_time_slots_date_range ON master_time_slots(slot_date) WHERE slot_date >= CURRENT_DATE;
+CREATE INDEX idx_time_slots_date_range ON master_time_slots(slot_date);
 
 -- =====================================================
 -- 2. 完善 appointments 预约表
