@@ -304,11 +304,14 @@ BEGIN
   SET is_booked = true,
       order_id = p_order_id,
       is_available = false
-  WHERE order_id IS NULL 
-    AND is_booked = false
-    AND master_id = (SELECT master_id FROM orders WHERE id = p_order_id)
-    AND slot_date = (SELECT scheduled_at::date FROM orders WHERE id = p_order_id)
-    LIMIT 1;
+  WHERE id = (
+    SELECT id FROM master_time_slots
+    WHERE order_id IS NULL 
+      AND is_booked = false
+      AND master_id = (SELECT master_id FROM orders WHERE id = p_order_id)
+      AND slot_date = (SELECT scheduled_at::date FROM orders WHERE id = p_order_id)
+    LIMIT 1
+  );
   
   RETURN true;
 END;
