@@ -29,7 +29,7 @@ ALTER TABLE orders
 
 CREATE TABLE IF NOT EXISTS master_services (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  master_id UUID NOT NULL REFERENCES masters(id) ON DELETE CASCADE,
+  master_id TEXT NOT NULL,
   service_id UUID REFERENCES services(id) ON DELETE SET NULL,
   name VARCHAR(100) NOT NULL,
   type order_type NOT NULL DEFAULT 'booking',
