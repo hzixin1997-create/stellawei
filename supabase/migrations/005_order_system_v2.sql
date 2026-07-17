@@ -94,6 +94,7 @@ CREATE POLICY "Users can create orders" ON orders
 CREATE POLICY "Users can update own orders" ON orders
   FOR UPDATE USING (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Masters can update assigned orders" ON orders;
 CREATE POLICY "Masters can update assigned orders" ON orders
   FOR UPDATE USING (master_id IN (
     SELECT id FROM masters WHERE user_id = auth.uid()
