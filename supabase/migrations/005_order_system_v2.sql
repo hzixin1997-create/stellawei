@@ -135,7 +135,8 @@ BEGIN
 END;
 $$;
 
-CREATE TRIGGER IF NOT EXISTS trg_master_services_updated_at
+DROP TRIGGER IF EXISTS trg_master_services_updated_at ON master_services;
+CREATE TRIGGER trg_master_services_updated_at
   BEFORE UPDATE ON master_services
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 

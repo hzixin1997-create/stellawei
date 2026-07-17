@@ -59,7 +59,8 @@ CREATE POLICY "Masters can manage messages" ON messages
 -- 3. 触发器：自动更新 updated_at
 -- =====================================================
 
-CREATE TRIGGER IF NOT EXISTS trg_messages_updated_at
+DROP TRIGGER IF EXISTS trg_messages_updated_at ON messages;
+CREATE TRIGGER trg_messages_updated_at
   BEFORE UPDATE ON messages
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
