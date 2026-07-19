@@ -260,13 +260,6 @@ ALTER TABLE orders
   ADD COLUMN IF NOT EXISTS master_slug TEXT; -- 'zhang-yihua' | 'wu-yang'
 
 -- 如果 master_slug 为空，尝试从 masters 表填充
-UPDATE orders
-SET master_slug = CASE
-  WHEN master_id = 'zhang-yihua' THEN 'zhang-yihua'
-  WHEN master_id = 'wu-yang' THEN 'wu-yang'
-  ELSE master_id::text
-END
-WHERE master_slug IS NULL;
 
 -- =====================================================
 -- 2. messages 表 — 留言系统
