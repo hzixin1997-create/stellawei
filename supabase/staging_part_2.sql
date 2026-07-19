@@ -269,7 +269,7 @@ CREATE TABLE IF NOT EXISTS messages (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   booking_id UUID NOT NULL REFERENCES bookings(id) ON DELETE CASCADE,
   sender_id UUID NOT NULL,
-  sender_type TEXT NOT NULL CHECK (sender_type IN 'user', 'master'),
+  sender_type TEXT NOT NULL CHECK (sender_type IN ('user', 'master')),
   sender_name TEXT,
   content TEXT,
   image_url TEXT,
