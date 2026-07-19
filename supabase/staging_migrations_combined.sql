@@ -357,7 +357,7 @@ CREATE TABLE master_time_slots (
 -- 索引优化
 CREATE INDEX idx_time_slots_master_date ON master_time_slots(master_id, slot_date);
 CREATE INDEX idx_time_slots_available ON master_time_slots(is_available, is_booked) WHERE is_available = TRUE AND is_booked = FALSE;
-CREATE INDEX idx_time_slots_date_range ON master_time_slots(slot_date) WHERE slot_date >= CURRENT_DATE;
+CREATE INDEX idx_time_slots_date_range ON master_time_slots(slot_date);
 
 -- =====================================================
 -- 2. 完善 appointments 预约表
@@ -1064,11 +1064,14 @@ BEGIN
   SET is_booked = true,
       order_id = p_order_id,
       is_available = false
-  WHERE order_id IS NULL 
-    AND is_booked = false
-    AND master_id = (SELECT master_id FROM orders WHERE id = p_order_id)
-    AND slot_date = (SELECT scheduled_at::date FROM orders WHERE id = p_order_id)
-    LIMIT 1;
+  WHERE id = (
+    SELECT id FROM master_time_slots
+    WHERE order_id IS NULL 
+      AND is_booked = false
+      AND master_id = (SELECT master_id FROM orders WHERE id = p_order_id)
+      AND slot_date = (SELECT scheduled_at::date FROM orders WHERE id = p_order_id)
+    LIMIT 1
+  );
   
   RETURN true;
 END;
@@ -1195,7 +1198,7 @@ ALTER TABLE orders
 
 CREATE TABLE IF NOT EXISTS master_services (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  master_id UUID NOT NULL REFERENCES masters(id) ON DELETE CASCADE,
+  master_id TEXT NOT NULL,
   service_id UUID REFERENCES services(id) ON DELETE SET NULL,
   name VARCHAR(100) NOT NULL,
   type order_type NOT NULL DEFAULT 'booking',
@@ -1260,6 +1263,7 @@ CREATE POLICY "Users can create orders" ON orders
 CREATE POLICY "Users can update own orders" ON orders
   FOR UPDATE USING (user_id = auth.uid());
 
+DROP POLICY IF EXISTS "Masters can update assigned orders" ON orders;
 CREATE POLICY "Masters can update assigned orders" ON orders
   FOR UPDATE USING (master_id IN (
     SELECT id FROM masters WHERE user_id = auth.uid()
@@ -1301,7 +1305,8 @@ BEGIN
 END;
 $$;
 
-CREATE TRIGGER IF NOT EXISTS trg_master_services_updated_at
+DROP TRIGGER IF EXISTS trg_master_services_updated_at ON master_services;
+CREATE TRIGGER trg_master_services_updated_at
   BEFORE UPDATE ON master_services
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
@@ -1390,7 +1395,8 @@ CREATE POLICY "Masters can manage messages" ON messages
 -- 3. 触发器：自动更新 updated_at
 -- =====================================================
 
-CREATE TRIGGER IF NOT EXISTS trg_messages_updated_at
+DROP TRIGGER IF EXISTS trg_messages_updated_at ON messages;
+CREATE TRIGGER trg_messages_updated_at
   BEFORE UPDATE ON messages
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
