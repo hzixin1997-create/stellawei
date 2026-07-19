@@ -2,7 +2,8 @@
 -- 2026-05-14
 
 -- 添加删除权限（用户只能删除自己的订单）
-CREATE POLICY IF NOT EXISTS "Users can delete own bookings" ON bookings
+DROP POLICY IF EXISTS "Users can delete own bookings" ON bookings;
+CREATE POLICY "Users can delete own bookings" ON bookings
   FOR DELETE USING (user_id = auth.uid());
 
 -- 完成
@@ -92,12 +93,14 @@ WHERE (payment_status = 'pending' OR payment_status = 'pending_payment')
 -- 2026-05-15
 
 -- 用户只能更新自己的订单（用于软删除、取消等）
-CREATE POLICY IF NOT EXISTS "Users can update own bookings" ON bookings
+DROP POLICY IF EXISTS "Users can update own bookings" ON bookings;
+CREATE POLICY "Users can update own bookings" ON bookings
   FOR UPDATE USING (user_id = auth.uid())
   WITH CHECK (user_id = auth.uid());
 
 -- 确保删除策略也存在
-CREATE POLICY IF NOT EXISTS "Users can delete own bookings" ON bookings
+DROP POLICY IF EXISTS "Users can delete own bookings" ON bookings;
+CREATE POLICY "Users can delete own bookings" ON bookings
   FOR DELETE USING (user_id = auth.uid());
 
 -- 完成

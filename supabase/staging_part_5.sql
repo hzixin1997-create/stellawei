@@ -946,11 +946,13 @@ WHERE (payment_status = 'pending' OR payment_status = 'pending_payment')
   AND status NOT IN ('cancelled', 'refunded', 'paid', 'expired');
 
 -- 4. 补全 RLS 策略（用户能更新/删除自己的订单）
-CREATE POLICY IF NOT EXISTS "Users can update own bookings" ON bookings
+DROP POLICY IF EXISTS "Users can update own bookings" ON bookings;
+CREATE POLICY "Users can update own bookings" ON bookings
   FOR UPDATE USING (user_id = auth.uid())
   WITH CHECK (user_id = auth.uid());
 
-CREATE POLICY IF NOT EXISTS "Users can delete own bookings" ON bookings
+DROP POLICY IF EXISTS "Users can delete own bookings" ON bookings;
+CREATE POLICY "Users can delete own bookings" ON bookings
   FOR DELETE USING (user_id = auth.uid());
 
 -- 5. 验证结果（执行后会显示 bookings 表所有列）
