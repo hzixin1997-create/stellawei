@@ -195,23 +195,8 @@ CREATE POLICY "Masters can update assigned orders" ON orders
 -- 5. 初始化师傅服务数据
 -- =====================================================
 
-INSERT INTO master_services (master_id, name, type, price, currency, duration_minutes, response_hours, description, sort_order) VALUES
--- 张易桦
-('zhang-yihua', '奇门遁甲咨询（预约制）', 'booking', 800, 'HKD', 30, NULL, '通过奇门遁甲分析时机、机遇和人生事件中的隐藏影响', 1),
-('zhang-yihua', '六爻占卜（预约制）', 'booking', 600, 'HKD', 20, NULL, '六爻占卜精确解答具体问题', 2),
-('zhang-yihua', '留言咨询', 'message', 300, 'HKD', NULL, 48, '提交您的问题，张师傅将在48小时内通过文字回复', 3),
-
--- 戊阳
-('wu-yang', '八字命盘分析（预约制）', 'booking', 1000, 'HKD', 45, NULL, '深度八字分析，了解人生轨迹和环境能量', 1),
-('wu-yang', '风水咨询（预约制）', 'booking', 1500, 'HKD', 60, NULL, '家居/办公室风水调理，改善健康、财运和人际关系', 2),
-('wu-yang', '留言咨询', 'message', 400, 'HKD', NULL, 48, '提交您的问题，戊阳师傅将在48小时内通过文字回复', 3),
-
--- 其他师傅也加上基础留言服务
-('master-luna', '塔罗留言咨询', 'message', 200, 'HKD', NULL, 48, '提交您的问题，Luna师傅将在48小时内通过文字回复', 1),
-('master-lin', '八字留言咨询', 'message', 350, 'HKD', NULL, 48, '提交您的问题，林师傅将在48小时内通过文字回复', 1),
-('master-han', '八字留言咨询', 'message', 250, 'HKD', NULL, 48, '提交您的问题，韩师傅将在48小时内通过文字回复', 1),
-('master-elena', '塔罗留言咨询', 'message', 200, 'HKD', NULL, 48, '提交您的问题，Elena师傅将在48小时内通过文字回复', 1)
-ON CONFLICT DO NOTHING;
+-- NOTE: Master services data should be inserted after masters are created
+-- Use: INSERT INTO master_services (master_id, ...) SELECT id, ... FROM masters
 
 -- =====================================================
 -- 6. 触发器：自动更新 updated_at
