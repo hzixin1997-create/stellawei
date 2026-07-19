@@ -120,7 +120,7 @@ ALTER TABLE orders
 
 CREATE TABLE IF NOT EXISTS master_services (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  master_id TEXT NOT NULL,
+  master_id UUID NOT NULL,
   service_id UUID REFERENCES services(id) ON DELETE SET NULL,
   name VARCHAR(100) NOT NULL,
   type order_type NOT NULL DEFAULT 'booking',
@@ -164,7 +164,7 @@ CREATE POLICY "Master services are public" ON master_services
 
 CREATE POLICY "Masters can manage own services" ON master_services
   FOR ALL USING (master_id IN (
-    SELECT id::text FROM masters WHERE user_id = auth.uid()
+    SELECT id FROM masters WHERE user_id = auth.uid()
   ));
 
 -- orders: 更新策略，支持师傅查看分配到的订单
@@ -176,7 +176,7 @@ CREATE POLICY "Users can view own orders" ON orders
 
 CREATE POLICY "Masters can view assigned orders" ON orders
   FOR SELECT USING (master_id IN (
-    SELECT id::text FROM masters WHERE user_id = auth.uid()
+    SELECT id FROM masters WHERE user_id = auth.uid()
   ));
 
 CREATE POLICY "Users can create orders" ON orders
@@ -188,7 +188,7 @@ CREATE POLICY "Users can update own orders" ON orders
 DROP POLICY IF EXISTS "Masters can update assigned orders" ON orders;
 CREATE POLICY "Masters can update assigned orders" ON orders
   FOR UPDATE USING (master_id IN (
-    SELECT id::text FROM masters WHERE user_id = auth.uid()
+    SELECT id FROM masters WHERE user_id = auth.uid()
   ));
 
 -- =====================================================
@@ -333,7 +333,7 @@ SELECT 'Migration P1 completed' as status;
 CREATE TABLE IF NOT EXISTS bookings (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID NOT NULL,
-  master_id TEXT NOT NULL, -- master slug: 'master-luna' | 'zhang-yihua' | 'wu-yang'
+  master_id UUID NOT NULL, -- references masters(id)
   service_id TEXT NOT NULL, -- 'tarot' | 'spiritual' | 'qimen' | etc.
   
   -- 预约时间
