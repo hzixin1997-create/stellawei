@@ -1,7 +1,7 @@
 -- 安全清理所有 Stellawei 表（按依赖顺序逆序删除）
 
--- 先禁用外键检查（PostgreSQL 不支持，改为 CASCADE）
 DROP TABLE IF EXISTS order_status_history CASCADE;
+DROP TABLE IF EXISTS refund_requests CASCADE;
 DROP TABLE IF EXISTS user_communication_settings CASCADE;
 DROP TABLE IF EXISTS chat_events CASCADE;
 DROP TABLE IF EXISTS api_durations CASCADE;
@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS message_read_status CASCADE;
 DROP TABLE IF EXISTS messages CASCADE;
 DROP TABLE IF EXISTS appointments CASCADE;
 DROP TABLE IF EXISTS master_time_slots CASCADE;
+DROP TABLE IF EXISTS master_schedule_exceptions CASCADE;
 DROP TABLE IF EXISTS master_schedules CASCADE;
 DROP TABLE IF EXISTS master_services CASCADE;
 DROP TABLE IF EXISTS reviews CASCADE;
@@ -18,8 +19,12 @@ DROP TABLE IF EXISTS payments CASCADE;
 DROP TABLE IF EXISTS orders CASCADE;
 DROP TABLE IF EXISTS bookings CASCADE;
 DROP TABLE IF EXISTS profiles CASCADE;
+DROP TABLE IF EXISTS user_settings CASCADE;
 DROP TABLE IF EXISTS masters CASCADE;
 DROP TABLE IF EXISTS services CASCADE;
+DROP TABLE IF EXISTS service_tiers CASCADE;
+DROP TABLE IF EXISTS tarot_cards CASCADE;
+DROP TABLE IF EXISTS app_configs CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
 -- 删除自定义类型
