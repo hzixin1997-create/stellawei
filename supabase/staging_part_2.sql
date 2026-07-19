@@ -164,7 +164,7 @@ CREATE POLICY "Master services are public" ON master_services
 
 CREATE POLICY "Masters can manage own services" ON master_services
   FOR ALL USING (master_id IN (
-    SELECT id FROM masters WHERE user_id = auth.uid()
+    SELECT id::text FROM masters WHERE user_id = auth.uid()
   ));
 
 -- orders: 更新策略，支持师傅查看分配到的订单
@@ -176,7 +176,7 @@ CREATE POLICY "Users can view own orders" ON orders
 
 CREATE POLICY "Masters can view assigned orders" ON orders
   FOR SELECT USING (master_id IN (
-    SELECT id FROM masters WHERE user_id = auth.uid()
+    SELECT id::text FROM masters WHERE user_id = auth.uid()
   ));
 
 CREATE POLICY "Users can create orders" ON orders
@@ -188,7 +188,7 @@ CREATE POLICY "Users can update own orders" ON orders
 DROP POLICY IF EXISTS "Masters can update assigned orders" ON orders;
 CREATE POLICY "Masters can update assigned orders" ON orders
   FOR UPDATE USING (master_id IN (
-    SELECT id FROM masters WHERE user_id = auth.uid()
+    SELECT id::text FROM masters WHERE user_id = auth.uid()
   ));
 
 -- =====================================================
