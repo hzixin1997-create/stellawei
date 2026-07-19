@@ -267,29 +267,27 @@ ALTER TABLE orders
 
 CREATE TABLE IF NOT EXISTS messages (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  order_id UUID NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
-  user_email TEXT NOT NULL,
-  content TEXT NOT NULL,
-  reply TEXT,
-  status TEXT NOT NULL DEFAULT 'pending', -- 'pending' | 'replied'
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  booking_id UUID NOT NULL REFERENCES bookings(id) ON DELETE CASCADE,
+  sender_id UUID NOT NULL,
+  sender_type TEXT NOT NULL CHECK (sender_type IN 'user', 'master'),
+  sender_name TEXT,
+  content TEXT,
+  image_url TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_messages_order_id ON messages(order_id);
-CREATE INDEX IF NOT EXISTS idx_messages_user_email ON messages(user_email);
-CREATE INDEX IF NOT EXISTS idx_messages_status ON messages(status);
+CREATE INDEX IF NOT EXISTS idx_messages_booking_id ON messages(booking_id);
 
 -- RLS
 ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
 
 -- 任何人可以查看自己的留言（通过 user_email 匹配，简化一期不严格校验）
 CREATE POLICY "Users can view own messages" ON messages
-  FOR SELECT USING (true); -- 一期简化，后续加严格校验
+  FOR SELECT USING (true);
 
 -- 师傅可以查看和回复所有留言
 CREATE POLICY "Masters can manage messages" ON messages
-  FOR ALL USING (true); -- 一期简化，后续加严格校验
+  FOR ALL USING (true);
 
 -- =====================================================
 -- 3. 触发器：自动更新 updated_at
