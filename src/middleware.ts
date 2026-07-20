@@ -65,8 +65,6 @@ export async function middleware(request: NextRequest) {
   // Refresh session if expired - with timeout protection
   const { session } = await getSessionWithTimeout(supabase, 5000)
 
-  const { pathname } = request.nextUrl
-
   // Check if the route is protected
   const isProtectedRoute = protectedRoutes.some(route => 
     pathname.startsWith(route)

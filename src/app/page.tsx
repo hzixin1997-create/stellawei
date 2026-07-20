@@ -12,6 +12,7 @@ import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import Testimonials from "@/components/Testimonials";
+import { FAQSection, FAQSchema } from "@/components/FAQSection";
 import { track } from '@/lib/analytics';
 
 // Lazy load banner — only needed for logged-in users
@@ -163,6 +164,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen relative isolate">
+      <FAQSchema />
       {/* Background images - desktop with photo, mobile with gradient */}
       <div className="absolute inset-0">
         {/* Base dark background to prevent white flash during transition */}
@@ -572,6 +574,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* FAQ Section */}
+      <FAQSection />
 
       {/* CTA Section */}
       <section className="py-24">
