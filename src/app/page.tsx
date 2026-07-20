@@ -516,7 +516,15 @@ export default function Home() {
                     {t(service.descriptionKey)}
                   </p>
                   <div className="flex justify-end">
-                    <Link href={service.id === 'eastern' ? '/services/bazi' : `/services/${service.id}`}>
+                    <Link 
+                      href={service.id === 'eastern' ? '/services/bazi' : `/services/${service.id}`}
+                      onClick={() => {
+                        track.selectService({
+                          service_name: t(service.nameKey),
+                          service_id: service.id,
+                        });
+                      }}
+                    >
                       <Button variant="outline" size="sm" className="rounded-full bg-stellawei-purple text-white/80 border-stellawei-purple hover:bg-stellawei-purple-dark">
                         {isZh ? '了解更多' : 'Learn More'}
                       </Button>

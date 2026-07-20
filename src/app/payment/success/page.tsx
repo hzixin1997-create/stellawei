@@ -1,7 +1,7 @@
 'use client'
 
 import { Suspense } from 'react'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { CheckCircle, Loader2, AlertTriangle } from 'lucide-react'
@@ -22,6 +22,19 @@ function PaymentSuccessContent() {
   const [paymentStatus, setPaymentStatus] = useState('')
   const [pollCount, setPollCount] = useState(0)
   const [pollProgress, setPollProgress] = useState(0)
+  // 防止 payment_success 事件重复发送
+  const [hasTrackedPayment, setHasTrackedPayment] = useState(false)
+
+  const trackPaymentSuccess = useCallback((bid: string, masterName: string, price: number, currency: string = 'usd') => {
+    if (hasTrackedPayment) return
+    setHasTrackedPayment(true)
+    track.paymentSuccess({
+      booking_id: bid,
+      master_name: masterName,
+      price,
+      currency,
+    })
+  }, [hasTrackedPayment])
 
   const startPolling = useCallback((bid: string) => {
     let count = 0
@@ -62,12 +75,12 @@ function PaymentSuccessContent() {
           setVerified(true)
           setPaymentStatus('paid')
           // 发送 payment_success 事件（轮询路径）
-          track.paymentSuccess({
-            booking_id: bid,
-            master_name: data.booking?.master_id || '',
-            price: data.booking?.total_amount || 0,
-            currency: data.booking?.currency || 'usd',
-          })
+          trackPaymentSuccess(
+            bid,
+            data.booking?.master_id || '',
+            data.booking?.total_amount || 0,
+            data.booking?.currency || 'usd'
+          )
           // 短暂显示成功状态后自动跳转
           setTimeout(() => {
             router.push('/user/dashboard')
@@ -77,12 +90,12 @@ function PaymentSuccessContent() {
           setVerified(true)
           setPaymentStatus('paid')
           // 发送 payment_success 事件（已支付但无需同步）
-          track.paymentSuccess({
-            booking_id: bid,
-            master_name: data.booking?.master_id || '',
-            price: data.booking?.total_amount || 0,
-            currency: data.booking?.currency || 'usd',
-          })
+          trackPaymentSuccess(
+            bid,
+            data.booking?.master_id || '',
+            data.booking?.total_amount || 0,
+            data.booking?.currency || 'usd'
+          )
           setTimeout(() => {
             router.push('/user/dashboard')
           }, 1500)
@@ -131,13 +144,13 @@ function PaymentSuccessContent() {
         setVerified(isPaid)
         
         if (isPaid) {
-          // 发送 payment_success 事件
-          track.paymentSuccess({
-            booking_id: data.bookingId || '',
-            master_name: data.masterName || '',
-            price: data.price || 0,
-            currency: data.currency || 'usd',
-          })
+          // 发送 payment_success 事件（直接确认路径）
+          trackPaymentSuccess(
+            data.bookingId || '',
+            data.masterName || '',
+            data.price || 0,
+            data.currency || 'usd'
+          )
           // 已支付，直接跳转
           setTimeout(() => {
             if (isMounted) router.push('/user/dashboard')
@@ -163,7 +176,7 @@ function PaymentSuccessContent() {
       isMounted = false
       if (intervalCleanup) intervalCleanup()
     }
-  }, [sessionId, router, startPolling])
+  }, [sessionId, router, startPolling, trackPaymentSuccess])
 
   if (verifying) {
     return (

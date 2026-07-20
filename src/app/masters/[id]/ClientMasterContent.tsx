@@ -252,7 +252,16 @@ export function ClientMasterContent({ master }: Props) {
                 
                 <CardContent className="space-y-4">
                   {/* 预约咨询按钮 */}
-                  <Link href="/booking">
+                  <Link 
+                    href="/booking"
+                    onClick={() => {
+                      track.selectMaster({
+                        master_name: master.display_name,
+                        master_id: master.id,
+                        service_type: master.specialties?.[0] || 'general',
+                      });
+                    }}
+                  >
                     <Button className="w-full bg-stellawei-purple hover:bg-stellawei-purple-dark" size="lg">
                       {currentLang === 'zh' ? '预约咨询' : 'Book Consultation'}
                     </Button>
