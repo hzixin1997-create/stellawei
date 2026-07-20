@@ -99,7 +99,7 @@ export function trackPageView(pagePath: string, pageTitle?: string, pageLocation
 // 便捷事件函数（Growth Dashboard V1.0 Standard）
 export const track = {
   /** 点击首页 CTA */
-  clickHomeCTA: (params: { button_name: string; page: string }) => 
+  clickHomeCTA: (params: { button_name: string; page: string; language?: string }) => 
     trackEvent('click_home_cta', params),
 
   /** 选择服务 */
@@ -107,7 +107,7 @@ export const track = {
     trackEvent('select_service', params),
 
   /** 查看师傅详情 */
-  viewMaster: (params: { master_name: string; master_id?: string }) => 
+  viewMaster: (params: { master_name: string; master_id?: string; master_type?: string }) => 
     trackEvent('view_master', params),
 
   /** 选择师傅（点击预约按钮） */
@@ -123,7 +123,7 @@ export const track = {
     trackEvent('booking_created', params),
 
   /** 注册成功 */
-  register: (params: { method: string }) => 
+  register: (params: { method: string; language?: string }) => 
     trackEvent('register', params),
 
   /** 登录成功 */
