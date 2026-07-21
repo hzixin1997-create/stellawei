@@ -17,6 +17,13 @@ const nextConfig = {
   generateBuildId: async () => {
     return 'build-' + Date.now() + '-v05031-refund-engine-2';
   },
+  redirects: async () => [
+    {
+      source: '/ig',
+      destination: 'https://stellawei.org?utm_source=instagram&utm_medium=social&utm_campaign=profile_link',
+      permanent: false,
+    },
+  ],
 };
 
 module.exports = withSentryConfig(nextConfig, {
