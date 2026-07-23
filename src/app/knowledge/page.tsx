@@ -42,7 +42,7 @@ const topics: Topic[] = [
   {
     slug: "relationship",
     name: "Relationship",
-    nameCn: "感情",
+    nameCn: "恋爱",
     description: "Love, compatibility, and emotional guidance",
     descriptionCn: "爱情、缘分与情感指引",
     icon: "heart",
