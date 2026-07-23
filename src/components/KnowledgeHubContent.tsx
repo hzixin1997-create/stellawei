@@ -14,6 +14,7 @@ import {
   TrendingUp,
   ArrowRight,
   ChevronRight,
+  Star,
 } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -48,14 +49,15 @@ export default function KnowledgeHubContent({ topic, questions }: KnowledgeHubCo
   return (
     <div className="min-h-screen bg-[#0a0a1a]">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a1a]/80 backdrop-blur-md border-b border-gray-800">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-14">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-stellawei-purple to-stellawei-gold" />
-              <span className="text-lg font-serif font-bold text-white">
-                Stellawei
-              </span>
+              <div className="w-8 h-8 rounded-full bg-sw-accent flex items-center justify-center">
+                <Star className="w-4 h-4 text-white" />
+              </div>
+              <span className="text-xl font-serif font-bold text-white">{t('brand')}</span>
+              <span className="text-sm text-white/70 hidden sm:inline">| {isZh ? '在线咨询平台' : 'Online Divination Platform'}</span>
             </Link>
             <div className="flex items-center space-x-3 text-sm">
               <Link href="/" className="text-gray-400 hover:text-white transition-colors">
