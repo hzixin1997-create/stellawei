@@ -41,9 +41,6 @@ export default function KnowledgeHubContent({ topic, questions }: KnowledgeHubCo
   const { t, i18n } = useTranslation();
   const isZh = i18n.language === 'zh';
 
-  const featuredQuestions = questions.filter((q) => q.featured);
-  const otherQuestions = questions.filter((q) => !q.featured);
-
   const Icon = iconMap[topic.icon] || Compass;
 
   return (
@@ -79,7 +76,7 @@ export default function KnowledgeHubContent({ topic, questions }: KnowledgeHubCo
         </div>
       </nav>
 
-      {/* Hero — V1.1: Shortened */}
+      {/* Hero */}
       <section className="pt-24 pb-10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-stellawei-purple/10 mb-4">
@@ -94,7 +91,7 @@ export default function KnowledgeHubContent({ topic, questions }: KnowledgeHubCo
         </div>
       </section>
 
-      {/* Topic Introduction — V1.1: New */}
+      {/* Topic Introduction */}
       <section className="pb-12">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-white/5">
@@ -105,15 +102,15 @@ export default function KnowledgeHubContent({ topic, questions }: KnowledgeHubCo
         </div>
       </section>
 
-      {/* Popular Questions — V1.1: Renamed */}
+      {/* All Questions — V1.2: Single unified list sorted by priority */}
       <section className="py-10 border-t border-white/5">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-xl font-serif font-bold text-white mb-6">
-            {isZh ? '热门问题' : 'Most Popular Questions'}
+            {isZh ? `${topic.nameCn}相关问题` : `${topic.name} Questions`}
           </h2>
 
           <div className="space-y-3">
-            {featuredQuestions.map((q) => (
+            {questions.map((q) => (
               <div
                 key={q.slug}
                 className="group flex items-center justify-between bg-black/60 backdrop-blur-sm border border-white/10 
@@ -131,48 +128,7 @@ export default function KnowledgeHubContent({ topic, questions }: KnowledgeHubCo
         </div>
       </section>
 
-      {/* Related Questions — V1.1: Renamed */}
-      {otherQuestions.length > 0 && (
-        <section className="py-10 border-t border-white/5">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-lg font-serif font-bold text-white mb-5">
-              {isZh ? '更多相关问题' : 'More Related Questions'}
-            </h2>
-            <div className="grid md:grid-cols-2 gap-3">
-              {otherQuestions.map((q) => (
-                <div
-                  key={q.slug}
-                  className="group flex items-center justify-between bg-black/40 border border-white/5 
-                           rounded-xl px-4 py-3 hover:border-stellawei-purple/40 hover:bg-black/50
-                           transition-all duration-200 cursor-pointer"
-                >
-                  <span className="text-white/70 text-sm group-hover:text-stellawei-purple transition-colors">
-                    {isZh ? q.questionCn : q.question}
-                  </span>
-                  <ArrowRight className="w-3 h-3 text-white/30 group-hover:text-stellawei-purple 
-                                         transform group-hover:translate-x-1 transition-all" />
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Related Articles — V1.1: Placeholder for future */}
-      <section className="py-10 border-t border-white/5">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-lg font-serif font-bold text-white mb-5">
-            {isZh ? '相关文章' : 'Related Articles'}
-          </h2>
-          <div className="bg-black/40 border border-white/5 rounded-xl p-8 text-center">
-            <p className="text-white/40 text-sm">
-              {isZh ? '深度解析文章即将上线' : 'In-depth articles coming soon'}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA — V1.1: Added lead text */}
+      {/* CTA */}
       <section className="py-16 border-t border-white/5">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-2xl md:text-3xl font-serif font-bold text-white mb-4">
