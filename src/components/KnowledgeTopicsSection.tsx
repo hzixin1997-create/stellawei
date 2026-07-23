@@ -149,7 +149,7 @@ export default function KnowledgeTopicsSection({
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-white mb-4">
             {isZh ? "探索更多人生问题" : "Explore More Questions"}
           </h2>
-          <p className="text-lg text-gray-400 max-w-xl mx-auto">
+          <p className="text-lg text-white/70 max-w-xl mx-auto">
             {isZh
               ? "浏览不同主题，寻找属于你的答案。"
               : "Browse life topics and discover guides, articles and answers from Eastern wisdom."}
@@ -164,8 +164,8 @@ export default function KnowledgeTopicsSection({
               <Link
                 key={topic.slug}
                 href={`/knowledge/${topic.slug}`}
-                className="group relative bg-[#12122a] border border-gray-800 rounded-xl p-5 
-                         hover:border-stellawei-purple/60 hover:bg-[#1a1a3e]
+                className="group relative bg-black/70 backdrop-blur-sm border border-white/10 rounded-xl p-5 
+                         hover:border-stellawei-purple/60 hover:bg-black/80
                          transition-all duration-200 cursor-pointer"
               >
                 <div className="flex flex-col h-full">
@@ -180,13 +180,13 @@ export default function KnowledgeTopicsSection({
                   </h3>
 
                   {/* Meta */}
-                  <p className="text-xs text-gray-500 mb-3">
+                  <p className="text-xs text-white/60 mb-3">
                     {topic.guideCount} {isZh ? "指南" : "Guides"} · {topic.questionCount}{" "}
                     {isZh ? "问题" : "Questions"}
                   </p>
 
                   {/* Arrow */}
-                  <div className="mt-auto flex items-center text-gray-500 group-hover:text-stellawei-purple transition-colors">
+                  <div className="mt-auto flex items-center text-white/60 group-hover:text-stellawei-purple transition-colors">
                     <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
