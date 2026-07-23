@@ -142,7 +142,7 @@ export default function KnowledgeTopicsSection({
   const isZh = i18n.language === "zh";
 
   return (
-    <section className="py-20 bg-[#0a0a1a]">
+    <section className="py-20">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-14">
