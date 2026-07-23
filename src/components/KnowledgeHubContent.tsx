@@ -79,40 +79,51 @@ export default function KnowledgeHubContent({ topic, questions }: KnowledgeHubCo
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="pt-28 pb-16">
+      {/* Hero — V1.1: Shortened */}
+      <section className="pt-24 pb-10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-stellawei-purple/10 mb-6">
-            <Icon className="w-8 h-8 text-stellawei-purple" />
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-stellawei-purple/10 mb-4">
+            <Icon className="w-6 h-6 text-stellawei-purple" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">
+          <h1 className="text-3xl md:text-4xl font-serif font-bold text-white mb-3">
             {isZh ? topic.nameCn : topic.name}
           </h1>
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+          <p className="text-base text-white/60 max-w-2xl mx-auto">
             {isZh ? topic.descriptionCn : topic.description}
           </p>
         </div>
       </section>
 
-      {/* Featured Questions */}
-      <section className="py-12">
+      {/* Topic Introduction — V1.1: New */}
+      <section className="pb-12">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-white/5">
+            <p className="text-white/80 text-base leading-relaxed">
+              {isZh ? topic.introCn : topic.intro}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Popular Questions — V1.1: Renamed */}
+      <section className="py-10 border-t border-white/5">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-serif font-bold text-white mb-8">
-            {isZh ? '常见问题' : 'Most Asked Questions'}
+          <h2 className="text-xl font-serif font-bold text-white mb-6">
+            {isZh ? '热门问题' : 'Most Popular Questions'}
           </h2>
 
           <div className="space-y-3">
             {featuredQuestions.map((q) => (
               <div
                 key={q.slug}
-                className="group flex items-center justify-between bg-[#12122a] border border-gray-800 
-                         rounded-xl px-5 py-4 hover:border-stellawei-purple/60 hover:bg-[#1a1a3e]
+                className="group flex items-center justify-between bg-black/60 backdrop-blur-sm border border-white/10 
+                         rounded-xl px-5 py-4 hover:border-stellawei-purple/60 hover:bg-black/70
                          transition-all duration-200 cursor-pointer"
               >
                 <span className="text-white group-hover:text-stellawei-purple transition-colors">
                   {isZh ? q.questionCn : q.question}
                 </span>
-                <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-stellawei-purple 
+                <ArrowRight className="w-4 h-4 text-white/40 group-hover:text-stellawei-purple 
                                        transform group-hover:translate-x-1 transition-all" />
               </div>
             ))}
@@ -120,25 +131,25 @@ export default function KnowledgeHubContent({ topic, questions }: KnowledgeHubCo
         </div>
       </section>
 
-      {/* Other Questions */}
+      {/* Related Questions — V1.1: Renamed */}
       {otherQuestions.length > 0 && (
-        <section className="py-12 border-t border-gray-800">
+        <section className="py-10 border-t border-white/5">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-xl font-serif font-bold text-white mb-6">
-              {isZh ? '更多问题' : 'More Questions'}
+            <h2 className="text-lg font-serif font-bold text-white mb-5">
+              {isZh ? '更多相关问题' : 'More Related Questions'}
             </h2>
             <div className="grid md:grid-cols-2 gap-3">
               {otherQuestions.map((q) => (
                 <div
                   key={q.slug}
-                  className="group flex items-center justify-between bg-[#12122a]/50 border border-gray-800/50 
-                           rounded-xl px-4 py-3 hover:border-stellawei-purple/40 hover:bg-[#1a1a3e]/50
+                  className="group flex items-center justify-between bg-black/40 border border-white/5 
+                           rounded-xl px-4 py-3 hover:border-stellawei-purple/40 hover:bg-black/50
                            transition-all duration-200 cursor-pointer"
                 >
-                  <span className="text-gray-300 text-sm group-hover:text-stellawei-purple transition-colors">
+                  <span className="text-white/70 text-sm group-hover:text-stellawei-purple transition-colors">
                     {isZh ? q.questionCn : q.question}
                   </span>
-                  <ArrowRight className="w-3 h-3 text-gray-600 group-hover:text-stellawei-purple 
+                  <ArrowRight className="w-3 h-3 text-white/30 group-hover:text-stellawei-purple 
                                          transform group-hover:translate-x-1 transition-all" />
                 </div>
               ))}
@@ -147,16 +158,30 @@ export default function KnowledgeHubContent({ topic, questions }: KnowledgeHubCo
         </section>
       )}
 
-      {/* CTA */}
-      <section className="py-20 border-t border-gray-800">
+      {/* Related Articles — V1.1: Placeholder for future */}
+      <section className="py-10 border-t border-white/5">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-lg font-serif font-bold text-white mb-5">
+            {isZh ? '相关文章' : 'Related Articles'}
+          </h2>
+          <div className="bg-black/40 border border-white/5 rounded-xl p-8 text-center">
+            <p className="text-white/40 text-sm">
+              {isZh ? '深度解析文章即将上线' : 'In-depth articles coming soon'}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA — V1.1: Added lead text */}
+      <section className="py-16 border-t border-white/5">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-2xl md:text-3xl font-serif font-bold text-white mb-4">
-            {isZh ? '还需要个人指导？' : 'Still need personal guidance?'}
+            {isZh ? '没有找到适合你的答案？' : "Didn't find your answer?"}
           </h2>
-          <p className="text-gray-400 mb-8">
+          <p className="text-white/60 mb-8 max-w-xl mx-auto">
             {isZh
-              ? '我们经过验证的师傅随时准备帮助您找到清晰的答案。'
-              : 'Our verified masters are ready to help you find clarity.'}
+              ? '我们的咨询师可以根据你的实际情况，提供更个性化的分析与建议。'
+              : 'Get personalized guidance from our experienced consultants based on your unique situation.'}
           </p>
           <Link href="/masters">
             <Button size="lg" className="px-8 bg-stellawei-purple hover:bg-stellawei-purple/90">

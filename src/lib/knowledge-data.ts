@@ -8,6 +8,8 @@ export interface TopicData {
   description: string;
   descriptionCn: string;
   icon: string;
+  intro: string;
+  introCn: string;
 }
 
 export interface QuestionData {
@@ -25,6 +27,8 @@ export const topicsData: Record<string, TopicData> = {
     description: "Love, compatibility, and emotional guidance",
     descriptionCn: "爱情、缘分与情感指引",
     icon: "heart",
+    intro: "Relationship issues go beyond love—they involve life stages, values, and future planning. Explore common questions about true love, marriage, reconciliation, and long-term compatibility from an Eastern wisdom perspective.",
+    introCn: "感情问题不仅涉及爱情，也关乎人生阶段、价值观与未来规划。这里整理了关于正缘、婚姻、复合、长期关系等常见问题，帮助用户从东方智慧角度获得更多思考方向。",
   },
   career: {
     slug: "career",
@@ -33,6 +37,8 @@ export const topicsData: Record<string, TopicData> = {
     description: "Career decisions, promotions, and professional growth",
     descriptionCn: "职业选择、晋升与事业发展",
     icon: "briefcase",
+    intro: "Career decisions shape your life trajectory. Whether considering a job change, promotion, or starting a business, understanding timing and personal strengths can help you navigate professional challenges with clarity.",
+    introCn: "职业决定人生走向。无论是考虑换工作、晋升还是创业，了解时机和个人优势可以帮助你清晰地应对职业挑战。",
   },
   wealth: {
     slug: "wealth",
@@ -41,6 +47,8 @@ export const topicsData: Record<string, TopicData> = {
     description: "Financial fortune, investment timing, and wealth growth",
     descriptionCn: "财富运势、投资时机与财运增长",
     icon: "coins",
+    intro: "Wealth is not just about money—it's about understanding timing, opportunities, and your personal financial patterns. Discover insights on investment timing, income growth, and financial planning.",
+    introCn: "财富不只是金钱，更是关于理解时机、机遇和个人财务格局。探索投资时机、收入增长和财务规划的洞察。",
   },
   "home-feng-shui": {
     slug: "home-feng-shui",
@@ -49,6 +57,8 @@ export const topicsData: Record<string, TopicData> = {
     description: "Home energy, space arrangement, and environmental harmony",
     descriptionCn: "家居能量、空间布局与环境和谐",
     icon: "home",
+    intro: "Your living space influences your energy and well-being. Learn how home layout, bed direction, workspace arrangement, and color choices can support your health, relationships, and success.",
+    introCn: "居住空间影响你的能量和福祉。了解房屋布局、床位方向、工作空间布置和颜色选择如何支持你的健康、关系和成功。",
   },
   "life-direction": {
     slug: "life-direction",
@@ -57,6 +67,8 @@ export const topicsData: Record<string, TopicData> = {
     description: "Life path, destiny, and personal purpose",
     descriptionCn: "人生道路、命运与个人使命",
     icon: "compass",
+    intro: "Feeling uncertain about your path? Life direction guidance helps you understand your purpose, evaluate major life decisions, and align your choices with your deeper calling and timing.",
+    introCn: "对人生道路感到不确定？人生方向指引帮助你理解自己的使命、评估重大人生决定，并将选择与你的深层召唤和时机对齐。",
   },
   marriage: {
     slug: "marriage",
@@ -65,6 +77,8 @@ export const topicsData: Record<string, TopicData> = {
     description: "Marriage timing, compatibility, and relationship stability",
     descriptionCn: "婚姻时机、配对与关系稳定",
     icon: "heart-handshake",
+    intro: "Marriage is a major life decision that deserves careful consideration. Explore questions about timing, compatibility, relationship stability, and how to build a strong, lasting partnership.",
+    introCn: "婚姻是重大人生决定，值得认真考虑。探索关于时机、配对、关系稳定性以及如何建立牢固持久伴侣关系的问题。",
   },
   "lost-items": {
     slug: "lost-items",
@@ -73,6 +87,8 @@ export const topicsData: Record<string, TopicData> = {
     description: "Finding lost objects, recovery timing, and location clues",
     descriptionCn: "寻找失物、找回时机与位置线索",
     icon: "search",
+    intro: "Losing something important can be stressful. Traditional methods can offer clues about where to look, recovery timing, and whether your item is still recoverable.",
+    introCn: "丢失重要物品可能令人焦虑。传统方法可以提供关于寻找位置、找回时机以及物品是否还能找回的线索。",
   },
   "pet-health": {
     slug: "pet-health",
@@ -81,6 +97,8 @@ export const topicsData: Record<string, TopicData> = {
     description: "Pet wellness, health predictions, and care guidance",
     descriptionCn: "宠物健康、健康预测与护理指引",
     icon: "dog",
+    intro: "Your pet's well-being matters. Get insights into their health status, recovery outlook, behavioral concerns, and guidance on providing the best care for your furry companions.",
+    introCn: "宠物的健康很重要。获取关于它们健康状况、康复前景、行为问题的洞察，以及如何为毛茸茸的伙伴提供最佳护理的指导。",
   },
   investment: {
     slug: "investment",
@@ -89,6 +107,8 @@ export const topicsData: Record<string, TopicData> = {
     description: "Investment timing, market trends, and financial decisions",
     descriptionCn: "投资时机、市场趋势与财务决策",
     icon: "trending-up",
+    intro: "Investment decisions require timing and foresight. Explore guidance on market timing, suitable investment types for your profile, and strategies for wealth building and risk management.",
+    introCn: "投资决策需要时机和远见。探索关于市场时机、适合你个人画像的投资类型以及财富积累和风险管理策略的指导。",
   },
 };
 

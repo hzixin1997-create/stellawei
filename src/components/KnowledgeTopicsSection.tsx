@@ -175,15 +175,9 @@ export default function KnowledgeTopicsSection({
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-base font-semibold text-white mb-1">
+                  <h3 className="text-base font-semibold text-white mb-2">
                     {isZh ? topic.nameCn : topic.name}
                   </h3>
-
-                  {/* Meta */}
-                  <p className="text-xs text-white/60 mb-3">
-                    {topic.guideCount} {isZh ? "指南" : "Guides"} · {topic.questionCount}{" "}
-                    {isZh ? "问题" : "Questions"}
-                  </p>
 
                   {/* Arrow */}
                   <div className="mt-auto flex items-center text-white/60 group-hover:text-stellawei-purple transition-colors">
