@@ -139,7 +139,7 @@ export default function KnowledgeHubContent({ topic, questions }: KnowledgeHubCo
               ? '我们的咨询师可以根据你的实际情况，提供更个性化的分析与建议。'
               : 'Get personalized guidance from our experienced consultants based on your unique situation.'}
           </p>
-          <Link href="/masters">
+          <Link href="/booking">
             <Button size="lg" className="px-8 bg-stellawei-purple hover:bg-stellawei-purple/90">
               {isZh ? '预约咨询' : 'Book a Consultation'}
               <ArrowRight className="w-4 h-4 ml-2" />
