@@ -4,7 +4,7 @@ import { Suspense, lazy } from 'react';
 import Image from 'next/image'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Star, Shield, Clock, Sparkles, Moon, Sun, Users, Heart, Briefcase, Coins, Sparkles as SparklesIcon, User, X, Menu, MessageCircle, Video, Compass, ChevronRight, Mic } from "lucide-react"
+import { Star, Shield, Clock, Sparkles, Moon, Sun, Users, Heart, Briefcase, Coins, Sparkles as SparklesIcon, User, X, Menu, MessageCircle, Video, Compass, ChevronRight, Mic, TrendingUp, Home as HomeIcon, ShoppingBag, Dog, HeartHandshake } from "lucide-react"
 import Link from "next/link"
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -55,14 +55,15 @@ const services = [
 ]
 
 const hotQuestions = [
-  { text: "When will I meet my soulmate?", textZh: "我什么时候会遇到灵魂伴侣?", icon: Heart },
-  { text: "Is he/she the right person for me?", textZh: "他/她是对的人吗?", icon: Heart },
-  { text: "Should I change my career path?", textZh: "我应该转行吗?", icon: Briefcase },
-  { text: "Will I get a promotion this year?", textZh: "今年我会升职吗?", icon: Briefcase },
-  { text: "How can I improve my financial situation?", textZh: "如何改善我的财务状况?", icon: Coins },
-  { text: "What is my spiritual path?", textZh: "我的灵性道路是什么?", icon: SparklesIcon },
-  { text: "Am I on the right life path?", textZh: "我走在正确的人生道路上吗?", icon: SparklesIcon },
-  { text: "How to heal from past trauma?", textZh: "如何治愈过去的创伤?", icon: Heart },
+  { text: "When will my true love appear?", textZh: "我的正缘什么时候出现？", icon: Heart },
+  { text: "How is my career development?", textZh: "我的事业发展？", icon: Briefcase },
+  { text: "How is my wealth fortune trending?", textZh: "我的财运走势如何？", icon: Coins },
+  { text: "How to adjust home feng shui for better luck?", textZh: "家里风水摆设如何调整提升运势？", icon: HomeIcon },
+  { text: "What is my life trajectory for the next decade?", textZh: "我未来十年的人生走势如何？", icon: TrendingUp },
+  { text: "Am I on the right life path?", textZh: "我走在正确的人生道路上吗？", icon: SparklesIcon },
+  { text: "Will my marriage go smoothly?", textZh: "我的婚姻会顺利吗？", icon: HeartHandshake },
+  { text: "Can I find my lost items?", textZh: "我丢失的物品能找到吗？", icon: ShoppingBag },
+  { text: "How is my pet's health?", textZh: "我的宠物健康状况如何？", icon: Dog },
 ];
 
 const masters = [
