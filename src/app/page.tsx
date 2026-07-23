@@ -13,6 +13,7 @@ import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import Testimonials from "@/components/Testimonials";
 import { FAQSection, FAQSchema } from "@/components/FAQSection";
+import KnowledgeTopicsSection from "@/components/KnowledgeTopicsSection";
 import { track } from '@/lib/analytics';
 
 // Lazy load banner — only needed for logged-in users
@@ -586,6 +587,9 @@ export default function Home() {
 
       {/* FAQ Section */}
       <FAQSection />
+
+      {/* Knowledge Topics */}
+      <KnowledgeTopicsSection />
 
       {/* CTA Section */}
       <section className="py-24">
