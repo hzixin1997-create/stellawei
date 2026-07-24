@@ -182,7 +182,7 @@ export const questionsData: Record<string, QuestionData[]> = {
   investment: [
     { slug: "good-time-to-invest", question: "Is this a good time to invest?", questionCn: "现在是投资的好时机吗？", featured: true, priority: 0 },
     { slug: "investment-suits-fortune", question: "What investment suits my fortune?", questionCn: "什么投资适合我的财运？", featured: true, priority: 0 },
-    { slug: "invest-in-property", question: "Should I invest in property now?", questionCn: "我现在应该投资房产吗？", featured: true, priority: 0 },
+    { slug: "invest-in-stocks", question: "Should I invest in stocks now?", questionCn: "我现在应该投资股票吗？", featured: true, priority: 0 },
     { slug: "will-investment-profit", question: "Will my investment be profitable?", questionCn: "我的投资会有收益吗？", featured: true, priority: 0 },
     { slug: "stocks-or-real-estate", question: "Should I invest in stocks or real estate?", questionCn: "我应该投资股票还是房地产？", featured: false, priority: 1 },
     { slug: "when-see-returns", question: "When will I see returns on my investment?", questionCn: "我什么时候能看到投资回报？", featured: false, priority: 1 },
