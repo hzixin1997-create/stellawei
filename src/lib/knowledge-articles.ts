@@ -1,8 +1,10 @@
 // ============================================================
-// Knowledge Article Data — V1.0
-// 所有 Knowledge Page 的内容数据源
-// 未来可迁移至 Supabase，目前使用静态数据
+// Knowledge Article Data — V2.0
+// Search Intent Driven · AEO Ready · EEAT Enhanced
+// 所有内容必须先回答"用户真正想知道什么"，再回答"我们可以如何帮助"
 // ============================================================
+
+// ==================== 类型定义 ====================
 
 export interface QuickAnswerSection {
   paragraphs: string[];
@@ -14,9 +16,14 @@ export interface WhyPeopleAskSection {
   questions: string[];
 }
 
+export interface ReadingSummarySection {
+  items: string[];
+  itemsCn: string[];
+}
+
 export interface EasternWisdomTool {
-  name: string;
-  nameCn: string;
+  searchHeading: string;      // V2.0: 用户搜索式标题
+  searchHeadingCn: string;
   description: string;
   descriptionCn: string;
   suitableFor: string[];
@@ -24,23 +31,28 @@ export interface EasternWisdomTool {
 }
 
 export interface EasternWisdomSection {
-  intro: string;
-  introCn?: string;
   tools: EasternWisdomTool[];
 }
 
 export interface WhatReallyMattersSection {
   intro: string;
-  introCn?: string;
+  introCn: string;
   points: string[];
-  pointsCn?: string[];
+  pointsCn: string[];
 }
 
 export interface BenefitChecklistSection {
   intro: string;
-  introCn?: string;
+  introCn: string;
   items: string[];
-  itemsCn?: string[];
+  itemsCn: string[];
+}
+
+export interface CaseStudy {
+  title: string;
+  titleCn: string;
+  content: string;
+  contentCn: string;
 }
 
 export interface FAQItem {
@@ -48,6 +60,11 @@ export interface FAQItem {
   questionCn: string;
   answer: string;
   answerCn: string;
+}
+
+export interface KeyTakeawaysSection {
+  items: string[];
+  itemsCn: string[];
 }
 
 export interface RelatedQuestion {
@@ -64,6 +81,20 @@ export interface CTASection {
   link: string;
 }
 
+export interface EEATInfo {
+  reviewedBy: string;
+  reviewedByCn: string;
+}
+
+export interface SearchIntent {
+  primary: string[];
+  primaryCn: string[];
+  secondary: string[];
+  secondaryCn: string[];
+  related: string[];
+  relatedCn: string[];
+}
+
 export interface KnowledgeArticle {
   slug: string;
   topicSlug: string;
@@ -75,19 +106,43 @@ export interface KnowledgeArticle {
   metaDescriptionCn: string;
   heroIntro: string;
   heroIntroCn: string;
+
+  // V2.0: Search Intent Mapping (后台数据)
+  searchIntent: SearchIntent;
+
   quickAnswer: QuickAnswerSection;
   quickAnswerCn: QuickAnswerSection;
+
+  // V2.0: 新增 - 阅读这篇文章，你将了解
+  readingSummary: ReadingSummarySection;
+
   whyPeopleAsk: WhyPeopleAskSection;
   whyPeopleAskCn: WhyPeopleAskSection;
+
   easternWisdom: EasternWisdomSection;
   easternWisdomCn: EasternWisdomSection;
+
   whatReallyMatters: WhatReallyMattersSection;
   whatReallyMattersCn: WhatReallyMattersSection;
+
   benefitChecklist: BenefitChecklistSection;
   benefitChecklistCn: BenefitChecklistSection;
+
+  // V2.0: 新增 - 真实案例
+  caseStudies: CaseStudy[];
+
   faq: FAQItem[];
+
+  // V2.0: 新增 - Key Takeaways
+  keyTakeaways: KeyTakeawaysSection;
+
   relatedQuestions: RelatedQuestion[];
+
   cta: CTASection;
+
+  // V2.0: 新增 - EEAT
+  eeat: EEATInfo;
+
   // SEO
   canonicalUrl: string;
   publishedAt: string;
@@ -95,7 +150,7 @@ export interface KnowledgeArticle {
   author: string;
 }
 
-// ==================== 示例文章：When Will I Meet My True Love ====================
+// ==================== 示例文章：When Will I Meet My True Love (V2.0) ====================
 
 export const whenWillIMeetMyTrueLove: KnowledgeArticle = {
   slug: "when-will-i-meet-my-true-love",
@@ -108,6 +163,42 @@ export const whenWillIMeetMyTrueLove: KnowledgeArticle = {
   metaDescriptionCn: "没有任何方法能准确预测具体日期。但东方智慧可以帮助你理解感情时机、模式和有利时期。",
   heroIntro: "Many people begin asking this question after a breakup, years of being single, or watching friends around them get married. Eastern wisdom focuses less on predicting an exact date, and more on understanding whether you are entering a stage that supports meaningful relationships.",
   heroIntroCn: "许多人在分手、多年单身，或看着身边的朋友陆续结婚后，开始问这个问题。东方智慧的重点不在于预测具体日期，而在于理解你是否正在进入一个有利于建立有意义关系的阶段。",
+
+  // V2.0: Search Intent Mapping
+  searchIntent: {
+    primary: [
+      "when will i meet my true love",
+      "when will i meet my soulmate",
+      "when is my true love coming"
+    ],
+    primaryCn: [
+      "我的正缘什么时候出现",
+      "我什么时候会遇到对的人",
+      "我的真爱什么时候来"
+    ],
+    secondary: [
+      "relationship timing bazi",
+      "tarot relationship reading",
+      "when will i get married"
+    ],
+    secondaryCn: [
+      "八字看正缘时间",
+      "塔罗看感情发展",
+      "什么时候结婚"
+    ],
+    related: [
+      "soulmate signs",
+      "relationship patterns",
+      "love fortune",
+      "marriage timing"
+    ],
+    relatedCn: [
+      "正缘特征",
+      "感情模式",
+      "桃花运",
+      "婚姻时机"
+    ]
+  },
 
   quickAnswer: {
     paragraphs: [
@@ -134,6 +225,24 @@ export const whenWillIMeetMyTrueLove: KnowledgeArticle = {
     ]
   },
 
+  // V2.0: 新增 - 阅读这篇文章，你将了解
+  readingSummary: {
+    items: [
+      "Why many people keep meeting the wrong type of partner",
+      "What BaZi can reveal about relationship timing",
+      "When Qi Men Dun Jia is more useful than BaZi",
+      "What Tarot can and cannot tell you about love",
+      "When a consultation might actually help"
+    ],
+    itemsCn: [
+      "为什么很多人总是遇到不适合自己的人",
+      "八字可以揭示哪些关于感情时机的信息",
+      "什么时候奇门遁甲比八字更有用",
+      "塔罗能告诉你什么、不能告诉你什么",
+      "什么情况下咨询可能真的有帮助"
+    ]
+  },
+
   whyPeopleAsk: {
     intro: "Many people asking \"When will I meet my true love?\" are actually wondering:",
     questions: [
@@ -153,60 +262,58 @@ export const whenWillIMeetMyTrueLove: KnowledgeArticle = {
     ]
   },
 
+  // V2.0: Eastern Wisdom - 搜索式标题
   easternWisdom: {
-    intro: "Different tools offer different perspectives. None is better than the other—they simply answer different questions.",
-    introCn: "不同的工具提供不同的视角。没有哪一个更好——它们只是回答不同的问题。",
     tools: [
       {
-        name: "BaZi (八字)",
-        nameCn: "八字",
-        description: "Analyzes your birth chart to identify relationship timing, life cycles, and personality tendencies that influence who you attract.",
-        descriptionCn: "通过分析你的出生命盘，识别影响你吸引什么人的感情时机、生命周期和性格倾向。",
+        searchHeading: "Can BaZi reveal when you are most likely to meet someone meaningful?",
+        searchHeadingCn: "八字可以分析什么时候遇到正缘吗？",
+        description: "BaZi analyzes your birth chart to identify relationship timing, life cycles, and personality tendencies that influence who you attract. It does not predict exact dates, but can highlight periods when relationship energy is stronger.",
+        descriptionCn: "八字通过分析你的出生命盘，识别感情时机、生命周期和性格倾向。它不能预测具体日期，但可以突出感情能量较强的时期。",
         suitableFor: ["Understanding relationship timing", "Identifying life cycle patterns", "Personality compatibility analysis"],
         suitableForCn: ["理解感情时机", "识别生命周期模式", "性格配对分析"]
       },
       {
-        name: "Qi Men Dun Jia (奇门遁甲)",
-        nameCn: "奇门遁甲",
-        description: "Useful for current decisions: whether to pursue a relationship, wait, or focus on self-growth instead.",
-        descriptionCn: "适用于当前决策：是否追求一段感情、等待，还是专注于自我成长。",
+        searchHeading: "When is Qi Men Dun Jia more useful than BaZi for relationship decisions?",
+        searchHeadingCn: "奇门遁甲适合解决哪些感情决策问题？",
+        description: "Qi Men Dun Jia excels at current decision-making: whether to pursue a relationship, wait, or focus on self-growth. It answers \"what should I do now?\" rather than \"when will it happen?\"",
+        descriptionCn: "奇门遁甲擅长当前决策：是否追求一段感情、等待，还是专注于自我成长。它回答\"我现在应该做什么？\"而非\"这件事什么时候会发生？\"",
         suitableFor: ["Current decision-making", "Choosing between options", "Timing of action"],
         suitableForCn: ["当前决策", "在选项之间选择", "行动时机"]
       },
       {
-        name: "Tarot (塔罗)",
-        nameCn: "塔罗",
-        description: "Provides short-term emotional guidance and insight into your current relationship energy and mindset.",
-        descriptionCn: "提供短期情感指引，洞察你当前的感情能量和心态。",
+        searchHeading: "Can Tarot provide meaningful insights about your current love situation?",
+        searchHeadingCn: "塔罗适合分析近期感情发展吗？",
+        description: "Tarot offers short-term emotional guidance and insight into your current relationship energy. It is most useful for understanding your present mindset and immediate emotional landscape, not long-term predictions.",
+        descriptionCn: "塔罗提供短期情感指引和当前感情能量的洞察。它最适用于理解你的当下心态和即时情感状态，而非长期预测。",
         suitableFor: ["Short-term emotional guidance", "Current energy reading", "Mindset clarity"],
         suitableForCn: ["短期情感指引", "当前能量解读", "心态清晰度"]
       }
     ]
   },
   easternWisdomCn: {
-    intro: "不同的工具提供不同的视角。没有哪一个更好——它们只是回答不同的问题。",
     tools: [
       {
-        name: "BaZi (八字)",
-        nameCn: "八字",
-        description: "通过分析你的出生命盘，识别影响你吸引什么人的感情时机、生命周期和性格倾向。",
-        descriptionCn: "通过分析你的出生命盘，识别影响你吸引什么人的感情时机、生命周期和性格倾向。",
+        searchHeading: "八字可以分析什么时候遇到正缘吗？",
+        searchHeadingCn: "八字可以分析什么时候遇到正缘吗？",
+        description: "八字通过分析你的出生命盘，识别感情时机、生命周期和性格倾向。它不能预测具体日期，但可以突出感情能量较强的时期。",
+        descriptionCn: "八字通过分析你的出生命盘，识别感情时机、生命周期和性格倾向。它不能预测具体日期，但可以突出感情能量较强的时期。",
         suitableFor: ["理解感情时机", "识别生命周期模式", "性格配对分析"],
         suitableForCn: ["理解感情时机", "识别生命周期模式", "性格配对分析"]
       },
       {
-        name: "Qi Men Dun Jia (奇门遁甲)",
-        nameCn: "奇门遁甲",
-        description: "适用于当前决策：是否追求一段感情、等待，还是专注于自我成长。",
-        descriptionCn: "适用于当前决策：是否追求一段感情、等待，还是专注于自我成长。",
+        searchHeading: "奇门遁甲适合解决哪些感情决策问题？",
+        searchHeadingCn: "奇门遁甲适合解决哪些感情决策问题？",
+        description: "奇门遁甲擅长当前决策：是否追求一段感情、等待，还是专注于自我成长。它回答\"我现在应该做什么？\"而非\"这件事什么时候会发生？\"",
+        descriptionCn: "奇门遁甲擅长当前决策：是否追求一段感情、等待，还是专注于自我成长。它回答\"我现在应该做什么？\"而非\"这件事什么时候会发生？\"",
         suitableFor: ["当前决策", "在选项之间选择", "行动时机"],
         suitableForCn: ["当前决策", "在选项之间选择", "行动时机"]
       },
       {
-        name: "Tarot (塔罗)",
-        nameCn: "塔罗",
-        description: "提供短期情感指引，洞察你当前的感情能量和心态。",
-        descriptionCn: "提供短期情感指引，洞察你当前的感情能量和心态。",
+        searchHeading: "塔罗适合分析近期感情发展吗？",
+        searchHeadingCn: "塔罗适合分析近期感情发展吗？",
+        description: "塔罗提供短期情感指引和当前感情能量的洞察。它最适用于理解你的当下心态和即时情感状态，而非长期预测。",
+        descriptionCn: "塔罗提供短期情感指引和当前感情能量的洞察。它最适用于理解你的当下心态和即时情感状态，而非长期预测。",
         suitableFor: ["短期情感指引", "当前能量解读", "心态清晰度"],
         suitableForCn: ["短期情感指引", "当前能量解读", "心态清晰度"]
       }
@@ -215,16 +322,30 @@ export const whenWillIMeetMyTrueLove: KnowledgeArticle = {
 
   whatReallyMatters: {
     intro: "Many people spend years waiting for \"the right person.\" But often, the more important questions are:",
+    introCn: "许多人花多年时间等待\"对的人\"。但更重要的是这些问题：",
     points: [
       "Are you emotionally ready for a meaningful relationship?",
       "Are you repeating the same relationship pattern?",
       "Are you attracted to the same kind of partner every time?",
       "Do you know what you truly need—not just what you want?"
+    ],
+    pointsCn: [
+      "你是否在情感上准备好进入一段有意义的关系？",
+      "你是否在重复同样的感情模式？",
+      "你是否每次都被同一类型的伴侣吸引？",
+      "你知道自己真正需要什么——而不仅仅是想要什么吗？"
     ]
   },
   whatReallyMattersCn: {
     intro: "许多人花多年时间等待\"对的人\"。但更重要的是这些问题：",
+    introCn: "许多人花多年时间等待\"对的人\"。但更重要的是这些问题：",
     points: [
+      "你是否在情感上准备好进入一段有意义的关系？",
+      "你是否在重复同样的感情模式？",
+      "你是否每次都被同一类型的伴侣吸引？",
+      "你知道自己真正需要什么——而不仅仅是想要什么吗？"
+    ],
+    pointsCn: [
       "你是否在情感上准备好进入一段有意义的关系？",
       "你是否在重复同样的感情模式？",
       "你是否每次都被同一类型的伴侣吸引？",
@@ -234,17 +355,15 @@ export const whenWillIMeetMyTrueLove: KnowledgeArticle = {
 
   benefitChecklist: {
     intro: "This consultation may help if you:",
+    introCn: "如果你有以下情况，咨询可能会对你有帮助：",
     items: [
       "Have been single for years without understanding why",
       "Keep repeating similar relationship patterns",
       "Are unsure whether someone is the right person",
       "Want to understand your relationship timing",
       "Feel stuck emotionally and want clarity"
-    ]
-  },
-  benefitChecklistCn: {
-    intro: "如果你有以下情况，咨询可能会对你有帮助：",
-    items: [
+    ],
+    itemsCn: [
       "多年单身，但不知道原因",
       "一直在重复相似的感情模式",
       "不确定某个人是否是对的人",
@@ -252,6 +371,34 @@ export const whenWillIMeetMyTrueLove: KnowledgeArticle = {
       "情感上感到困惑，想要理清思路"
     ]
   },
+  benefitChecklistCn: {
+    intro: "如果你有以下情况，咨询可能会对你有帮助：",
+    introCn: "如果你有以下情况，咨询可能会对你有帮助：",
+    items: [
+      "多年单身，但不知道原因",
+      "一直在重复相似的感情模式",
+      "不确定某个人是否是对的人",
+      "想了解自己的感情时机",
+      "情感上感到困惑，想要理清思路"
+    ],
+    itemsCn: [
+      "多年单身，但不知道原因",
+      "一直在重复相似的感情模式",
+      "不确定某个人是否是对的人",
+      "想了解自己的感情时机",
+      "情感上感到困惑，想要理清思路"
+    ]
+  },
+
+  // V2.0: 新增 - 真实案例
+  caseStudies: [
+    {
+      title: "Understanding the Pattern",
+      titleCn: "理解模式",
+      content: "A user from Singapore had been single for four years and believed she simply had \"bad luck with relationships.\" During a BaZi consultation, she discovered that her chart showed a strong pattern of being attracted to emotionally unavailable partners. The consultation did not predict when she would meet someone. Instead, it helped her recognize the pattern she had been repeating. Six months later, she shared that she had started making different choices in dating—and felt more confident about what she actually needed in a relationship.",
+      contentCn: "一位来自新加坡的用户已经单身四年，认为自己只是\"感情运不好\"。在八字咨询中，她发现自己的命盘显示出一种强烈的模式：总是被情感上不可获得的伴侣吸引。咨询没有预测她什么时候会遇到某人，而是帮助她认识到自己一直在重复的模式。六个月后，她分享说自己开始在约会中做出不同的选择——并且对自己在感情中真正需要什么更有信心。"
+    }
+  ],
 
   faq: [
     {
@@ -286,18 +433,39 @@ export const whenWillIMeetMyTrueLove: KnowledgeArticle = {
     }
   ],
 
+  // V2.0: 新增 - Key Takeaways
+  keyTakeaways: {
+    items: [
+      "No method can predict the exact day you will meet someone—timing is a pattern, not a calendar event.",
+      "BaZi helps you understand long-term relationship cycles; Qi Men Dun Jia helps with current decisions; Tarot offers short-term emotional clarity.",
+      "The more important question is often not \"when\" but \"what pattern am I repeating?\""
+    ],
+    itemsCn: [
+      "没有任何方法能预测具体日期——时机是一种模式，不是日历事件。",
+      "八字帮助你理解长期感情周期；奇门遁甲帮助当前决策；塔罗提供短期情感清晰度。",
+      "更重要的问题往往不是\"什么时候\"，而是\"我在重复什么模式？\""
+    ]
+  },
+
   relatedQuestions: [
     { slug: "is-he-she-the-right-person", question: "Is He/She the Right Person?", questionCn: "他/她是对的人吗？" },
     { slug: "should-i-stay-or-leave", question: "Should I Stay or Leave?", questionCn: "我应该继续还是离开？" },
     { slug: "will-marriage-go-smoothly", question: "Will My Marriage Go Smoothly?", questionCn: "我的婚姻会顺利吗？" }
   ],
 
+  // V2.0: CTA 更自然
   cta: {
-    text: "Every relationship is different. If you'd like a more personalized analysis, our consultants can provide guidance based on your unique situation.",
-    textCn: "每段关系都是独特的。如果你想要更个性化的分析，我们的咨询师可以根据你的具体情况提供指引。",
+    text: "If this article has helped you understand the overall direction, it has already served its purpose. If you would like to combine your birth information, current relationship status, or specific questions for a more personalized analysis, our consultants can provide guidance based on your unique situation.",
+    textCn: "如果这篇文章已经帮助你理解了整体方向，那么它已经完成了它的使命。如果你希望结合自己的出生信息、当前感情状况或具体问题进行更个性化的分析，我们的咨询师可以根据你的独特情况提供指引。",
     buttonText: "Book a Relationship Consultation",
     buttonTextCn: "预约感情咨询",
     link: "/booking"
+  },
+
+  // V2.0: EEAT
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
   },
 
   canonicalUrl: "https://stellawei.org/knowledge/relationship/when-will-i-meet-my-true-love",

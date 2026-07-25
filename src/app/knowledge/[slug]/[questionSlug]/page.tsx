@@ -6,13 +6,17 @@ import {
   Breadcrumb,
   Hero,
   QuickAnswer,
+  ReadingSummary,
   WhyPeopleAsk,
   EasternWisdom,
   WhatReallyMatters,
   BenefitChecklist,
+  CaseStudy,
   FAQ,
+  KeyTakeaways,
   RelatedQuestions,
   CTA,
+  EEAT,
 } from "@/components/knowledge";
 import { NavHeader } from "@/components/knowledge/NavHeader";
 
@@ -60,7 +64,6 @@ export function generateMetadata({ params }: Props): Metadata {
 }
 
 export function generateStaticParams() {
-  // 预生成示例文章页面
   return [
     { slug: "relationship", questionSlug: "when-will-i-meet-my-true-love" },
   ];
@@ -172,10 +175,10 @@ export default function KnowledgeArticlePage({ params }: Props) {
           contentCn={article.quickAnswerCn}
         />
 
-        {/* Divider */}
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="border-t border-white/5" />
-        </div>
+        {/* V2.0: Reading Summary */}
+        <ReadingSummary content={article.readingSummary} />
+
+        <Divider />
 
         {/* Why People Ask */}
         <WhyPeopleAsk
@@ -183,10 +186,7 @@ export default function KnowledgeArticlePage({ params }: Props) {
           contentCn={article.whyPeopleAskCn}
         />
 
-        {/* Divider */}
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="border-t border-white/5" />
-        </div>
+        <Divider />
 
         {/* Eastern Wisdom */}
         <EasternWisdom
@@ -194,10 +194,7 @@ export default function KnowledgeArticlePage({ params }: Props) {
           contentCn={article.easternWisdomCn}
         />
 
-        {/* Divider */}
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="border-t border-white/5" />
-        </div>
+        <Divider />
 
         {/* What Really Matters */}
         <WhatReallyMatters
@@ -205,10 +202,7 @@ export default function KnowledgeArticlePage({ params }: Props) {
           contentCn={article.whatReallyMattersCn}
         />
 
-        {/* Divider */}
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="border-t border-white/5" />
-        </div>
+        <Divider />
 
         {/* Benefit Checklist */}
         <BenefitChecklist
@@ -216,18 +210,25 @@ export default function KnowledgeArticlePage({ params }: Props) {
           contentCn={article.benefitChecklistCn}
         />
 
-        {/* Divider */}
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="border-t border-white/5" />
-        </div>
+        <Divider />
+
+        {/* V2.0: Case Studies */}
+        {article.caseStudies.length > 0 && (
+          <>
+            <CaseStudy items={article.caseStudies} />
+            <Divider />
+          </>
+        )}
 
         {/* FAQ */}
         <FAQ items={article.faq} />
 
-        {/* Divider */}
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="border-t border-white/5" />
-        </div>
+        <Divider />
+
+        {/* V2.0: Key Takeaways */}
+        <KeyTakeaways content={article.keyTakeaways} />
+
+        <Divider />
 
         {/* Related Questions */}
         <RelatedQuestions
@@ -237,6 +238,13 @@ export default function KnowledgeArticlePage({ params }: Props) {
 
         {/* CTA */}
         <CTA content={article.cta} />
+
+        {/* V2.0: EEAT */}
+        <EEAT
+          info={article.eeat}
+          publishedAt={article.publishedAt}
+          modifiedAt={article.modifiedAt}
+        />
       </main>
 
       {/* Footer */}
@@ -247,6 +255,14 @@ export default function KnowledgeArticlePage({ params }: Props) {
           </p>
         </div>
       </footer>
+    </div>
+  );
+}
+
+function Divider() {
+  return (
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="border-t border-white/5" />
     </div>
   );
 }

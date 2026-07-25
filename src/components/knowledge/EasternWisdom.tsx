@@ -22,14 +22,9 @@ export default function EasternWisdom({ content, contentCn }: EasternWisdomProps
         <div className="flex items-center gap-2 mb-5">
           <Sparkles className="w-5 h-5 text-stellawei-purple" />
           <h2 className="text-xl font-serif font-bold text-white">
-            {isZh ? "东方智慧怎么看" : "How Eastern Wisdom Looks At This"}
+            {isZh ? "不同咨询方式如何帮助分析？" : "How Different Methods Can Help"}
           </h2>
         </div>
-
-        {/* Intro */}
-        <p className="text-white/70 leading-relaxed mb-6">
-          {data.intro}
-        </p>
 
         {/* Tools */}
         <div className="space-y-4">
@@ -38,8 +33,9 @@ export default function EasternWisdom({ content, contentCn }: EasternWisdomProps
               key={i}
               className="bg-black/30 border border-white/5 rounded-xl p-5 hover:border-white/10 transition-colors"
             >
+              {/* V2.0: 搜索式标题 */}
               <h3 className="text-lg font-semibold text-white mb-2">
-                {isZh ? tool.nameCn : tool.name}
+                {isZh ? tool.searchHeadingCn : tool.searchHeading}
               </h3>
               <p className="text-white/60 text-sm leading-relaxed mb-3">
                 {isZh ? tool.descriptionCn : tool.description}
