@@ -19,6 +19,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import type { TopicData, QuestionData } from "@/lib/knowledge-data";
+import { getArticleBySlug } from "@/lib/knowledge-articles";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   heart: Heart,
@@ -110,20 +111,28 @@ export default function KnowledgeHubContent({ topic, questions }: KnowledgeHubCo
           </h2>
 
           <div className="space-y-3">
-            {questions.map((q) => (
-              <div
-                key={q.slug}
-                className="group flex items-center justify-between bg-black/60 backdrop-blur-sm border border-white/10 
-                         rounded-xl px-5 py-4 hover:border-stellawei-purple/60 hover:bg-black/70
-                         transition-all duration-200 cursor-pointer"
-              >
-                <span className="text-white group-hover:text-stellawei-purple transition-colors">
-                  {isZh ? q.questionCn : q.question}
-                </span>
-                <ArrowRight className="w-4 h-4 text-white/40 group-hover:text-stellawei-purple 
-                                       transform group-hover:translate-x-1 transition-all" />
-              </div>
-            ))}
+            {questions.map((q) => {
+              const article = getArticleBySlug(q.slug);
+              const href = article
+                ? `/knowledge/${topic.slug}/${q.slug}`
+                : `/knowledge/${topic.slug}`;
+
+              return (
+                <Link
+                  key={q.slug}
+                  href={href}
+                  className="group flex items-center justify-between bg-black/60 backdrop-blur-sm border border-white/10 
+                           rounded-xl px-5 py-4 hover:border-stellawei-purple/60 hover:bg-black/70
+                           transition-all duration-200 cursor-pointer"
+                >
+                  <span className="text-white group-hover:text-stellawei-purple transition-colors">
+                    {isZh ? q.questionCn : q.question}
+                  </span>
+                  <ArrowRight className="w-4 h-4 text-white/40 group-hover:text-stellawei-purple 
+                                         transform group-hover:translate-x-1 transition-all" />
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
