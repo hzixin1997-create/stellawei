@@ -6,7 +6,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { CheckCircle, Loader2, AlertTriangle } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
-import { track } from '@/lib/analytics'
+import { track, trackPurchase } from '@/lib/analytics'
 
 const POLL_INTERVAL = 2000 // 2 seconds
 const MAX_POLL_COUNT = 15 // 30 seconds total
@@ -28,11 +28,26 @@ function PaymentSuccessContent() {
   const trackPaymentSuccess = useCallback((bid: string, masterName: string, price: number, currency: string = 'usd') => {
     if (hasTrackedPayment) return
     setHasTrackedPayment(true)
+    
+    // 业务事件：payment_success（自有 Funnel 分析）
     track.paymentSuccess({
       booking_id: bid,
       master_name: masterName,
       price,
       currency,
+    })
+    
+    // GA4 标准电商事件：purchase（Revenue / ROAS / Monetization）
+    trackPurchase({
+      transaction_id: bid,
+      value: price,
+      currency: currency.toUpperCase(),
+      items: [{
+        item_id: masterName || 'consultation',
+        item_name: masterName || 'Consultation Service',
+        price,
+        quantity: 1,
+      }],
     })
   }, [hasTrackedPayment])
 

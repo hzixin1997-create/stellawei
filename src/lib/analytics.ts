@@ -181,3 +181,63 @@ declare global {
     dataLayer?: Array<Record<string, unknown>>;
   }
 }
+
+// ============================================================
+// GA4 标准电商事件（Ecommerce Events）
+// 用于 Revenue Attribution、ROAS、Monetization 报告
+// ============================================================
+
+export interface PurchaseItem {
+  item_id: string;
+  item_name: string;
+  price: number;
+  quantity: number;
+  item_category?: string;
+}
+
+export interface PurchaseParams {
+  transaction_id: string;
+  value: number;
+  currency: string;
+  items: PurchaseItem[];
+}
+
+/**
+ * 追踪 GA4 标准 purchase 事件（Ecommerce）
+ * 与 payment_success 业务事件并存，不互斥
+ * @param params - purchase 事件参数
+ */
+export function trackPurchase(params: PurchaseParams) {
+  if (typeof window === 'undefined') return;
+
+  const commonParams = getCommonParams();
+
+  // GA4 gtag - 标准电商事件
+  if (window.gtag) {
+    window.gtag('event', 'purchase', {
+      ...commonParams,
+      transaction_id: params.transaction_id,
+      value: params.value,
+      currency: params.currency,
+      items: params.items,
+    });
+  }
+
+  // GTM dataLayer
+  if (window.dataLayer) {
+    window.dataLayer.push({
+      event: 'purchase',
+      ecommerce: {
+        transaction_id: params.transaction_id,
+        value: params.value,
+        currency: params.currency,
+        items: params.items,
+      },
+      ...commonParams,
+    });
+  }
+
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[Analytics] purchase', params);
+  }
+}
