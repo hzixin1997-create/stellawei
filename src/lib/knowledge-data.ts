@@ -19,6 +19,7 @@ export interface QuestionData {
   featured: boolean;
   priority: number; // P0=0, P1=1, P2=2, P3=3
   tags?: string[];
+  externalUrl?: string; // If set, links externally instead of to internal article
 }
 
 export const topicsData: Record<string, TopicData> = {
@@ -116,7 +117,7 @@ export const topicsData: Record<string, TopicData> = {
 
 export const questionsData: Record<string, QuestionData[]> = {
   relationship: [
-    { slug: "when-will-i-meet-my-true-love", question: "When will I meet my true love?", questionCn: "我的正缘什么时候出现？", featured: true, priority: 0 },
+    { slug: "when-will-i-meet-my-true-love", question: "When Will I Meet My Soulmate?", questionCn: "我的正缘什么时候出现？", featured: true, priority: 0, externalUrl: "https://www.asknebula.com/blog/when-will-i-meet-my-soulmate-tarot-spread-soulmate-tarot-free" },
     { slug: "is-he-she-the-right-person", question: "Is he/she the right person for me?", questionCn: "他/她是对的人吗？", featured: true, priority: 0 },
     { slug: "should-i-stay-or-leave", question: "Should I stay or leave this relationship?", questionCn: "我应该继续还是离开这段关系？", featured: true, priority: 0 },
     { slug: "can-we-fix-our-relationship", question: "Can we fix our relationship?", questionCn: "我们能修复这段关系吗？", featured: true, priority: 0 },
