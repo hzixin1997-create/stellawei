@@ -179,7 +179,6 @@ export default function KnowledgeArticlePage() {
     },
     keyTakeaways: {
       heading: isZh ? "本文核心观点" : "Key Takeaways",
-      subheading: isZh ? "如果只记住三件事：" : "If you only remember three things:",
       items: isZh
         ? [
             "东方八字、紫微、奇门依托阴阳五行、星象干支做长期推演，可预判正缘时间、对方特质、婚姻适配度。",
@@ -201,9 +200,12 @@ export default function KnowledgeArticlePage() {
       ],
     },
     cta: {
-      text: isZh
-        ? "每段关系都是独特的。如果你想要更个性化的分析，我们的咨询师可以根据你的具体情况提供指引。"
-        : "Every relationship is unique. If you would like a more personalized analysis, our consultants can provide guidance tailored to your situation.",
+      textLine1: isZh
+        ? "每段关系都是独特的。"
+        : "Every relationship is unique.",
+      textLine2: isZh
+        ? "如果你想要更个性化的分析，我们的咨询师可以根据你的具体情况提供指引。"
+        : "If you would like a more personalized analysis, our consultants can provide guidance tailored to your situation.",
       button: isZh ? "预约感情咨询" : "Book a Relationship Consultation",
     },
     eeat: {
@@ -354,7 +356,6 @@ export default function KnowledgeArticlePage() {
         <Section>
           <div className="bg-stellawei-purple/5 border border-stellawei-purple/20 rounded-2xl p-6 sm:p-8">
             <h2 className="text-2xl font-serif font-bold text-white mb-5">{c.keyTakeaways.heading}</h2>
-            <p className="text-white/50 text-sm mb-5">{c.keyTakeaways.subheading}</p>
             <div className="space-y-4">
               {c.keyTakeaways.items.map((item, i) => (
                 <div key={i} className="flex items-start gap-4">
@@ -381,7 +382,8 @@ export default function KnowledgeArticlePage() {
         {/* CTA */}
         <section className="py-12">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p className="text-white/60 mb-6 max-w-2xl mx-auto">{c.cta.text}</p>
+            <p className="text-white/60 mb-2 max-w-2xl mx-auto">{c.cta.textLine1}</p>
+            <p className="text-white/60 mb-6 max-w-2xl mx-auto">{c.cta.textLine2}</p>
             <Link href="/booking" className="inline-flex items-center px-8 py-4 bg-stellawei-purple text-white font-medium rounded-xl hover:bg-stellawei-purple/90 transition-colors">
               {c.cta.button}
             </Link>
