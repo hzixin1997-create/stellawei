@@ -1,7 +1,7 @@
 // ============================================================
 // Knowledge Article Data — V2.0
 // Search Intent Driven · AEO Ready · EEAT Enhanced
-// 所有内容必须先回答"用户真正想知道什么"，再回答"我们可以如何帮助"
+// 所有内容必须先回答「用户真正想知道什么」，再回答「我们可以如何帮助」
 // ============================================================
 
 // ==================== 类型定义 ====================
@@ -22,7 +22,7 @@ export interface ReadingSummarySection {
 }
 
 export interface EasternWisdomTool {
-  searchHeading: string;      // V2.0: 用户搜索式标题
+  searchHeading: string;
   searchHeadingCn: string;
   description: string;
   descriptionCn: string;
@@ -106,44 +106,24 @@ export interface KnowledgeArticle {
   metaDescriptionCn: string;
   heroIntro: string;
   heroIntroCn: string;
-
-  // V2.0: Search Intent Mapping (后台数据)
   searchIntent: SearchIntent;
-
   quickAnswer: QuickAnswerSection;
   quickAnswerCn: QuickAnswerSection;
-
-  // V2.0: 新增 - 阅读这篇文章，你将了解
   readingSummary: ReadingSummarySection;
-
   whyPeopleAsk: WhyPeopleAskSection;
   whyPeopleAskCn: WhyPeopleAskSection;
-
   easternWisdom: EasternWisdomSection;
   easternWisdomCn: EasternWisdomSection;
-
   whatReallyMatters: WhatReallyMattersSection;
   whatReallyMattersCn: WhatReallyMattersSection;
-
   benefitChecklist: BenefitChecklistSection;
   benefitChecklistCn: BenefitChecklistSection;
-
-  // V2.0: 新增 - 真实案例
   caseStudies: CaseStudy[];
-
   faq: FAQItem[];
-
-  // V2.0: 新增 - Key Takeaways
   keyTakeaways: KeyTakeawaysSection;
-
   relatedQuestions: RelatedQuestion[];
-
   cta: CTASection;
-
-  // V2.0: 新增 - EEAT
   eeat: EEATInfo;
-
-  // SEO
   canonicalUrl: string;
   publishedAt: string;
   modifiedAt: string;
@@ -158,13 +138,12 @@ export const whenWillIMeetMyTrueLove: KnowledgeArticle = {
   question: "When Will I Meet My True Love?",
   questionCn: "我的正缘什么时候出现？",
   metaTitle: "When Will I Meet My True Love? | StellaWei Knowledge Center",
-  metaDescription: "No method can predict the exact day. But Eastern wisdom may help you understand your relationship timing, patterns, and favorable periods.",
+  metaDescription: "No method can predict the exact day. But Eastern and Western divination tools offer different lenses to help you understand relationship timing, partner traits, and your current emotional state.",
   metaTitleCn: "我的正缘什么时候出现？| Stellawei 知识中心",
-  metaDescriptionCn: "没有任何方法能准确预测具体日期。但东方智慧可以帮助你理解感情时机、模式和有利时期。",
-  heroIntro: "Many people begin asking this question after a breakup, years of being single, or watching friends around them get married. Eastern wisdom focuses less on predicting an exact date, and more on understanding whether you are entering a stage that supports meaningful relationships.",
-  heroIntroCn: "许多人在分手、多年单身，或看着身边的朋友陆续结婚后，开始问这个问题。东方智慧的重点不在于预测具体日期，而在于理解你是否正在进入一个有利于建立有意义关系的阶段。",
+  metaDescriptionCn: "没有任何命理方法能准确预测具体日期。但东西方命理工具可以从不同维度帮助你理解正缘出现的可能性与方向。",
+  heroIntro: "Many people begin asking this question after a breakup, years of being single, or watching friends around them fall in love and get married. Both Eastern and Western divination tools offer different lenses—Eastern methods focus on birth-time patterns and long-term cycles, while Tarot reflects your current emotional state and subconscious needs.",
+  heroIntroCn: "许多人在分手、多年单身，或看着身边的朋友陆续恋爱、结婚后，开始问这些问题。东西方命理工具提供了不同的视角——东方方法侧重于出生时间规律与长期周期，而塔罗则反映你当下的情感状态与潜意识需求。",
 
-  // V2.0: Search Intent Mapping
   searchIntent: {
     primary: [
       "when will i meet my true love",
@@ -202,267 +181,283 @@ export const whenWillIMeetMyTrueLove: KnowledgeArticle = {
 
   quickAnswer: {
     paragraphs: [
-      "No method can accurately tell you the exact day you will meet your true love.",
-      "However, Eastern wisdom (BaZi, Qi Men Dun Jia, Tarot) may help you understand your relationship patterns and timing."
+      "No divination method can pinpoint the exact date you will meet your true love.",
+      "However, Eastern systems (BaZi, Qi Men Dun Jia, Zi Wei Dou Shu) analyze birth-time patterns to estimate timing windows and partner traits, while Tarot reveals your current emotional state and subconscious needs."
     ],
     bullets: [
-      "Whether you are entering a favorable relationship period",
-      "What type of relationships you tend to attract",
-      "What repeating emotional patterns may exist",
-      "Which years may offer stronger opportunities"
+      "Eastern methods identify favorable years and partner characteristics based on birth charts",
+      "Tarot reflects present emotional energy and offers actionable guidance",
+      "Each system answers different questions—none predicts a specific calendar date",
+      "Personal free will and active choices remain the ultimate deciding factors"
     ]
   },
   quickAnswerCn: {
     paragraphs: [
-      "没有任何方法能准确告诉你将在哪一天遇到正缘。",
-      "然而，东方智慧（八字、奇门遁甲、塔罗）可以帮助你理解自己的感情模式和时机。"
+      "没有任何命理方法能够准确预测你将在具体哪一天遇到正缘。",
+      "但东方体系（八字、奇门遁甲、紫微斗数）可通过出生时间规律分析正缘出现的大致年份与对方特质；塔罗则反映当下情感状态与潜意识需求。"
     ],
     bullets: [
-      "你是否正在进入一个有利的感情阶段",
-      "你倾向于吸引什么类型的关系",
-      "可能存在什么重复的情感模式",
-      "哪些年份可能提供更强的机会"
+      "东方方法通过命盘识别有利年份与伴侣特征",
+      "塔罗反映当前情感能量并提供可执行的行动指引",
+      "每种体系回答不同问题——没有任何方法能预测具体日期",
+      "个人自由意志与主动选择始终是影响结果的关键因素"
     ]
   },
 
-  // V2.0: 新增 - 阅读这篇文章，你将了解
   readingSummary: {
     items: [
-      "Why many people keep meeting the wrong type of partner",
-      "What BaZi can reveal about relationship timing",
-      "When Qi Men Dun Jia is more useful than BaZi",
-      "What Tarot can and cannot tell you about love",
+      "Why many people struggle to find the right partner",
+      "How BaZi analyzes relationship timing, partner traits, and marriage compatibility",
+      "How Qi Men Dun Jia evaluates current relationship trends and obstacles",
+      "How Zi Wei Dou Shu profiles partner types and marriage patterns",
+      "How Tarot reflects current emotional states and subconscious needs",
+      "Real case study: using BaZi to avoid the wrong relationship and find the right one",
       "When a consultation might actually help"
     ],
     itemsCn: [
-      "为什么很多人总是遇到不适合自己的人",
-      "八字可以揭示哪些关于感情时机的信息",
-      "什么时候奇门遁甲比八字更有用",
-      "塔罗能告诉你什么、不能告诉你什么",
+      "为什么很多人总是遇不到适合自己的人",
+      "八字如何分析正缘出现时间、对方特质与婚姻适配度",
+      "奇门遁甲如何评估当前关系的发展趋势与阻碍",
+      "紫微斗数如何描绘未来伴侣类型与婚姻模式",
+      "塔罗如何反映当下情感状态与潜意识需求",
+      "真实案例：八字精准断偏缘，助32岁女士避坑遇正缘",
       "什么情况下咨询可能真的有帮助"
     ]
   },
 
   whyPeopleAsk: {
-    intro: "Many people asking \"When will I meet my true love?\" are actually wondering:",
+    intro: "Many people asking this question are actually wondering:",
     questions: [
-      "Am I already too late?",
-      "Why do I keep meeting the wrong people?",
-      "Is there something wrong with me?",
-      "Will I ever experience a stable relationship?"
+      "When will the right person for me actually appear?",
+      "Why does everyone else seem happy while I keep meeting the wrong people?",
+      "Why do the people I like not like me back, and the people who like me are not my type?",
+      "Why do I always end up with the wrong person?",
+      "I am exhausted—does persisting in this relationship really have hope?"
     ]
   },
   whyPeopleAskCn: {
-    intro: "很多问\"我的正缘什么时候出现？\"的人，真正想问的是：",
+    intro: "许多人在分手、多年单身，或看着身边的朋友陆续恋爱、结婚后，开始问这些问题：",
     questions: [
-      "我是不是已经太晚了？",
+      "想知道适合自己的另一半究竟何时会出现",
+      "为什么别人那么幸福，到了自己这里，总是这个不合适，那个有问题？",
+      "为什么喜欢的人不喜欢你，喜欢你的你又不喜欢？",
       "为什么我总是遇到错的人？",
-      "是不是我有什么问题？",
-      "我还会拥有稳定的关系吗？"
+      "我已经很累了，坚持这段关系真的能看到希望吗？"
     ]
   },
 
-  // V2.0: Eastern Wisdom - 搜索式标题
   easternWisdom: {
     tools: [
       {
-        searchHeading: "Can BaZi reveal when you are most likely to meet someone meaningful?",
-        searchHeadingCn: "八字可以分析什么时候遇到正缘吗？",
-        description: "BaZi analyzes your birth chart to identify relationship timing, life cycles, and personality tendencies that influence who you attract. It does not predict exact dates, but can highlight periods when relationship energy is stronger.",
-        descriptionCn: "八字通过分析你的出生命盘，识别感情时机、生命周期和性格倾向。它不能预测具体日期，但可以突出感情能量较强的时期。",
-        suitableFor: ["Understanding relationship timing", "Identifying life cycle patterns", "Personality compatibility analysis"],
-        suitableForCn: ["理解感情时机", "识别生命周期模式", "性格配对分析"]
+        searchHeading: "Can BaZi analyze when your true love will appear and what they are like?",
+        searchHeadingCn: "八字可以分析正缘出现的时间和对方特质吗？",
+        description: "BaZi (Four Pillars) is the most widely used Eastern system for relationship analysis. Based on Yin-Yang, Five Elements, Heavenly Stems and Earthly Branches, it pinpoints the Spouse Star and Spouse Palace from your birth time to outline your partner's traits, estimate the timing window, and assess marriage stability and elemental compatibility. A typical consultation focuses on three areas: the Spouse Star (partner characteristics), the Spouse Palace (marriage development), and Major Luck & Annual Cycles (which years are more favorable for stable relationships).",
+        descriptionCn: "八字（四柱命理）是东方命理中最基础、应用最广的正缘判断体系，基于阴阳五行、天干地支规律，通过出生时间精准定位配偶星、配偶宫（夫妻宫），描绘正缘的基本特征（外貌、性格、职业、背景）、判断正缘出现的大致年份/月份、评估婚姻稳定性与双方五行互补性。咨询时通常会重点分析三个部分：配偶星（代表未来伴侣的大致特征，如性格特点、职业倾向、相处模式、是否容易晚婚）、配偶宫/夫妻宫（代表婚姻关系的发展情况，如婚姻是否稳定、是否容易发生矛盾、双方相处模式）、大运与流年（结合大运变化和流年变化，综合判断哪些年份更容易开始稳定关系）。",
+        suitableFor: ["Estimating relationship timing windows", "Profiling partner traits and background", "Assessing marriage stability and compatibility", "Identifying favorable years for love"],
+        suitableForCn: ["估算正缘出现的时间窗口", "描绘未来伴侣的特质与背景", "评估婚姻稳定性与五行互补性", "识别有利于感情发展的年份"]
       },
       {
-        searchHeading: "When is Qi Men Dun Jia more useful than BaZi for relationship decisions?",
-        searchHeadingCn: "奇门遁甲适合解决哪些感情决策问题？",
-        description: "Qi Men Dun Jia excels at current decision-making: whether to pursue a relationship, wait, or focus on self-growth. It answers \"what should I do now?\" rather than \"when will it happen?\"",
-        descriptionCn: "奇门遁甲擅长当前决策：是否追求一段感情、等待，还是专注于自我成长。它回答\"我现在应该做什么？\"而非\"这件事什么时候会发生？\"",
-        suitableFor: ["Current decision-making", "Choosing between options", "Timing of action"],
-        suitableForCn: ["当前决策", "在选项之间选择", "行动时机"]
+        searchHeading: "Can Qi Men Dun Jia evaluate the current trend of a relationship?",
+        searchHeadingCn: "奇门遁甲如何判断当前关系的发展趋势？",
+        description: "Qi Men Dun Jia uses a spacetime model (Heavenly Stems, Earthly Branches, Nine Palaces, Eight Trigrams, Nine Stars, Eight Doors) to analyze the energy state of a relationship at a specific moment. It excels at answering concrete questions: Is this person my true love? What is the current trend between us? When is the best time to take initiative? What is the biggest obstacle right now?",
+        descriptionCn: "奇门遁甲以时空模型（天干地支、九宫八卦、九星八门）为基础，擅长分析当下或特定时间点的缘分状态，适合判断「是否是正缘」「何时相遇」等具体问题。通常重点关注：对方是不是正缘、双方目前关系的发展趋势、什么时候主动更容易成功、当前最大的阻碍是什么。",
+        suitableFor: ["Determining if someone is your true love", "Analyzing current relationship trends", "Choosing the best timing to act", "Identifying obstacles in love"],
+        suitableForCn: ["判断某人是否是你的正缘", "分析当前关系的发展趋势", "选择最佳行动时机", "识别感情中的阻碍"]
       },
       {
-        searchHeading: "Can Tarot provide meaningful insights about your current love situation?",
-        searchHeadingCn: "塔罗适合分析近期感情发展吗？",
-        description: "Tarot offers short-term emotional guidance and insight into your current relationship energy. It is most useful for understanding your present mindset and immediate emotional landscape, not long-term predictions.",
-        descriptionCn: "塔罗提供短期情感指引和当前感情能量的洞察。它最适用于理解你的当下心态和即时情感状态，而非长期预测。",
-        suitableFor: ["Short-term emotional guidance", "Current energy reading", "Mindset clarity"],
-        suitableForCn: ["短期情感指引", "当前能量解读", "心态清晰度"]
+        searchHeading: "Can Zi Wei Dou Shu profile your future partner's type and marriage pattern?",
+        searchHeadingCn: "紫微斗数如何描绘未来伴侣的类型和婚姻模式？",
+        description: "Zi Wei Dou Shu uses star combinations across twelve palaces to analyze true-love characteristics, relationship quality, and timing. It excels at depicting relationship structure and partner type. A consultation typically focuses on: future partner type, marriage pattern, emotional stability, likelihood of late marriage, and post-marriage interaction style.",
+        descriptionCn: "紫微斗数以星曜组合为核心，通过命盘十二宫位分析正缘特征、缘分质量与出现时机，擅长描绘「关系结构」与「对方类型」。通常重点关注：未来伴侣类型、婚姻模式、感情稳定度、是否容易晚婚、婚后相处模式。",
+        suitableFor: ["Profiling partner type and personality", "Understanding marriage patterns", "Assessing emotional stability", "Evaluating likelihood of late marriage"],
+        suitableForCn: ["描绘伴侣类型与性格", "理解婚姻模式", "评估感情稳定度", "判断是否容易晚婚"]
+      },
+      {
+        searchHeading: "Can Tarot reflect your current emotional state and subconscious needs?",
+        searchHeadingCn: "塔罗如何反映当下的情感状态与潜意识需求？",
+        description: "Tarot is based on symbolic psychology and collective unconscious. Through card imagery and intuitive interpretation, it reflects your present emotional state and subconscious needs, reveals challenges and opportunities in relationships, and offers actionable guidance for improvement. It focuses more on short-term emotional development and personal growth, emphasizing how free will influences relationship outcomes.",
+        descriptionCn: "西方塔罗以象征心理学与集体潜意识为基础，通过牌面图像与直觉解读，反映当下情感状态与潜意识需求、揭示关系中的挑战与机遇、提供改善关系的行动指引，更聚焦短期情感发展与个人成长，强调自由意志对关系走向的影响，帮助人们在情感困惑中看清内心、做出更契合的选择。",
+        suitableFor: ["Understanding present emotional state", "Gaining clarity on subconscious needs", "Receiving actionable guidance", "Navigating short-term relationship decisions"],
+        suitableForCn: ["理解当下情感状态", "看清潜意识需求", "获得可执行的行动指引", "应对短期感情决策"]
       }
     ]
   },
   easternWisdomCn: {
     tools: [
       {
-        searchHeading: "八字可以分析什么时候遇到正缘吗？",
-        searchHeadingCn: "八字可以分析什么时候遇到正缘吗？",
-        description: "八字通过分析你的出生命盘，识别感情时机、生命周期和性格倾向。它不能预测具体日期，但可以突出感情能量较强的时期。",
-        descriptionCn: "八字通过分析你的出生命盘，识别感情时机、生命周期和性格倾向。它不能预测具体日期，但可以突出感情能量较强的时期。",
-        suitableFor: ["理解感情时机", "识别生命周期模式", "性格配对分析"],
-        suitableForCn: ["理解感情时机", "识别生命周期模式", "性格配对分析"]
+        searchHeading: "八字可以分析正缘出现的时间和对方特质吗？",
+        searchHeadingCn: "八字可以分析正缘出现的时间和对方特质吗？",
+        description: "BaZi (Four Pillars) is the most widely used Eastern system...",
+        descriptionCn: "八字（四柱命理）是东方命理中最基础、应用最广的正缘判断体系，基于阴阳五行、天干地支规律，通过出生时间精准定位配偶星、配偶宫（夫妻宫），描绘正缘的基本特征（外貌、性格、职业、背景）、判断正缘出现的大致年份/月份、评估婚姻稳定性与双方五行互补性。咨询时通常会重点分析三个部分：配偶星（代表未来伴侣的大致特征，如性格特点、职业倾向、相处模式、是否容易晚婚）、配偶宫/夫妻宫（代表婚姻关系的发展情况，如婚姻是否稳定、是否容易发生矛盾、双方相处模式）、大运与流年（结合大运变化和流年变化，综合判断哪些年份更容易开始稳定关系）。",
+        suitableFor: ["估算正缘出现的时间窗口", "描绘未来伴侣的特质与背景", "评估婚姻稳定性与五行互补性", "识别有利于感情发展的年份"],
+        suitableForCn: ["估算正缘出现的时间窗口", "描绘未来伴侣的特质与背景", "评估婚姻稳定性与五行互补性", "识别有利于感情发展的年份"]
       },
       {
-        searchHeading: "奇门遁甲适合解决哪些感情决策问题？",
-        searchHeadingCn: "奇门遁甲适合解决哪些感情决策问题？",
-        description: "奇门遁甲擅长当前决策：是否追求一段感情、等待，还是专注于自我成长。它回答\"我现在应该做什么？\"而非\"这件事什么时候会发生？\"",
-        descriptionCn: "奇门遁甲擅长当前决策：是否追求一段感情、等待，还是专注于自我成长。它回答\"我现在应该做什么？\"而非\"这件事什么时候会发生？\"",
-        suitableFor: ["当前决策", "在选项之间选择", "行动时机"],
-        suitableForCn: ["当前决策", "在选项之间选择", "行动时机"]
+        searchHeading: "奇门遁甲如何判断当前关系的发展趋势？",
+        searchHeadingCn: "奇门遁甲如何判断当前关系的发展趋势？",
+        description: "Qi Men Dun Jia uses a spacetime model...",
+        descriptionCn: "奇门遁甲以时空模型（天干地支、九宫八卦、九星八门）为基础，擅长分析当下或特定时间点的缘分状态，适合判断「是否是正缘」「何时相遇」等具体问题。通常重点关注：对方是不是正缘、双方目前关系的发展趋势、什么时候主动更容易成功、当前最大的阻碍是什么。",
+        suitableFor: ["判断某人是否是你的正缘", "分析当前关系的发展趋势", "选择最佳行动时机", "识别感情中的阻碍"],
+        suitableForCn: ["判断某人是否是你的正缘", "分析当前关系的发展趋势", "选择最佳行动时机", "识别感情中的阻碍"]
       },
       {
-        searchHeading: "塔罗适合分析近期感情发展吗？",
-        searchHeadingCn: "塔罗适合分析近期感情发展吗？",
-        description: "塔罗提供短期情感指引和当前感情能量的洞察。它最适用于理解你的当下心态和即时情感状态，而非长期预测。",
-        descriptionCn: "塔罗提供短期情感指引和当前感情能量的洞察。它最适用于理解你的当下心态和即时情感状态，而非长期预测。",
-        suitableFor: ["短期情感指引", "当前能量解读", "心态清晰度"],
-        suitableForCn: ["短期情感指引", "当前能量解读", "心态清晰度"]
+        searchHeading: "紫微斗数如何描绘未来伴侣的类型和婚姻模式？",
+        searchHeadingCn: "紫微斗数如何描绘未来伴侣的类型和婚姻模式？",
+        description: "Zi Wei Dou Shu uses star combinations...",
+        descriptionCn: "紫微斗数以星曜组合为核心，通过命盘十二宫位分析正缘特征、缘分质量与出现时机，擅长描绘「关系结构」与「对方类型」。通常重点关注：未来伴侣类型、婚姻模式、感情稳定度、是否容易晚婚、婚后相处模式。",
+        suitableFor: ["描绘伴侣类型与性格", "理解婚姻模式", "评估感情稳定度", "判断是否容易晚婚"],
+        suitableForCn: ["描绘伴侣类型与性格", "理解婚姻模式", "评估感情稳定度", "判断是否容易晚婚"]
+      },
+      {
+        searchHeading: "塔罗如何反映当下的情感状态与潜意识需求？",
+        searchHeadingCn: "塔罗如何反映当下的情感状态与潜意识需求？",
+        description: "Tarot is based on symbolic psychology...",
+        descriptionCn: "西方塔罗以象征心理学与集体潜意识为基础，通过牌面图像与直觉解读，反映当下情感状态与潜意识需求、揭示关系中的挑战与机遇、提供改善关系的行动指引，更聚焦短期情感发展与个人成长，强调自由意志对关系走向的影响，帮助人们在情感困惑中看清内心、做出更契合的选择。",
+        suitableFor: ["理解当下情感状态", "看清潜意识需求", "获得可执行的行动指引", "应对短期感情决策"],
+        suitableForCn: ["理解当下情感状态", "看清潜意识需求", "获得可执行的行动指引", "应对短期感情决策"]
       }
     ]
   },
 
   whatReallyMatters: {
-    intro: "Many people spend years waiting for \"the right person.\" But often, the more important questions are:",
-    introCn: "许多人花多年时间等待\"对的人\"。但更重要的是这些问题：",
+    intro: "When exploring this question, it helps to understand the fundamental differences between Eastern and Western approaches—and how they complement each other.",
+    introCn: "在探索这个问题时，理解东西方命理方法的根本差异以及它们如何相互补充，会很有帮助。",
     points: [
-      "Are you emotionally ready for a meaningful relationship?",
-      "Are you repeating the same relationship pattern?",
-      "Are you attracted to the same kind of partner every time?",
-      "Do you know what you truly need—not just what you want?"
+      "Eastern methods (BaZi, Qi Men, Zi Wei) emphasize birth-time patterns, long-term cycles, and elemental compatibility—offering a structural view of relationship timing and partner traits.",
+      "Western Tarot focuses on present emotional energy, subconscious needs, and actionable guidance—helping you understand your current mindset and immediate choices.",
+      "Neither system can predict an exact calendar date; both reveal patterns and probabilities, not certainties.",
+      "Your free will, conscious choices, and personal growth are the ultimate forces that shape your relationship outcomes."
     ],
     pointsCn: [
-      "你是否在情感上准备好进入一段有意义的关系？",
-      "你是否在重复同样的感情模式？",
-      "你是否每次都被同一类型的伴侣吸引？",
-      "你知道自己真正需要什么——而不仅仅是想要什么吗？"
+      "东方方法（八字、奇门、紫微）强调出生时间规律、长期周期与五行互补性——提供关于感情时机与伴侣特质的结构性视角。",
+      "西方塔罗聚焦当下情感能量、潜意识需求与可执行指引——帮助你理解当前心态与即时选择。",
+      "没有任何体系能预测具体日期；两者揭示的都是模式与概率，而非确定性。",
+      "你的自由意志、有意识的选择与个人成长，才是塑造感情结果的终极力量。"
     ]
   },
   whatReallyMattersCn: {
-    intro: "许多人花多年时间等待\"对的人\"。但更重要的是这些问题：",
-    introCn: "许多人花多年时间等待\"对的人\"。但更重要的是这些问题：",
+    intro: "在探索这个问题时，理解东西方命理方法的根本差异以及它们如何相互补充，会很有帮助。",
+    introCn: "在探索这个问题时，理解东西方命理方法的根本差异以及它们如何相互补充，会很有帮助。",
     points: [
-      "你是否在情感上准备好进入一段有意义的关系？",
-      "你是否在重复同样的感情模式？",
-      "你是否每次都被同一类型的伴侣吸引？",
-      "你知道自己真正需要什么——而不仅仅是想要什么吗？"
+      "东方方法（八字、奇门、紫微）强调出生时间规律、长期周期与五行互补性——提供关于感情时机与伴侣特质的结构性视角。",
+      "西方塔罗聚焦当下情感能量、潜意识需求与可执行指引——帮助你理解当前心态与即时选择。",
+      "没有任何体系能预测具体日期；两者揭示的都是模式与概率，而非确定性。",
+      "你的自由意志、有意识的选择与个人成长，才是塑造感情结果的终极力量。"
     ],
     pointsCn: [
-      "你是否在情感上准备好进入一段有意义的关系？",
-      "你是否在重复同样的感情模式？",
-      "你是否每次都被同一类型的伴侣吸引？",
-      "你知道自己真正需要什么——而不仅仅是想要什么吗？"
+      "东方方法（八字、奇门、紫微）强调出生时间规律、长期周期与五行互补性——提供关于感情时机与伴侣特质的结构性视角。",
+      "西方塔罗聚焦当下情感能量、潜意识需求与可执行指引——帮助你理解当前心态与即时选择。",
+      "没有任何体系能预测具体日期；两者揭示的都是模式与概率，而非确定性。",
+      "你的自由意志、有意识的选择与个人成长，才是塑造感情结果的终极力量。"
     ]
   },
 
   benefitChecklist: {
-    intro: "This consultation may help if you:",
+    intro: "A consultation may help if you:",
     introCn: "如果你有以下情况，咨询可能会对你有帮助：",
     items: [
-      "Have been single for years without understanding why",
-      "Keep repeating similar relationship patterns",
-      "Are unsure whether someone is the right person",
-      "Want to understand your relationship timing",
-      "Feel stuck emotionally and want clarity"
+      "Have been single or dating unsuccessfully for years and want to understand your relationship timing",
+      "Are in a relationship but unsure if this person is right for you",
+      "Keep attracting the wrong type of partner and want to understand your patterns",
+      "Are considering marriage and want to assess long-term compatibility",
+      "Feel emotionally stuck and need clarity on your subconscious needs and next steps"
     ],
     itemsCn: [
-      "多年单身，但不知道原因",
-      "一直在重复相似的感情模式",
-      "不确定某个人是否是对的人",
-      "想了解自己的感情时机",
-      "情感上感到困惑，想要理清思路"
+      "多年单身或恋爱不顺，想了解自己的感情时机",
+      "正在一段关系中但不确定对方是否适合自己",
+      "总是吸引不适合的伴侣，想理解自己的感情模式",
+      "考虑结婚，希望评估长期适配度",
+      "情感上感到困惑，需要看清潜意识需求与下一步方向"
     ]
   },
   benefitChecklistCn: {
     intro: "如果你有以下情况，咨询可能会对你有帮助：",
     introCn: "如果你有以下情况，咨询可能会对你有帮助：",
     items: [
-      "多年单身，但不知道原因",
-      "一直在重复相似的感情模式",
-      "不确定某个人是否是对的人",
-      "想了解自己的感情时机",
-      "情感上感到困惑，想要理清思路"
+      "多年单身或恋爱不顺，想了解自己的感情时机",
+      "正在一段关系中但不确定对方是否适合自己",
+      "总是吸引不适合的伴侣，想理解自己的感情模式",
+      "考虑结婚，希望评估长期适配度",
+      "情感上感到困惑，需要看清潜意识需求与下一步方向"
     ],
     itemsCn: [
-      "多年单身，但不知道原因",
-      "一直在重复相似的感情模式",
-      "不确定某个人是否是对的人",
-      "想了解自己的感情时机",
-      "情感上感到困惑，想要理清思路"
+      "多年单身或恋爱不顺，想了解自己的感情时机",
+      "正在一段关系中但不确定对方是否适合自己",
+      "总是吸引不适合的伴侣，想理解自己的感情模式",
+      "考虑结婚，希望评估长期适配度",
+      "情感上感到困惑，需要看清潜意识需求与下一步方向"
     ]
   },
 
-  // V2.0: 新增 - 真实案例
   caseStudies: [
     {
-      title: "Understanding the Pattern",
-      titleCn: "理解模式",
-      content: "A user from Singapore had been single for four years and believed she simply had \"bad luck with relationships.\" During a BaZi consultation, she discovered that her chart showed a strong pattern of being attracted to emotionally unavailable partners. The consultation did not predict when she would meet someone. Instead, it helped her recognize the pattern she had been repeating. Six months later, she shared that she had started making different choices in dating—and felt more confident about what she actually needed in a relationship.",
-      contentCn: "一位来自新加坡的用户已经单身四年，认为自己只是\"感情运不好\"。在八字咨询中，她发现自己的命盘显示出一种强烈的模式：总是被情感上不可获得的伴侣吸引。咨询没有预测她什么时候会遇到某人，而是帮助她认识到自己一直在重复的模式。六个月后，她分享说自己开始在约会中做出不同的选择——并且对自己在感情中真正需要什么更有信心。"
+      title: "Avoiding the Wrong Relationship to Find the Right One",
+      titleCn: "八字精准断偏缘，助32岁女士避坑遇正缘",
+      content: "Ms. Li (born 1994, Jia-Xu year), age 32, worked in internet operations. After three years of unsuccessful dating, she met a warm and attentive Tiger zodiac man in autumn 2024 and fell into indecision, unsure if he was her true love. A BaZi analysis revealed: her chart showed the Official Star hidden in the Year Branch Xu earth and suppressed by the Month Branch Shen metal, indicating a late-marriage tendency and early encounters with non-true-love relationships. The 2024 Annual Cycle brought the Seven Killings to the surface, creating a mixed pattern. The man's Tiger zodiac formed a semi-combination with her Day Branch, suggesting apparent connection but hidden risks. Key insight: the man's chart indicated he was already married, and their Five Elements were incompatible. Guidance: stop immediately. True-love window: 2025 Yi-Si year, especially lunar months 3-5. Partner direction: prioritize Horse, Dog, or Pig zodiac men with stable careers. Result: Following the advice, Ms. Li met a Horse zodiac university teacher in April 2025. They got engaged in October 2025 and married in May 2026.",
+      contentCn: "李女士（1994年生，甲戌年），32岁，从事互联网运营，连续3年相亲无果，2024年秋结识一位属虎男士，对方热情体贴，她陷入纠结，不确定是否为正缘。八字分析发现：命局中正官星（代表正缘）在年支戌土中藏而不显，且被月支申金伤官克制，显示晚婚趋势，早年易遇偏缘。2024年流年甲辰，甲木七杀透干（代表偏缘/不稳定关系），与命局形成「官杀混杂」，且男方属虎（寅木）与命局日支午火「寅午半合」，看似缘分深，实则暗藏隐患。关键判断：男方八字显示已有家室，且与李女士五行相克（木克土），长期相处易有矛盾。指导建议：立即止损，彻底断联，避免消耗自身桃花运势。正缘时间窗口：2025乙巳年（红鸾星动），尤其在农历3-5月（巳午未月，火土旺，助正官星显象）。择偶方向：优先考虑属马、属狗、属猪的男士（三合、六合，五行互补），职业以稳定型（公务员、教师、国企）为佳。实际结果：李女士听从建议，2025年4月在一次行业培训中结识一位属马的大学教师（符合择偶方向），两人相处融洽，同年10月订婚，2026年5月结婚，婚后生活稳定和谐。她特意带喜糖回访命理师，感慨「若不是及时止损，可能还在错误的关系里浪费时间」。"
     }
   ],
 
   faq: [
     {
-      question: "Can BaZi predict the exact year I will get married?",
-      questionCn: "八字能预测我哪年结婚吗？",
-      answer: "BaZi can identify periods when relationship energy is stronger, but it cannot predict exact dates. Life involves free will and countless variables. The value is in understanding timing patterns, not getting a specific calendar date.",
-      answerCn: "八字可以识别感情能量较强的时期，但无法预测具体日期。人生涉及自由意志和无数变量。其价值在于理解时机模式，而非获得具体日期。"
+      question: "Can BaZi predict the exact year and month I will meet my true love?",
+      questionCn: "八字能精确预测我哪年哪月遇到正缘吗？",
+      answer: "BaZi can identify favorable time windows—often down to the year or season—based on the interplay of your Spouse Star, Spouse Palace, Major Luck cycles, and Annual Cycles. However, it cannot pinpoint an exact date. Life involves free will, environmental factors, and countless variables. The value lies in understanding timing patterns and preparing yourself accordingly.",
+      answerCn: "八字可以根据配偶星、配偶宫、大运与流年的相互作用，识别有利的时间窗口——通常可以精确到年份或季节。但它无法 pinpoint 具体日期。人生涉及自由意志、环境因素和无数变量。其价值在于理解时机模式并相应做好准备，而非获得具体日期。"
     },
     {
-      question: "Is Tarot suitable for relationship timing?",
-      questionCn: "塔罗适合看感情时机吗？",
-      answer: "Tarot is better suited for understanding current emotional energy and short-term guidance. For long-term timing patterns, BaZi or Qi Men Dun Jia may offer more structured insights.",
-      answerCn: "塔罗更适合理解当前的情感能量和短期指引。对于长期时机模式，八字或奇门遁甲可能提供更系统的洞察。"
+      question: "What is the difference between BaZi, Qi Men Dun Jia, and Zi Wei Dou Shu for relationship questions?",
+      questionCn: "八字、奇门遁甲和紫微斗数在感情问题上有什么区别？",
+      answer: "BaZi is the foundational system for analyzing relationship timing, partner traits, and marriage stability through birth-chart patterns. Qi Men Dun Jia excels at evaluating current relationship energy, timing of action, and immediate obstacles using spacetime models. Zi Wei Dou Shu focuses on profiling partner types, marriage patterns, and emotional stability through star combinations across twelve palaces. They complement each other—BaZi sets the structural baseline, Qi Men addresses current decisions, and Zi Wei refines the partner portrait.",
+      answerCn: "八字是通过命盘规律分析感情时机、伴侣特质与婚姻稳定性的基础体系。奇门遁甲擅长利用时空模型评估当前关系能量、行动时机与即时阻碍。紫微斗数则通过十二宫位星曜组合描绘伴侣类型、婚姻模式与感情稳定度。它们相互补充——八字奠定结构性基础，奇门解决当前决策，紫微细化伴侣画像。"
     },
     {
-      question: "Can destiny be changed?",
-      questionCn: "命运可以改变吗？",
-      answer: "Eastern wisdom teaches that destiny provides a framework, but how you navigate within it is up to you. Understanding your patterns gives you the awareness to make different choices.",
-      answerCn: "东方智慧认为命运提供了一个框架，但如何在其中航行取决于你自己。理解自己的模式会让你获得做出不同选择的意识。"
+      question: "Can Tarot predict when I will meet my true love?",
+      questionCn: "塔罗能预测我什么时候遇到正缘吗？",
+      answer: "Tarot is not designed for long-term timing predictions. It is most effective for understanding your current emotional state, subconscious needs, and the energies surrounding your present situation. It can reveal challenges, opportunities, and actionable guidance for your immediate relationship decisions. For long-term timing and structural relationship analysis, BaZi or Zi Wei Dou Shu are more appropriate tools.",
+      answerCn: "塔罗不适用于长期时机预测。它最有效的用途是理解你当下的情感状态、潜意识需求以及围绕你当前状况的能量。它可以揭示挑战、机遇以及针对即时感情决策的可执行指引。对于长期时机和结构性感情分析，八字或紫微斗数是更合适的工具。"
     },
     {
-      question: "What's the difference between BaZi and Tarot?",
-      questionCn: "八字和塔罗有什么区别？",
-      answer: "BaZi analyzes your birth chart for long-term patterns and timing. Tarot reads current energy for short-term guidance. They answer different questions and work best when used for their respective strengths.",
-      answerCn: "八字分析你的出生命盘，用于长期模式和时机。塔罗解读当前能量，用于短期指引。它们回答不同的问题，在各自擅长的领域使用时效果最好。"
+      question: "Can destiny be changed, or is everything predetermined?",
+      questionCn: "命运可以改变吗，还是一切都是注定的？",
+      answer: "Eastern wisdom teaches that destiny provides a framework—like a map showing the terrain—but how you navigate within it is entirely up to you. Your birth chart reveals tendencies, timing windows, and compatibility patterns, but your choices, mindset, and actions shape the actual outcome. Understanding your patterns gives you the awareness to make different choices, avoid wrong relationships, and recognize the right one when it appears.",
+      answerCn: "东方智慧认为命运提供的是一个框架——就像一张显示地形的地图——但如何在其中航行完全取决于你自己。你的出生命盘揭示了倾向、时机窗口和适配模式，但你的选择、心态和行动塑造了实际结果。理解自己的模式会让你获得做出不同选择的意识，避开错误的关系，并在正确的人出现时能够识别。"
     },
     {
-      question: "How should I prepare before a consultation?",
-      questionCn: "咨询前应该如何准备？",
-      answer: "Think about what you truly want to understand. The more specific your question, the more useful the guidance. Have your birth date, time, and location ready for BaZi readings.",
-      answerCn: "思考你真正想理解什么。问题越具体，指引就越有用。如果是八字解读，准备好你的出生日期、时间和地点。"
+      question: "How should I prepare before a relationship consultation?",
+      questionCn: "感情咨询前应该如何准备？",
+      answer: "Think about what you truly want to understand. The more specific your question, the more useful the guidance. For BaZi, Zi Wei, or Qi Men readings, have your exact birth date, time, and location ready. For Tarot, reflect on your current emotional state and the specific situation you want clarity on. Be open to insights that may challenge your assumptions.",
+      answerCn: "思考你真正想理解什么。问题越具体，指引就越有用。如果是八字、紫微或奇门解读，准备好你的精确出生日期、时间和地点。如果是塔罗，反思你当下的情感状态以及你希望获得清晰度的具体情境。对可能挑战你假设的洞察保持开放。"
     }
   ],
 
-  // V2.0: 新增 - Key Takeaways
   keyTakeaways: {
     items: [
-      "No method can predict the exact day you will meet someone—timing is a pattern, not a calendar event.",
-      "BaZi helps you understand long-term relationship cycles; Qi Men Dun Jia helps with current decisions; Tarot offers short-term emotional clarity.",
-      "The more important question is often not \"when\" but \"what pattern am I repeating?\""
+      "Eastern systems (BaZi, Qi Men, Zi Wei) rely on Yin-Yang, Five Elements, and celestial patterns for long-term forecasting of relationship timing, partner traits, and marriage compatibility.",
+      "Western Tarot interprets subconscious symbolism to illuminate your current emotional state and provide mindset and action guidance.",
+      "Different methods serve different purposes; the right tool depends on whether you need structural insight, current-clarity, or both."
     ],
     itemsCn: [
-      "没有任何方法能预测具体日期——时机是一种模式，不是日历事件。",
-      "八字帮助你理解长期感情周期；奇门遁甲帮助当前决策；塔罗提供短期情感清晰度。",
-      "更重要的问题往往不是\"什么时候\"，而是\"我在重复什么模式？\""
+      "东方八字、奇门、紫微依托阴阳五行、星象干支做长期推演，可预判正缘时间、对方特质、婚姻适配度。",
+      "西方塔罗基于潜意识象征解读，聚焦短期当下情感状态，提供心态与行动指引。",
+      "不同解决方式各有适用场景，通过适合的方法辅助客户做出情感选择。"
     ]
   },
 
   relatedQuestions: [
     { slug: "is-he-she-the-right-person", question: "Is He/She the Right Person?", questionCn: "他/她是对的人吗？" },
-    { slug: "should-i-stay-or-leave", question: "Should I Stay or Leave?", questionCn: "我应该继续还是离开？" },
-    { slug: "will-marriage-go-smoothly", question: "Will My Marriage Go Smoothly?", questionCn: "我的婚姻会顺利吗？" }
+    { slug: "should-i-stay-or-leave", question: "Should I Stay or Leave This Relationship?", questionCn: "我应该继续还是离开这段关系？" },
+    { slug: "can-we-fix-this-relationship", question: "Can We Fix This Relationship?", questionCn: "我们能修复这段关系吗？" }
   ],
 
-  // V2.0: CTA 更自然
   cta: {
-    text: "If this article has helped you understand the overall direction, it has already served its purpose. If you would like to combine your birth information, current relationship status, or specific questions for a more personalized analysis, our consultants can provide guidance based on your unique situation.",
-    textCn: "如果这篇文章已经帮助你理解了整体方向，那么它已经完成了它的使命。如果你希望结合自己的出生信息、当前感情状况或具体问题进行更个性化的分析，我们的咨询师可以根据你的独特情况提供指引。",
+    text: "Every relationship is unique. If you would like a more personalized analysis combining your birth information, current relationship status, or specific questions, our consultants can provide guidance tailored to your situation.",
+    textCn: "每段关系都是独特的。如果你想要更个性化的分析，我们的咨询师可以根据你的具体情况提供指引。",
     buttonText: "Book a Relationship Consultation",
     buttonTextCn: "预约感情咨询",
     link: "/booking"
   },
 
-  // V2.0: EEAT
   eeat: {
     reviewedBy: "Reviewed by StellaWei Editorial Team",
     reviewedByCn: "由 Stellawei 编辑团队审阅"
@@ -470,7 +465,7 @@ export const whenWillIMeetMyTrueLove: KnowledgeArticle = {
 
   canonicalUrl: "https://stellawei.org/knowledge/relationship/when-will-i-meet-my-true-love",
   publishedAt: "2026-07-25",
-  modifiedAt: "2026-07-25",
+  modifiedAt: "2026-07-27",
   author: "Stellawei Editorial Team"
 };
 
