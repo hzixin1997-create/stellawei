@@ -39,7 +39,7 @@ const faqJsonLd = {
   mainEntity: [
     {
       "@type": "Question",
-      name: "Can BaZi predict the exact year and month I will meet my true love?",
+      name: "Can BaZi predict the exact year and month I will meet my soulmate?",
       acceptedAnswer: {
         "@type": "Answer",
         text: "BaZi can identify favorable time windows—often down to the year or season—based on the interplay of your Spouse Star, Spouse Palace, Major Luck cycles, and Annual Cycles. However, it cannot pinpoint an exact date. Life involves free will, environmental factors, and countless variables.",
@@ -47,7 +47,7 @@ const faqJsonLd = {
     },
     {
       "@type": "Question",
-      name: "Can Tarot predict when I will meet my true love?",
+      name: "Can Tarot predict when I will meet my soulmate?",
       acceptedAnswer: {
         "@type": "Answer",
         text: "Tarot is not designed for long-term timing predictions. It is most effective for understanding your current emotional state, subconscious needs, and the energies surrounding your present situation.",
@@ -96,11 +96,11 @@ export default function KnowledgeArticlePage() {
           ],
     },
     eastWest: {
-      heading: isZh ? "东西方命理如何帮助分析正缘？" : "How Eastern and Western Divination Help Analyze True Love",
+      heading: isZh ? "东西方命理如何帮助分析正缘？" : "How Eastern and Western Divination Help Analyze Soulmate",
       easternTitle: isZh ? "东方命理" : "Eastern Divination",
       easternDesc: isZh
         ? "东方命理（以八字、奇门遁甲、紫微斗数为核心）针对正缘问题，能基于阴阳五行、天干地支、星曜组合等规律，通过出生时间或时空坐标精准定位配偶星、配偶宫（夫妻宫），描绘正缘的基本特征（外貌、性格、职业、背景）、判断正缘出现的大致年份/月份、评估婚姻稳定性与双方五行互补性，还可通过合婚分析看缘分深浅与长期相处潜力，整体偏向「定基调、看趋势」的长期预测，帮助人们把握命中注定的缘分时机与质量。"
-        : "Eastern divination (BaZi, Qi Men Dun Jia, Zi Wei Dou Shu) analyzes true-love questions through the principles of Yin-Yang, Five Elements, Heavenly Stems and Earthly Branches, and star combinations. By using birth time or spacetime coordinates, it precisely locates the Spouse Star and Spouse Palace, outlines your partner's basic traits (appearance, personality, career, background), estimates the approximate year/month of their appearance, assesses marriage stability and elemental compatibility, and evaluates the depth of connection and long-term potential through marriage-matching analysis. Overall, it leans toward long-term forecasting that sets the tone and identifies trends, helping people grasp the timing and quality of fated relationships.",
+        : "Eastern divination (BaZi, Qi Men Dun Jia, Zi Wei Dou Shu) analyzes soulmate questions through the principles of Yin-Yang, Five Elements, Heavenly Stems and Earthly Branches, and star combinations. By using birth time or spacetime coordinates, it precisely locates the Spouse Star and Spouse Palace, outlines your partner's basic traits (appearance, personality, career, background), estimates the approximate year/month of their appearance, assesses marriage stability and elemental compatibility, and evaluates the depth of connection and long-term potential through marriage-matching analysis. Overall, it leans toward long-term forecasting that sets the tone and identifies trends, helping people grasp the timing and quality of fated relationships.",
       westernTitle: isZh ? "西方命理" : "Western Divination",
       westernDesc: isZh
         ? "西方命理（以塔罗为主）则以象征心理学与集体潜意识为基础，通过牌面图像与直觉解读，反映当下情感状态与潜意识需求、揭示关系中的挑战与机遇、提供改善关系的行动指引，更聚焦短期情感发展与个人成长，强调自由意志对关系走向的影响，帮助人们在情感困惑中看清内心、做出更契合的选择。"
@@ -109,10 +109,10 @@ export default function KnowledgeArticlePage() {
     methods: {
       heading: isZh ? "具体方法" : "Specific Methods",
       bazi: {
-        title: isZh ? "一、八字命理：最主流的正缘分析方法" : "1. BaZi (Four Pillars): The Most Mainstream True-Love Analysis Method",
+        title: isZh ? "一、八字命理：最主流的正缘分析方法" : "1. BaZi (Four Pillars): The Most Mainstream Soulmate Analysis Method",
         intro: isZh
           ? "八字（四柱命理）是东方命理中最基础、应用最广的正缘判断体系，咨询时通常会重点分析三个部分："
-          : "BaZi (Four Pillars) is the most fundamental and widely applied system in Eastern divination for true-love assessment. A consultation typically focuses on three key areas:",
+          : "BaZi (Four Pillars) is the most fundamental and widely applied system in Eastern divination for soulmate assessment. A consultation typically focuses on three key areas:",
         spouseStar: {
           title: isZh ? "① 配偶星" : "① Spouse Star",
           desc: isZh ? "代表未来伴侣的大致特征。例如：" : "Represents the general characteristics of your future partner. For example:",
@@ -137,20 +137,20 @@ export default function KnowledgeArticlePage() {
         },
       },
       qimen: {
-        title: isZh ? "二、奇门遁甲：时空能量视角的正缘判断" : "2. Qi Men Dun Jia: Spacetime Energy Perspective on True Love",
+        title: isZh ? "二、奇门遁甲：时空能量视角的正缘判断" : "2. Qi Men Dun Jia: Spacetime Energy Perspective on Soulmate",
         desc: isZh
           ? "奇门遁甲以时空模型（天干地支、九宫八卦、九星八门）为基础，擅长分析当下或特定时间点的缘分状态，适合判断「是否是正缘」「何时相遇」等具体问题。"
-          : "Qi Men Dun Jia uses a spacetime model (Heavenly Stems, Earthly Branches, Nine Palaces, Eight Trigrams, Nine Stars, Eight Doors) as its foundation. It excels at analyzing the energy state of a relationship at a specific moment, making it suitable for concrete questions like 'Is this my true love?' or 'When will we meet?'",
+          : "Qi Men Dun Jia uses a spacetime model (Heavenly Stems, Earthly Branches, Nine Palaces, Eight Trigrams, Nine Stars, Eight Doors) as its foundation. It excels at analyzing the energy state of a relationship at a specific moment, making it suitable for concrete questions like 'Is this my soulmate?' or 'When will we meet?'",
         focus: isZh ? "通常重点关注：" : "Key areas of focus:",
         items: isZh
           ? ["对方是不是正缘", "双方目前关系的发展趋势", "什么时候主动更容易成功", "当前最大的阻碍是什么"]
-          : ["Is this person my true love?", "Current relationship development trends", "When is the best time to take initiative?", "What is the biggest obstacle right now?"],
+          : ["Is this person my soulmate?", "Current relationship development trends", "When is the best time to take initiative?", "What is the biggest obstacle right now?"],
       },
       ziwei: {
-        title: isZh ? "三、紫微斗数：星象视角的正缘画像" : "3. Zi Wei Dou Shu: Astrological Portrait of True Love",
+        title: isZh ? "三、紫微斗数：星象视角的正缘画像" : "3. Zi Wei Dou Shu: Astrological Portrait of Soulmate",
         desc: isZh
           ? "紫微斗数以星曜组合为核心，通过命盘十二宫位分析正缘特征、缘分质量与出现时机，擅长描绘「关系结构」与「对方类型」。"
-          : "Zi Wei Dou Shu uses star combinations as its core, analyzing true-love characteristics, relationship quality, and timing through the twelve palaces of the birth chart. It excels at depicting 'relationship structure' and 'partner types.'",
+          : "Zi Wei Dou Shu uses star combinations as its core, analyzing soulmate characteristics, relationship quality, and timing through the twelve palaces of the birth chart. It excels at depicting 'relationship structure' and 'partner types.'",
         focus: isZh ? "通常重点关注：" : "Key areas of focus:",
         items: isZh
           ? ["未来伴侣类型", "婚姻模式", "感情稳定度", "是否容易晚婚", "婚后相处模式"]
@@ -159,7 +159,7 @@ export default function KnowledgeArticlePage() {
     },
     caseStudy: {
       heading: isZh ? "真实案例" : "Real Case Study",
-      title: isZh ? "八字精准断偏缘，助32岁女士避坑遇正缘" : "BaZi Accurately Identifies a Non-True-Love Relationship, Helping a 32-Year-Old Woman Avoid Pitfalls and Find True Love",
+      title: isZh ? "八字精准断偏缘，助32岁女士避坑遇正缘" : "BaZi Accurately Identifies a Non-Soulmate Relationship, Helping a 32-Year-Old Woman Avoid Pitfalls and Find Soulmate",
       sections: isZh
         ? [
             { label: "基本情况", text: "李女士（1994年生，甲戌年），32岁，从事互联网运营，连续3年相亲无果，2024年秋结识一位属虎男士，对方热情体贴，她陷入纠结，不确定是否为正缘。" },
@@ -168,9 +168,9 @@ export default function KnowledgeArticlePage() {
             { label: "实际结果", text: "李女士听从建议，2025年4月在一次行业培训中结识一位属马的大学教师（符合择偶方向），两人相处融洽，同年10月订婚，2026年5月结婚，婚后生活稳定和谐。她特意带喜糖回访命理师，感慨「若不是及时止损，可能还在错误的关系里浪费时间」。" },
           ]
         : [
-            { label: "Background", text: "Ms. Li (born 1994, Jia-Xu year), age 32, worked in internet operations. After three years of unsuccessful dating, she met a warm and attentive Tiger zodiac man in autumn 2024 and fell into indecision, unsure if he was her true love." },
-            { label: "BaZi Analysis", text: "1. Her chart: Kun (female) Jia-Xu, Ren-Shen, Bing-Wu, Geng-Yin. The Official Star (representing true love) was hidden in the Year Branch Xu earth and suppressed by the Month Branch Shen metal, indicating a late-marriage tendency and early encounters with non-true-love relationships. 2. The 2024 Annual Cycle Jia-Chen brought the Seven Killings (unstable relationships) to the surface, creating a 'mixed Officials and Killings' pattern. The man's Tiger zodiac formed a 'Yin-Wu semi-combination' with her Day Branch, suggesting apparent connection but hidden risks. 3. Key insight: the man's chart indicated he was already married, and their Five Elements were incompatible (Wood overcoming Earth), making long-term conflict likely." },
-            { label: "Guidance", text: "1. Stop immediately and cut all contact to avoid draining her own romantic energy. 2. True-love window: 2025 Yi-Si year (Red Phoenix Star activation), especially lunar months 3-5 (fire-earth elements strengthen the Official Star). 3. Partner direction: prioritize Horse, Dog, or Pig zodiac men (harmonious combinations with complementary elements), preferably with stable careers (civil servants, teachers, state-owned enterprises)." },
+            { label: "Background", text: "Ms. Li (born 1994, Jia-Xu year), age 32, worked in internet operations. After three years of unsuccessful dating, she met a warm and attentive Tiger zodiac man in autumn 2024 and fell into indecision, unsure if he was her soulmate." },
+            { label: "BaZi Analysis", text: "1. Her chart: Kun (female) Jia-Xu, Ren-Shen, Bing-Wu, Geng-Yin. The Official Star (representing soulmate) was hidden in the Year Branch Xu earth and suppressed by the Month Branch Shen metal, indicating a late-marriage tendency and early encounters with non-soulmate relationships. 2. The 2024 Annual Cycle Jia-Chen brought the Seven Killings (unstable relationships) to the surface, creating a 'mixed Officials and Killings' pattern. The man's Tiger zodiac formed a 'Yin-Wu semi-combination' with her Day Branch, suggesting apparent connection but hidden risks. 3. Key insight: the man's chart indicated he was already married, and their Five Elements were incompatible (Wood overcoming Earth), making long-term conflict likely." },
+            { label: "Guidance", text: "1. Stop immediately and cut all contact to avoid draining her own romantic energy. 2. Soulmate window: 2025 Yi-Si year (Red Phoenix Star activation), especially lunar months 3-5 (fire-earth elements strengthen the Official Star). 3. Partner direction: prioritize Horse, Dog, or Pig zodiac men (harmonious combinations with complementary elements), preferably with stable careers (civil servants, teachers, state-owned enterprises)." },
             { label: "Outcome", text: "Following the advice, Ms. Li met a Horse zodiac university teacher in April 2025 at an industry training (matching the guidance). They got along well, got engaged in October 2025, and married in May 2026. She brought wedding candy back to the consultant, saying 'Without stopping in time, I might still be wasting time in the wrong relationship.'" },
           ],
       disclaimer: isZh

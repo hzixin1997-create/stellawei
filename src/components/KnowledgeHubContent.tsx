@@ -135,9 +135,7 @@ export default function KnowledgeHubContent({ topic, questions }: KnowledgeHubCo
                 );
               }
 
-              const href = hasArticle
-                ? `/knowledge/${topic.slug}/${q.slug}`
-                : `/knowledge/${topic.slug}`;
+              const href = `/knowledge/${topic.slug}/${q.slug}`;
 
               return (
                 <Link
