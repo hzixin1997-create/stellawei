@@ -9,9 +9,9 @@ import { getTopicBySlug } from "@/lib/knowledge-data";
 const articleJsonLd = {
   "@context": "https://schema.org",
   "@type": "Article",
-  headline: "When Will I Meet My True Love? | 我的正缘什么时候出现？",
+  headline: "When Will I Meet My Soulmate? | 我的正缘什么时候出现？",
   description: "No divination method can predict the exact date. Eastern and Western tools offer different lenses to understand relationship timing.",
-  url: "https://stellawei.org/knowledge/relationship/when-will-i-meet-my-true-love",
+  url: "https://stellawei.org/knowledge/relationship/when-will-i-meet-my-soulmate",
   datePublished: "2026-07-25",
   dateModified: "2026-07-27",
   author: { "@type": "Organization", name: "Stellawei Editorial Team" },
@@ -29,7 +29,7 @@ const breadcrumbJsonLd = {
     { "@type": "ListItem", position: 1, name: "Home", item: "https://stellawei.org/" },
     { "@type": "ListItem", position: 2, name: "Knowledge Center", item: "https://stellawei.org/knowledge" },
     { "@type": "ListItem", position: 3, name: "Relationship", item: "https://stellawei.org/knowledge/relationship" },
-    { "@type": "ListItem", position: 4, name: "When Will I Meet My True Love?" },
+    { "@type": "ListItem", position: 4, name: "When Will I Meet My Soulmate?" },
   ],
 };
 
@@ -66,13 +66,13 @@ export default function KnowledgeArticlePage() {
     { label: isZh ? "首页" : "Home", href: "/" },
     { label: isZh ? "知识中心" : "Knowledge Center", href: "/knowledge" },
     { label: isZh ? topic?.nameCn : topic?.name, href: `/knowledge/${topic?.slug}` },
-    { label: isZh ? "我的正缘什么时候出现？" : "When Will I Meet My True Love?" },
+    { label: isZh ? "我的正缘什么时候出现？" : "When Will I Meet My Soulmate?" },
   ];
 
   // Content (bilingual)
   const content = {
     hero: {
-      title: isZh ? "我的正缘什么时候出现？" : "When Will I Meet My True Love?",
+      title: isZh ? "我的正缘什么时候出现？" : "When Will I Meet My Soulmate?",
       intro: isZh
         ? "许多人在分手、多年单身，或看着身边的朋友陆续恋爱、结婚后，开始问这些问题。东西方命理工具提供了不同的视角——东方方法侧重于出生时间规律与长期周期，而塔罗则反映你当下的情感状态与潜意识需求。"
         : "Many people begin asking this question after a breakup, years of being single, or watching friends around them fall in love and get married. Eastern and Western divination tools offer different perspectives—Eastern methods focus on birth-time patterns and long-term cycles, while Tarot reflects your current emotional state and subconscious needs.",
