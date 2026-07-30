@@ -19,7 +19,6 @@ import {
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import type { TopicData, QuestionData } from "@/lib/knowledge-data";
-import { getArticleBySlug } from "@/lib/knowledge-articles";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   heart: Heart,
@@ -112,9 +111,6 @@ export default function KnowledgeHubContent({ topic, questions }: KnowledgeHubCo
 
           <div className="space-y-3">
             {questions.map((q) => {
-              const article = getArticleBySlug(q.slug);
-              const hasArticle = !!article;
-
               if (q.externalUrl) {
                 return (
                   <a
