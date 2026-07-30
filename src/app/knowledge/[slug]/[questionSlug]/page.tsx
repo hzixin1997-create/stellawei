@@ -496,7 +496,6 @@ function DynamicArticlePage({ slug, questionSlug }: { slug: string; questionSlug
     })),
   };
 
-  const qa = isZh ? article.quickAnswerCn : article.quickAnswer;
   const wpa = isZh ? article.whyPeopleAskCn : article.whyPeopleAsk;
   const ewTools = isZh ? article.easternWisdomCn.tools : article.easternWisdom.tools;
   const wtm = isZh ? article.whatReallyMattersCn : article.whatReallyMatters;
@@ -546,28 +545,6 @@ function DynamicArticlePage({ slug, questionSlug }: { slug: string; questionSlug
             </p>
           </div>
         </section>
-
-        {/* Quick Answer */}
-        <Section>
-          <h2 className="text-2xl font-serif font-bold text-white mb-6">
-            {isZh ? "快速回答" : "Quick Answer"}
-          </h2>
-          <div className="space-y-4">
-            {qa.paragraphs.map((p, i) => (
-              <p key={i} className="text-white/70 leading-relaxed">{p}</p>
-            ))}
-            {qa.bullets && (
-              <ul className="space-y-2 text-white/60 mt-4">
-                {qa.bullets.map((b, i) => (
-                  <li key={i} className="flex items-start gap-2">
-                    <span className="text-stellawei-purple mt-1">•</span>
-                    <span>{b}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </Section>
 
         {/* Why People Ask */}
         <Section>
