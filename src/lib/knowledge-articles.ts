@@ -133,7 +133,7 @@ export interface KnowledgeArticle {
 // ==================== 示例文章：When Will I Meet My True Love (V2.0) ====================
 
 export const whenWillIMeetMyTrueLove: KnowledgeArticle = {
-  slug: "when-will-i-meet-my-true-love",
+  slug: "when-will-i-meet-my-soulmate",
   topicSlug: "relationship",
   question: "When Will I Meet My True Love?",
   questionCn: "我的正缘什么时候出现？",
