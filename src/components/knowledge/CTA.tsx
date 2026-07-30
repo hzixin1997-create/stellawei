@@ -18,15 +18,23 @@ export default function CTA({ content }: CTAProps) {
     <section className="py-12 border-t border-white/5">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="bg-stellawei-purple/5 border border-stellawei-purple/20 rounded-2xl p-8 sm:p-10">
-          <p className="text-white/80 text-lg leading-relaxed mb-6 max-w-2xl mx-auto">
-            {isZh ? content.textCn : content.text}
+          <p className="text-white/80 text-lg leading-relaxed mb-2 max-w-2xl mx-auto">
+            {isZh ? (content as any).textLine1Cn || (content as any).textCn : (content as any).textLine1 || (content as any).text}
           </p>
+          {(content as any).textLine2 && (
+            <p className="text-white/80 text-lg leading-relaxed mb-6 max-w-2xl mx-auto">
+              {isZh ? (content as any).textLine2Cn : (content as any).textLine2}
+            </p>
+          )}
+          {!((content as any).textLine2) && (
+            <div className="mb-6" />
+          )}
           <Link href={content.link}>
             <Button
               size="lg"
               className="px-8 bg-stellawei-purple hover:bg-stellawei-purple/90 text-white"
             >
-              {isZh ? content.buttonTextCn : content.buttonText}
+              {isZh ? (content as any).buttonCn || (content as any).buttonTextCn : (content as any).button || (content as any).buttonText}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </Link>

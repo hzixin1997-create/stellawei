@@ -424,6 +424,7 @@ function SoulmateArticlePage({ slug }: { slug: string }) {
 
 // ==================== DYNAMIC ARTICLE (New Articles) ====================
 
+
 function DynamicArticlePage({ slug, questionSlug }: { slug: string; questionSlug: string }) {
   const { i18n } = useTranslation();
   const isZh = i18n.language === "zh";
@@ -483,34 +484,15 @@ function DynamicArticlePage({ slug, questionSlug }: { slug: string; questionSlug
     ],
   };
 
-  const faqJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: article.faq.map((f) => ({
-      "@type": "Question",
-      name: isZh ? f.questionCn : f.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: isZh ? f.answerCn : f.answer,
-      },
-    })),
-  };
-
   const wpa = isZh ? article.whyPeopleAskCn : article.whyPeopleAsk;
-  const ewTools = isZh ? article.easternWisdomCn.tools : article.easternWisdom.tools;
-  const wtm = isZh ? article.whatReallyMattersCn : article.whatReallyMatters;
-  const bc = isZh ? article.benefitChecklistCn : article.benefitChecklist;
-  const cs = article.caseStudies[0];
   const kt = isZh ? article.keyTakeaways : article.keyTakeaways;
   const rq = article.relatedQuestions;
-  const cta = article.cta;
   const eeat = article.eeat;
 
   return (
     <div className="min-h-screen bg-[#0a0a1a]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
       <NavHeader topic={topic} />
 
@@ -549,11 +531,10 @@ function DynamicArticlePage({ slug, questionSlug }: { slug: string; questionSlug
         {/* Why People Ask */}
         <Section>
           <h2 className="text-2xl font-serif font-bold text-white mb-6">
-            {isZh ? "为什么人们会问这个问题？" : "Why Do People Ask This Question?"}
+            {isZh ? "为什么很多人都会问这个问题？" : "Why Do So Many People Ask This Question?"}
           </h2>
-          <p className="text-white/60 mb-4">{wpa.intro}</p>
           <div className="space-y-4">
-            {wpa.questions.map((q, i) => (
+            {wpa.questions.map((q: string, i: number) => (
               <div key={i} className="flex items-start gap-3">
                 <span className="text-stellawei-purple font-bold mt-0.5">{i + 1}.</span>
                 <p className="text-white/70">{q}</p>
@@ -562,104 +543,89 @@ function DynamicArticlePage({ slug, questionSlug }: { slug: string; questionSlug
           </div>
         </Section>
 
-        {/* Eastern Wisdom Tools */}
-        <Section>
-          <h2 className="text-2xl font-serif font-bold text-white mb-6">
-            {isZh ? "东西方命理如何帮助" : "How Eastern and Western Wisdom Can Help"}
-          </h2>
-          <div className="space-y-8">
-            {ewTools.map((tool, idx) => (
-              <div key={idx} className="bg-black/20 border border-white/5 rounded-xl p-5">
-                <h3 className="text-lg font-semibold text-white mb-3">
-                  {isZh ? tool.searchHeadingCn : tool.searchHeading}
+        {/* Eastern & Western */}
+        {(article as any).eastWest && (
+          <Section>
+            <h2 className="text-2xl font-serif font-bold text-white mb-6">
+              {isZh ? (article as any).eastWest.headingCn : (article as any).eastWest.heading}
+            </h2>
+            <div className="mb-8">
+              <h3 className="text-xl font-semibold text-white mb-3">
+                {isZh ? (article as any).eastWest.easternTitleCn : (article as any).eastWest.easternTitle}
+              </h3>
+              <p className="text-white/60 leading-relaxed" dangerouslySetInnerHTML={{
+                __html: (isZh ? (article as any).eastWest.easternDescCn : (article as any).eastWest.easternDesc)
+                  .replace(/八字、奇门遁甲、紫微斗数/g, '<strong class="text-white/80">八字、奇门遁甲、紫微斗数</strong>')
+                  .replace(/BaZi, Qi Men Dun Jia, Zi Wei Dou Shu/g, '<strong class="text-white/80">BaZi, Qi Men Dun Jia, Zi Wei Dou Shu</strong>')
+              }} />
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold text-white mb-3">
+                {isZh ? (article as any).eastWest.westernTitleCn : (article as any).eastWest.westernTitle}
+              </h3>
+              <p className="text-white/60 leading-relaxed" dangerouslySetInnerHTML={{
+                __html: (isZh ? (article as any).eastWest.westernDescCn : (article as any).eastWest.westernDesc)
+                  .replace(/塔罗/g, '<strong class="text-white/80">塔罗</strong>')
+                  .replace(/Tarot/g, '<strong class="text-white/80">Tarot</strong>')
+              }} />
+            </div>
+          </Section>
+        )}
+
+        {/* Methods */}
+        {(article as any).methods && (
+          <Section>
+            <h2 className="text-2xl font-serif font-bold text-white mb-6">
+              {isZh ? (article as any).methods.headingCn : (article as any).methods.heading}
+            </h2>
+            {(article as any).methods.sections.map((sec: any, idx: number) => (
+              <div key={idx} className="mb-8">
+                <h3 className="text-xl font-semibold text-white mb-4">
+                  {isZh ? sec.titleCn : sec.title}
                 </h3>
-                <p className="text-white/60 leading-relaxed mb-4">
-                  {isZh ? tool.descriptionCn : tool.description}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {(isZh ? tool.suitableForCn : tool.suitableFor).map((tag, tidx) => (
-                    <span key={tidx} className="px-3 py-1 bg-stellawei-purple/10 text-stellawei-purple text-sm rounded-full">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+                {sec.intro && <p className="text-white/60 leading-relaxed mb-4">{isZh ? sec.introCn : sec.intro}</p>}
+                {sec.desc && <p className="text-white/60 leading-relaxed mb-4" dangerouslySetInnerHTML={{ __html: (isZh ? sec.descCn : sec.desc).replace(/时空模型/g, '<strong class="text-white/80">时空模型</strong>').replace(/spacetime model/g, '<strong class="text-white/80">spacetime model</strong>').replace(/星曜组合/g, '<strong class="text-white/80">星曜组合</strong>').replace(/star combinations/g, '<strong class="text-white/80">star combinations</strong>') }} />}
+                {sec.cards && sec.cards.map((card: any, cidx: number) => (
+                  <Card key={cidx} title={isZh ? card.titleCn : card.title}>
+                    <p className="text-white/60 mb-3">{isZh ? card.descCn : card.desc}</p>
+                    <BulletList items={isZh ? card.itemsCn : card.items} />
+                  </Card>
+                ))}
+                {sec.items && (
+                  <>
+                    {sec.focus && <p className="text-white/60 mb-2">{isZh ? sec.focusCn : sec.focus}</p>}
+                    <BulletList items={isZh ? sec.itemsCn : sec.items} />
+                  </>
+                )}
+                {sec.conclusion && <p className="text-white/60 mt-3">{isZh ? sec.conclusionCn : sec.conclusion}</p>}
               </div>
             ))}
-          </div>
-        </Section>
-
-        {/* What Really Matters */}
-        <Section>
-          <h2 className="text-2xl font-serif font-bold text-white mb-6">
-            {isZh ? "核心要点" : "What Really Matters"}
-          </h2>
-          <p className="text-white/60 mb-4">{wtm.intro}</p>
-          <div className="space-y-4">
-            {wtm.points.map((p, i) => (
-              <div key={i} className="flex items-start gap-3">
-                <span className="text-stellawei-purple font-bold mt-0.5">{i + 1}.</span>
-                <p className="text-white/70 leading-relaxed">{p}</p>
-              </div>
-            ))}
-          </div>
-        </Section>
-
-        {/* Benefit Checklist */}
-        <Section>
-          <h2 className="text-2xl font-serif font-bold text-white mb-6">
-            {isZh ? "这可能对你有帮助，如果…" : "This May Help If…"}
-          </h2>
-          <p className="text-white/60 mb-4">{bc.intro}</p>
-          <div className="space-y-3">
-            {bc.items.map((item, i) => (
-              <div key={i} className="flex items-start gap-3">
-                <span className="text-stellawei-purple mt-1">✓</span>
-                <p className="text-white/70">{item}</p>
-              </div>
-            ))}
-          </div>
-        </Section>
+          </Section>
+        )}
 
         {/* Case Study */}
-        {cs && (
+        {(article as any).caseStudy && (
           <Section>
             <h2 className="text-2xl font-serif font-bold text-white mb-6">
               {isZh ? "真实案例" : "Real Case Study"}
             </h2>
             <div className="bg-black/30 border border-white/5 rounded-xl p-6 sm:p-8">
               <h3 className="text-lg font-semibold text-white mb-4">
-                {isZh ? cs.titleCn : cs.title}
+                {isZh ? (article as any).caseStudy.titleCn : (article as any).caseStudy.title}
               </h3>
-              <p className="text-white/60 leading-relaxed text-sm">
-                {isZh ? cs.contentCn : cs.content}
-              </p>
+              <div className="space-y-4 text-white/60 text-sm leading-relaxed">
+                {(article as any).caseStudy.sections.map((s: any, i: number) => (
+                  <div key={i}>
+                    <p><strong className="text-white/80">{isZh ? s.labelCn : s.label}：</strong>{isZh ? s.textCn : s.text}</p>
+                  </div>
+                ))}
+              </div>
             </div>
             <p className="text-white/30 text-xs mt-4 text-center">
-              {isZh
-                ? "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
-                : "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes."}
+              {isZh ? (article as any).caseStudy.disclaimerCn : (article as any).caseStudy.disclaimer}
             </p>
           </Section>
         )}
-
-        {/* FAQ */}
-        <Section>
-          <h2 className="text-2xl font-serif font-bold text-white mb-6">
-            {isZh ? "常见问题" : "Frequently Asked Questions"}
-          </h2>
-          <div className="space-y-6">
-            {article.faq.map((f, i) => (
-              <div key={i} className="bg-black/20 border border-white/5 rounded-xl p-5">
-                <h3 className="text-white font-semibold mb-2">
-                  {isZh ? f.questionCn : f.question}
-                </h3>
-                <p className="text-white/60 leading-relaxed text-sm">
-                  {isZh ? f.answerCn : f.answer}
-                </p>
-              </div>
-            ))}
-          </div>
-        </Section>
 
         {/* Key Takeaways */}
         <Section>
@@ -668,7 +634,7 @@ function DynamicArticlePage({ slug, questionSlug }: { slug: string; questionSlug
               {isZh ? "本文核心观点" : "Key Takeaways"}
             </h2>
             <div className="space-y-4">
-              {kt.itemsCn.map((item, i) => (
+              {kt.itemsCn.map((item: string, i: number) => (
                 <div key={i} className="flex items-start gap-4">
                   <span className="text-stellawei-purple font-bold text-xl mt-0.5">{i + 1}</span>
                   <p className="text-white/80 leading-relaxed">{isZh ? item : kt.items[i]}</p>
@@ -684,7 +650,7 @@ function DynamicArticlePage({ slug, questionSlug }: { slug: string; questionSlug
             {isZh ? "相关问题" : "Related Questions"}
           </h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {rq.map((q) => (
+            {rq.map((q: any) => (
               <Link
                 key={q.slug}
                 href={`/knowledge/relationship/${q.slug}`}
@@ -699,15 +665,15 @@ function DynamicArticlePage({ slug, questionSlug }: { slug: string; questionSlug
         {/* CTA */}
         <section className="py-12">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p className="text-white/60 mb-6 max-w-2xl mx-auto">
-              {isZh ? cta.textCn : cta.text}
-            </p>
-            <Link
-              href={cta.link}
-              className="inline-flex items-center px-8 py-4 bg-stellawei-purple text-white font-medium rounded-xl hover:bg-stellawei-purple/90 transition-colors"
-            >
-              {isZh ? cta.buttonTextCn : cta.buttonText}
-            </Link>
+            {(article as any).cta?.textLine1 !== undefined ? (
+              <>
+                <p className="text-white/60 mb-2 max-w-2xl mx-auto">{isZh ? (article as any).cta.textLine1Cn : (article as any).cta.textLine1}</p>
+                <p className="text-white/60 mb-6 max-w-2xl mx-auto">{isZh ? (article as any).cta.textLine2Cn : (article as any).cta.textLine2}</p>
+                <Link href={(article as any).cta.link} className="inline-flex items-center px-8 py-4 bg-stellawei-purple text-white font-medium rounded-xl hover:bg-stellawei-purple/90 transition-colors">
+                  {isZh ? (article as any).cta.buttonCn : (article as any).cta.button}
+                </Link>
+              </>
+            ) : null}
           </div>
         </section>
 
@@ -731,8 +697,6 @@ function DynamicArticlePage({ slug, questionSlug }: { slug: string; questionSlug
     </div>
   );
 }
-
-// Layout helpers
 function Section({ children }: { children: React.ReactNode }) {
   return (
     <>
