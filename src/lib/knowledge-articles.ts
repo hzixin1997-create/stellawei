@@ -469,10 +469,23 @@ export const whenWillIMeetMyTrueLove: KnowledgeArticle = {
   author: "Stellawei Editorial Team"
 };
 
+import {
+  isHeSheTheRightPerson,
+  shouldIStayOrLeave,
+  howToFixARelationship,
+  shouldIContactMyEx,
+  whenIsTheBestTimeToStartDating,
+} from "./knowledge-article-pages";
+
 // ==================== 文章索引 ====================
 
 export const knowledgeArticles: Record<string, KnowledgeArticle> = {
   [whenWillIMeetMyTrueLove.slug]: whenWillIMeetMyTrueLove,
+  [isHeSheTheRightPerson.slug]: isHeSheTheRightPerson,
+  [shouldIStayOrLeave.slug]: shouldIStayOrLeave,
+  [howToFixARelationship.slug]: howToFixARelationship,
+  [shouldIContactMyEx.slug]: shouldIContactMyEx,
+  [whenIsTheBestTimeToStartDating.slug]: whenIsTheBestTimeToStartDating,
 };
 
 export function getArticleBySlug(slug: string): KnowledgeArticle | undefined {
