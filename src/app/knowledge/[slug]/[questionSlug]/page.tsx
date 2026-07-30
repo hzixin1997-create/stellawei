@@ -1,9 +1,14 @@
 'use client';
 
+import { use } from "react";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import { NavHeader } from "@/components/knowledge/NavHeader";
 import { getTopicBySlug } from "@/lib/knowledge-data";
+
+interface Props {
+  params: Promise<{ slug: string; questionSlug: string }>;
+}
 
 // JSON-LD structured data (static, language-agnostic)
 const articleJsonLd = {
@@ -56,7 +61,8 @@ const faqJsonLd = {
   ],
 };
 
-export default function KnowledgeArticlePage() {
+export default function KnowledgeArticlePage({ params }: Props) {
+  const { slug, questionSlug } = use(params);
   const { i18n } = useTranslation();
   const isZh = i18n.language === "zh";
   const topic = getTopicBySlug("relationship")!;
