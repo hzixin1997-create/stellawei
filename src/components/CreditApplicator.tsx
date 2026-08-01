@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Checkbox } from '@/components/ui/checkbox';
 import { createClient } from '@/lib/supabase/client';
 
 interface CreditApplicatorProps {
@@ -57,10 +56,12 @@ export default function CreditApplicator({
     <div className="bg-stellawei-purple/5 border border-stellawei-purple/20 rounded-lg p-4 mt-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Checkbox
+          <input
+            type="checkbox"
             id="use-credit"
             checked={useCredit}
-            onCheckedChange={(checked) => setUseCredit(checked as boolean)}
+            onChange={(e) => setUseCredit(e.target.checked)}
+            className="w-4 h-4 rounded border-stellawei-purple/30 text-stellawei-purple focus:ring-stellawei-purple"
           />
           <label htmlFor="use-credit" className="text-white text-sm cursor-pointer">
             Use Credit Balance
