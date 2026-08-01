@@ -16,8 +16,8 @@ export const isHeSheTheRightPerson: KnowledgeArticle = {
   metaDescription: "When you are unsure if your partner is truly right for you, Eastern and Western divination tools offer different perspectives to help you see the relationship more clearly.",
   metaTitleCn: "他/她是对的人吗？| Stellawei 知识中心",
   metaDescriptionCn: "当你不确定伴侣是否真的适合自己时，东西方命理工具可以从不同维度帮助你更清楚地看待这段关系。",
-  heroIntro: "Almost everyone in a relationship has asked this question at some point. Sometimes it is triggered by a specific conflict, sometimes by a vague sense that something is off, and sometimes by external pressure from family or friends. Eastern and Western divination tools approach this question from different angles—Eastern methods analyze birth-chart compatibility and elemental harmony, while Tarot reveals your subconscious feelings and the hidden dynamics of the relationship.",
-  heroIntroCn: "几乎每段恋爱中的人都曾问过这个问题。有时是因为一次具体冲突，有时是一种说不清的违和感，有时是家人朋友的压力。东西方命理工具从不同角度切入这个问题——东方方法通过命盘合婚与五行互补性来分析，塔罗则揭示你的潜意识感受与关系中隐藏的动力。",
+  heroIntro: "Almost everyone in a relationship has asked this question at some point. Sometimes it is triggered by a specific conflict, sometimes by a vague sense that something is off, and sometimes by external pressure from family or friends, and sometimes career requires long-distance separation. Eastern and Western divination tools approach this question from different angles—Eastern methods analyze birth-chart compatibility and elemental harmony, while Tarot reveals your subconscious feelings and the hidden dynamics of the relationship.",
+  heroIntroCn: "几乎每段恋爱中的人都曾问过这个问题。有时是因为一次具体冲突，有时是一种说不清的违和感，有时是家人朋友的压力，有时是事业原因需要异地。东西方命理工具从不同角度切入这个问题——东方方法通过命盘合婚与五行互补性来分析，塔罗则揭示你的潜意识感受与关系中隐藏的动力。",
 
   searchIntent: {
     primary: [
@@ -61,7 +61,8 @@ export const isHeSheTheRightPerson: KnowledgeArticle = {
       "My family does not approve. Are they wrong, or am I blinded by love?",
       "We argue constantly about the same things. Is this normal, or are we fundamentally incompatible?",
       "They are great on paper, but something feels missing. Am I being too picky?",
-      "I have invested so much in this relationship. Should I keep trying, or is it time to let go?"
+      "I have invested so much in this relationship. Should I keep trying, or is it time to let go?",
+      "We are about to be long-distance for work. Should we continue this relationship?"
     ]
   },
   whyPeopleAskCn: {
@@ -71,7 +72,8 @@ export const isHeSheTheRightPerson: KnowledgeArticle = {
       "我家人不同意，是他们错了，还是我被爱情蒙蔽了？",
       "我们总是为同样的事情争吵，这是正常的，还是我们根本不合适？",
       "TA条件很好，但我总觉得缺了点什么，是我太挑剔了吗？",
-      "我已经在这段关系里投入了这么多，该继续努力，还是该放手？"
+      "我已经在这段关系里投入了这么多，该继续努力，还是该放手？",
+      "我们即将异地，还应该继续下去这段感情吗？"
     ]
   },
 
