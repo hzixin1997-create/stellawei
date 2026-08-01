@@ -43,18 +43,26 @@ export async function POST(request: Request) {
   }
 
   // 获取推荐人信息并发送邮件
-  const { data: referrer } = await supabase
+  const { data: referral } = await supabase
     .from('referred_users')
-    .select('referrer_id, referrer:users!referrer_id(email, name)')
+    .select('referrer_id')
     .eq('referred_user_id', userId)
     .eq('status', 'rewarded')
     .single();
 
-  if (referrer?.referrer?.email) {
-    await sendReferralSuccessEmail(
-      referrer.referrer.email,
-      referrer.referrer.name || 'Friend'
-    );
+  if (referral?.referrer_id) {
+    const { data: referrerUser } = await supabase
+      .from('users')
+      .select('email, name')
+      .eq('id', referral.referrer_id)
+      .single();
+
+    if (referrerUser?.email) {
+      await sendReferralSuccessEmail(
+        referrerUser.email,
+        referrerUser.name || 'Friend'
+      );
+    }
   }
 
   return NextResponse.json({ success: true, message: 'Referral reward processed' });
