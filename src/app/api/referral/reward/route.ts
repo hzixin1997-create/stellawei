@@ -53,14 +53,16 @@ export async function POST(request: Request) {
   if (referral?.referrer_id) {
     const { data: referrerUser } = await supabase
       .from('profiles')
-      .select('email, name')
+      .select('email, name, language_preference')
       .eq('id', referral.referrer_id)
       .single();
 
     if (referrerUser?.email) {
+      const language = referrerUser.language_preference || 'en';
       await sendReferralSuccessEmail(
         referrerUser.email,
-        referrerUser.name || 'Friend'
+        referrerUser.name || 'Friend',
+        language
       );
     }
   }
@@ -68,21 +70,40 @@ export async function POST(request: Request) {
   return NextResponse.json({ success: true, message: 'Referral reward processed' });
 }
 
-async function sendReferralSuccessEmail(email: string, name: string) {
+async function sendReferralSuccessEmail(email: string, name: string, language: string = 'en') {
+  const isZh = language === 'zh';
   try {
     await resend.emails.send({
       from: 'Stellawei <support@stellawei.org>',
       to: email,
-      subject: 'Your StellaWei credit is ready ✨',
-      html: `
-        <p>Hi ${name},</p>
-        <p>Someone you invited just completed their first StellaWei consultation.</p>
-        <p>We've added a $5 credit to your account for your next session.</p>
-        <p>Thank you for helping someone find clarity.</p>
-        <p>— StellaWei</p>
-      `,
+      subject: isZh
+        ? '你的 StellaWei 咨询余额已到账 ✨'
+        : 'Your StellaWei credit is ready ✨',
+      html: isZh
+        ? getChineseSuccessEmail(name)
+        : getEnglishSuccessEmail(name),
     });
   } catch (error) {
     console.error('Failed to send referral success email:', error);
   }
+}
+
+function getEnglishSuccessEmail(name: string): string {
+  return `
+    <p>Hi ${name},</p>
+    <p>Someone you invited just completed their first StellaWei consultation.</p>
+    <p>We've added a $5 credit to your account for your next session.</p>
+    <p>Thank you for helping someone find clarity.</p>
+    <p>— StellaWei</p>
+  `;
+}
+
+function getChineseSuccessEmail(name: string): string {
+  return `
+    <p>Hi ${name},</p>
+    <p>你邀请的朋友刚刚完成了首次 StellaWei 咨询。</p>
+    <p>我们已为你的账户添加了 $5 咨询余额，可用于下次咨询。</p>
+    <p>感谢你帮助他人找到清晰的方向。</p>
+    <p>— StellaWei</p>
+  `;
 }
