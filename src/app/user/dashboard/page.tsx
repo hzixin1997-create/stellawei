@@ -812,7 +812,8 @@ export default function UserDashboard() {
       // 获取用户 credit 余额
       let appliedCredit = 0
       if (useCredit) {
-        const { data: balanceData } = await supabase
+        const supabaseClient = createClient()
+        const { data: balanceData } = await supabaseClient
           .from('users')
           .select('credit_balance')
           .eq('id', user.id)
