@@ -78,6 +78,45 @@ export async function POST(
       );
     }
 
+    // 触发推荐奖励（异步，不阻塞响应）
+    try {
+      fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'https://stellawei.org'}/api/referral/reward`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookingId, userId: booking.user_id }),
+      }).catch(err => console.error('Referral reward trigger failed:', err));
+    } catch (err) {
+      console.error('Failed to trigger referral reward:', err);
+    }
+
+    // 发送推荐邀请邮件（24小时后）
+    try {
+      // 检查是否已发送过邀请
+      const { data: existingInvite } = await supabase
+        .from('email_logs')
+        .select('id')
+        .eq('user_id', booking.user_id)
+        .eq('template_type', 'referral_invitation')
+        .single();
+
+      if (!existingInvite) {
+        // 延迟24小时发送
+        setTimeout(async () => {
+          try {
+            await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'https://stellawei.org'}/api/referral/invite`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ userId: booking.user_id }),
+            });
+          } catch (err) {
+            console.error('Referral invite delayed send failed:', err);
+          }
+        }, 24 * 60 * 60 * 1000);
+      }
+    } catch (err) {
+      console.error('Failed to schedule referral invite:', err);
+    }
+
     return NextResponse.json({ success: true, booking: updated });
   } catch (error: any) {
     console.error('Complete chat API error:', error);

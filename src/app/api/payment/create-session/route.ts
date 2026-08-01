@@ -22,7 +22,8 @@ export async function POST(request: Request) {
       serviceName,
       scheduledDate,
       scheduledTime,
-      isFirstTime = false
+      isFirstTime = false,
+      appliedCredit = 0
     } = body
 
     // 验证必需参数
@@ -65,6 +66,55 @@ export async function POST(request: Request) {
         { error: 'Booking already paid' },
         { status: 409 }
       )
+    }
+
+    // ─── 处理 Credit 抵扣 ───
+    let finalAmount = amount
+    let creditUsed = 0
+
+    if (appliedCredit > 0) {
+      const { data: creditResult, error: creditError } = await supabase.rpc(
+        'apply_credit_to_booking',
+        {
+          p_user_id: userId,
+          p_booking_id: bookingId,
+          p_amount: appliedCredit
+        }
+      )
+
+      if (!creditError && creditResult > 0) {
+        creditUsed = creditResult
+        finalAmount = Math.max(0, amount - creditUsed)
+
+        // 更新 booking 的折扣信息
+        await supabase
+          .from('bookings')
+          .update({
+            discount_amount: creditUsed,
+            total_amount: finalAmount,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', bookingId)
+      }
+    }
+
+    // 如果 credit 完全覆盖，直接标记为 paid
+    if (finalAmount <= 0) {
+      await supabase
+        .from('bookings')
+        .update({
+          payment_status: 'paid',
+          status: 'confirmed',
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', bookingId)
+
+      return NextResponse.json({
+        success: true,
+        paidByCredit: true,
+        creditUsed,
+        message: 'Booking fully covered by credit'
+      })
     }
 
     // 计算 Stripe 过期时间（Unix 时间戳，秒）—— Stripe 要求至少 30 分钟

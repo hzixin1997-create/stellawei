@@ -131,6 +131,15 @@ export default function Home() {
       }
     );
 
+    // 追踪 referral code
+    const urlParams = new URLSearchParams(window.location.search);
+    const refCode = urlParams.get('ref');
+    if (refCode) {
+      localStorage.setItem('referral_code', refCode);
+      // 30天有效期
+      localStorage.setItem('referral_code_expires', String(Date.now() + 30 * 24 * 60 * 60 * 1000));
+    }
+
     return () => subscription.unsubscribe();
   }, []);
 

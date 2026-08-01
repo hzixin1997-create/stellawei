@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS credit_transactions (
     type TEXT NOT NULL CHECK (type IN ('referral_reward', 'booking_usage', 'manual_adjustment', 'promotion')),
     description TEXT,
     referral_booking_id UUID REFERENCES bookings(id) ON DELETE SET NULL,
+    expires_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -127,9 +128,9 @@ BEGIN
         RETURN FALSE;
     END IF;
 
-    -- 发放奖励
-    INSERT INTO credit_transactions (user_id, amount, type, description, referral_booking_id)
-    VALUES (v_referrer_id, v_reward_amount, 'referral_reward', 'Friend completed first consultation', p_booking_id);
+    -- 发放奖励（90天过期）
+    INSERT INTO credit_transactions (user_id, amount, type, description, referral_booking_id, expires_at)
+    VALUES (v_referrer_id, v_reward_amount, 'referral_reward', 'Friend completed first consultation', p_booking_id, NOW() + INTERVAL '90 days');
 
     -- 更新用户余额
     UPDATE users SET credit_balance = credit_balance + v_reward_amount
@@ -152,29 +153,50 @@ CREATE OR REPLACE FUNCTION apply_credit_to_booking(
 )
 RETURNS DECIMAL(10, 2) AS $$
 DECLARE
-    v_current_balance DECIMAL(10, 2);
-    v_actual_usage DECIMAL(10, 2);
+    v_remaining DECIMAL(10, 2) := p_amount;
+    v_total_applied DECIMAL(10, 2) := 0;
+    tx RECORD;
 BEGIN
-    -- 获取当前余额
-    SELECT credit_balance INTO v_current_balance
-    FROM users WHERE id = p_user_id;
+    -- 遍历用户的 credit transactions，优先使用快过期的
+    FOR tx IN
+        SELECT id, amount
+        FROM credit_transactions
+        WHERE user_id = p_user_id
+          AND amount > 0
+          AND (expires_at IS NULL OR expires_at > NOW())
+          AND NOT EXISTS (
+              SELECT 1 FROM credit_transactions ct2
+              WHERE ct2.user_id = p_user_id
+                AND ct2.amount < 0
+                AND ct2.description LIKE '%Used credit for consultation%'
+                AND ct2.created_at >= credit_transactions.created_at
+          )
+        ORDER BY expires_at ASC NULLS LAST, created_at ASC
+    LOOP
+        IF v_remaining <= 0 THEN
+            EXIT;
+        END IF;
 
-    -- 计算实际可用金额
-    v_actual_usage := LEAST(v_current_balance, p_amount);
+        -- 计算这张 credit 能抵扣多少
+        v_total_applied := v_total_applied + LEAST(tx.amount, v_remaining);
+        v_remaining := v_remaining - LEAST(tx.amount, v_remaining);
+    END LOOP;
 
-    IF v_actual_usage <= 0 THEN
+    v_total_applied := p_amount - v_remaining;
+
+    IF v_total_applied <= 0 THEN
         RETURN 0;
     END IF;
 
     -- 扣除余额
-    UPDATE users SET credit_balance = credit_balance - v_actual_usage
+    UPDATE users SET credit_balance = GREATEST(credit_balance - v_total_applied, 0)
     WHERE id = p_user_id;
 
     -- 记录交易
     INSERT INTO credit_transactions (user_id, amount, type, description, referral_booking_id)
-    VALUES (p_user_id, -v_actual_usage, 'booking_usage', 'Used credit for consultation', p_booking_id);
+    VALUES (p_user_id, -v_total_applied, 'booking_usage', 'Used credit for consultation', p_booking_id);
 
-    RETURN v_actual_usage;
+    RETURN v_total_applied;
 END;
 $$ LANGUAGE plpgsql;
 

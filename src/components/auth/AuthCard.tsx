@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from './AuthProvider'
 import { createClient } from '@/lib/supabase/client'
+import { applyReferralOnSignup } from '@/lib/referral'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -110,6 +111,18 @@ export function AuthCard() {
 
       // 登录成功，直接跳转
       const target = getRedirectByEmail(email)
+      
+      // 应用推荐关系
+      try {
+        const supabase = createClient()
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+          await applyReferralOnSignup(user.id)
+        }
+      } catch (refError) {
+        console.error('Referral application failed:', refError)
+      }
+      
       // 发送 register 事件
       track.register({ method: 'Email', language: i18n.language })
       window.location.href = target

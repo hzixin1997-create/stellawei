@@ -20,9 +20,17 @@ export function useReferralTracking() {
 
 export async function applyReferralOnSignup(userId: string) {
   const supabase = createClient();
+  
+  // 检查 referral code 是否过期
   const refCode = localStorage.getItem('referral_code');
-
+  const expiresAt = localStorage.getItem('referral_code_expires');
+  
   if (!refCode) return;
+  if (expiresAt && Date.now() > parseInt(expiresAt)) {
+    localStorage.removeItem('referral_code');
+    localStorage.removeItem('referral_code_expires');
+    return;
+  }
 
   try {
     // 验证推荐码
@@ -35,6 +43,21 @@ export async function applyReferralOnSignup(userId: string) {
     if (!referralCode || referralCode.user_id === userId) {
       // 自我推荐或无效码，清除
       localStorage.removeItem('referral_code');
+      localStorage.removeItem('referral_code_expires');
+      return;
+    }
+
+    // 检查用户是否已有推荐关系
+    const { data: existingRef } = await supabase
+      .from('referred_users')
+      .select('id')
+      .eq('referred_user_id', userId)
+      .single();
+
+    if (existingRef) {
+      // 已有推荐关系，清除 localStorage
+      localStorage.removeItem('referral_code');
+      localStorage.removeItem('referral_code_expires');
       return;
     }
 
@@ -48,6 +71,7 @@ export async function applyReferralOnSignup(userId: string) {
 
     // 清除 localStorage
     localStorage.removeItem('referral_code');
+    localStorage.removeItem('referral_code_expires');
   } catch (error) {
     console.error('Error applying referral:', error);
   }

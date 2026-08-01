@@ -109,6 +109,7 @@ export default function UserDashboard() {
   const [refundingId, setRefundingId] = useState<string | null>(null)
   const [refundInfo, setRefundInfo] = useState<Record<string, any>>({})
   const [payingId, setPayingId] = useState<string | null>(null)
+  const [creditBalance, setCreditBalance] = useState(0)
   const [showReviewModal, setShowReviewModal] = useState(false)
   const [reviewTargetBooking, setReviewTargetBooking] = useState<Booking | null>(null)
   const [reviewData, setReviewData] = useState<any>(null)
@@ -194,11 +195,21 @@ export default function UserDashboard() {
       }
       setUser(user)
 
-      // 2. 获取用户 profile（包含 timezone）
+      // 2. 获取用户 profile（包含 timezone 和 credit_balance）
       try {
         const { data: profile } = await supabase.from('profiles').select('timezone').eq('id', user.id).single()
         if (profile?.timezone) {
           setUserTimezone(profile.timezone)
+        }
+        
+        // 获取 credit 余额
+        const { data: userData } = await supabase
+          .from('users')
+          .select('credit_balance')
+          .eq('id', user.id)
+          .single()
+        if (userData) {
+          setCreditBalance(userData.credit_balance ?? 0)
         }
       } catch (err) {
         console.error('Fetch profile timezone error:', err)
@@ -783,7 +794,7 @@ export default function UserDashboard() {
   }
 
   // 支付订单 — 调用 Stripe checkout
-  const handlePay = async (booking: Booking) => {
+  const handlePay = async (booking: Booking, useCredit: boolean = false) => {
     if (isExpired(booking)) {
       alert(isZh ? '该订单已过期，请重新预约' : 'This order has expired. Please book again.')
       return
@@ -797,6 +808,20 @@ export default function UserDashboard() {
     try {
       const master = masters[booking.master_id]
       const service = services[booking.service_id]
+
+      // 获取用户 credit 余额
+      let appliedCredit = 0
+      if (useCredit) {
+        const { data: balanceData } = await supabase
+          .from('users')
+          .select('credit_balance')
+          .eq('id', user.id)
+          .single()
+        
+        if (balanceData?.credit_balance > 0) {
+          appliedCredit = Math.min(balanceData.credit_balance, booking.total_amount)
+        }
+      }
 
       const res = await fetch('/api/payment/create-session', {
         method: 'POST',
@@ -815,12 +840,22 @@ export default function UserDashboard() {
           scheduledDate: booking.scheduled_date,
           scheduledTime: booking.scheduled_time,
           isFirstTime: booking.is_first_time,
+          appliedCredit,
         }),
       })
 
       const data = await res.json()
       if (!res.ok) {
         throw new Error(data.error || 'Payment failed')
+      }
+
+      // 如果 credit 完全覆盖
+      if (data.paidByCredit) {
+        alert(isZh 
+          ? `已使用 $${data.creditUsed.toFixed(2)} credit 抵扣，订单已确认！` 
+          : `Order confirmed! $${data.creditUsed.toFixed(2)} credit applied.`)
+        window.location.reload()
+        return
       }
 
       // 跳转到 Stripe Checkout
@@ -1266,6 +1301,17 @@ export default function UserDashboard() {
                             {/* 待支付（排除已取消，避免与下方已取消分支同时显示） */}
                             {(booking.payment_status === 'pending' || booking.payment_status === 'pending_payment') && !expired && booking.status !== 'cancelled' && (
                               <>
+                                {creditBalance > 0 && (
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="text-stellawei-purple border-stellawei-purple/30 hover:bg-stellawei-purple/10 hover:text-stellawei-purple flex-1 sm:flex-none"
+                                    onClick={() => handlePay(booking, true)}
+                                    disabled={payingId === booking.id}
+                                  >
+                                    {isZh ? `使用 Credit (-$${Math.min(creditBalance, booking.total_amount).toFixed(2)})` : `Use Credit (-$${Math.min(creditBalance, booking.total_amount).toFixed(2)})`}
+                                  </Button>
+                                )}
                                 <Button
                                   size="sm"
                                   variant="default"
