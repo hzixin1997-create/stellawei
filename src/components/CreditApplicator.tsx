@@ -29,7 +29,7 @@ export default function CreditApplicator({
   async function fetchBalance() {
     try {
       const { data } = await supabase
-        .from('users')
+        .from('profiles')
         .select('credit_balance')
         .eq('id', userId)
         .single();

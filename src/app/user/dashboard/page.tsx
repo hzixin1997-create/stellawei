@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { createClient } from '@/lib/supabase/client'
-import { ShoppingBag, MessageSquare, ArrowRight, Clock, User, Home, LogOut, MessageCircle, AlertTriangle, Star, Calendar as CalendarIcon, ImageIcon, Loader2 } from 'lucide-react'
+import { ShoppingBag, MessageSquare, ArrowRight, Clock, User, Home, LogOut, MessageCircle, AlertTriangle, Star, Calendar as CalendarIcon, ImageIcon, Loader2, Gift } from 'lucide-react'
 import Image from 'next/image'
 import RescheduleCalendar from '@/components/RescheduleCalendar'
 import Link from 'next/link'
@@ -204,7 +204,7 @@ export default function UserDashboard() {
         
         // 获取 credit 余额
         const { data: userData } = await supabase
-          .from('users')
+          .from('profiles')
           .select('credit_balance')
           .eq('id', user.id)
           .single()
@@ -814,7 +814,7 @@ export default function UserDashboard() {
       if (useCredit) {
         const supabaseClient = createClient()
         const { data: balanceData } = await supabaseClient
-          .from('users')
+          .from('profiles')
           .select('credit_balance')
           .eq('id', user.id)
           .single()
@@ -935,7 +935,7 @@ export default function UserDashboard() {
           </div>
 
           {/* 统计卡片 */}
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
             <Card className="bg-black/40 border-white/10 backdrop-blur-sm">
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
@@ -964,6 +964,21 @@ export default function UserDashboard() {
                 </div>
               </CardContent>
             </Card>
+            <Link href="/user/credit" className="block">
+              <Card className="bg-black/40 border-stellawei-purple/30 backdrop-blur-sm hover:border-stellawei-purple/60 transition-colors cursor-pointer">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-stellawei-purple/20 flex items-center justify-center">
+                      <Gift className="w-5 h-5 text-stellawei-purple" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-white/60">{isZh ? '我的余额' : 'My Credit'}</p>
+                      <p className="text-2xl font-bold text-stellawei-purple">${creditBalance.toFixed(2)}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           </div>
 
           {/* 账户设置：时区 */}

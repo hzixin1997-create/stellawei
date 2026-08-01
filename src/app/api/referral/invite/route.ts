@@ -14,7 +14,7 @@ export async function POST(request: Request) {
 
   // 获取用户信息
   const { data: user } = await supabase
-    .from('users')
+    .from('profiles')
     .select('email, name, language_preference')
     .eq('id', userId)
     .single();

@@ -52,7 +52,7 @@ export async function POST(request: Request) {
 
   if (referral?.referrer_id) {
     const { data: referrerUser } = await supabase
-      .from('users')
+      .from('profiles')
       .select('email, name')
       .eq('id', referral.referrer_id)
       .single();

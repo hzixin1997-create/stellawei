@@ -37,7 +37,7 @@ export default function CreditSection() {
         .order('created_at', { ascending: false });
 
       const { data: userData } = await supabase
-        .from('users')
+        .from('profiles')
         .select('credit_balance')
         .single();
 

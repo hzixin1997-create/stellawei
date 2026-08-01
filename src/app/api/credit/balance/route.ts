@@ -11,7 +11,7 @@ export async function GET() {
 
   // 获取余额和最近交易
   const [{ data: userData }, { data: transactions }] = await Promise.all([
-    supabase.from('users').select('credit_balance').eq('id', user.id).single(),
+    supabase.from('profiles').select('credit_balance').eq('id', user.id).single(),
     supabase
       .from('credit_transactions')
       .select('*')
