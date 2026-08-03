@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getStripe, convertToStripeAmount } from '@/lib/stripe'
 import { createServiceClient } from '@/lib/supabase'
+import { handlePaymentSuccess } from '@/lib/payment-success'
 import * as Sentry from '@sentry/nextjs'
 
 const STRIPE_SESSION_TIMEOUT_MINUTES = 30
@@ -98,23 +99,36 @@ export async function POST(request: Request) {
       }
     }
 
-    // 如果 credit 完全覆盖，直接标记为 paid
+    // 如果 credit 完全覆盖，走统一支付成功流程
     if (finalAmount <= 0) {
-      await supabase
-        .from('bookings')
-        .update({
-          payment_status: 'paid',
-          status: 'confirmed',
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', bookingId)
+      try {
+        await handlePaymentSuccess({
+          bookingId,
+          userId,
+          masterId,
+          serviceId,
+          amount,
+          currency,
+          paymentMethod: 'credit',
+          creditUsed: creditUsed,
+        });
 
-      return NextResponse.json({
-        success: true,
-        paidByCredit: true,
-        creditUsed,
-        message: 'Booking fully covered by credit'
-      })
+        return NextResponse.json({
+          success: true,
+          paidByCredit: true,
+          creditUsed,
+          message: 'Booking fully covered by credit'
+        });
+      } catch (err: any) {
+        console.error('[create-session] Credit payment success handler failed:', err);
+        Sentry.captureException(err, {
+          tags: { api: 'payment/create-session', component: 'credit-payment' },
+        });
+        return NextResponse.json(
+          { error: err.message || 'Credit payment processing failed' },
+          { status: 500 }
+        );
+      }
     }
 
     // 计算 Stripe 过期时间（Unix 时间戳，秒）—— Stripe 要求至少 30 分钟

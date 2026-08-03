@@ -1,6 +1,6 @@
 import { stripe } from "@/lib/stripe";
 import { createServiceClient } from "@/lib/supabase";
-import { sendBookingConfirmationToUser, sendNewBookingToMaster, sendAdminNotification } from "@/lib/resend";
+import { handlePaymentSuccess } from "@/lib/payment-success";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -114,34 +114,42 @@ async function handleCheckoutCompleted(
 
   // 1. 优先处理 bookings 表（实时咨询）
   if (bookingId) {
-    const now = new Date().toISOString();
-    const { data: booking, error } = await supabase
-      .from("bookings")
-      .update({
-        payment_status: "paid",
-        status: "confirmed",
-        stripe_payment_intent_id: paymentIntentId,
-        payment_sync_status: "synced",
-        payment_synced_at: now,
-        updated_at: now,
-      })
-      .eq("id", bookingId)
-      .in("payment_status", ["pending", "pending_payment", "refund_requested"]) // 幂等：只有未支付或退款申请的才更新
-      .select("*")
-      .single();
+    try {
+      const metadata = session.metadata || {};
+      const amount = session.amount_total ? session.amount_total / 100 : 0;
 
-    if (error) {
-      console.error('[Webhook] Booking update error:', error);
-      await logPayment('failed', error.message);
-    } else if (booking) {
-      await logPayment('success', undefined, booking);
-      // 发送飞书新订单通知
-      await sendFeishuNotification(booking, supabase);
-    } else {
-      // Booking not found or already updated
-      await logPayment('skipped', 'Booking not found or already paid');
+      await handlePaymentSuccess({
+        bookingId,
+        userId: metadata.user_id || '',
+        masterId: metadata.master_id || undefined,
+        serviceId: metadata.service_id || undefined,
+        amount,
+        currency: session.currency || 'usd',
+        paymentMethod: 'stripe',
+        stripeSessionId: session.id,
+        stripePaymentIntentId: paymentIntentId,
+      });
+
+      return;
+    } catch (err: any) {
+      console.error('[Webhook] Payment success handler failed:', err);
+      // 尝试记录失败日志
+      try {
+        await supabase.from('payment_logs').insert({
+          booking_id: bookingId,
+          stripe_session_id: session.id,
+          stripe_payment_intent_id: paymentIntentId,
+          event_type: 'checkout.session.completed',
+          status: 'failed',
+          amount: session.amount_total ? session.amount_total / 100 : 0,
+          currency: session.currency,
+          error_message: err.message,
+        });
+      } catch (logErr) {
+        console.error('[Webhook] Failed to log payment:', logErr);
+      }
+      return;
     }
-    return;
   }
 
   // 2. 处理 consultations 表（留言咨询）
@@ -282,60 +290,4 @@ async function handleCheckoutExpired(
 }
 
 // 发送飞书新订单通知
-async function sendFeishuNotification(booking: any, supabase: any) {
-  const FEISHU_WEBHOOK = process.env.FEISHU_WEBHOOK_URL;
-  if (!FEISHU_WEBHOOK) {
-    console.warn('[Webhook] FEISHU_WEBHOOK_URL not configured');
-    return;
-  }
 
-  try {
-    // 获取师傅信息
-    const { data: master } = await supabase
-      .from('masters')
-      .select('display_name, email')
-      .eq('slug', booking.master_id)
-      .single();
-
-    // 获取用户信息
-    const { data: user } = await supabase
-      .from('profiles')
-      .select('full_name, email')
-      .eq('id', booking.user_id)
-      .single();
-
-    const orderNumber = booking.order_number || booking.id.slice(0, 8);
-    const masterName = master?.display_name || booking.master_id;
-    const userName = user?.full_name || user?.email || 'Unknown';
-    const serviceName = booking.service_id || 'Consultation';
-    const scheduledDate = booking.scheduled_date || '-';
-    const scheduledTime = booking.scheduled_time || '-';
-    const duration = booking.duration_minutes || 25;
-    const amount = booking.total_amount || 0;
-    const chatUrl = `https://stellawei.org/chat/${booking.id}`;
-
-    const content = `🔔 新预约订单
-
-订单号：${orderNumber}
-师傅：${masterName}
-用户：${userName}
-服务：${serviceName}（${duration}分钟）
-预约时间：${scheduledDate} ${scheduledTime}（${booking.timezone || 'Asia/Shanghai'}）
-金额：$${amount.toFixed(2)}
-
-立即查看：${chatUrl}`;
-
-    await fetch(FEISHU_WEBHOOK, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        msg_type: 'text',
-        content: { text: content },
-      }),
-    });
-
-    console.log('[Webhook] Feishu notification sent for booking:', booking.id);
-  } catch (err) {
-    console.error('[Webhook] Failed to send Feishu notification:', err);
-  }
-}
