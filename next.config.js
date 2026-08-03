@@ -23,6 +23,11 @@ const nextConfig = {
       destination: 'https://stellawei.org?utm_source=instagram&utm_medium=social&utm_campaign=profile_link',
       permanent: false,
     },
+    {
+      source: '/threads',
+      destination: 'https://stellawei.org?utm_source=threads&utm_medium=social&utm_campaign=profile_link',
+      permanent: false,
+    },
   ],
 };
 
