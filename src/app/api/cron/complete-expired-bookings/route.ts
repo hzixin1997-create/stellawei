@@ -70,51 +70,6 @@ async function doComplete(secret: string | null) {
 
     console.log(`[cron] Auto-completed ${toComplete.length} expired bookings:`, toComplete.map((b: any) => b.id))
 
-    // 顺便发送待处理的邮件（referral_invitation 等）
-    try {
-      const { data: pendingEmails, error: emailFetchError } = await supabase
-        .from('email_logs')
-        .select('id, user_id, template_type, language, metadata')
-        .eq('status', 'pending')
-        .lte('send_after', new Date().toISOString());
-
-      if (!emailFetchError && pendingEmails && pendingEmails.length > 0) {
-        for (const email of pendingEmails) {
-          try {
-            const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://stellawei.org';
-            if (email.template_type === 'referral_invitation') {
-              const response = await fetch(`${appUrl}/api/referral/invite`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId: email.user_id }),
-              });
-
-              if (response.ok) {
-                await supabase
-                  .from('email_logs')
-                  .update({ status: 'sent', sent_at: new Date().toISOString() })
-                  .eq('id', email.id);
-              } else {
-                await supabase
-                  .from('email_logs')
-                  .update({ status: 'failed', metadata: { ...email.metadata, error: 'API call failed' } })
-                  .eq('id', email.id);
-              }
-            }
-          } catch (err: any) {
-            console.error(`[cron] failed to send email ${email.id}:`, err);
-            await supabase
-              .from('email_logs')
-              .update({ status: 'failed', metadata: { ...email.metadata, error: err.message } })
-              .eq('id', email.id);
-          }
-        }
-        console.log(`[cron] Sent ${pendingEmails.length} pending emails`);
-      }
-    } catch (err) {
-      console.error('[cron] send pending emails error:', err);
-    }
-
     return NextResponse.json({
       success: true,
       completed: toComplete.length,
