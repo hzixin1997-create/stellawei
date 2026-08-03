@@ -1,6 +1,7 @@
 import { stripe } from "@/lib/stripe";
 import { createServiceClient } from "@/lib/supabase";
 import { handlePaymentSuccess } from "@/lib/payment-success";
+import { sendBookingConfirmationToUser, sendNewBookingToMaster, sendAdminNotification } from "@/lib/resend";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
