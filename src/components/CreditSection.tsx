@@ -12,6 +12,7 @@ interface CreditTransaction {
   type: string;
   description: string;
   created_at: string;
+  expires_at?: string | null;
 }
 
 export default function CreditSection() {
@@ -33,7 +34,7 @@ export default function CreditSection() {
       // 获取余额和交易记录
       const { data: balanceData } = await supabase
         .from('credit_transactions')
-        .select('*')
+        .select('id, amount, type, description, created_at, expires_at')
         .order('created_at', { ascending: false });
 
       const { data: userData } = await supabase
@@ -83,7 +84,7 @@ export default function CreditSection() {
         <CardHeader>
           <CardTitle className="text-white flex items-center gap-2">
             <Gift className="w-5 h-5 text-stellawei-purple" />
-            My Credit
+            My Credit / 我的礼遇
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -91,7 +92,7 @@ export default function CreditSection() {
             ${balance.toFixed(2)}
           </div>
           <p className="text-white/60 text-sm">
-            Available for consultation booking
+            Available for next consultation / 可用于下一次咨询
           </p>
         </CardContent>
       </Card>
@@ -99,11 +100,11 @@ export default function CreditSection() {
       {/* Referral Section */}
       <Card className="bg-black/20 border-white/5">
         <CardHeader>
-          <CardTitle className="text-white">Share StellaWei</CardTitle>
+          <CardTitle className="text-white">Share StellaWei / 分享 StellaWei</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-white/60 text-sm">
-            Share StellaWei with someone who needs clarity. When they complete their first consultation, you'll earn $5 credit.
+            Invite a friend to complete their first consultation, you'll earn $5 credit. / 邀请朋友完成首次咨询，获得 $5 礼遇额度。
           </p>
           
           <div className="flex items-center gap-2">
@@ -129,7 +130,7 @@ export default function CreditSection() {
       {transactions.length > 0 && (
         <Card className="bg-black/20 border-white/5">
           <CardHeader>
-            <CardTitle className="text-white text-lg">History</CardTitle>
+            <CardTitle className="text-white text-lg">History / 记录</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -148,6 +149,11 @@ export default function CreditSection() {
                       <p className="text-white text-sm">{tx.description}</p>
                       <p className="text-white/40 text-xs">
                         {new Date(tx.created_at).toLocaleDateString()}
+                        {tx.expires_at && (
+                          <span className="text-amber-400 ml-1">
+                            · Expires {new Date(tx.expires_at).toLocaleDateString()} / 过期
+                          </span>
+                        )}
                       </p>
                     </div>
                   </div>

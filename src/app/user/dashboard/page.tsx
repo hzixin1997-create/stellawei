@@ -110,6 +110,9 @@ export default function UserDashboard() {
   const [refundInfo, setRefundInfo] = useState<Record<string, any>>({})
   const [payingId, setPayingId] = useState<string | null>(null)
   const [creditBalance, setCreditBalance] = useState(0)
+  const [referralCode, setReferralCode] = useState('')
+  const [referralLink, setReferralLink] = useState('')
+  const [copiedReferral, setCopiedReferral] = useState(false)
   const [showReviewModal, setShowReviewModal] = useState(false)
   const [reviewTargetBooking, setReviewTargetBooking] = useState<Booking | null>(null)
   const [reviewData, setReviewData] = useState<any>(null)
@@ -202,7 +205,7 @@ export default function UserDashboard() {
           setUserTimezone(profile.timezone)
         }
         
-        // 获取 credit 余额
+        // 获取 credit 余额和推荐码
         const { data: userData } = await supabase
           .from('profiles')
           .select('credit_balance')
@@ -210,6 +213,17 @@ export default function UserDashboard() {
           .single()
         if (userData) {
           setCreditBalance(userData.credit_balance ?? 0)
+        }
+
+        // 获取推荐码
+        const { data: codeData } = await supabase
+          .from('referral_codes')
+          .select('code')
+          .eq('user_id', user.id)
+          .single()
+        if (codeData?.code) {
+          setReferralCode(codeData.code)
+          setReferralLink(`https://stellawei.org/?ref=${codeData.code}`)
         }
       } catch (err) {
         console.error('Fetch profile timezone error:', err)
@@ -966,15 +980,46 @@ export default function UserDashboard() {
             </Card>
             <Link href="/user/credit" className="block">
               <Card className="bg-black/40 border-stellawei-purple/30 backdrop-blur-sm hover:border-stellawei-purple/60 transition-colors cursor-pointer">
-                <CardContent className="p-4">
+                <CardContent className="p-4 space-y-3">
+                  {/* Credit 额度 */}
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-stellawei-purple/20 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-full bg-stellawei-purple/20 flex items-center justify-center shrink-0">
                       <Gift className="w-5 h-5 text-stellawei-purple" />
                     </div>
                     <div>
-                      <p className="text-sm text-white/60">{isZh ? '我的余额' : 'My Credit'}</p>
+                      <p className="text-sm text-white/60">{isZh ? '我的礼遇' : 'My Credit'}</p>
                       <p className="text-2xl font-bold text-stellawei-purple">${creditBalance.toFixed(2)}</p>
                     </div>
+                  </div>
+                  <p className="text-xs text-white/40">{isZh ? '可用于下一次咨询' : 'Available for next consultation'}</p>
+
+                  {/* 分割线 */}
+                  <div className="border-t border-white/10 pt-3">
+                    <p className="text-sm font-medium text-white mb-2">{isZh ? '分享 StellaWei' : 'Share StellaWei'}</p>
+                    <p className="text-xs text-white/50 mb-2">{isZh ? '邀请朋友完成首次咨询，获得 $5 礼遇额度' : 'Invite a friend to complete their first consultation, earn $5 credit'}</p>
+                    
+                    {referralLink && (
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          value={referralLink}
+                          readOnly
+                          className="flex-1 bg-black/30 border border-white/10 rounded-lg px-2 py-1.5 text-white text-xs truncate"
+                          onClick={(e) => e.preventDefault()}
+                        />
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault()
+                            navigator.clipboard.writeText(referralLink)
+                            setCopiedReferral(true)
+                            setTimeout(() => setCopiedReferral(false), 2000)
+                          }}
+                          className="shrink-0 px-3 py-1.5 rounded-lg bg-stellawei-purple/20 text-stellawei-purple text-xs font-medium hover:bg-stellawei-purple/30 transition-colors"
+                        >
+                          {copiedReferral ? (isZh ? '已复制' : 'Copied') : (isZh ? '复制链接' : 'Copy Link')}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
