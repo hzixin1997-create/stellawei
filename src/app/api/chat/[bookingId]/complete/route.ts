@@ -100,18 +100,14 @@ export async function POST(
         .single();
 
       if (!existingInvite) {
-        // 延迟24小时发送
-        setTimeout(async () => {
-          try {
-            await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'https://stellawei.org'}/api/referral/invite`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ userId: booking.user_id }),
-            });
-          } catch (err) {
-            console.error('Referral invite delayed send failed:', err);
-          }
-        }, 24 * 60 * 60 * 1000);
+        // 插入 pending 记录，由 cron 定时发送（24小时后）
+        await supabase.from('email_logs').insert({
+          user_id: booking.user_id,
+          template_type: 'referral_invitation',
+          status: 'pending',
+          send_after: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+          metadata: { booking_id: bookingId },
+        });
       }
     } catch (err) {
       console.error('Failed to schedule referral invite:', err);

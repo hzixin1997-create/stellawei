@@ -1,14 +1,16 @@
 -- ============================================================
 -- StellaWei Referral Credit & User Reward System V1.0
+-- 修复版：2026-08-03
+-- 变更：users → profiles，修复 apply_credit_to_booking 余额校验
 -- ============================================================
 
--- 1. 新增 credit_balance 到 users 表
-ALTER TABLE users ADD COLUMN IF NOT EXISTS credit_balance DECIMAL(10, 2) DEFAULT 0;
+-- 1. 新增 credit_balance 到 profiles 表
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS credit_balance DECIMAL(10, 2) DEFAULT 0;
 
 -- 2. 创建 credit_transactions 表
 CREATE TABLE IF NOT EXISTS credit_transactions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
     amount DECIMAL(10, 2) NOT NULL,
     type TEXT NOT NULL CHECK (type IN ('referral_reward', 'booking_usage', 'manual_adjustment', 'promotion')),
     description TEXT,
@@ -24,7 +26,7 @@ CREATE INDEX idx_credit_transactions_created_at ON credit_transactions(created_a
 -- 3. 创建 referral_codes 表
 CREATE TABLE IF NOT EXISTS referral_codes (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL UNIQUE REFERENCES profiles(id) ON DELETE CASCADE,
     code TEXT NOT NULL UNIQUE,
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -35,8 +37,8 @@ CREATE INDEX idx_referral_codes_user_id ON referral_codes(user_id);
 -- 4. 创建 referred_users 表（追踪推荐关系）
 CREATE TABLE IF NOT EXISTS referred_users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    referrer_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    referred_user_id UUID NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+    referrer_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+    referred_user_id UUID NOT NULL UNIQUE REFERENCES profiles(id) ON DELETE CASCADE,
     status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'registered', 'paid', 'completed', 'rewarded')),
     referral_code_id UUID REFERENCES referral_codes(id) ON DELETE SET NULL,
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -48,14 +50,15 @@ CREATE INDEX idx_referred_users_referrer ON referred_users(referrer_id);
 CREATE INDEX idx_referred_users_referred ON referred_users(referred_user_id);
 CREATE INDEX idx_referred_users_status ON referred_users(status);
 
--- 5. 创建 email_logs 表
+-- 5. 创建 email_logs 表（支持 send_after 定时发送）
 CREATE TABLE IF NOT EXISTS email_logs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
     template_type TEXT NOT NULL CHECK (template_type IN ('referral_invitation', 'referral_success', 'booking_confirmation', 'consultation_reminder')),
     language TEXT DEFAULT 'en',
     sent_at TIMESTAMPTZ DEFAULT NOW(),
-    status TEXT DEFAULT 'sent' CHECK (status IN ('pending', 'sent', 'failed', 'bounced')),
+    send_after TIMESTAMPTZ,
+    status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'sent', 'failed', 'bounced')),
     opened_at TIMESTAMPTZ,
     clicked_at TIMESTAMPTZ,
     metadata JSONB
@@ -64,6 +67,8 @@ CREATE TABLE IF NOT EXISTS email_logs (
 CREATE INDEX idx_email_logs_user_id ON email_logs(user_id);
 CREATE INDEX idx_email_logs_template ON email_logs(template_type);
 CREATE INDEX idx_email_logs_sent_at ON email_logs(sent_at);
+CREATE INDEX idx_email_logs_send_after ON email_logs(send_after);
+CREATE INDEX idx_email_logs_status ON email_logs(status);
 
 -- 6. 创建函数：生成随机推荐码
 CREATE OR REPLACE FUNCTION generate_referral_code()
@@ -92,9 +97,9 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- 8. 触发器：新用户注册时自动生成推荐码
-DROP TRIGGER IF EXISTS auto_create_referral_code ON users;
+DROP TRIGGER IF EXISTS auto_create_referral_code ON profiles;
 CREATE TRIGGER auto_create_referral_code
-    AFTER INSERT ON users
+    AFTER INSERT ON profiles
     FOR EACH ROW
     EXECUTE FUNCTION ensure_user_referral_code();
 
@@ -108,11 +113,11 @@ DECLARE
     v_referrer_id UUID;
     v_reward_amount DECIMAL(10, 2) := 5.00;
 BEGIN
-    -- 查找推荐人
+    -- 查找推荐人（状态为 paid 或 completed）
     SELECT referrer_id INTO v_referrer_id
     FROM referred_users
     WHERE referred_user_id = p_referred_user_id
-      AND status = 'paid'
+      AND status IN ('paid', 'completed')
       AND referrer_id != p_referred_user_id;
 
     IF v_referrer_id IS NULL THEN
@@ -133,7 +138,7 @@ BEGIN
     VALUES (v_referrer_id, v_reward_amount, 'referral_reward', 'Friend completed first consultation', p_booking_id, NOW() + INTERVAL '90 days');
 
     -- 更新用户余额
-    UPDATE users SET credit_balance = credit_balance + v_reward_amount
+    UPDATE profiles SET credit_balance = credit_balance + v_reward_amount
     WHERE id = v_referrer_id;
 
     -- 更新推荐状态
@@ -145,7 +150,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- 10. 创建函数：使用 credit 抵扣预约
+-- 10. 创建函数：使用 credit 抵扣预约（修复版：增加余额校验）
 CREATE OR REPLACE FUNCTION apply_credit_to_booking(
     p_user_id UUID,
     p_booking_id UUID,
@@ -155,8 +160,22 @@ RETURNS DECIMAL(10, 2) AS $$
 DECLARE
     v_remaining DECIMAL(10, 2) := p_amount;
     v_total_applied DECIMAL(10, 2) := 0;
+    v_user_balance DECIMAL(10, 2);
     tx RECORD;
 BEGIN
+    -- 获取用户实际余额
+    SELECT credit_balance INTO v_user_balance
+    FROM profiles
+    WHERE id = p_user_id;
+    
+    -- 如果余额为0或不足，直接返回0
+    IF v_user_balance IS NULL OR v_user_balance <= 0 THEN
+        RETURN 0;
+    END IF;
+    
+    -- 实际可抵扣金额不能超过余额
+    v_remaining := LEAST(v_remaining, v_user_balance);
+
     -- 遍历用户的 credit transactions，优先使用快过期的
     FOR tx IN
         SELECT id, amount
@@ -164,13 +183,6 @@ BEGIN
         WHERE user_id = p_user_id
           AND amount > 0
           AND (expires_at IS NULL OR expires_at > NOW())
-          AND NOT EXISTS (
-              SELECT 1 FROM credit_transactions ct2
-              WHERE ct2.user_id = p_user_id
-                AND ct2.amount < 0
-                AND ct2.description LIKE '%Used credit for consultation%'
-                AND ct2.created_at >= credit_transactions.created_at
-          )
         ORDER BY expires_at ASC NULLS LAST, created_at ASC
     LOOP
         IF v_remaining <= 0 THEN
@@ -189,7 +201,7 @@ BEGIN
     END IF;
 
     -- 扣除余额
-    UPDATE users SET credit_balance = GREATEST(credit_balance - v_total_applied, 0)
+    UPDATE profiles SET credit_balance = GREATEST(credit_balance - v_total_applied, 0)
     WHERE id = p_user_id;
 
     -- 记录交易
@@ -233,6 +245,6 @@ CREATE POLICY "Users can view own email logs"
 -- 12. 为现有用户生成推荐码
 INSERT INTO referral_codes (user_id, code)
 SELECT id, generate_referral_code()
-FROM users
+FROM profiles
 WHERE id NOT IN (SELECT user_id FROM referral_codes)
 ON CONFLICT (user_id) DO NOTHING;

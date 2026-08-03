@@ -23,12 +23,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'User not found' }, { status: 404 });
   }
 
-  // 检查是否已经发送过邀请
+  // 检查是否已经发送过邀请（status = sent 才算已发送）
   const { data: existingLog } = await supabase
     .from('email_logs')
-    .select('id')
+    .select('id, status')
     .eq('user_id', userId)
     .eq('template_type', 'referral_invitation')
+    .eq('status', 'sent')
     .single();
 
   if (existingLog) {
@@ -59,13 +60,13 @@ export async function POST(request: Request) {
         : getEnglishEmail(name, code),
     });
 
-    // 记录邮件日志
-    await supabase.from('email_logs').insert({
-      user_id: userId,
-      template_type: 'referral_invitation',
-      language,
-      status: 'sent',
-    });
+    // 更新 email_logs 状态为 sent
+    await supabase
+      .from('email_logs')
+      .update({ status: 'sent', sent_at: new Date().toISOString() })
+      .eq('user_id', userId)
+      .eq('template_type', 'referral_invitation')
+      .eq('status', 'pending');
 
     return NextResponse.json({ success: true });
   } catch (error) {
