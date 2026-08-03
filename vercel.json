@@ -7,11 +7,7 @@
   "crons": [
     {
       "path": "/api/cron/complete-expired-bookings",
-      "schedule": "0 * * * *"
-    },
-    {
-      "path": "/api/cron/send-pending-emails",
-      "schedule": "0 * * * *"
+      "schedule": "0 9 * * *"
     }
   ]
 }
