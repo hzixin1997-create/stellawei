@@ -1363,7 +1363,7 @@ export default function UserDashboard() {
                             {/* 待支付（排除已取消，避免与下方已取消分支同时显示） */}
                             {(booking.payment_status === 'pending' || booking.payment_status === 'pending_payment') && !expired && booking.status !== 'cancelled' && (
                               <>
-                                {creditBalance > 0 && (
+                                {creditBalance > 0 && !booking.is_first_time && (
                                   <Button
                                     size="sm"
                                     variant="outline"
@@ -1373,6 +1373,11 @@ export default function UserDashboard() {
                                   >
                                     {isZh ? `使用 Credit (-$${Math.min(creditBalance, booking.total_amount).toFixed(2)})` : `Use Credit (-$${Math.min(creditBalance, booking.total_amount).toFixed(2)})`}
                                   </Button>
+                                )}
+                                {booking.is_first_time && creditBalance > 0 && (
+                                  <span className="text-xs text-white/40 px-2 py-1">
+                                    {isZh ? '新用户专享价不可与礼遇额度叠加使用' : 'First-time offer cannot be combined with credit'}
+                                  </span>
                                 )}
                                 <Button
                                   size="sm"

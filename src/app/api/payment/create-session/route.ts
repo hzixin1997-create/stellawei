@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     // ─── 检查订单是否已过期 ───
     const { data: booking, error: bookingError } = await supabase
       .from('bookings')
-      .select('expires_at, payment_status')
+      .select('expires_at, payment_status, is_first_time')
       .eq('id', bookingId)
       .eq('user_id', userId)
       .single()
@@ -74,6 +74,14 @@ export async function POST(request: Request) {
     let creditUsed = 0
 
     if (appliedCredit > 0) {
+      // 新用户专享价不可使用 credit
+      if (booking.is_first_time) {
+        return NextResponse.json(
+          { error: 'First-time offer cannot be combined with credit' },
+          { status: 400 }
+        )
+      }
+
       const { data: creditResult, error: creditError } = await supabase.rpc(
         'apply_credit_to_booking',
         {
