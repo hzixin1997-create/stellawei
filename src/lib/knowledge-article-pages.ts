@@ -102,7 +102,7 @@ export const isHeSheTheRightPerson: KnowledgeArticle = {
   relatedQuestions: [
     { slug: "when-will-i-meet-my-true-love", question: "When Will I Meet My True Love?", questionCn: "我的正缘什么时候出现？" },
     { slug: "should-i-stay-or-leave", question: "Should I Stay or Leave This Relationship?", questionCn: "我应该继续还是离开这段关系？" },
-    { slug: "how-to-fix-a-relationship", question: "How to Fix a Relationship?", questionCn: "我怎么修复一段关系？" }
+    { slug: "can-we-fix-our-relationship", question: "How to Fix a Relationship?", questionCn: "我怎么修复一段关系？" }
   ],
 
   cta: {
@@ -327,7 +327,7 @@ export const shouldIStayOrLeave: KnowledgeArticle = {
 
   relatedQuestions: [
     { slug: "is-he-she-the-right-person", question: "Is He/She the Right Person?", questionCn: "他/她是对的人吗？" },
-    { slug: "how-to-fix-a-relationship", question: "How to Fix a Relationship?", questionCn: "我怎么修复一段关系？" },
+    { slug: "can-we-fix-our-relationship", question: "How to Fix a Relationship?", questionCn: "我怎么修复一段关系？" },
     { slug: "should-i-contact-my-ex", question: "Should I Contact My Ex?", questionCn: "我应该联系前任吗？" }
   ],
 
@@ -460,7 +460,7 @@ export const shouldIStayOrLeave: KnowledgeArticle = {
 // ==================== Article 3: How to Fix a Relationship? ====================
 
 export const howToFixARelationship: KnowledgeArticle = {
-  slug: "how-to-fix-a-relationship",
+  slug: "can-we-fix-our-relationship",
   topicSlug: "relationship",
   question: "How to Fix a Relationship?",
   questionCn: "我怎么修复一段关系？",
@@ -677,7 +677,7 @@ export const howToFixARelationship: KnowledgeArticle = {
     reviewedByCn: "由 Stellawei 编辑团队审阅"
   },
 
-  canonicalUrl: "https://stellawei.org/knowledge/relationship/how-to-fix-a-relationship",
+  canonicalUrl: "https://stellawei.org/knowledge/relationship/can-we-fix-our-relationship",
   publishedAt: "2026-07-30",
   modifiedAt: "2026-07-30",
   author: "Stellawei Editorial Team"
@@ -778,9 +778,9 @@ export const shouldIContactMyEx: KnowledgeArticle = {
   },
 
   relatedQuestions: [
-    { slug: "when-is-the-best-time-to-start-dating", question: "When Is the Best Time to Start Dating?", questionCn: "什么时候开始新的恋情最好？" },
+    { slug: "when-to-start-dating", question: "When Is the Best Time to Start Dating?", questionCn: "什么时候开始新的恋情最好？" },
     { slug: "should-i-stay-or-leave", question: "Should I Stay or Leave This Relationship?", questionCn: "我应该继续还是离开这段关系？" },
-    { slug: "how-to-fix-a-relationship", question: "How to Fix a Relationship?", questionCn: "我怎么修复一段关系？" }
+    { slug: "can-we-fix-our-relationship", question: "How to Fix a Relationship?", questionCn: "我怎么修复一段关系？" }
   ],
 
   cta: {
@@ -912,7 +912,7 @@ export const shouldIContactMyEx: KnowledgeArticle = {
 // ==================== Article 5: When Is the Best Time to Start Dating? ====================
 
 export const whenIsTheBestTimeToStartDating: KnowledgeArticle = {
-  slug: "when-is-the-best-time-to-start-dating",
+  slug: "when-to-start-dating",
   topicSlug: "relationship",
   question: "When Is the Best Time to Start Dating?",
   questionCn: "什么时候开始新的恋情最好？",
@@ -1129,7 +1129,7 @@ export const whenIsTheBestTimeToStartDating: KnowledgeArticle = {
     reviewedByCn: "由 Stellawei 编辑团队审阅"
   },
 
-  canonicalUrl: "https://stellawei.org/knowledge/relationship/when-is-the-best-time-to-start-dating",
+  canonicalUrl: "https://stellawei.org/knowledge/relationship/when-to-start-dating",
   publishedAt: "2026-07-30",
   modifiedAt: "2026-07-30",
   author: "Stellawei Editorial Team"
