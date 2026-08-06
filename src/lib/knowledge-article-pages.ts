@@ -110,8 +110,8 @@ export const isHeSheTheRightPerson: KnowledgeArticle = {
     textLine1Cn: "每段关系都是独特的。",
     textLine2: "If you want a deeper compatibility analysis combining both partners' birth information, our consultants can provide personalized guidance.",
     textLine2Cn: "如果你想要更深入的双人命盘适配分析，我们的咨询师可以提供个性化指引。",
-    button: "Book a Compatibility Consultation",
-    buttonCn: "预约合婚咨询",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
     link: "/booking"
   },
 
@@ -336,8 +336,8 @@ export const shouldIStayOrLeave: KnowledgeArticle = {
     textLine1Cn: "处于十字路口？",
     textLine2: "Our consultants can help you see your situation more clearly and make a decision aligned with your true path.",
     textLine2Cn: "我们的咨询师可以帮助你更清楚地看待处境，做出符合你真正道路的决定。",
-    button: "Book a Decision Consultation",
-    buttonCn: "预约决策咨询",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
     link: "/booking"
   },
 
@@ -562,8 +562,8 @@ export const howToFixARelationship: KnowledgeArticle = {
     textLine1Cn: "每段关系都值得公平的机会。",
     textLine2: "If you want to understand what is really going on and whether repair is possible, our consultants can help.",
     textLine2Cn: "如果你想了解真正发生了什么以及修复是否可能，我们的咨询师可以提供帮助。",
-    button: "Book a Relationship Repair Consultation",
-    buttonCn: "预约关系修复咨询",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
     link: "/booking"
   },
 
@@ -788,8 +788,8 @@ export const shouldIContactMyEx: KnowledgeArticle = {
     textLine1Cn: "纠结是否联系前任？",
     textLine2: "Our consultants can help you understand the timing, energy, and your own true needs—so you can make a choice you will not regret.",
     textLine2Cn: "我们的咨询师可以帮助你理解时机、能量和你自己真正的需求——这样你可以做一个不会后悔的选择。",
-    button: "Book a Post-Breakup Consultation",
-    buttonCn: "预约分手后咨询",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
     link: "/booking"
   },
 
@@ -1014,7 +1014,7 @@ export const whenIsTheBestTimeToStartDating: KnowledgeArticle = {
     textLine1Cn: "想知道你的爱情时机何时到来？",
     textLine2: "Our consultants can help you understand your unique romantic cycles and prepare for the relationships you truly want.",
     textLine2Cn: "我们的咨询师可以帮助你理解自己独特的恋爱周期，为你真正想要的关系做好准备。",
-    button: "Book a Love Timing Consultation",
+    button: "Book a Consultation",
     buttonCn: "预约恋爱时机咨询",
     link: "/booking"
   },

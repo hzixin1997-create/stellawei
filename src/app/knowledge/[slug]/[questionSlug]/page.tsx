@@ -219,7 +219,7 @@ function SoulmateArticlePage({ slug }: { slug: string }) {
       textLine2: isZh
         ? "如果你想要更个性化的分析，我们的咨询师可以根据你的具体情况提供指引。"
         : "If you would like a more personalized analysis, our consultants can provide guidance tailored to your situation.",
-      button: isZh ? "预约感情咨询" : "Book a Relationship Consultation",
+      button: isZh ? "预约咨询" : "Book a Consultation",
     },
     eeat: {
       reviewedBy: isZh ? "由 Stellawei 编辑团队审阅" : "Reviewed by StellaWei Editorial Team",
