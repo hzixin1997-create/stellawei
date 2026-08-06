@@ -1015,7 +1015,7 @@ export const whenIsTheBestTimeToStartDating: KnowledgeArticle = {
     textLine2: "Our consultants can help you understand your unique romantic cycles and prepare for the relationships you truly want.",
     textLine2Cn: "我们的咨询师可以帮助你理解自己独特的恋爱周期，为你真正想要的关系做好准备。",
     button: "Book a Consultation",
-    buttonCn: "预约恋爱时机咨询",
+    buttonCn: "预约咨询",
     link: "/booking"
   },
 
