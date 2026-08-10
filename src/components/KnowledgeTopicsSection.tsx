@@ -14,6 +14,7 @@ import {
   TrendingUp,
   ArrowRight,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   heart: Heart,
@@ -187,6 +188,19 @@ export default function KnowledgeTopicsSection({
               </Link>
             );
           })}
+        </div>
+        {/* CTA Button */}
+        <div className="mt-10 text-center">
+          <Link href="/knowledge">
+            <Button
+              variant="outline"
+              size="lg"
+              className="rounded-full px-10 h-14 text-base border-2 border-stellawei-purple text-stellawei-purple !bg-black/70 hover:bg-stellawei-purple/10"
+            >
+              {isZh ? '进入 Knowledge' : 'Explore Knowledge'}
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

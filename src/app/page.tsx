@@ -160,15 +160,20 @@ export default function Home() {
   // 背景图根据选中的师傅切换
   const isLunaBg = activeMasterIdx === 2
 
-  const handleBookingClick = () => {
-    track.clickHomeCTA({
-      button_name: isZh ? '开始首次咨询 $9.9' : 'Start Your First Reading From $9.9',
-      page: '/',
-      language: i18n.language,
-    });
+  const handleHeroCTA = () => {
     if (!user) {
-      router.push('/auth/login');
+      track.clickHomeCTA({
+        button_name: isZh ? '创建免费账户' : 'Create Your Free Account',
+        page: '/',
+        language: i18n.language,
+      });
+      router.push('/auth/login?redirect=' + encodeURIComponent(window.location.href));
     } else {
+      track.clickHomeCTA({
+        button_name: isZh ? '预约咨询' : 'Book a Consultation',
+        page: '/',
+        language: i18n.language,
+      });
       router.push('/booking');
     }
   };
@@ -372,9 +377,9 @@ export default function Home() {
                 <Button
                   size="lg"
                   className="bg-[#6944b3] hover:bg-[#5a3a9e] text-white rounded-2xl px-8 h-16 text-lg font-semibold w-[85%] max-w-[420px] relative z-20 shadow-lg"
-                  onClick={handleBookingClick}
+                  onClick={handleHeroCTA}
                 >
-                  {isZh ? '开始首次咨询 $9.9' : 'Start Your First Reading From $9.9'}
+                  {!user ? (isZh ? '创建免费账户' : 'Create Your Free Account') : (isZh ? '预约咨询' : 'Book a Consultation')}
                 </Button>
               </div>
 
@@ -604,15 +609,21 @@ export default function Home() {
       <section className="py-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl font-serif font-bold text-white mb-6">
-            {isZh ? '准备好开始你的旅程了吗?' : 'Ready to Start Your Journey?'}
+            {!user
+              ? (isZh ? '准备好探索更多了吗?' : 'Ready to Explore More?')
+              : (isZh ? '准备好开始你的旅程了吗?' : 'Ready to Start Your Journey?')
+            }
           </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button
               size="lg"
               className="bg-[#6a45b9] text-white hover:bg-[#5a3ba0] rounded-full px-10 h-14 text-base"
-              onClick={handleBookingClick}
+              onClick={handleHeroCTA}
             >
-              {isZh ? '首次咨询仅需 $9.9' : 'Get Your First Reading - $9.9'}
+              {!user
+                ? (isZh ? '创建免费账户' : 'Create Your Free Account')
+                : (isZh ? '预约咨询' : 'Book a Consultation')
+              }
             </Button>
             <Button
               variant="outline"
