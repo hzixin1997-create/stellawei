@@ -22,8 +22,10 @@ const ROUTE_MAP: Record<string, string> = {
   'hzixin1997@gmail.com': '/admin/dashboard',
 }
 
-function getRedirectByEmail(email: string): string {
-  return ROUTE_MAP[email.trim().toLowerCase()] || '/user/dashboard'
+function getRedirectTarget(email: string, fallbackRedirect: string): string {
+  const specialRoute = ROUTE_MAP[email.trim().toLowerCase()]
+  if (specialRoute) return specialRoute
+  return fallbackRedirect
 }
 
 export function AuthCard() {
@@ -62,7 +64,7 @@ export function AuthCard() {
       } else {
         // 发送 login 事件
         track.login({ method: 'Email' })
-        const target = getRedirectByEmail(email)
+        const target = getRedirectTarget(email, redirect)
         // 使用硬跳转避免客户端路由卡顿
         window.location.href = target
       }
@@ -110,7 +112,7 @@ export function AuthCard() {
       }
 
       // 登录成功，直接跳转
-      const target = getRedirectByEmail(email)
+      const target = getRedirectTarget(email, redirect)
       
       // 应用推荐关系
       try {

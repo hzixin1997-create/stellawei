@@ -22,7 +22,10 @@ type EventName =
   | 'payment_success'
   | 'chat_open'
   | 'send_message'
-  | 'leave_review';
+  | 'leave_review'
+  // Knowledge Center events
+  | 'knowledge_cta_view'
+  | 'knowledge_register_click';
 
 type EventParams = {
   [key: string]: string | number | boolean | undefined;
@@ -149,6 +152,14 @@ export const track = {
   /** 提交评价 */
   leaveReview: (params: { booking_id: string; rating: number; has_text?: boolean }) => 
     trackEvent('leave_review', params),
+
+  /** Knowledge Center CTA 展示 */
+  knowledgeCTAView: (params: { article_slug: string; topic: string; page_url: string }) => 
+    trackEvent('knowledge_cta_view', params),
+
+  /** Knowledge Center 注册按钮点击 */
+  knowledgeRegisterClick: (params: { article_slug: string; topic: string; page_url: string }) => 
+    trackEvent('knowledge_register_click', params),
 };
 
 // 预定义的关键转化事件（旧兼容 - 逐步废弃）

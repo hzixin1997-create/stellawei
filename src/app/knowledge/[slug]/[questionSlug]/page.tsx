@@ -3,6 +3,7 @@
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import { NavHeader } from "@/components/knowledge/NavHeader";
+import KnowledgeCTA from "@/components/knowledge/KnowledgeCTA";
 import { getTopicBySlug } from "@/lib/knowledge-data";
 import { getArticleBySlug } from "@/lib/knowledge-articles";
 
@@ -391,15 +392,7 @@ function SoulmateArticlePage({ slug }: { slug: string }) {
         </Section>
 
         {/* CTA */}
-        <section className="py-12">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p className="text-white/60 mb-2 max-w-2xl mx-auto">{c.cta.textLine1}</p>
-            <p className="text-white/60 mb-6 max-w-2xl mx-auto">{c.cta.textLine2}</p>
-            <Link href="/booking" className="inline-flex items-center px-8 py-4 bg-stellawei-purple text-white font-medium rounded-xl hover:bg-stellawei-purple/90 transition-colors">
-              {c.cta.button}
-            </Link>
-          </div>
-        </section>
+        <KnowledgeCTA articleSlug="when-will-i-meet-my-soulmate" topicSlug="relationship" />
 
         {/* EEAT */}
         <section className="py-6 border-t border-white/5">
@@ -663,19 +656,7 @@ function DynamicArticlePage({ slug, questionSlug }: { slug: string; questionSlug
         </Section>
 
         {/* CTA */}
-        <section className="py-12">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            {(article as any).cta?.textLine1 !== undefined ? (
-              <>
-                <p className="text-white/60 mb-2 max-w-2xl mx-auto">{isZh ? (article as any).cta.textLine1Cn : (article as any).cta.textLine1}</p>
-                <p className="text-white/60 mb-6 max-w-2xl mx-auto">{isZh ? (article as any).cta.textLine2Cn : (article as any).cta.textLine2}</p>
-                <Link href={(article as any).cta.link} className="inline-flex items-center px-8 py-4 bg-stellawei-purple text-white font-medium rounded-xl hover:bg-stellawei-purple/90 transition-colors">
-                  {isZh ? (article as any).cta.buttonCn : (article as any).cta.button}
-                </Link>
-              </>
-            ) : null}
-          </div>
-        </section>
+        <KnowledgeCTA articleSlug={article.slug} topicSlug={article.topicSlug} />
 
         {/* EEAT */}
         <section className="py-6 border-t border-white/5">
