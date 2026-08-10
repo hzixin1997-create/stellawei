@@ -154,11 +154,11 @@ export const track = {
     trackEvent('leave_review', params),
 
   /** Knowledge Center CTA 展示 */
-  knowledgeCTAView: (params: { article_slug: string; topic: string; page_url: string }) => 
+  knowledgeCTAView: (params: { article_slug: string; topic: string; page_url: string; page_type: 'topic' | 'article' }) => 
     trackEvent('knowledge_cta_view', params),
 
   /** Knowledge Center 注册按钮点击 */
-  knowledgeRegisterClick: (params: { article_slug: string; topic: string; page_url: string }) => 
+  knowledgeRegisterClick: (params: { article_slug: string; topic: string; page_url: string; page_type: 'topic' | 'article' }) => 
     trackEvent('knowledge_register_click', params),
 };
 

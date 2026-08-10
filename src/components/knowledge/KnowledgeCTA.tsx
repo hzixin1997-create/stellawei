@@ -10,9 +10,10 @@ import { track } from "@/lib/analytics";
 interface KnowledgeCTAProps {
   articleSlug: string;
   topicSlug: string;
+  pageType?: 'article' | 'topic';
 }
 
-export default function KnowledgeCTA({ articleSlug, topicSlug }: KnowledgeCTAProps) {
+export default function KnowledgeCTA({ articleSlug, topicSlug, pageType = 'article' }: KnowledgeCTAProps) {
   const { user, isLoading } = useAuth();
   const { i18n } = useTranslation();
   const isZh = i18n.language === "zh";
@@ -27,14 +28,16 @@ export default function KnowledgeCTA({ articleSlug, topicSlug }: KnowledgeCTAPro
       article_slug: articleSlug,
       topic: topicSlug,
       page_url: currentUrl,
+      page_type: pageType,
     });
-  }, [isLoading, articleSlug, topicSlug, currentUrl]);
+  }, [isLoading, articleSlug, topicSlug, currentUrl, pageType]);
 
   const handleRegisterClick = () => {
     track.knowledgeRegisterClick({
       article_slug: articleSlug,
       topic: topicSlug,
       page_url: currentUrl,
+      page_type: pageType,
     });
   };
 
@@ -52,7 +55,7 @@ export default function KnowledgeCTA({ articleSlug, topicSlug }: KnowledgeCTAPro
     );
   }
 
-  // Logged in user
+  // Logged in user (same for both topic and article)
   if (user) {
     return (
       <section className="py-12">
@@ -76,15 +79,21 @@ export default function KnowledgeCTA({ articleSlug, topicSlug }: KnowledgeCTAPro
     );
   }
 
-  // Not logged in user
+  // Not logged in user — different copy for topic vs article
+  const isTopic = pageType === 'topic';
+
   return (
     <section className="py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="bg-stellawei-purple/5 border border-stellawei-purple/20 rounded-2xl p-8 sm:p-10">
           <p className="text-white/80 text-lg leading-relaxed mb-6 max-w-2xl mx-auto">
             {isZh
-              ? "想进一步了解自己的情况？创建免费账户，开始使用 StellaWei。"
-              : "Want to explore your situation further? Create a free account to get started with StellaWei."}
+              ? (isTopic
+                  ? "没有找到适合你的答案？创建免费账户，探索更多 StellaWei 的指引。"
+                  : "想进一步了解自己的情况？创建免费账户，开始使用 StellaWei。")
+              : (isTopic
+                  ? "Didn't find your answer? Create a free account to explore more guidance from StellaWei."
+                  : "Want to explore your situation further? Create a free account to get started with StellaWei.")}
           </p>
           <Link
             href={loginUrl}

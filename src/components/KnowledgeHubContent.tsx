@@ -1,7 +1,7 @@
 'use client';
 
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { useTranslation } from 'react-i18next';
 import {
   Heart,
   Briefcase,
@@ -16,8 +16,8 @@ import {
   ChevronRight,
   Star,
 } from "lucide-react";
-import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import KnowledgeCTA from "@/components/knowledge/KnowledgeCTA";
 import type { TopicData, QuestionData } from "@/lib/knowledge-data";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -154,24 +154,8 @@ export default function KnowledgeHubContent({ topic, questions }: KnowledgeHubCo
       </section>
 
       {/* CTA */}
-      <section className="py-16 border-t border-white/5">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl md:text-3xl font-serif font-bold text-white mb-4">
-            {isZh ? '没有找到适合你的答案？' : "Didn't find your answer?"}
-          </h2>
-          <p className="text-white/60 mb-8 max-w-xl mx-auto">
-            {isZh
-              ? '我们的咨询师可以根据你的实际情况，提供更个性化的分析与建议。'
-              : 'Get personalized guidance from our experienced consultants based on your unique situation.'}
-          </p>
-          <Link href="/booking">
-            <Button size="lg" className="px-8 bg-stellawei-purple hover:bg-stellawei-purple/90">
-              {isZh ? '预约咨询' : 'Book a Consultation'}
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-          </Link>
-        </div>
-      </section>
+      <KnowledgeCTA articleSlug={topic.slug} topicSlug={topic.slug} pageType="topic" />
+
     </div>
   );
 }
