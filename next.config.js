@@ -38,6 +38,11 @@ const nextConfig = {
       destination: 'https://stellawei.org?utm_source=xiaohongshu&utm_medium=social&utm_campaign=profile_link',
       permanent: false,
     },
+    {
+      source: '/wx',
+      destination: 'https://stellawei.org?utm_source=wechat&utm_medium=social&utm_campaign=profile_link',
+      permanent: false,
+    },
   ],
 };
 
