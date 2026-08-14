@@ -646,7 +646,7 @@ function DynamicArticlePage({ slug, questionSlug }: { slug: string; questionSlug
             {rq.map((q: any) => (
               <Link
                 key={q.slug}
-                href={`/knowledge/relationship/${q.slug}`}
+                href={`/knowledge/${article.topicSlug}/${q.slug}`}
                 className="block p-4 bg-black/20 border border-white/5 rounded-xl hover:border-white/10 transition-colors"
               >
                 <p className="text-white/70 text-sm">{isZh ? q.questionCn : q.question}</p>

@@ -1134,3 +1134,230 @@ export const whenIsTheBestTimeToStartDating: KnowledgeArticle = {
   modifiedAt: "2026-07-30",
   author: "Stellawei Editorial Team"
 };
+
+// ==================== Article 6: Should I Change Career? (Career Category) ====================
+
+export const shouldIChangeCareer: KnowledgeArticle = {
+  slug: "should-i-change-career",
+  topicSlug: "career",
+  question: "Should I Change My Career Path?",
+  questionCn: "我应该转行吗？",
+  metaTitle: "Should I Change My Career Path? | StellaWei Knowledge Center",
+  metaDescription: "When you feel stuck, unfulfilled, or uncertain about your professional direction, Eastern and Western divination tools can help you understand your innate strengths, optimal timing, and whether a career change aligns with your life path.",
+  metaTitleCn: "我应该转行吗？| Stellawei 知识中心",
+  metaDescriptionCn: "当你感到迷茫、不满足或不确定职业方向时，东西方命理工具可以帮助你理解自己的天赋优势、最佳时机，以及转行是否符合你的人生道路。",
+  heroIntro: "Career dissatisfaction is one of the most common sources of stress in modern life. You may feel stuck in a role that drains you, wonder if the grass is greener elsewhere, or question whether you are on the right path at all. Eastern and Western divination tools approach this question differently—Eastern methods analyze your birth chart to reveal innate strengths, favorable timing for transitions, and whether your current path aligns with your destiny pattern, while Tarot helps you understand your subconscious motivations, hidden fears about change, and what you truly need from your work.",
+  heroIntroCn: "职业不满是现代生活中最常见的压力来源之一。你可能感到被困在一份消耗你的工作中，想知道别处是否更好，或者怀疑自己是否走在正确的道路上。东西方命理工具从不同角度切入这个问题——东方方法通过分析你的命盘来揭示天赋优势、转换的有利时机，以及当前道路是否与你的命运格局对齐，而塔罗则帮助你理解潜意识动机、对改变的隐藏恐惧，以及你真正需要从工作中获得什么。",
+
+  searchIntent: {
+    primary: [
+      "should i change my career",
+      "is it time to change jobs",
+      "should i quit my job and start over",
+      "career change advice",
+      "should i switch careers"
+    ],
+    primaryCn: [
+      "我应该转行吗",
+      "是不是该换工作了",
+      "我应该辞职重新开始吗",
+      "转行建议",
+      "我应该换职业吗"
+    ],
+    secondary: [
+      "bazi career palace",
+      "qi men dun jia career decision",
+      "zi wei dou shu career path",
+      "tarot career reading"
+    ],
+    secondaryCn: [
+      "八字事业宫",
+      "奇门遁甲职业决策",
+      "紫微斗数职业道路",
+      "塔罗职业解读"
+    ],
+    related: [
+      "when to change jobs",
+      "career transition timing",
+      "finding your passion",
+      "work life balance"
+    ],
+    relatedCn: [
+      "什么时候换工作",
+      "职业转换时机",
+      "找到你的热情",
+      "工作生活平衡"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People considering a career change are often wrestling with:",
+    questions: [
+      "I feel drained every Sunday night. Is this just burnout, or am I in the wrong field entirely?",
+      "I have been in this industry for ten years. Starting over feels terrifying—but so does staying here for twenty more.",
+      "Everyone says I should be grateful for this stable job. Why do I feel so empty?",
+      "I have a passion project that could become a business. Is the risk worth it?",
+      "I keep getting passed over for promotions. Is it me, or is this company not the right fit?",
+      "My industry is shrinking. Should I pivot now while I still can, or wait and see?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "考虑转行的人，常常在纠结：",
+    questions: [
+      "每个周日晚上我都感到疲惫。这只是倦怠，还是我完全入错了行？",
+      "我已经在这个行业干了十年。重新开始很可怕——但再干二十年更可怕。",
+      "每个人都说我应该感恩这份稳定的工作。为什么我感到如此空虚？",
+      "我有一个可以做成生意的副业项目。这个风险值得冒吗？",
+      "我总是得不到晋升。是我的问题，还是这家公司不适合我？",
+      "我的行业在萎缩。我应该趁还能转的时候现在就转，还是再观望看看？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Help Analyze Career Decisions",
+    headingCn: "东西方命理如何帮助分析职业决策？",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods (BaZi, Qi Men Dun Jia, Zi Wei Dou Shu) analyze career questions through birth-time patterns, elemental strengths, and palace configurations. BaZi examines your Career Palace and Day Master's interaction with wealth and authority elements to identify suitable industries and roles. Qi Men Dun Jia evaluates the current energy state and optimal timing for career transitions. Zi Wei Dou Shu profiles your career stars, leadership potential, and favorable periods for professional growth through the twelve palaces.",
+    easternDescCn: "东方方法（八字、奇门遁甲、紫微斗数）通过出生时间规律、五行强弱和宫位配置来分析职业问题。八字通过事业宫和日主与财星、官星的互动来识别适合的行业和角色。奇门遁甲评估当前能量状态和职业转换的最佳时机。紫微斗数通过十二宫位描绘你的事业星、领导潜力和职业成长的有利时期。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination (primarily Tarot) is based on symbolic psychology and the collective unconscious. Through card imagery and intuitive interpretation, it reflects your present emotional state and subconscious needs regarding work, reveals hidden fears about change and failure, and offers actionable guidance for understanding what truly fulfills you beneath the surface expectations.",
+    westernDescCn: "西方命理（以塔罗为主）基于象征心理学与集体潜意识。通过牌面图像与直觉解读，反映你当下对工作的情感状态与潜意识需求，揭示对改变和失败的隐藏恐惧，并提供可执行的指引，帮助你在表面期望之下理解真正让你满足的是什么。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi Analysis: Career Palace and Elemental Alignment",
+        titleCn: "一、八字分析：事业宫与五行对齐",
+        intro: "BaZi uses your birth year, month, day, and hour to construct a Four Pillars chart. For career decisions, the analysis typically focuses on:",
+        introCn: "八字使用你的出生年月日时构建四柱命盘。针对职业决策，分析通常关注：",
+        cards: [
+          {
+            title: "① Career Palace (Guan Lu Gong)",
+            titleCn: "① 事业宫（官禄宫）",
+            desc: "The career palace reveals your professional strengths, suitable industries, and work style.",
+            descCn: "事业宫揭示你的职业优势、适合的行业和工作风格。",
+            items: ["Palace element and stability", "Suitable industry types", "Leadership vs. support roles", "Entrepreneurship potential"],
+            itemsCn: ["宫位五行与稳定性", "适合的行业类型", "领导角色 vs 支持角色", "创业潜力"]
+          },
+          {
+            title: "② Day Master and Wealth/Authority Stars",
+            titleCn: "② 日主与财星/官星",
+            desc: "How your core element interacts with wealth and authority elements reveals career compatibility.",
+            descCn: "你的核心五行如何与财星和官星互动，揭示职业适配性。",
+            items: ["Elemental strength assessment", "Wealth generation patterns", "Authority handling style", "Growth potential in current field"],
+            itemsCn: ["五行强弱评估", "生财模式", "处理权威的方式", "当前领域的成长潜力"]
+          },
+          {
+            title: "③ Luck Cycle Timing",
+            titleCn: "③ 大运流年时机",
+            desc: "Current and upcoming major luck periods reveal when career transitions are most favorable.",
+            descCn: "当前和 upcoming 大运周期揭示职业转换最有利的时机。",
+            items: ["Current cycle career energy", "Transition timing windows", "Favorable years for change", "Stability vs. risk periods"],
+            itemsCn: ["当前周期事业能量", "转换时机窗口", "有利于改变的年份", "稳定期 vs 风险期"]
+          }
+        ]
+      },
+      {
+        title: "2. Qi Men Dun Jia: Optimal Timing for Career Moves",
+        titleCn: "二、奇门遁甲：职业行动的最佳时机",
+        desc: "Qi Men Dun Jia uses a spacetime model to analyze the current energy state and optimal timing for career decisions and transitions.",
+        descCn: "奇门遁甲使用时空模型分析当前能量状态和职业决策与转换的最佳时机。",
+        focus: "Key areas of focus:",
+        focusCn: "通常重点关注：",
+        items: ["Current career energy state", "Optimal timing for transition", "Hidden obstacles to change", "Outcome probabilities for different paths"],
+        itemsCn: ["当前事业能量状态", "转换最佳时机", "改变的隐藏阻碍", "不同路径的结果概率"]
+      },
+      {
+        title: "3. Zi Wei Dou Shu: Career Star Profiling",
+        titleCn: "三、紫微斗数：事业星画像",
+        desc: "Zi Wei Dou Shu uses star combinations to profile career patterns, leadership potential, and favorable periods for professional growth through the twelve palaces.",
+        descCn: "紫微斗数使用星曜组合描绘事业模式、领导潜力和职业成长的有利时期。",
+        focus: "Key areas of focus:",
+        focusCn: "通常重点关注：",
+        items: ["Career structure and trajectory", "Leadership and management style", "Favorable periods for advancement", "Entrepreneurship indicators"],
+        itemsCn: ["事业结构与轨迹", "领导与管理风格", "晋升有利时期", "创业指标"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "From Corporate Burnout to Fulfilling Entrepreneurship",
+    titleCn: "从 corporate 倦怠到充实的创业之路",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Mr. Liu (born 1985, Yi-Chou year) had spent 12 years in corporate finance, earning a stable six-figure salary. Despite external success, he felt increasingly empty and anxious. He dreamed of starting a wellness coaching business but was terrified of leaving his secure position.",
+        textCn: "刘先生（1985年生，乙丑年），在 corporate finance 工作了12年，拿着稳定的六位数薪水。尽管外表成功，他感到越来越空虚和焦虑。他梦想开创一个 wellness coaching 生意，但害怕离开稳定的职位。"
+      },
+      {
+        label: "BaZi Analysis",
+        labelCn: "八字分析",
+        text: "Mr. Liu's chart showed a strong Wood Day Master with abundant Resource elements, indicating natural teaching and mentoring abilities. However, his Career Palace was dominated by Metal, creating a persistent clash with his Wood nature. His current luck cycle (2022-2031) showed strong Wealth Star activation—ideal for entrepreneurship. The analysis revealed 2024 was a particularly favorable year for career transition.",
+        textCn: "刘先生的命盘显示强木日主，印星旺盛，指示天生的教学和辅导能力。但他的事业宫被金主导，与他的木性形成持续冲突。他当前的大运（2022-2031）显示财星强烈激活——非常适合创业。分析揭示2024年是职业转换特别有利的年份。"
+      },
+      {
+        label: "Guidance",
+        labelCn: "指导建议",
+        text: "Transition gradually: reduce to part-time consulting while building the wellness business. Leverage the 2024 window for the full transition. Focus on clients in creative and wellness industries where Wood energy thrives.",
+        textCn: "逐步过渡：减少为兼职咨询，同时建立 wellness 生意。利用2024年的窗口期完成全面转换。专注于创意和健康产业的客户，那里木能量旺盛。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Mr. Liu transitioned to part-time in early 2024 and launched his wellness coaching practice by mid-year. Within eight months, he matched his previous corporate income while working fewer hours. He reports feeling 'finally aligned' with his work for the first time in his career.",
+        textCn: "刘先生在2024年初过渡到兼职，年中推出了他的 wellness coaching 业务。八个月内，他的收入达到了之前的 corporate 水平，同时工作时间更少。他报告说，这是他职业生涯中第一次感到与工作「真正对齐」。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "BaZi Career Palace analysis reveals your innate professional strengths and suitable industry types.",
+      "Qi Men Dun Jia identifies optimal timing for career transitions and potential obstacles.",
+      "Zi Wei Dou Shu profiles career trajectory, leadership potential, and favorable advancement periods.",
+      "Tarot uncovers subconscious motivations and hidden fears that may be blocking your clarity.",
+      "Career alignment is about matching your work to your elemental nature and life cycle—not just chasing higher pay."
+    ],
+    itemsCn: [
+      "八字事业宫分析揭示你天生的职业优势和适合的行业类型。",
+      "奇门遁甲识别职业转换的最佳时机和潜在阻碍。",
+      "紫微斗数描绘事业轨迹、领导潜力和晋升有利时期。",
+      "塔罗揭示可能阻碍你清晰度的潜意识动机和隐藏恐惧。",
+      "职业对齐是将你的工作与五行本性和生命周期匹配——而不仅仅是追求更高薪水。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "will-i-get-promotion", question: "Will I Get a Promotion This Year?", questionCn: "今年我会升职吗？" },
+    { slug: "right-time-to-start-business", question: "Is This the Right Time to Start a Business?", questionCn: "现在是创业的好时机吗？" },
+    { slug: "how-to-advance-current-role", question: "How Can I Advance in My Current Role?", questionCn: "如何在现有职位上晋升？" }
+  ],
+
+  cta: {
+    textLine1: "Feeling stuck in your career?",
+    textLine1Cn: "感到职业上被困住了？",
+    textLine2: "Our consultants can help you understand your innate strengths, optimal timing, and whether a career change aligns with your true path.",
+    textLine2Cn: "我们的咨询师可以帮助你理解自己的天赋优势、最佳时机，以及转行是否与你的真正道路对齐。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/career/should-i-change-career",
+  publishedAt: "2026-08-14",
+  modifiedAt: "2026-08-14",
+  author: "Stellawei Editorial Team"
+};

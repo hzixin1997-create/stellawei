@@ -389,6 +389,7 @@ import {
   howToFixARelationship,
   shouldIContactMyEx,
   whenIsTheBestTimeToStartDating,
+  shouldIChangeCareer,
 } from "./knowledge-article-pages";
 
 // ==================== 文章索引 ====================
@@ -400,6 +401,7 @@ export const knowledgeArticles: Record<string, KnowledgeArticle> = {
   [howToFixARelationship.slug]: howToFixARelationship,
   [shouldIContactMyEx.slug]: shouldIContactMyEx,
   [whenIsTheBestTimeToStartDating.slug]: whenIsTheBestTimeToStartDating,
+  [shouldIChangeCareer.slug]: shouldIChangeCareer,
 };
 
 export function getArticleBySlug(slug: string): KnowledgeArticle | undefined {
