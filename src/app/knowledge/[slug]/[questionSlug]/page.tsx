@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import { NavHeader } from "@/components/knowledge/NavHeader";
 import KnowledgeCTA from "@/components/knowledge/KnowledgeCTA";
+import RelatedQuestions from "@/components/knowledge/RelatedQuestions";
 import { getTopicBySlug } from "@/lib/knowledge-data";
 import { getArticleBySlug } from "@/lib/knowledge-articles";
 
@@ -210,9 +211,9 @@ function SoulmateArticlePage({ slug }: { slug: string }) {
     related: {
       heading: isZh ? "相关问题" : "Related Questions",
       items: [
-        { slug: "is-he-she-the-right-person", text: isZh ? "他/她是对的人吗？" : "Is He/She the Right Person?" },
-        { slug: "should-i-stay-or-leave-this-relationship", text: isZh ? "我应该继续还是离开这段关系？" : "Should I Stay or Leave This Relationship?" },
-        { slug: "how-to-fix-a-relationship", text: isZh ? "我怎么修复一段关系？" : "How to Fix a Relationship?" },
+        { slug: "is-he-she-the-right-person", question: "Is He/She the Right Person?", questionCn: "他/她是对的人吗？" },
+        { slug: "should-i-stay-or-leave-this-relationship", question: "Should I Stay or Leave This Relationship?", questionCn: "我应该继续还是离开这段关系？" },
+        { slug: "how-to-fix-a-relationship", question: "How to Fix a Relationship?", questionCn: "我怎么修复一段关系？" },
       ],
     },
     cta: {
@@ -380,16 +381,7 @@ function SoulmateArticlePage({ slug }: { slug: string }) {
         </Section>
 
         {/* Related Questions */}
-        <Section>
-          <h2 className="text-2xl font-serif font-bold text-white mb-6">{c.related.heading}</h2>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {c.related.items.map((q) => (
-              <Link key={q.slug} href={`/knowledge/relationship/${q.slug}`} className="block p-4 bg-black/20 border border-white/5 rounded-xl hover:border-white/10 transition-colors">
-                <p className="text-white/70 text-sm">{q.text}</p>
-              </Link>
-            ))}
-          </div>
-        </Section>
+        <RelatedQuestions items={c.related.items} topicSlug="relationship" />
 
         {/* CTA */}
         <KnowledgeCTA articleSlug="when-will-i-meet-my-soulmate" topicSlug="relationship" />
@@ -638,22 +630,7 @@ function DynamicArticlePage({ slug, questionSlug }: { slug: string; questionSlug
         </Section>
 
         {/* Related Questions */}
-        <Section>
-          <h2 className="text-2xl font-serif font-bold text-white mb-6">
-            {isZh ? "相关问题" : "Related Questions"}
-          </h2>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {rq.map((q: any) => (
-              <Link
-                key={q.slug}
-                href={`/knowledge/${article.topicSlug}/${q.slug}`}
-                className="block p-4 bg-black/20 border border-white/5 rounded-xl hover:border-white/10 transition-colors"
-              >
-                <p className="text-white/70 text-sm">{isZh ? q.questionCn : q.question}</p>
-              </Link>
-            ))}
-          </div>
-        </Section>
+        <RelatedQuestions items={rq} topicSlug={article.topicSlug} />
 
         {/* CTA */}
         <KnowledgeCTA articleSlug={article.slug} topicSlug={article.topicSlug} />
