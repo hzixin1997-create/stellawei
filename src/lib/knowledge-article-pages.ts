@@ -1361,3 +1361,228 @@ export const shouldIChangeCareer: KnowledgeArticle = {
   modifiedAt: "2026-08-14",
   author: "Stellawei Editorial Team"
 };
+
+// ==================== Article 7: Will I Get a Promotion This Year? (Career Category) ====================
+
+export const willIGetPromotion: KnowledgeArticle = {
+  slug: "will-i-get-promotion",
+  topicSlug: "career",
+  question: "Will I Get a Promotion This Year?",
+  questionCn: "今年我会升职吗？",
+  metaTitle: "Will I Get a Promotion This Year? | StellaWei Knowledge Center",
+  metaDescription: "When you are eyeing a promotion, Eastern and Western divination tools can help you understand your current career energy, the timing of advancement opportunities, and what you can do to position yourself for success.",
+  metaTitleCn: "今年我会升职吗？| Stellawei 知识中心",
+  metaDescriptionCn: "当你盯着晋升机会时，东西方命理工具可以帮助你理解当前的事业能量、晋升机会的时机，以及你可以做什么来为自己的成功做好准备。",
+  heroIntro: "Career advancement is a top priority for many professionals, yet the path to promotion is rarely straightforward. You may be doing everything right—working hard, meeting targets, building relationships—but still feel uncertain about whether this is the year you move up. Eastern and Western divination tools approach this question differently—Eastern methods analyze your birth chart to reveal your current career energy cycle, whether your luck period supports advancement, and the best timing to make your move, while Tarot helps you understand your own confidence level, hidden obstacles in your mindset, and how you are perceived by decision-makers.",
+  heroIntroCn: "许多人在努力工作多年、业绩达标、人际关系也不错之后，依然不确定今年是否有晋升机会。东西方命理工具提供了不同的视角——东方方法通过命盘分析你当前的事业能量周期、大运是否支持晋升、以及最佳行动时机，塔罗则帮助你理解自己的信心水平、心态中的隐藏阻碍，以及决策层如何看待你。",
+
+  searchIntent: {
+    primary: [
+      "will i get promoted this year",
+      "when will i get a promotion",
+      "promotion prediction",
+      "career advancement timing"
+    ],
+    primaryCn: [
+      "今年我会升职吗",
+      "我什么时候会晋升",
+      "晋升预测",
+      "职业发展时机"
+    ],
+    secondary: [
+      "bazi career palace promotion",
+      "zi wei dou shu career star",
+      "qi men dun jia career timing",
+      "tarot career advancement"
+    ],
+    secondaryCn: [
+      "八字事业宫晋升",
+      "紫微斗数事业星",
+      "奇门遁甲事业时机",
+      "塔罗职业晋升"
+    ],
+    related: [
+      "how to get promoted faster",
+      "career growth strategies",
+      "when to ask for promotion",
+      "promotion astrology"
+    ],
+    relatedCn: [
+      "如何更快晋升",
+      "职业成长策略",
+      "什么时候该提晋升",
+      "晋升命理"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People wondering about promotion timing are often asking:",
+    questions: [
+      "I have been in this role for two years. Is it time to ask, or should I wait?",
+      "My colleague got promoted, but I did not. What am I missing?",
+      "I am performing well, but my manager never mentions advancement. Should I bring it up?",
+      "There is a reorganization coming. Is this a good or bad time to seek promotion?",
+      "I was passed over last year. Will this year be different?",
+      "I am considering leaving if I do not get promoted. Should I stay or go?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "考虑晋升时机的人，常常在问：",
+    questions: [
+      "我在这个岗位已经两年了，该主动提晋升还是再等等？",
+      "同事升了但我没有，我缺了什么？",
+      "我业绩不错，但领导从不提晋升，我该主动说吗？",
+      "公司即将重组，现在是求晋升的好时机还是坏时机？",
+      "去年落选了，今年会不一样吗？",
+      "如果今年还没晋升，我是不是该考虑跳槽了？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Help Analyze Promotion Timing",
+    headingCn: "东西方命理如何帮助分析晋升时机？",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods (BaZi, Qi Men Dun Jia, Zi Wei Dou Shu) analyze promotion questions through birth-time patterns, elemental strengths, and palace configurations. BaZi examines your Career Palace and the interaction between your Day Master and authority elements to identify periods of career elevation. Qi Men Dun Jia evaluates the current energy state and optimal timing for advancement actions. Zi Wei Dou Shu profiles your career stars, leadership potential, and favorable periods for professional recognition through the twelve palaces.",
+    easternDescCn: "东方方法（八字、奇门遁甲、紫微斗数）通过出生时间规律、五行强弱和宫位配置来分析晋升问题。八字通过事业宫和日主与官星、印星的互动来识别事业上升期。奇门遁甲评估当前能量状态和晋升行动的最佳时机。紫微斗数通过十二宫位描绘你的事业星、领导潜力和获得认可的有利时期。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination (primarily Tarot) is based on symbolic psychology and the collective unconscious. Through card imagery and intuitive interpretation, it reflects your present confidence level and subconscious blocks, reveals hidden fears about visibility and authority, and offers actionable guidance for understanding how you are perceived and what internal shifts may be needed.",
+    westernDescCn: "西方命理（以塔罗为主）基于象征心理学与集体潜意识。通过牌面图像与直觉解读，反映你当下的信心水平和潜意识阻碍，揭示对曝光度和权威的隐藏恐惧，并提供可执行的指引，帮助你理解他人如何看待你以及需要什么内在转变。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi Analysis: Career Palace and Authority Star",
+        titleCn: "一、八字分析：事业宫与官星",
+        intro: "BaZi uses your birth year, month, day, and hour to construct a Four Pillars chart. For promotion timing, the analysis typically focuses on:",
+        introCn: "八字使用你的出生年月日时构建四柱命盘。针对晋升时机，分析通常关注：",
+        cards: [
+          {
+            title: "① Career Palace (Guan Lu Gong)",
+            titleCn: "① 事业宫（官禄宫）",
+            desc: "The career palace reveals your professional trajectory and current standing.",
+            descCn: "事业宫揭示你的职业轨迹和当前站位。",
+            items: ["Palace stability and strength", "Current period indicators", "Leadership capacity", "Advancement potential"],
+            itemsCn: ["宫位稳定性与强度", "当前周期指标", "领导能力", "晋升潜力"]
+          },
+          {
+            title: "② Authority Star (Guan Xing) & Resource Star",
+            titleCn: "② 官星与印星",
+            desc: "How your core element interacts with authority and resource stars reveals promotion compatibility.",
+            descCn: "你的核心五行如何与官星和印星互动，揭示晋升适配性。",
+            items: ["Authority star strength", "Support from leadership", "Recognition timing", "Resource availability"],
+            itemsCn: ["官星强度", "领导支持度", "认可时机", "资源可得性"]
+          },
+          {
+            title: "③ Annual Cycle Timing",
+            titleCn: "③ 流年时机",
+            desc: "The current and upcoming annual cycles reveal when promotion opportunities are most likely.",
+            descCn: "当前和后续流年揭示晋升机会最可能出现的时间。",
+            items: ["Current year career energy", "Promotion timing windows", "Favorable quarters", "Competition intensity"],
+            itemsCn: ["当年事业能量", "晋升时机窗口", "有利季度", "竞争激烈度"]
+          }
+        ]
+      },
+      {
+        title: "2. Qi Men Dun Jia: Current Energy and Timing",
+        titleCn: "二、奇门遁甲：当前能量与时机",
+        desc: "Qi Men Dun Jia uses a spacetime model to analyze the current energy state and optimal timing for career advancement actions.",
+        descCn: "奇门遁甲使用时空模型分析当前能量状态和职业晋升行动的最佳时机。",
+        focus: "Key areas of focus:",
+        focusCn: "通常重点关注：",
+        items: ["Current career energy state", "Optimal timing to ask for promotion", "Hidden obstacles to advancement", "Outcome probabilities"],
+        itemsCn: ["当前事业能量状态", "提晋升的最佳时机", "晋升的隐藏阻碍", "结果概率"]
+      },
+      {
+        title: "3. Zi Wei Dou Shu: Career Star and Recognition Periods",
+        titleCn: "三、紫微斗数：事业星与认可期",
+        desc: "Zi Wei Dou Shu uses star combinations to profile career patterns, leadership potential, and favorable periods for professional recognition through the twelve palaces.",
+        descCn: "紫微斗数使用星曜组合描绘事业模式、领导潜力和获得职业认可的有利时期。",
+        focus: "Key areas of focus:",
+        focusCn: "通常重点关注：",
+        items: ["Career star activation", "Leadership visibility", "Recognition timing", "Competition dynamics"],
+        itemsCn: ["事业星激活", "领导可见度", "认可时机", "竞争动态"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "From Overlooked to Promoted in Six Months",
+    titleCn: "从被忽视到六个月内晋升",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Ms. Chen (born 1988, Wu-Chen year) had been a senior analyst for three years. She consistently exceeded targets but watched two junior colleagues get promoted ahead of her. She was frustrated and considering leaving.",
+        textCn: "陈女士（1988年生，戊辰年），已在高级分析师岗位三年。她持续超额完成目标，却看着两位资历更浅的同事先她一步晋升。她感到沮丧，正在考虑离职。"
+      },
+      {
+        label: "BaZi Analysis",
+        labelCn: "八字分析",
+        text: "Ms. Chen's chart showed a strong Earth Day Master with a dormant Authority Star. Her current luck cycle (2022-2031) had just activated the Resource Star, which supports Authority. The analysis revealed that 2024 was a particularly favorable year for career elevation, especially in the second half.",
+        textCn: "陈女士的命盘显示强土日主，官星处于休眠状态。她当前的大运（2022-2031）刚刚激活了印星，印星生官星。分析揭示2024年是事业上升特别有利的年份，尤其是下半年。"
+      },
+      {
+        label: "Guidance",
+        labelCn: "指导建议",
+        text: "Do not leave yet. The timing is favorable in Q3-Q4. Proactively seek visibility by volunteering for cross-department projects. Schedule a career conversation with your manager in September, when your career energy peaks.",
+        textCn: "先别离开。第三至第四季度的时机有利。主动争取跨部门项目的曝光机会。在九月事业能量达到顶峰时，与直属领导安排一次职业发展对话。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Ms. Chen followed the advice, led a successful cross-functional project in Q3, and had her promotion conversation in September. She was promoted to Team Lead in November 2024, with a 25% salary increase.",
+        textCn: "陈女士遵循了建议，在第三季度主导了一个成功的跨职能项目，并在九月进行了晋升对话。她于2024年11月晋升为团队负责人，薪资增长25%。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "BaZi Career Palace and Authority Star analysis reveal your current career energy and promotion potential.",
+      "Qi Men Dun Jia identifies the optimal timing to ask for promotion and potential obstacles.",
+      "Zi Wei Dou Shu profiles career trajectory, leadership visibility, and favorable recognition periods.",
+      "Tarot uncovers subconscious confidence blocks and how you are perceived by decision-makers.",
+      "Promotion timing is about aligning your actions with your energetic cycle—not just working harder."
+    ],
+    itemsCn: [
+      "八字事业宫与官星分析揭示你当前的事业能量和晋升潜力。",
+      "奇门遁甲识别提晋升的最佳时机和潜在阻碍。",
+      "紫微斗数描绘事业轨迹、领导可见度和有利认可期。",
+      "塔罗揭示潜意识中的信心阻碍以及决策层如何看待你。",
+      "晋升时机是将行动与能量周期对齐——而不只是更努力工作。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "should-i-change-career", question: "Should I Change My Career Path?", questionCn: "我应该转行吗？" },
+    { slug: "right-time-to-start-business", question: "Is This the Right Time to Start a Business?", questionCn: "现在是创业的好时机吗？" },
+    { slug: "how-to-advance-current-role", question: "How Can I Advance in My Current Role?", questionCn: "如何在现有职位上晋升？" }
+  ],
+
+  cta: {
+    textLine1: "Wondering about your promotion prospects?",
+    textLine1Cn: "不确定今年的晋升前景？",
+    textLine2: "Our consultants can help you understand your career energy, optimal timing, and what actions will position you for success.",
+    textLine2Cn: "我们的咨询师可以帮助你理解事业能量、最佳时机，以及什么行动能帮你走向成功。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/career/will-i-get-promotion",
+  publishedAt: "2026-08-16",
+  modifiedAt: "2026-08-16",
+  author: "Stellawei Editorial Team"
+};
