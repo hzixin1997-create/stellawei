@@ -1147,7 +1147,7 @@ export const shouldIChangeCareer: KnowledgeArticle = {
   metaTitleCn: "我应该转行吗？| Stellawei 知识中心",
   metaDescriptionCn: "当你感到迷茫、不满足或不确定职业方向时，东西方命理工具可以帮助你理解自己的天赋优势、最佳时机，以及转行是否符合你的人生道路。",
   heroIntro: "Career dissatisfaction is one of the most common sources of stress in modern life. You may feel stuck in a role that drains you, wonder if the grass is greener elsewhere, or question whether you are on the right path at all. Eastern and Western divination tools approach this question differently—Eastern methods analyze your birth chart to reveal innate strengths, favorable timing for transitions, and whether your current path aligns with your destiny pattern, while Tarot helps you understand your subconscious motivations, hidden fears about change, and what you truly need from your work.",
-  heroIntroCn: "职业不满是现代生活中最常见的压力来源之一。你可能感到被困在一份消耗你的工作中，想知道别处是否更好，或者怀疑自己是否走在正确的道路上。东西方命理工具从不同角度切入这个问题——东方方法通过分析你的命盘来揭示天赋优势、转换的有利时机，以及当前道路是否与你的命运格局对齐，而塔罗则帮助你理解潜意识动机、对改变的隐藏恐惧，以及你真正需要从工作中获得什么。",
+  heroIntroCn: "许多人在长期倦怠、缺乏成就感、或者被升职瓶颈卡住后开始问这个问题。东西方命理工具提供了不同的视角——东方方法侧重命盘中的天赋与时机，塔罗则聚焦你内心真正的需求和恐惧。",,
 
   searchIntent: {
     primary: [
@@ -1204,7 +1204,7 @@ export const shouldIChangeCareer: KnowledgeArticle = {
   whyPeopleAskCn: {
     intro: "考虑转行的人，常常在纠结：",
     questions: [
-      "每个周日晚上我都感到疲惫。这只是倦怠，还是我完全入错了行？",
+      "每天下班我都太累了，有没有真正适合我做起来更轻松的工作？",
       "我已经在这个行业干了十年。重新开始很可怕——但再干二十年更可怕。",
       "每个人都说我应该感恩这份稳定的工作。为什么我感到如此空虚？",
       "我有一个可以做成生意的副业项目。这个风险值得冒吗？",
@@ -1256,7 +1256,7 @@ export const shouldIChangeCareer: KnowledgeArticle = {
             title: "③ Luck Cycle Timing",
             titleCn: "③ 大运流年时机",
             desc: "Current and upcoming major luck periods reveal when career transitions are most favorable.",
-            descCn: "当前和 upcoming 大运周期揭示职业转换最有利的时机。",
+            descCn: "当前和后续大运周期揭示职业转换最有利的时机。",
             items: ["Current cycle career energy", "Transition timing windows", "Favorable years for change", "Stability vs. risk periods"],
             itemsCn: ["当前周期事业能量", "转换时机窗口", "有利于改变的年份", "稳定期 vs 风险期"]
           }
@@ -1287,13 +1287,13 @@ export const shouldIChangeCareer: KnowledgeArticle = {
 
   caseStudy: {
     title: "From Corporate Burnout to Fulfilling Entrepreneurship",
-    titleCn: "从 corporate 倦怠到充实的创业之路",
+    titleCn: "从职场倦怠到充实的创业之路",
     sections: [
       {
         label: "Background",
         labelCn: "基本情况",
         text: "Mr. Liu (born 1985, Yi-Chou year) had spent 12 years in corporate finance, earning a stable six-figure salary. Despite external success, he felt increasingly empty and anxious. He dreamed of starting a wellness coaching business but was terrified of leaving his secure position.",
-        textCn: "刘先生（1985年生，乙丑年），在 corporate finance 工作了12年，拿着稳定的六位数薪水。尽管外表成功，他感到越来越空虚和焦虑。他梦想开创一个 wellness coaching 生意，但害怕离开稳定的职位。"
+        textCn: "刘先生（1985年生，乙丑年），在企业财务领域工作了12年，拿着稳定的六位数薪水。尽管外表成功，他感到越来越空虚和焦虑。他梦想开创一个健康养生咨询生意，但害怕离开稳定的职位。"
       },
       {
         label: "BaZi Analysis",
@@ -1305,13 +1305,13 @@ export const shouldIChangeCareer: KnowledgeArticle = {
         label: "Guidance",
         labelCn: "指导建议",
         text: "Transition gradually: reduce to part-time consulting while building the wellness business. Leverage the 2024 window for the full transition. Focus on clients in creative and wellness industries where Wood energy thrives.",
-        textCn: "逐步过渡：减少为兼职咨询，同时建立 wellness 生意。利用2024年的窗口期完成全面转换。专注于创意和健康产业的客户，那里木能量旺盛。"
+        textCn: "逐步过渡：减少为兼职咨询，同时建立健康养生咨询生意。利用2024年的窗口期完成全面转换。专注于创意和健康产业的客户，那里木能量旺盛。"
       },
       {
         label: "Outcome",
         labelCn: "实际结果",
         text: "Mr. Liu transitioned to part-time in early 2024 and launched his wellness coaching practice by mid-year. Within eight months, he matched his previous corporate income while working fewer hours. He reports feeling 'finally aligned' with his work for the first time in his career.",
-        textCn: "刘先生在2024年初过渡到兼职，年中推出了他的 wellness coaching 业务。八个月内，他的收入达到了之前的 corporate 水平，同时工作时间更少。他报告说，这是他职业生涯中第一次感到与工作「真正对齐」。"
+        textCn: "刘先生在2024年初过渡到兼职，年中推出了他的健康养生咨询业务。八个月内，他的收入达到了之前的企业职级水平，同时工作时间更少。他报告说，这是他职业生涯中第一次感到与工作「真正对齐」。"
       }
     ],
     disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",

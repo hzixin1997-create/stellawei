@@ -197,7 +197,7 @@ export default function KnowledgeTopicsSection({
               size="lg"
               className="rounded-full px-10 h-14 text-base border-2 border-stellawei-purple text-stellawei-purple !bg-black/70 hover:bg-stellawei-purple/10"
             >
-              {isZh ? '进入 Knowledge' : 'Explore Knowledge'}
+              {isZh ? '进入知识中心' : 'Explore Knowledge'}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </Link>
