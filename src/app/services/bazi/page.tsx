@@ -47,7 +47,7 @@ const baziServices = [
       "个人命盘情感格局深度解析",
       "未来3年感情运势时间线",
       "关系相处建议与能量调和方案",
-      "45分钟一对一解读 + 书面报告"
+      "30分钟一对一解读 + 书面报告"
     ],
     deliverablesEn: [
       "In-depth analysis of emotional patterns in your birth chart",
@@ -55,7 +55,7 @@ const baziServices = [
       "Relationship advice and energy harmonization plan",
       "45-min one-on-one session + written report"
     ],
-    duration: "45 min",
+    duration: "30 min",
     color: "from-pink-500 to-rose-500",
     bgColor: "bg-pink-50",
     textColor: "text-pink-600"
@@ -83,7 +83,7 @@ const baziServices = [
       "财星格局与流年财运分析",
       "未来5年财富趋势预测",
       "适合的投资类型与行业方向",
-      "40分钟解读 + 财运时间轴图表"
+      "30分钟解读 + 财运时间轴图表"
     ],
     deliverablesEn: [
       "Wealth star pattern and annual fortune analysis",
@@ -91,7 +91,7 @@ const baziServices = [
       "Suitable investment types and industry directions",
       "40-min session + wealth timeline chart"
     ],
-    duration: "40 min",
+    duration: "30 min",
     color: "from-amber-500 to-yellow-500",
     bgColor: "bg-amber-50",
     textColor: "text-amber-600"
@@ -155,7 +155,7 @@ const baziServices = [
       "日主强弱与五行平衡分析",
       "健康隐患时期预警",
       "个性化养生与能量调理建议",
-      "35分钟解读 + 健康养护指南"
+      "30分钟解读 + 健康养护指南"
     ],
     deliverablesEn: [
       "Day master strength and Five Elements balance analysis",
@@ -163,7 +163,7 @@ const baziServices = [
       "Personalized wellness and energy regulation advice",
       "35-min session + health maintenance guide"
     ],
-    duration: "35 min",
+    duration: "30 min",
     color: "from-green-500 to-emerald-500",
     bgColor: "bg-green-50",
     textColor: "text-green-600"
