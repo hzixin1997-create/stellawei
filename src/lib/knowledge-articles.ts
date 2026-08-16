@@ -391,6 +391,10 @@ import {
   whenIsTheBestTimeToStartDating,
   shouldIChangeCareer,
   willIGetPromotion,
+  rightTimeToStartBusiness,
+  howToAdvanceCurrentRole,
+  shouldIAcceptJobOffer,
+  whatCareerSuitsMe,
 } from "./knowledge-article-pages";
 
 // ==================== 文章索引 ====================
@@ -404,6 +408,10 @@ export const knowledgeArticles: Record<string, KnowledgeArticle> = {
   [whenIsTheBestTimeToStartDating.slug]: whenIsTheBestTimeToStartDating,
   [shouldIChangeCareer.slug]: shouldIChangeCareer,
   [willIGetPromotion.slug]: willIGetPromotion,
+  [rightTimeToStartBusiness.slug]: rightTimeToStartBusiness,
+  [howToAdvanceCurrentRole.slug]: howToAdvanceCurrentRole,
+  [shouldIAcceptJobOffer.slug]: shouldIAcceptJobOffer,
+  [whatCareerSuitsMe.slug]: whatCareerSuitsMe,
 };
 
 export function getArticleBySlug(slug: string): KnowledgeArticle | undefined {
