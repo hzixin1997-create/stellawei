@@ -395,6 +395,12 @@ import {
   howToAdvanceCurrentRole,
   shouldIAcceptJobOffer,
   whatCareerSuitsMe,
+  wealthFortuneTrend,
+  whenWillFinancesImprove,
+  shouldIMakeMajorPurchase,
+  howToIncreaseIncome,
+  saveOrInvest,
+  unexpectedExpenses,
 } from "./knowledge-article-pages";
 
 // ==================== 文章索引 ====================
@@ -412,6 +418,12 @@ export const knowledgeArticles: Record<string, KnowledgeArticle> = {
   [howToAdvanceCurrentRole.slug]: howToAdvanceCurrentRole,
   [shouldIAcceptJobOffer.slug]: shouldIAcceptJobOffer,
   [whatCareerSuitsMe.slug]: whatCareerSuitsMe,
+  [wealthFortuneTrend.slug]: wealthFortuneTrend,
+  [whenWillFinancesImprove.slug]: whenWillFinancesImprove,
+  [shouldIMakeMajorPurchase.slug]: shouldIMakeMajorPurchase,
+  [howToIncreaseIncome.slug]: howToIncreaseIncome,
+  [saveOrInvest.slug]: saveOrInvest,
+  [unexpectedExpenses.slug]: unexpectedExpenses,
 };
 
 export function getArticleBySlug(slug: string): KnowledgeArticle | undefined {

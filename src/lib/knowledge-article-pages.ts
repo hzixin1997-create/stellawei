@@ -2487,3 +2487,1353 @@ export const whatCareerSuitsMe: KnowledgeArticle = {
   modifiedAt: "2026-08-16",
   author: "Stellawei Editorial Team"
 };
+
+// ==================== Article 12: Wealth Fortune Trend (Wealth Category) ====================
+
+export const wealthFortuneTrend: KnowledgeArticle = {
+  slug: "wealth-fortune-trend",
+  topicSlug: "wealth",
+  question: "How Is My Wealth Fortune Trending?",
+  questionCn: "我的财运走势如何？",
+  metaTitle: "How Is My Wealth Fortune Trending? | StellaWei Knowledge Center",
+  metaDescription: "Understanding your wealth fortune trend can help you make smarter financial decisions. Eastern and Western divination tools offer insights into your financial energy cycles and potential opportunities.",
+  metaTitleCn: "我的财运走势如何？| Stellawei 知识中心",
+  metaDescriptionCn: "了解你的财运走势可以帮助你做出更明智的财务决策。东西方命理工具为你的财务能量周期和潜在机会提供洞察。",
+  heroIntro: "Money comes and goes in cycles. Sometimes you feel like everything you touch turns to gold; other times, despite your best efforts, wealth seems to slip through your fingers. Understanding your personal wealth fortune trend is not about predicting lottery numbers—it is about recognizing when your energy aligns with financial growth, when to be cautious, and how to position yourself for prosperity. Eastern and Western divination tools offer different lenses to understand these patterns.",
+  heroIntroCn: "金钱以周期来来去去。有时你觉得做什么都能赚钱；有时尽管尽了最大努力，财富似乎还是从指缝间溜走。了解你的个人财运走势不是关于预测彩票号码——而是关于识别什么时候你的能量与财富增长对齐、什么时候该谨慎、以及如何为繁荣做好准备。东西方命理工具提供了不同的视角来理解这些模式。",
+
+  searchIntent: {
+    primary: [
+      "how is my wealth fortune",
+      "wealth fortune reading",
+      "financial fortune trend",
+      "money luck prediction"
+    ],
+    primaryCn: [
+      "我的财运如何",
+      "财运解读",
+      "财务运势趋势",
+      "财运预测"
+    ],
+    secondary: [
+      "bazi wealth star analysis",
+      "qi men dun jia wealth timing",
+      "zi wei dou shu wealth palace",
+      "tarot financial reading"
+    ],
+    secondaryCn: [
+      "八字财星分析",
+      "奇门遁甲财富时机",
+      "紫微斗数财帛宫",
+      "塔罗财务解读"
+    ],
+    related: [
+      "how to improve wealth luck",
+      "wealth manifestation",
+      "financial abundance",
+      "money mindset"
+    ],
+    relatedCn: [
+      "如何改善财运",
+      "财富显化",
+      "财务丰盛",
+      "金钱心态"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People asking about wealth trends often wonder:",
+    questions: [
+      "I have been working hard but my savings are not growing. What is blocking my wealth?",
+      "Some years I earn well, others I struggle. Is there a pattern I can understand?",
+      "I want to invest but I am afraid of losing money. Is this a good time for me?",
+      "My friends seem to get rich easily while I barely break even. Am I doing something wrong?",
+      "I had a windfall last year but this year everything feels tight. Is this normal?",
+      "Should I focus on earning more or protecting what I have right now?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "询问财运趋势的人常常在想：",
+    questions: [
+      "我一直在努力工作，但存款没有增长。是什么阻碍了我的财富？",
+      "有些年份我赚得不错，有些年份我挣扎求生。有没有我可以理解的模式？",
+      "我想投资但害怕亏钱。现在对我来说是好时机吗？",
+      "我的朋友们似乎很容易致富，而我 barely 收支平衡。我做错什么了吗？",
+      "去年我有一笔意外之财，但今年一切都感觉很紧。这正常吗？",
+      "我现在应该专注于赚更多，还是保护已有的？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Help Analyze Wealth Trends",
+    headingCn: "东西方命理如何帮助分析财运趋势？",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods (BaZi, Qi Men Dun Jia, Zi Wei Dou Shu) analyze wealth trends through birth-time patterns, elemental strengths, and palace configurations. BaZi examines your Wealth Star and its interaction with your Day Master to identify periods of financial growth and contraction. Qi Men Dun Jia evaluates the current energy state for financial decisions. Zi Wei Dou Shu profiles your wealth patterns and favorable periods for accumulation through the twelve palaces.",
+    easternDescCn: "东方方法（八字、奇门遁甲、紫微斗数）通过出生时间规律、五行强弱和宫位配置来分析财运趋势。八字检查你的财星及其与日主的互动来识别财富增长和收缩期。奇门遁甲评估当前能量状态中财务决策的时机。紫微斗数通过十二宫位描绘你的财富模式和积累的有利时期。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination (primarily Tarot) is based on symbolic psychology and the collective unconscious. Through card imagery and intuitive interpretation, it reflects your present relationship with money, reveals subconscious blocks around abundance, and offers actionable guidance for understanding your financial mindset and opportunities.",
+    westernDescCn: "西方命理（以塔罗为主）基于象征心理学与集体潜意识。通过牌面图像与直觉解读，反映你与金钱的当下关系，揭示对丰盛的潜意识阻碍，并提供可执行的指引，帮助你理解财务心态和机会。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi Analysis: Wealth Star and Day Master",
+        titleCn: "一、八字分析：财星与日主",
+        intro: "BaZi uses your birth year, month, day, and hour to construct a Four Pillars chart. For wealth trend analysis, the analysis typically focuses on:",
+        introCn: "八字使用你的出生年月日时构建四柱命盘。针对财运趋势分析，分析通常关注：",
+        cards: [
+          {
+            title: "① Wealth Star (Cai Xing)",
+            titleCn: "① 财星",
+            desc: "The wealth star in your chart reveals your natural relationship with money and financial opportunities.",
+            descCn: "你命盘中的财星揭示你与金钱和财务机会的天然关系。",
+            items: ["Wealth star strength and quality", "Income generation style", "Savings vs spending patterns", "Risk tolerance indicators"],
+            itemsCn: ["财星强度和质量", "收入生成风格", "储蓄与消费模式", "风险承受度指标"]
+          },
+          {
+            title: "② Day Master and Wealth Interaction",
+            titleCn: "② 日主与财星互动",
+            desc: "How your core element interacts with wealth reveals how you attract and manage money.",
+            descCn: "你的核心五行如何与财星互动，揭示你如何吸引和管理金钱。",
+            items: ["Wealth attraction patterns", "Financial management style", "Growth potential", "Wealth preservation ability"],
+            itemsCn: ["财富吸引模式", "财务管理风格", "成长潜力", "财富保值能力"]
+          },
+          {
+            title: "③ Luck Cycle Wealth Timing",
+            titleCn: "③ 大运财运时机",
+            desc: "Current and upcoming major luck periods reveal when wealth opportunities are most likely.",
+            descCn: "当前和后续大运周期揭示财富机会最可能出现的时间。",
+            items: ["Current cycle wealth energy", "Upcoming favorable periods", "Caution periods", "Investment timing windows"],
+            itemsCn: ["当前周期财富能量", "后续有利期", "谨慎期", "投资时机窗口"]
+          }
+        ]
+      },
+      {
+        title: "2. Qi Men Dun Jia: Financial Energy Assessment",
+        titleCn: "二、奇门遁甲：财务能量评估",
+        desc: "Qi Men Dun Jia uses a spacetime model to analyze the current energy state for financial decisions and wealth accumulation.",
+        descCn: "奇门遁甲使用时空模型分析当前能量状态中财务决策和财富积累的时机。",
+        focus: "Key areas of focus:",
+        focusCn: "通常重点关注：",
+        items: ["Current wealth energy state", "Optimal timing for investments", "Hidden financial risks", "Opportunity identification"],
+        itemsCn: ["当前财富能量状态", "投资最佳时机", "隐藏财务风险", "机会识别"]
+      },
+      {
+        title: "3. Zi Wei Dou Shu: Wealth Palace Analysis",
+        titleCn: "三、紫微斗数：财帛宫分析",
+        desc: "Zi Wei Dou Shu uses star combinations to profile wealth patterns, income sources, and favorable periods for financial growth through the twelve palaces.",
+        descCn: "紫微斗数使用星曜组合描绘财富模式、收入来源和财务增长的有利时期。",
+        focus: "Key areas of focus:",
+        focusCn: "通常重点关注：",
+        items: ["Wealth palace structure", "Income source patterns", "Favorable accumulation periods", "Financial risk profile"],
+        itemsCn: ["财帛宫结构", "收入来源模式", "有利积累期", "财务风险画像"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "From Financial Struggle to Stable Growth",
+    titleCn: "从财务挣扎到稳定增长",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Ms. Huang (born 1985, Yi-Chou year) had inconsistent income for years. Some months she earned well, others she barely covered expenses. She wanted to understand her wealth pattern.",
+        textCn: "黄女士（1985年生，乙丑年），多年来收入不稳定。有些月份赚得不错，有些月份 barely 够支付开支。她想了解自己的财富模式。"
+      },
+      {
+        label: "BaZi Analysis",
+        labelCn: "八字分析",
+        text: "Ms. Huang's chart showed an Earth Day Master with a Wealth Star that activated in cycles. Her analysis revealed that her wealth energy peaked during Metal years and seasons, while Wood periods brought financial drain.",
+        textCn: "黄女士的命盘显示土日主，财星以周期方式激活。她的分析揭示她的财富能量在金年、金季节达到顶峰，而木期带来财务消耗。"
+      },
+      {
+        label: "Guidance",
+        labelCn: "指导建议",
+        text: "Focus on building stable income streams during favorable periods. Avoid major investments during Wood-dominated times. Set aside 30% of income during peak periods to cover lean times.",
+        textCn: "在有利期专注于建立稳定收入来源。避免在木旺时期进行重大投资。在高峰期存下30%的收入以覆盖低谷期。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Ms. Huang followed the cycle guidance for two years. She built an emergency fund during peak periods and avoided losses by not investing during unfavorable times. Her overall financial stability improved significantly.",
+        textCn: "黄女士遵循周期指引两年。她在高峰期建立了应急基金，并通过在不利时期不投资避免了损失。她的整体财务稳定性显著改善。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "BaZi Wealth Star analysis reveals your natural financial patterns and wealth attraction style.",
+      "Qi Men Dun Jia identifies optimal timing for financial decisions and potential risks.",
+      "Zi Wei Dou Shu profiles your wealth accumulation patterns and favorable growth periods.",
+      "Tarot uncovers subconscious blocks around money and abundance mindset.",
+      "Understanding your wealth cycle helps you plan ahead rather than react to financial surprises."
+    ],
+    itemsCn: [
+      "八字财星分析揭示你天生的财务模式和财富吸引风格。",
+      "奇门遁甲识别财务决策的最佳时机和潜在风险。",
+      "紫微斗数描绘你的财富积累模式和有利增长期。",
+      "塔罗揭示对金钱和丰盛心态的潜意识阻碍。",
+      "了解你的财富周期帮助你提前规划，而不是对财务惊喜做出反应。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "when-will-finances-improve", question: "When Will My Financial Situation Improve?", questionCn: "我的财务状况何时会好转？" },
+    { slug: "should-i-make-major-purchase", question: "Should I Make a Major Purchase Now?", questionCn: "我现在应该进行大额消费吗？" },
+    { slug: "how-to-increase-income", question: "How Can I Increase My Income?", questionCn: "如何增加我的收入？" }
+  ],
+
+  cta: {
+    textLine1: "Want to understand your wealth patterns?",
+    textLine1Cn: "想了解你的财富模式？",
+    textLine2: "Our consultants can help you identify your financial energy cycles and optimal timing for wealth-building decisions.",
+    textLine2Cn: "我们的咨询师可以帮助你识别财务能量周期和财富建设决策的最佳时机。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/wealth/wealth-fortune-trend",
+  publishedAt: "2026-08-16",
+  modifiedAt: "2026-08-16",
+  author: "Stellawei Editorial Team"
+};
+
+// ==================== Article 13: When Will My Financial Situation Improve? (Wealth Category) ====================
+
+export const whenWillFinancesImprove: KnowledgeArticle = {
+  slug: "when-will-finances-improve",
+  topicSlug: "wealth",
+  question: "When Will My Financial Situation Improve?",
+  questionCn: "我的财务状况何时会好转？",
+  metaTitle: "When Will My Financial Situation Improve? | StellaWei Knowledge Center",
+  metaDescription: "When money feels tight, understanding when your financial energy will shift can bring peace of mind. Eastern and Western divination tools help identify timing for financial recovery.",
+  metaTitleCn: "我的财务状况何时会好转？| Stellawei 知识中心",
+  metaDescriptionCn: "当金钱感到紧张时，了解你的财务能量何时会转变可以带来安心。东西方命理工具帮助识别财务恢复的时机。",
+  heroIntro: "Financial stress can feel endless when you are in the middle of it. Bills pile up, opportunities seem scarce, and every expense feels like a crisis. But like everything in life, financial fortunes move in cycles. The question is not whether things will improve—they almost always do—but when, and what you can do to prepare for the upturn. Eastern and Western divination tools offer insights into the timing of financial recovery.",
+  heroIntroCn: "当你身处其中时，财务压力可能感觉永无止境。账单堆积，机会稀缺，每一笔开支都感觉像危机。但就像生活中的一切，财富运势以周期运转。问题不在于是否会好转——几乎总会好转——而是什么时候，以及你可以做什么来为好转做准备。东西方命理工具为财务恢复的时机提供洞察。",
+
+  searchIntent: {
+    primary: [
+      "when will my finances improve",
+      "when will my money situation get better",
+      "financial recovery timing",
+      "when will i be financially stable"
+    ],
+    primaryCn: [
+      "我的财务状况何时会好转",
+      "我的经济状况什么时候会改善",
+      "财务恢复时机",
+      "我什么时候会财务稳定"
+    ],
+    secondary: [
+      "bazi financial recovery",
+      "qi men dun jia money timing",
+      "zi wei dou shu wealth cycle",
+      "tarot financial future"
+    ],
+    secondaryCn: [
+      "八字财务恢复",
+      "奇门遁甲金钱时机",
+      "紫微斗数财富周期",
+      "塔罗财务未来"
+    ],
+    related: [
+      "how to get out of debt",
+      "financial hardship solutions",
+      "money problems advice",
+      "improving cash flow"
+    ],
+    relatedCn: [
+      "如何摆脱债务",
+      "财务困难解决方案",
+      "金钱问题建议",
+      "改善现金流"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People facing financial difficulties often ask:",
+    questions: [
+      "I have been struggling for months. Is there light at the end of the tunnel?",
+      "Every time I think things are getting better, another expense hits. When will this cycle end?",
+      "I am doing everything right—budgeting, saving, working hard—but nothing seems to change.",
+      "My business has been slow for a year. Should I keep going or cut my losses?",
+      "I lost my job and savings are running low. When should I expect a breakthrough?",
+      "I want to make big financial decisions but I do not know if the timing is right."
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "面临财务困难的人常常问：",
+    questions: [
+      "我已经挣扎了好几个月。隧道尽头有光吗？",
+      "每次我觉得情况在好转，又有一笔开支来袭。这个周期什么时候结束？",
+      "我做的一切都是对的——做预算、储蓄、努力工作——但似乎没什么变化。",
+      "我的生意已经低迷一年了。我应该继续还是止损？",
+      "我失业了，存款在减少。我应该什么时候期待突破？",
+      "我想做重大财务决策，但我不知道时机是否合适。"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Help Identify Financial Recovery Timing",
+    headingCn: "东西方命理如何帮助识别财务恢复时机？",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods (BaZi, Qi Men Dun Jia, Zi Wei Dou Shu) analyze financial recovery timing through birth-time patterns, elemental cycles, and palace configurations. BaZi examines your current luck cycle and upcoming transitions to identify when financial energy will shift. Qi Men Dun Jia evaluates the current energy state and trajectory. Zi Wei Dou Shu profiles your wealth cycles and recovery patterns.",
+    easternDescCn: "东方方法（八字、奇门遁甲、紫微斗数）通过出生时间规律、五行周期和宫位配置来分析财务恢复时机。八字检查当前大运和后续转变来识别财务能量何时会转变。奇门遁甲评估当前能量状态和轨迹。紫微斗数描绘你的财富周期和恢复模式。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination (primarily Tarot) is based on symbolic psychology and the collective unconscious. Through card imagery and intuitive interpretation, it reflects your present emotional state around money, reveals hidden fears and limiting beliefs, and offers actionable guidance for navigating the current financial challenge with clarity and confidence.",
+    westernDescCn: "西方命理（以塔罗为主）基于象征心理学与集体潜意识。通过牌面图像与直觉解读，反映你对金钱的当下情感状态，揭示隐藏恐惧和限制性信念，并提供可执行的指引，帮助以清晰和信心应对当前财务挑战。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi Analysis: Luck Cycle Transition Timing",
+        titleCn: "一、八字分析：大运转变时机",
+        intro: "BaZi uses your birth year, month, day, and hour to construct a Four Pillars chart. For financial recovery timing, the analysis typically focuses on:",
+        introCn: "八字使用你的出生年月日时构建四柱命盘。针对财务恢复时机，分析通常关注：",
+        cards: [
+          {
+            title: "① Current Luck Cycle Assessment",
+            titleCn: "① 当前大运评估",
+            desc: "Understanding whether your current cycle supports or challenges financial growth.",
+            descCn: "理解当前周期是支持还是挑战财务增长。",
+            items: ["Current cycle wealth energy", "Supportive vs challenging periods", "Transition timing", "Recovery indicators"],
+            itemsCn: ["当前周期财富能量", "支持期与挑战期", "转变时机", "恢复指标"]
+          },
+          {
+            title: "② Upcoming Cycle Preview",
+            titleCn: "② 后续大运预览",
+            desc: "Looking ahead to the next major luck cycle to identify when financial improvement is most likely.",
+            descCn: "展望下一个大运周期来识别财务改善最可能出现的时间。",
+            items: ["Next cycle energy preview", "Favorable timing windows", "Preparation periods", "Opportunity indicators"],
+            itemsCn: ["下一周期能量预览", "有利时机窗口", "准备期", "机会指标"]
+          },
+          {
+            title: "③ Annual Flow Analysis",
+            titleCn: "③ 流年分析",
+            desc: "The current and upcoming annual cycles reveal shorter-term financial shifts.",
+            descCn: "当前和后续流年揭示短期财务转变。",
+            items: ["Current year financial outlook", "Next year improvement timing", "Monthly energy shifts", "Seasonal wealth patterns"],
+            itemsCn: ["当年财务展望", "次年改善时机", "月度能量转变", "季节性财富模式"]
+          }
+        ]
+      },
+      {
+        title: "2. Qi Men Dun Jia: Recovery Trajectory Assessment",
+        titleCn: "二、奇门遁甲：恢复轨迹评估",
+        desc: "Qi Men Dun Jia uses a spacetime model to analyze the current financial energy state and likely recovery trajectory.",
+        descCn: "奇门遁甲使用时空模型分析当前财务能量状态和可能的恢复轨迹。",
+        focus: "Key areas of focus:",
+        focusCn: "通常重点关注：",
+        items: ["Current financial energy state", "Recovery timeline indicators", "Hidden opportunities", "Risk mitigation timing"],
+        itemsCn: ["当前财务能量状态", "恢复时间线指标", "隐藏机会", "风险缓解时机"]
+      },
+      {
+        title: "3. Zi Wei Dou Shu: Wealth Cycle Patterns",
+        titleCn: "三、紫微斗数：财富周期模式",
+        desc: "Zi Wei Dou Shu uses star combinations to profile your historical wealth patterns and predict recovery timing.",
+        descCn: "紫微斗数使用星曜组合描绘你的历史财富模式并预测恢复时机。",
+        focus: "Key areas of focus:",
+        focusCn: "通常重点关注：",
+        items: ["Historical wealth cycles", "Recovery pattern analysis", "Favorable accumulation periods", "Financial stability indicators"],
+        itemsCn: ["历史财富周期", "恢复模式分析", "有利积累期", "财务稳定性指标"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Navigating Financial Downturn to Recovery",
+    titleCn: " navigating 财务低谷到恢复",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Mr. Chen (born 1978, Wu-Wu year) owned a small restaurant that suffered during an economic downturn. Revenue dropped 40% over six months. He was considering closing.",
+        textCn: "陈先生（1978年生，戊午年），经营一家小餐馆，在经济下行期间遭受损失。收入在六个月内下降了40%。他在考虑关门。"
+      },
+      {
+        label: "BaZi Analysis",
+        labelCn: "八字分析",
+        text: "Mr. Chen's chart showed he was in a challenging luck cycle that would last until late 2024. However, his next cycle beginning in 2025 brought strong Wealth Star activation. The analysis revealed Q4 2024 was the bottom, with gradual improvement beginning in early 2025.",
+        textCn: "陈先生的命盘显示他正处于一个持续到2024年末的挑战性大运。但他的下一周期从2025年开始带来强烈的财星激活。分析揭示2024年第四季度是谷底，2025年初开始逐步改善。"
+      },
+      {
+        label: "Guidance",
+        labelCn: "指导建议",
+        text: "Hold on through Q4 2024. Cut non-essential costs but maintain quality. Begin planning a menu refresh for Q1 2025 when your energy shifts. Do not take on new debt.",
+        textCn: "坚持过2024年第四季度。削减非必要成本但保持质量。开始计划在2025年第一季度当你的能量转变时更新菜单。不要承担新债务。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Mr. Chen followed the advice and kept the restaurant open. He weathered the slow period and launched a refreshed menu in February 2025. Revenue recovered to pre-downturn levels by May 2025.",
+        textCn: "陈先生遵循了建议，保持餐馆营业。他度过了低迷期，并在2025年2月推出了更新的菜单。到2025年5月，收入恢复到下行前水平。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "BaZi luck cycle analysis reveals when your financial energy will naturally shift.",
+      "Qi Men Dun Jia assesses the current financial energy state and recovery trajectory.",
+      "Zi Wei Dou Shu profiles your historical wealth patterns to predict recovery timing.",
+      "Tarot uncovers emotional blocks that may be prolonging financial difficulty.",
+      "Knowing when improvement is likely helps you endure the current challenge with confidence."
+    ],
+    itemsCn: [
+      "八字大运分析揭示你的财务能量何时会自然转变。",
+      "奇门遁甲评估当前财务能量状态和恢复轨迹。",
+      "紫微斗数描绘你的历史财富模式来预测恢复时机。",
+      "塔罗揭示可能延长财务困难的情感阻碍。",
+      "知道改善可能在什么时候帮助你充满信心地应对当前挑战。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "wealth-fortune-trend", question: "How Is My Wealth Fortune Trending?", questionCn: "我的财运走势如何？" },
+    { slug: "how-to-increase-income", question: "How Can I Increase My Income?", questionCn: "如何增加我的收入？" },
+    { slug: "save-or-invest", question: "Is This a Good Time to Save or Invest?", questionCn: "现在是储蓄还是投资的好时机？" }
+  ],
+
+  cta: {
+    textLine1: "Waiting for your financial situation to improve?",
+    textLine1Cn: "等待财务状况好转？",
+    textLine2: "Our consultants can help you understand your financial cycles and identify when recovery is most likely.",
+    textLine2Cn: "我们的咨询师可以帮助你理解财务周期并识别恢复最可能的时机。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/wealth/when-will-finances-improve",
+  publishedAt: "2026-08-16",
+  modifiedAt: "2026-08-16",
+  author: "Stellawei Editorial Team"
+};
+
+// ==================== Article 14: Should I Make a Major Purchase Now? (Wealth Category) ====================
+
+export const shouldIMakeMajorPurchase: KnowledgeArticle = {
+  slug: "should-i-make-major-purchase",
+  topicSlug: "wealth",
+  question: "Should I Make a Major Purchase Now?",
+  questionCn: "我现在应该进行大额消费吗？",
+  metaTitle: "Should I Make a Major Purchase Now? | StellaWei Knowledge Center",
+  metaDescription: "Big purchases can be exciting or stressful. Eastern and Western divination tools help you assess whether the timing aligns with your financial energy and life path.",
+  metaTitleCn: "我现在应该进行大额消费吗？| Stellawei 知识中心",
+  metaDescriptionCn: "大额消费可能令人兴奋或压力重重。东西方命理工具帮助你评估时机是否与你的财务能量和人生道路对齐。",
+  heroIntro: "A major purchase—whether it is a home, a car, or significant investment—can reshape your financial landscape for years. The timing of such decisions matters as much as the decision itself. Making a big move when your financial energy is low can create long-term stress, while waiting for the right cycle can make the same purchase feel effortless. Eastern and Western divination tools offer guidance on whether now is the right time.",
+  heroIntroCn: "一次大额消费——无论是房子、车子还是重大投资——可以在多年内重塑你的财务格局。这种决策的时机与决策本身同样重要。在财务能量低落时做出大动作可能带来长期压力，而等待合适的周期可以让同样的消费感觉轻松自如。东西方命理工具提供关于现在是否是合适时机的指引。",
+
+  searchIntent: {
+    primary: [
+      "should i make a major purchase now",
+      "is now a good time to buy a house",
+      "should i buy a car now",
+      "major purchase timing"
+    ],
+    primaryCn: [
+      "我现在应该进行大额消费吗",
+      "现在是买房的好时机吗",
+      "我现在应该买车吗",
+      "大额消费时机"
+    ],
+    secondary: [
+      "bazi purchase timing",
+      "qi men dun jia big decision",
+      "zi wei dou shu property timing",
+      "tarot major purchase"
+    ],
+    secondaryCn: [
+      "八字购买时机",
+      "奇门遁甲重大决策",
+      "紫微斗数房产时机",
+      "塔罗大额消费"
+    ],
+    related: [
+      "buying a house timing",
+      "big purchase decision",
+      "investment timing",
+      "should i wait or buy now"
+    ],
+    relatedCn: [
+      "买房时机",
+      "大额消费决策",
+      "投资时机",
+      "应该等还是现在买"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People considering major purchases often wonder:",
+    questions: [
+      "Interest rates are rising. Should I buy now before they go higher, or wait?",
+      "I have the down payment, but I am worried about job security. Is it too risky?",
+      "The market seems overpriced. Should I wait for a correction?",
+      "My partner wants to buy, but I am not sure we are financially ready.",
+      "I have been saving for years. Is this the right moment to use my savings?",
+      "Everyone says this is a good investment, but my gut says wait. Who is right?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "考虑大额消费的人常常在想：",
+    questions: [
+      "利率在上升。我应该在它们更高之前现在买，还是等等？",
+      "我有首付，但我担心工作稳定性。风险太大了吗？",
+      "市场似乎定价过高。我应该等回调吗？",
+      "我的伴侣想买，但我不确定我们是否在财务上准备好了。",
+      "我已经存了很多年。这是我使用储蓄的合适时刻吗？",
+      "每个人都说这是好的投资，但我的直觉说等等。谁是对的？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Help Assess Major Purchase Timing",
+    headingCn: "东西方命理如何帮助评估大额消费时机？",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods (BaZi, Qi Men Dun Jia, Zi Wei Dou Shu) analyze major purchase timing through birth-time patterns, elemental cycles, and palace configurations. BaZi examines your current wealth energy and whether the purchase aligns with your financial cycle. Qi Men Dun Jia evaluates the specific timing and energy of the transaction. Zi Wei Dou Shu profiles your asset accumulation patterns.",
+    easternDescCn: "东方方法（八字、奇门遁甲、紫微斗数）通过出生时间规律、五行周期和宫位配置来分析大额消费时机。八字检查你当前的财富能量以及这次消费是否与你的财务周期对齐。奇门遁甲评估交易的具体时机和能量。紫微斗数描绘你的资产积累模式。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination (primarily Tarot) is based on symbolic psychology and the collective unconscious. Through card imagery and intuitive interpretation, it reflects your present emotional state about the purchase, reveals hidden fears and motivations, and offers actionable guidance for understanding whether this decision serves your highest good.",
+    westernDescCn: "西方命理（以塔罗为主）基于象征心理学与集体潜意识。通过牌面图像与直觉解读，反映你对这次消费的当下情感状态，揭示隐藏恐惧和动机，并提供可执行的指引，帮助理解这个决定是否服务于你的最高利益。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi Analysis: Wealth Energy and Purchase Timing",
+        titleCn: "一、八字分析：财富能量与购买时机",
+        intro: "BaZi uses your birth year, month, day, and hour to construct a Four Pillars chart. For major purchase timing, the analysis typically focuses on:",
+        introCn: "八字使用你的出生年月日时构建四柱命盘。针对大额消费时机，分析通常关注：",
+        cards: [
+          {
+            title: "① Current Wealth Star Status",
+            titleCn: "① 当前财星状态",
+            desc: "Whether your wealth energy is strong enough to support a major outflow.",
+            descCn: "你的财富能量是否足够强大以支持重大支出。",
+            items: ["Wealth star current strength", "Financial outflow capacity", "Recovery timeline", "Post-purchase stability"],
+            itemsCn: ["财星当前强度", "财务支出能力", "恢复时间线", "购买后稳定性"]
+          },
+          {
+            title: "② Day Master Resource Assessment",
+            titleCn: "② 日主资源评估",
+            desc: "Whether your core element has sufficient resource support for the purchase.",
+            descCn: "你的核心五行是否有足够的资源支持来支撑这次消费。",
+            items: ["Resource element strength", "Financial buffer assessment", "Risk tolerance level", "Support system analysis"],
+            itemsCn: ["印星强度", "财务缓冲评估", "风险承受水平", "支持系统分析"]
+          },
+          {
+            title: "③ Annual Cycle Timing",
+            titleCn: "③ 流年时机",
+            desc: "Whether the current year supports major asset acquisition.",
+            descCn: "当前年份是否支持重大资产购置。",
+            items: ["Current year purchase energy", "Favorable acquisition months", "Post-purchase outlook", "Alternative timing options"],
+            itemsCn: ["当年购买能量", "有利购置月份", "购买后展望", "替代时机选项"]
+          }
+        ]
+      },
+      {
+        title: "2. Qi Men Dun Jia: Transaction Energy Assessment",
+        titleCn: "二、奇门遁甲：交易能量评估",
+        desc: "Qi Men Dun Jia uses a spacetime model to analyze the energy surrounding the specific purchase and identify optimal timing.",
+        descCn: "奇门遁甲使用时空模型分析围绕特定购买的能量并识别最佳时机。",
+        focus: "Key areas of focus:",
+        focusCn: "通常重点关注：",
+        items: ["Transaction energy quality", "Optimal signing/closing timing", "Hidden risks", "Long-term value indicators"],
+        itemsCn: ["交易能量质量", "最佳签约/成交时机", "隐藏风险", "长期价值指标"]
+      },
+      {
+        title: "3. Zi Wei Dou Shu: Asset Palace Analysis",
+        titleCn: "三、紫微斗数：资产宫分析",
+        desc: "Zi Wei Dou Shu uses star combinations to profile your asset accumulation patterns and timing for major acquisitions.",
+        descCn: "紫微斗数使用星曜组合描绘你的资产积累模式和重大购置的时机。",
+        focus: "Key areas of focus:",
+        focusCn: "通常重点关注：",
+        items: ["Asset accumulation patterns", "Property acquisition timing", "Financial stability outlook", "Investment vs consumption balance"],
+        itemsCn: ["资产积累模式", "房产购置时机", "财务稳定性展望", "投资与消费平衡"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Timing a Home Purchase for Long-term Success",
+    titleCn: "为长期成功把握购房时机",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Ms. Lin (born 1987, Ding-Mao year) and her husband had saved for five years for a home down payment. Market prices were rising rapidly. Their families urged them to buy immediately.",
+        textCn: "林女士（1987年生，丁卯年）和丈夫已经存了五年购房首付。市场价格在快速上涨。双方家庭敦促他们立即购买。"
+      },
+      {
+        label: "BaZi Analysis",
+        labelCn: "八字分析",
+        text: "Ms. Lin's chart showed she was in a challenging luck cycle for major purchases until mid-2025. Her Wealth Star was strong but her Resource element was depleted. The analysis suggested waiting would bring better opportunities and less stress.",
+        textCn: "林女士的命盘显示她直到2025年中都处在一个对大额消费有挑战性的大运。她的财星强劲但印星 depleted。分析建议等待会带来更好的机会和更少的压力。"
+      },
+      {
+        label: "Guidance",
+        labelCn: "指导建议",
+        text: "Wait until Q3 2025. Continue saving. The market will cool slightly by then. Your energy will be stronger for making this commitment. Use the extra time to improve your credit score.",
+        textCn: "等到2025年第三季度。继续储蓄。到那时市场会稍微冷却。你的能量会更有力来做出这个承诺。利用额外时间提高信用评分。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Ms. Lin waited and bought in September 2025. Interest rates had stabilized, and she found a better property than what was available earlier. She negotiated a 5% discount because the market had cooled. Her mortgage approval was smoother due to improved credit.",
+        textCn: "林女士等待后在2025年9月购买。利率已经稳定，她找到了比早期更好的房产。因为市场冷却，她谈判到了5%的折扣。由于信用改善，她的抵押贷款审批更顺利。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "BaZi Wealth Star analysis reveals whether your current energy supports major financial commitments.",
+      "Qi Men Dun Jia identifies the optimal timing for signing and closing major purchases.",
+      "Zi Wei Dou Shu profiles your asset accumulation patterns and ideal acquisition timing.",
+      "Tarot uncovers emotional factors that may be driving the purchase decision.",
+      "The right timing for a major purchase aligns with both market conditions and your personal energy cycle."
+    ],
+    itemsCn: [
+      "八字财星分析揭示你当前能量是否支持重大财务承诺。",
+      "奇门遁甲识别签约和完成大额消费的最佳时机。",
+      "紫微斗数描绘你的资产积累模式和理想购置时机。",
+      "塔罗揭示可能驱动购买决策的情感因素。",
+      "大额消费的合适时机与市场条件和个人能量周期都对齐。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "wealth-fortune-trend", question: "How Is My Wealth Fortune Trending?", questionCn: "我的财运走势如何？" },
+    { slug: "when-will-finances-improve", question: "When Will My Financial Situation Improve?", questionCn: "我的财务状况何时会好转？" },
+    { slug: "save-or-invest", question: "Is This a Good Time to Save or Invest?", questionCn: "现在是储蓄还是投资的好时机？" }
+  ],
+
+  cta: {
+    textLine1: "Considering a major purchase?",
+    textLine1Cn: "考虑大额消费？",
+    textLine2: "Our consultants can help you assess whether the timing aligns with your financial energy and life path.",
+    textLine2Cn: "我们的咨询师可以帮助你评估时机是否与你的财务能量和人生道路对齐。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/wealth/should-i-make-major-purchase",
+  publishedAt: "2026-08-16",
+  modifiedAt: "2026-08-16",
+  author: "Stellawei Editorial Team"
+};
+
+// ==================== Article 15: How Can I Increase My Income? (Wealth Category) ====================
+
+export const howToIncreaseIncome: KnowledgeArticle = {
+  slug: "how-to-increase-income",
+  topicSlug: "wealth",
+  question: "How Can I Increase My Income?",
+  questionCn: "如何增加我的收入？",
+  metaTitle: "How Can I Increase My Income? | StellaWei Knowledge Center",
+  metaDescription: "When you want to boost your earning potential, Eastern and Western divination tools can reveal your natural income pathways, optimal timing for growth, and what might be blocking your financial expansion.",
+  metaTitleCn: "如何增加我的收入？| Stellawei 知识中心",
+  metaDescriptionCn: "当你想提升收入潜力时，东西方命理工具可以揭示你天生的收入路径、增长的最佳时机，以及什么可能阻碍了你的财务扩展。",
+  heroIntro: "Increasing income is one of the most common financial goals, yet the path is rarely straightforward. Sometimes the answer is asking for a raise, sometimes it is switching industries, and sometimes it is starting a side business. The right approach depends on your unique energy pattern. Eastern and Western divination tools help identify the income strategies most aligned with your nature and timing.",
+  heroIntroCn: "增加收入是最常见的财务目标之一，但道路 rarely  straightforward。有时答案是要求加薪，有时是换行业，有时是开始副业。正确的方法取决于你独特的能量模式。东西方命理工具帮助识别最与你的本性和时机对齐的收入策略。",
+
+  searchIntent: {
+    primary: [
+      "how to increase my income",
+      "how to earn more money",
+      "ways to boost income",
+      "income growth strategies"
+    ],
+    primaryCn: [
+      "如何增加我的收入",
+      "如何赚更多钱",
+      "提升收入的方法",
+      "收入增长策略"
+    ],
+    secondary: [
+      "bazi wealth growth",
+      "qi men dun jia income timing",
+      "zi wei dou shu earning potential",
+      "tarot financial growth"
+    ],
+    secondaryCn: [
+      "八字财富增长",
+      "奇门遁甲收入时机",
+      "紫微斗数收入潜力",
+      "塔罗财务增长"
+    ],
+    related: [
+      "side hustle ideas",
+      "passive income strategies",
+      "salary negotiation tips",
+      "career change for money"
+    ],
+    relatedCn: [
+      "副业想法",
+      "被动收入策略",
+      "薪资谈判技巧",
+      "为钱换工作"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People wanting to increase income often ask:",
+    questions: [
+      "I have been at the same salary for two years. Should I ask for a raise or look elsewhere?",
+      "I want to start a side business but I do not know what would work for me.",
+      "My skills are valuable, but I am not getting paid what I am worth. What is wrong?",
+      "I see others making money in ways that seem easy. Should I try the same thing?",
+      "I need more income but I am already working long hours. What are my options?",
+      "I have tried multiple income streams but none seem to work. Am I doing something wrong?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "想要增加收入的人常常问：",
+    questions: [
+      "我的工资已经两年没变。我应该要求加薪还是另寻出路？",
+      "我想开始副业，但我不知道什么适合我。",
+      "我的技能很有价值，但我没有拿到应得的报酬。出了什么问题？",
+      "我看到别人以看起来容易的方式赚钱。我应该尝试同样的东西吗？",
+      "我需要更多收入，但我已经在长时间工作了。我有什么选择？",
+      "我尝试了多种收入来源，但似乎都不起作用。我做错了什么吗？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Help Identify Income Growth Paths",
+    headingCn: "东西方命理如何帮助识别收入增长路径？",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods (BaZi, Qi Men Dun Jia, Zi Wei Dou Shu) analyze income growth through birth-time patterns, elemental strengths, and palace configurations. BaZi examines your Wealth Star and Day Master to identify your natural income style. Qi Men Dun Jia evaluates current opportunities and timing. Zi Wei Dou Shu profiles your earning potential and favorable income strategies.",
+    easternDescCn: "东方方法（八字、奇门遁甲、紫微斗数）通过出生时间规律、五行强弱和宫位配置来分析收入增长。八字检查你的财星和日主来识别你天生的收入风格。奇门遁甲评估当前机会和时机。紫微斗数描绘你的收入潜力和有利收入策略。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination (primarily Tarot) is based on symbolic psychology and the collective unconscious. Through card imagery and intuitive interpretation, it reflects your present beliefs about money and worth, reveals blocks around receiving abundance, and offers actionable guidance for understanding your true value.",
+    westernDescCn: "西方命理（以塔罗为主）基于象征心理学与集体潜意识。通过牌面图像与直觉解读，反映你对金钱和价值的当下信念，揭示对接受丰盛的阻碍，并提供可执行的指引，帮助你理解真正价值。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi Analysis: Income Style and Growth Timing",
+        titleCn: "一、八字分析：收入风格与增长时机",
+        intro: "BaZi uses your birth year, month, day, and hour to construct a Four Pillars chart. For income growth, the analysis typically focuses on:",
+        introCn: "八字使用你的出生年月日时构建四柱命盘。针对收入增长，分析通常关注：",
+        cards: [
+          {
+            title: "① Wealth Star Type",
+            titleCn: "① 财星类型",
+            desc: "Whether your wealth comes from salary, business, investment, or other sources.",
+            descCn: "你的财富来自薪资、商业、投资还是其他来源。",
+            items: ["Primary income source alignment", "Secondary income potential", "Investment suitability", "Business ownership potential"],
+            itemsCn: ["主要收入来源对齐", "次要收入潜力", "投资适配性", "商业拥有潜力"]
+          },
+          {
+            title: "② Day Master Strength",
+            titleCn: "② 日主强弱",
+            desc: "Whether your core element can handle more wealth and responsibility.",
+            descCn: "你的核心五行是否能处理更多财富和责任。",
+            items: ["Wealth capacity assessment", "Growth readiness", "Risk tolerance", "Responsibility handling"],
+            itemsCn: ["财富容量评估", "成长准备度", "风险承受度", "责任处理能力"]
+          },
+          {
+            title: "③ Luck Cycle Growth Periods",
+            titleCn: "③ 大运增长期",
+            desc: "When your energy cycle supports income expansion.",
+            descCn: "你的能量周期什么时候支持收入扩展。",
+            items: ["Current cycle income potential", "Upcoming growth windows", "Side business timing", "Career transition timing"],
+            itemsCn: ["当前周期收入潜力", "后续增长窗口", "副业时机", "职业转换时机"]
+          }
+        ]
+      },
+      {
+        title: "2. Qi Men Dun Jia: Opportunity and Action Timing",
+        titleCn: "二、奇门遁甲：机会与行动时机",
+        desc: "Qi Men Dun Jia uses a spacetime model to analyze current income opportunities and optimal timing for action.",
+        descCn: "奇门遁甲使用时空模型分析当前收入机会和行动的最佳时机。",
+        focus: "Key areas of focus:",
+        focusCn: "通常重点关注：",
+        items: ["Current income opportunity energy", "Best timing for negotiations", "Hidden growth channels", "Action strategy guidance"],
+        itemsCn: ["当前收入机会能量", "谈判最佳时机", "隐藏增长渠道", "行动策略指引"]
+      },
+      {
+        title: "3. Zi Wei Dou Shu: Earning Potential Profile",
+        titleCn: "三、紫微斗数：收入潜力画像",
+        desc: "Zi Wei Dou Shu uses star combinations to profile your earning potential and favorable income strategies.",
+        descCn: "紫微斗数使用星曜组合描绘你的收入潜力和有利收入策略。",
+        focus: "Key areas of focus:",
+        focusCn: "通常重点关注：",
+        items: ["Income potential analysis", "Favorable earning strategies", "Career advancement timing", "Business vs employment fit"],
+        itemsCn: ["收入潜力分析", "有利收入策略", "职业晋升时机", "商业与就业适配"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Finding the Right Income Path",
+    titleCn: "找到正确的收入路径",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Mr. Zhou (born 1984, Jia-Zi year) had a stable job but wanted to increase his income. He tried stock trading and lost money, then tried freelancing but found it exhausting.",
+        textCn: "周先生（1984年生，甲子年），有稳定的工作但想增加收入。他尝试股票交易亏了钱，然后尝试自由职业但发现很 exhausting。"
+      },
+      {
+        label: "BaZi Analysis",
+        labelCn: "八字分析",
+        text: "Mr. Zhou's chart showed a strong Wood Day Master with a Wealth Star that favored steady, structured income over speculation. His analysis revealed teaching and mentoring were natural wealth channels for him.",
+        textCn: "周先生的命盘显示强木日主，财星偏好稳定、有结构的收入而非投机。他的分析揭示教学和辅导是他天生的财富渠道。"
+      },
+      {
+        label: "Guidance",
+        labelCn: "指导建议",
+        text: "Stop speculative trading. Focus on advancing in your current field through knowledge sharing. Start a paid workshop series in your area of expertise.",
+        textCn: "停止投机交易。专注于通过知识分享在当前领域晋升。开始你专业领域的付费研讨会系列。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Mr. Zhou launched a monthly workshop series that generated an additional 30% income within six months. He was promoted to team lead at his company, adding another 20% to his salary.",
+        textCn: "周先生推出了月度研讨会系列，六个月内产生了额外30%的收入。他在公司晋升为团队负责人，薪资又增加了20%。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "BaZi Wealth Star analysis reveals your natural income style and growth timing.",
+      "Qi Men Dun Jia identifies current income opportunities and optimal action timing.",
+      "Zi Wei Dou Shu profiles your earning potential and favorable strategies.",
+      "Tarot uncovers beliefs about money that may be limiting your income growth.",
+      "The best income strategy aligns with your elemental nature and current life cycle."
+    ],
+    itemsCn: [
+      "八字财星分析揭示你天生的收入风格和增长时机。",
+      "奇门遁甲识别当前收入机会和最佳行动时机。",
+      "紫微斗数描绘你的收入潜力和有利策略。",
+      "塔罗揭示可能限制你收入增长的金钱信念。",
+      "最佳收入策略与你的五行本性和当前生命周期对齐。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "wealth-fortune-trend", question: "How Is My Wealth Fortune Trending?", questionCn: "我的财运走势如何？" },
+    { slug: "should-i-make-major-purchase", question: "Should I Make a Major Purchase Now?", questionCn: "我现在应该进行大额消费吗？" },
+    { slug: "save-or-invest", question: "Is This a Good Time to Save or Invest?", questionCn: "现在是储蓄还是投资的好时机？" }
+  ],
+
+  cta: {
+    textLine1: "Want to increase your income?",
+    textLine1Cn: "想增加收入？",
+    textLine2: "Our consultants can help you identify your natural income pathways and optimal timing for financial growth.",
+    textLine2Cn: "我们的咨询师可以帮助你识别天生的收入路径和财务增长的最佳时机。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/wealth/how-to-increase-income",
+  publishedAt: "2026-08-16",
+  modifiedAt: "2026-08-16",
+  author: "Stellawei Editorial Team"
+};
+
+// ==================== Article 16: Is This a Good Time to Save or Invest? (Wealth Category) ====================
+
+export const saveOrInvest: KnowledgeArticle = {
+  slug: "save-or-invest",
+  topicSlug: "wealth",
+  question: "Is This a Good Time to Save or Invest?",
+  questionCn: "现在是储蓄还是投资的好时机？",
+  metaTitle: "Is This a Good Time to Save or Invest? | StellaWei Knowledge Center",
+  metaDescription: "Deciding between saving and investing depends on timing, risk tolerance, and your personal energy cycle. Eastern and Western divination tools help you make this decision with clarity.",
+  metaTitleCn: "现在是储蓄还是投资的好时机？| Stellawei 知识中心",
+  metaDescriptionCn: "决定储蓄还是投资取决于时机、风险承受度和个人能量周期。东西方命理工具帮助你清晰地做出这个决定。",
+  heroIntro: "The choice between saving and investing is one of the most common financial dilemmas. Saving feels safe but slow; investing offers growth but brings risk. The right answer is not the same for everyone, and it changes depending on your current life stage, financial situation, and energy cycle. Eastern and Western divination tools offer guidance on whether your current timing favors preservation or growth.",
+  heroIntroCn: "储蓄和投资之间的选择是最常见的财务困境之一。储蓄感觉安全但缓慢；投资提供增长但带来风险。正确的答案对每个人都不一样，而且取决于你当前的人生阶段、财务状况和能量周期而变化。东西方命理工具提供关于你当前时机是否偏向保值还是增长的指引。",
+
+  searchIntent: {
+    primary: [
+      "should i save or invest",
+      "is now a good time to invest",
+      "save or invest decision",
+      "when to invest money"
+    ],
+    primaryCn: [
+      "我应该储蓄还是投资",
+      "现在是投资的好时机吗",
+      "储蓄或投资决策",
+      "什么时候投资"
+    ],
+    secondary: [
+      "bazi investment timing",
+      "qi men dun jia save vs invest",
+      "zi wei dou shu wealth strategy",
+      "tarot investment decision"
+    ],
+    secondaryCn: [
+      "八字投资时机",
+      "奇门遁甲储蓄与投资",
+      "紫微斗数财富策略",
+      "塔罗投资决策"
+    ],
+    related: [
+      "emergency fund vs investing",
+      "investment strategy",
+      "when to start investing",
+      "risk tolerance assessment"
+    ],
+    relatedCn: [
+      "应急基金与投资",
+      "投资策略",
+      "什么时候开始投资",
+      "风险承受度评估"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People deciding between saving and investing often wonder:",
+    questions: [
+      "I have some extra money. Should I put it in savings or try the stock market?",
+      "The market seems high. Is it too late to invest, or should I wait for a dip?",
+      "I do not have an emergency fund yet. Should I build that first before investing?",
+      "Everyone is talking about crypto. Should I invest some of my savings there?",
+      "I am close to retirement. Should I be more conservative or keep growing my wealth?",
+      "My bank account earns almost nothing. Is keeping cash actually losing me money?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "决定储蓄还是投资的人常常在想：",
+    questions: [
+      "我有一些余钱。应该存进储蓄还是尝试股市？",
+      "市场似乎很高。现在投资太晚了吗，还是应该等回调？",
+      "我还没有应急基金。应该在投资前先建立那个吗？",
+      "每个人都在谈论加密货币。我应该把部分储蓄投资在那里吗？",
+      "我接近退休了。应该更保守还是继续增长财富？",
+      "我的银行账户几乎不赚钱。持有现金实际上是在让我亏钱吗？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Help Guide Save vs Invest Decisions",
+    headingCn: "东西方命理如何帮助指引储蓄与投资决策？",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods (BaZi, Qi Men Dun Jia, Zi Wei Dou Shu) analyze the save vs invest question through birth-time patterns, elemental cycles, and palace configurations. BaZi examines your current wealth energy and whether it favors preservation or growth. Qi Men Dun Jia evaluates the current market energy and timing. Zi Wei Dou Shu profiles your risk tolerance and wealth strategy.",
+    easternDescCn: "东方方法（八字、奇门遁甲、紫微斗数）通过出生时间规律、五行周期和宫位配置来分析储蓄与投资的问题。八字检查当前财富能量以及它偏向保值还是增长。奇门遁甲评估当前市场能量和时机。紫微斗数描绘你的风险承受度和财富策略。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination (primarily Tarot) is based on symbolic psychology and the collective unconscious. Through card imagery and intuitive interpretation, it reflects your present comfort with risk, reveals hidden fears about financial loss, and offers actionable guidance for understanding your true risk tolerance.",
+    westernDescCn: "西方命理（以塔罗为主）基于象征心理学与集体潜意识。通过牌面图像与直觉解读，反映你对风险的当下舒适度，揭示对财务损失的隐藏恐惧，并提供可执行的指引，帮助你理解真正的风险承受度。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi Analysis: Preservation vs Growth Energy",
+        titleCn: "一、八字分析：保值与增长能量",
+        intro: "BaZi uses your birth year, month, day, and hour to construct a Four Pillars chart. For save vs invest decisions, the analysis typically focuses on:",
+        introCn: "八字使用你的出生年月日时构建四柱命盘。针对储蓄与投资决策，分析通常关注：",
+        cards: [
+          {
+            title: "① Current Wealth Energy State",
+            titleCn: "① 当前财富能量状态",
+            desc: "Whether your current cycle favors protecting wealth or taking growth risks.",
+            descCn: "你当前周期偏向保护财富还是承担增长风险。",
+            items: ["Wealth preservation indicators", "Growth opportunity signals", "Risk period warnings", "Stability assessment"],
+            itemsCn: ["财富保值指标", "增长机会信号", "风险期警告", "稳定性评估"]
+          },
+          {
+            title: "② Resource vs Wealth Balance",
+            titleCn: "② 印星与财星平衡",
+            desc: "The balance between your resource element (savings capacity) and wealth element (growth potential).",
+            descCn: "你的印星（储蓄能力）与财星（增长潜力）之间的平衡。",
+            items: ["Savings capacity assessment", "Investment readiness", "Buffer requirement", "Growth potential evaluation"],
+            itemsCn: ["储蓄能力评估", "投资准备度", "缓冲需求", "增长潜力评估"]
+          },
+          {
+            title: "③ Annual Cycle Strategy",
+            titleCn: "③ 流年策略",
+            desc: "Whether the current year supports aggressive growth or conservative preservation.",
+            descCn: "当前年份是否支持积极增长或保守保值。",
+            items: ["Current year strategy", "Investment timing windows", "Savings priority periods", "Mixed approach guidance"],
+            itemsCn: ["当年策略", "投资时机窗口", "储蓄优先期", "混合方法指引"]
+          }
+        ]
+      },
+      {
+        title: "2. Qi Men Dun Jia: Market Energy Assessment",
+        titleCn: "二、奇门遁甲：市场能量评估",
+        desc: "Qi Men Dun Jia uses a spacetime model to analyze current market energy and timing for financial decisions.",
+        descCn: "奇门遁甲使用时空模型分析当前市场能量和财务决策的时机。",
+        focus: "Key areas of focus:",
+        focusCn: "通常重点关注：",
+        items: ["Current investment climate", "Risk vs opportunity balance", "Optimal allocation timing", "Market cycle position"],
+        itemsCn: ["当前投资环境", "风险与机会平衡", "最佳配置时机", "市场周期位置"]
+      },
+      {
+        title: "3. Zi Wei Dou Shu: Wealth Strategy Profile",
+        titleCn: "三、紫微斗数：财富策略画像",
+        desc: "Zi Wei Dou Shu uses star combinations to profile your natural wealth strategy and risk tolerance.",
+        descCn: "紫微斗数使用星曜组合描绘你天生的财富策略和风险承受度。",
+        focus: "Key areas of focus:",
+        focusCn: "通常重点关注：",
+        items: ["Risk tolerance profile", "Wealth accumulation style", "Investment suitability", "Financial strategy alignment"],
+        itemsCn: ["风险承受度画像", "财富积累风格", "投资适配性", "财务策略对齐"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Finding the Right Balance for Financial Growth",
+    titleCn: "为财务增长找到正确平衡",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Ms. Ma (born 1990, Geng-Wu year) had saved 100,000 yuan. She was torn between keeping it all in savings for security or investing half for growth.",
+        textCn: "马女士（1990年生，庚午年），存了十万元。她在为安全起见全部存入储蓄和投一半用于增长之间 torn。"
+      },
+      {
+        label: "BaZi Analysis",
+        labelCn: "八字分析",
+        text: "Ms. Ma's chart showed a strong Metal Day Master with a balanced Wealth and Resource profile. Her current luck cycle favored moderate growth with strong safety reserves. The analysis suggested a 70-30 split.",
+        textCn: "马女士的命盘显示强金日主，财星与印星平衡。她当前的大运偏向适度增长配合强安全储备。分析建议七三分。"
+      },
+      {
+        label: "Guidance",
+        labelCn: "指导建议",
+        text: "Keep 70,000 in secure savings as your foundation. Invest 30,000 in a diversified portfolio. Reassess in 12 months when your cycle shifts toward more growth-oriented energy.",
+        textCn: "保留七万元在安全储蓄作为基础。投资三万元于多元化组合。12个月后当你的周期转向更增长导向的能量时重新评估。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Ms. Ma followed the plan. Her savings provided security during a market dip, while her investments recovered and grew 15% over 18 months. She felt financially confident rather than anxious.",
+        textCn: "马女士遵循了计划。她的储蓄在市场回调期间提供了安全感，而她的投资恢复并在18个月内增长了15%。她感到财务自信而非焦虑。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "BaZi analysis reveals whether your current cycle favors saving or investing.",
+      "Qi Men Dun Jia assesses current market energy and timing for financial decisions.",
+      "Zi Wei Dou Shu profiles your natural wealth strategy and risk tolerance.",
+      "Tarot uncovers hidden fears that may be driving overly conservative or risky behavior.",
+      "The right balance between saving and investing aligns with your energy cycle and life stage."
+    ],
+    itemsCn: [
+      "八字分析揭示你当前周期偏向储蓄还是投资。",
+      "奇门遁甲评估当前市场能量和财务决策时机。",
+      "紫微斗数描绘你天生的财富策略和风险承受度。",
+      "塔罗揭示可能驱动过于保守或冒险行为的隐藏恐惧。",
+      "储蓄与投资之间的正确平衡与你的能量周期和人生阶段对齐。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "wealth-fortune-trend", question: "How Is My Wealth Fortune Trending?", questionCn: "我的财运走势如何？" },
+    { slug: "how-to-increase-income", question: "How Can I Increase My Income?", questionCn: "如何增加我的收入？" },
+    { slug: "should-i-make-major-purchase", question: "Should I Make a Major Purchase Now?", questionCn: "我现在应该进行大额消费吗？" }
+  ],
+
+  cta: {
+    textLine1: "Unsure whether to save or invest?",
+    textLine1Cn: "不确定应该储蓄还是投资？",
+    textLine2: "Our consultants can help you understand your current financial energy and identify the strategy that aligns with your timing.",
+    textLine2Cn: "我们的咨询师可以帮助你理解当前财务能量并识别与时机的对齐策略。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/wealth/save-or-invest",
+  publishedAt: "2026-08-16",
+  modifiedAt: "2026-08-16",
+  author: "Stellawei Editorial Team"
+};
+
+// ==================== Article 17: Will I Have Unexpected Expenses? (Wealth Category) ====================
+
+export const unexpectedExpenses: KnowledgeArticle = {
+  slug: "unexpected-expenses",
+  topicSlug: "wealth",
+  question: "Will I Have Unexpected Expenses?",
+  questionCn: "我会有意外开支吗？",
+  metaTitle: "Will I Have Unexpected Expenses? | StellaWei Knowledge Center",
+  metaDescription: "Unexpected expenses can derail your financial plans. Eastern and Western divination tools help you anticipate potential financial challenges and prepare accordingly.",
+  metaTitleCn: "我会有意外开支吗？| Stellawei 知识中心",
+  metaDescriptionCn: "意外开支可能打乱你的财务计划。东西方命理工具帮助你预见潜在财务挑战并相应准备。",
+  heroIntro: "Life has a way of surprising us with expenses we did not plan for—a medical bill, a car repair, a home emergency. While no method can predict the exact nature of future expenses, understanding your financial risk periods can help you prepare and reduce stress. Eastern and Western divination tools offer insights into when you may face financial challenges and how to build resilience.",
+  heroIntroCn: "生活总以我们未计划的开支给我们惊喜——医疗账单、汽车维修、房屋紧急情况。虽然没有任何方法能预测未来开支的确切性质，但了解你的财务风险期可以帮助你准备并减少压力。东西方命理工具提供关于你可能面临财务挑战的时间以及如何建立韧性的洞察。",
+
+  searchIntent: {
+    primary: [
+      "will i have unexpected expenses",
+      "unexpected costs prediction",
+      "financial surprises coming",
+      "money problems ahead"
+    ],
+    primaryCn: [
+      "我会有意外开支吗",
+      "意外费用预测",
+      "财务惊喜",
+      "前方金钱问题"
+    ],
+    secondary: [
+      "bazi financial risk",
+      "qi men dun jia expense timing",
+      "zi wei dou shu financial challenges",
+      "tarot money worries"
+    ],
+    secondaryCn: [
+      "八字财务风险",
+      "奇门遁甲开支时机",
+      "紫微斗数财务挑战",
+      "塔罗金钱担忧"
+    ],
+    related: [
+      "emergency fund importance",
+      "how to prepare for unexpected costs",
+      "financial planning tips",
+      "money stress relief"
+    ],
+    relatedCn: [
+      "应急基金重要性",
+      "如何为意外开支做准备",
+      "财务规划技巧",
+      "金钱压力缓解"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People worried about unexpected expenses often feel:",
+    questions: [
+      "I finally started saving, but I am afraid something will come up and wipe it all out.",
+      "Last year I had three major unexpected bills. Is this year going to be the same?",
+      "I want to plan a vacation but I am worried about what might go wrong financially.",
+      "My car is getting old. Should I expect a big repair bill soon?",
+      "I do not have insurance for some things. Should I be worried?",
+      "My friend had a huge medical expense. Could that happen to me?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "担心意外开支的人常常感到：",
+    questions: [
+      "我终于开始储蓄了，但我害怕会有事情发生并把所有积蓄都 wipe out。",
+      "去年我有三笔重大意外账单。今年会一样吗？",
+      "我想计划度假，但我担心财务上可能出问题。",
+      "我的车越来越旧。我应该很快预料到一大笔维修费吗？",
+      "有些东西我没有保险。我应该担心吗？",
+      "我的朋友有一大笔医疗开支。那会发生在我身上吗？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Help Anticipate Financial Challenges",
+    headingCn: "东西方命理如何帮助预见财务挑战？",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods (BaZi, Qi Men Dun Jia, Zi Wei Dou Shu) analyze potential unexpected expenses through birth-time patterns, elemental cycles, and palace configurations. BaZi examines your current luck cycle for risk periods. Qi Men Dun Jia evaluates current energy for hidden financial drains. Zi Wei Dou Shu profiles your financial resilience and challenge periods.",
+    easternDescCn: "东方方法（八字、奇门遁甲、紫微斗数）通过出生时间规律、五行周期和宫位配置来分析潜在意外开支。八字检查当前大运中的风险期。奇门遁甲评估当前能量中的隐藏财务 drain。紫微斗数描绘你的财务韧性和挑战期。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination (primarily Tarot) is based on symbolic psychology and the collective unconscious. Through card imagery and intuitive interpretation, it reflects your present anxiety about financial security, reveals subconscious patterns that may attract financial challenges, and offers actionable guidance for building peace of mind.",
+    westernDescCn: "西方命理（以塔罗为主）基于象征心理学与集体潜意识。通过牌面图像与直觉解读，反映你对财务安全的当下焦虑，揭示可能吸引财务挑战的潜意识模式，并提供可执行的指引来建立内心平静。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi Analysis: Risk Period Identification",
+        titleCn: "一、八字分析：风险期识别",
+        intro: "BaZi uses your birth year, month, day, and hour to construct a Four Pillars chart. For unexpected expense prediction, the analysis typically focuses on:",
+        introCn: "八字使用你的出生年月日时构建四柱命盘。针对意外开支预测，分析通常关注：",
+        cards: [
+          {
+            title: "① Current Cycle Risk Assessment",
+            titleCn: "① 当前周期风险评估",
+            desc: "Identifying periods where financial drains are more likely.",
+            descCn: "识别财务 drain 更可能出现的时期。",
+            items: ["High-risk timing windows", "Potential drain sources", "Mitigation strategies", "Preparation periods"],
+            itemsCn: ["高风险时机窗口", "潜在 drain 来源", "缓解策略", "准备期"]
+          },
+          {
+            title: "② Resource Element Protection",
+            titleCn: "② 印星保护",
+            desc: "Whether your resource element is strong enough to buffer unexpected costs.",
+            descCn: "你的印星是否足够强大以缓冲意外开支。",
+            items: ["Savings buffer assessment", "Resource element strength", "Protection capacity", "Recovery speed"],
+            itemsCn: ["储蓄缓冲评估", "印星强度", "保护能力", "恢复速度"]
+          },
+          {
+            title: "③ Annual Challenge Points",
+            titleCn: "③ 流年挑战点",
+            desc: "Specific months or seasons when financial challenges may arise.",
+            descCn: "财务挑战可能出现的特定月份或季节。",
+            items: ["Monthly risk indicators", "Seasonal patterns", "Preparation priorities", "Response strategies"],
+            itemsCn: ["月度风险指标", "季节性模式", "准备优先事项", "应对策略"]
+          }
+        ]
+      },
+      {
+        title: "2. Qi Men Dun Jia: Hidden Drain Assessment",
+        titleCn: "二、奇门遁甲：隐藏 drain 评估",
+        desc: "Qi Men Dun Jia uses a spacetime model to analyze current energy for hidden financial drains and unexpected costs.",
+        descCn: "奇门遁甲使用时空模型分析当前能量中的隐藏财务 drain 和意外开支。",
+        focus: "Key areas of focus:",
+        focusCn: "通常重点关注：",
+        items: ["Current drain energy", "Unexpected cost timing", "Risk mitigation opportunities", "Protection strategies"],
+        itemsCn: ["当前 drain 能量", "意外开支时机", "风险缓解机会", "保护策略"]
+      },
+      {
+        title: "3. Zi Wei Dou Shu: Financial Resilience Profile",
+        titleCn: "三、紫微斗数：财务韧性画像",
+        desc: "Zi Wei Dou Shu uses star combinations to profile your financial resilience and identify challenge periods.",
+        descCn: "紫微斗数使用星曜组合描绘你的财务韧性并识别挑战期。",
+        focus: "Key areas of focus:",
+        focusCn: "通常重点关注：",
+        items: ["Financial resilience level", "Challenge period timing", "Recovery capacity", "Preparation recommendations"],
+        itemsCn: ["财务韧性水平", "挑战期时机", "恢复能力", "准备建议"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Preparing for and Navigating Unexpected Costs",
+    titleCn: "为意外开支做准备并 navigating",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Mr. Yang (born 1982, Ren-Xu year) was doing well financially but had no emergency fund. He wanted to know if he should expect unexpected expenses in the near future.",
+        textCn: "杨先生（1982年生，壬戌年），财务状况不错，但没有应急基金。他想知道是否应该在近期预料到意外开支。"
+      },
+      {
+        label: "BaZi Analysis",
+        labelCn: "八字分析",
+        text: "Mr. Yang's chart showed a challenging annual cycle for the current year with elevated risk of unexpected expenses, particularly around property and health. His analysis revealed Q2 and Q4 as higher-risk periods.",
+        textCn: "杨先生的命盘显示当前年份的流年有挑战性，意外开支风险升高，特别是在房产和健康方面。他的分析揭示第二季度和第四季度为较高风险期。"
+      },
+      {
+        label: "Guidance",
+        labelCn: "指导建议",
+        text: "Build a 6-month emergency fund immediately. Review insurance coverage. Avoid major non-essential purchases this year. Set aside extra savings in Q1 and Q3 to prepare for Q2 and Q4 risks.",
+        textCn: "立即建立六个月应急基金。审查保险覆盖。今年避免重大非必要消费。在第一季度和第三季度额外存蓄，为第二季度和第四季度的风险做准备。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Mr. Yang followed the advice. He built his emergency fund and updated his insurance. When a plumbing emergency occurred in May (Q2), he had the savings to cover it without stress. A minor health issue in October was covered by his updated insurance.",
+        textCn: "杨先生遵循了建议。他建立了应急基金并更新了保险。当五月份（第二季度）发生管道紧急情况时，他有储蓄可以无压力地覆盖。十月份的一个轻微健康问题由他更新的保险覆盖。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "BaZi analysis identifies periods when unexpected expenses are more likely.",
+      "Qi Men Dun Jia assesses current energy for hidden financial drains.",
+      "Zi Wei Dou Shu profiles your financial resilience and challenge timing.",
+      "Tarot uncovers anxiety patterns that may be attracting financial stress.",
+      "Preparation is the best defense against unexpected expenses—knowing when to prepare is key."
+    ],
+    itemsCn: [
+      "八字分析识别意外开支更可能出现的时期。",
+      "奇门遁甲评估当前能量中的隐藏财务 drain。",
+      "紫微斗数描绘你的财务韧性和挑战时机。",
+      "塔罗揭示可能吸引财务压力的焦虑模式。",
+      "准备是对抗意外开支的最佳防御——知道什么时候准备是关键。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "wealth-fortune-trend", question: "How Is My Wealth Fortune Trending?", questionCn: "我的财运走势如何？" },
+    { slug: "when-will-finances-improve", question: "When Will My Financial Situation Improve?", questionCn: "我的财务状况何时会好转？" },
+    { slug: "save-or-invest", question: "Is This a Good Time to Save or Invest?", questionCn: "现在是储蓄还是投资的好时机？" }
+  ],
+
+  cta: {
+    textLine1: "Worried about unexpected expenses?",
+    textLine1Cn: "担心意外开支？",
+    textLine2: "Our consultants can help you identify potential financial challenge periods and build a preparation strategy.",
+    textLine2Cn: "我们的咨询师可以帮助你识别潜在财务挑战期并建立准备策略。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/wealth/unexpected-expenses",
+  publishedAt: "2026-08-16",
+  modifiedAt: "2026-08-16",
+  author: "Stellawei Editorial Team"
+};
