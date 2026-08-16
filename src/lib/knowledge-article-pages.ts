@@ -1147,7 +1147,7 @@ export const shouldIChangeCareer: KnowledgeArticle = {
   metaTitleCn: "我应该转行吗？| Stellawei 知识中心",
   metaDescriptionCn: "当你感到迷茫、不满足或不确定职业方向时，东西方命理工具可以帮助你理解自己的天赋优势、最佳时机，以及转行是否符合你的人生道路。",
   heroIntro: "Career dissatisfaction is one of the most common sources of stress in modern life. You may feel stuck in a role that drains you, wonder if the grass is greener elsewhere, or question whether you are on the right path at all. Eastern and Western divination tools approach this question differently—Eastern methods analyze your birth chart to reveal innate strengths, favorable timing for transitions, and whether your current path aligns with your destiny pattern, while Tarot helps you understand your subconscious motivations, hidden fears about change, and what you truly need from your work.",
-  heroIntroCn: "许多人在长期倦怠、缺乏成就感、或者被升职瓶颈卡住后开始问这个问题。东西方命理工具提供了不同的视角——东方方法侧重命盘中的天赋与时机，塔罗则聚焦你内心真正的需求和恐惧。",,
+  heroIntroCn: "许多人在长期倦怠、缺乏成就感、或者被升职瓶颈卡住后开始问这个问题。东西方命理工具提供了不同的视角——东方方法侧重命盘中的天赋与时机，塔罗则聚焦你内心真正的需求和恐惧。",
 
   searchIntent: {
     primary: [
