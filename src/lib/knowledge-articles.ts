@@ -401,6 +401,7 @@ import {
   howToIncreaseIncome,
   saveOrInvest,
   unexpectedExpenses,
+  adjustHomeFengShui,
 } from "./knowledge-article-pages";
 
 // ==================== 文章索引 ====================
@@ -424,6 +425,7 @@ export const knowledgeArticles: Record<string, KnowledgeArticle> = {
   [howToIncreaseIncome.slug]: howToIncreaseIncome,
   [saveOrInvest.slug]: saveOrInvest,
   [unexpectedExpenses.slug]: unexpectedExpenses,
+  [adjustHomeFengShui.slug]: adjustHomeFengShui,
 };
 
 export function getArticleBySlug(slug: string): KnowledgeArticle | undefined {
