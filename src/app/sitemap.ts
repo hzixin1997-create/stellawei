@@ -1,10 +1,12 @@
 import { masters } from "@/lib/data";
+import { topicsData, questionsData } from "@/lib/knowledge-data";
+import { knowledgeArticles } from "@/lib/knowledge-articles";
 import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://stellawei.org";
 
-  // Static routes
+  // Static routes — only SEO-relevant public pages
   const staticRoutes = [
     {
       url: baseUrl,
@@ -17,18 +19,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: "weekly" as const,
       priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/booking`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/consultation-type`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
     },
     {
       url: `${baseUrl}/services/tarot`,
@@ -47,6 +37,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: "weekly" as const,
       priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/knowledge`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
     },
     {
       url: `${baseUrl}/refund-policy`,
@@ -82,5 +78,27 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [...staticRoutes, ...masterRoutes];
+  // Knowledge Center topic pages — auto-generated from topicsData
+  const knowledgeTopicRoutes = Object.values(topicsData).map((topic) => ({
+    url: `${baseUrl}/knowledge/${topic.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.7,
+  }));
+
+  // Knowledge Center article detail pages — auto-generated from knowledgeArticles
+  // Only include articles that have actual content (exist in knowledgeArticles)
+  const knowledgeArticleRoutes = Object.values(knowledgeArticles).map((article) => ({
+    url: `${baseUrl}/knowledge/${article.topicSlug}/${article.slug}`,
+    lastModified: new Date(article.modifiedAt || article.publishedAt),
+    changeFrequency: "weekly" as const,
+    priority: 0.6,
+  }));
+
+  return [
+    ...staticRoutes,
+    ...masterRoutes,
+    ...knowledgeTopicRoutes,
+    ...knowledgeArticleRoutes,
+  ];
 }
