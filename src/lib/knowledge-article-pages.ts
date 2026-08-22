@@ -4114,3 +4114,280 @@ export const adjustHomeFengShui: KnowledgeArticle = {
   modifiedAt: "2026-08-21",
   author: "Stellawei Editorial Team"
 };
+
+// ==================== Home Feng Shui: Which Direction Should My Bed Face? ====================
+
+export const bedDirection: KnowledgeArticle = {
+  slug: "bed-direction",
+  topicSlug: "home-feng-shui",
+  question: "Which Direction Should My Bed Face?",
+  questionCn: "我的床应该朝哪个方向？",
+  metaTitle: "Which Direction Should My Bed Face? | StellaWei Knowledge Center",
+  metaDescription: "Sleep quality, energy levels, and even relationship harmony can be influenced by your bed direction. Learn how Feng Shui and BaZi determine the optimal bed placement for you.",
+  metaTitleCn: "我的床应该朝哪个方向？| Stellawei 知识中心",
+  metaDescriptionCn: "睡眠质量、精力状态甚至关系和谐都可能受床位方向影响。了解风水和八字如何为你确定最佳床位摆放。",
+  heroIntro: "You spend one-third of your life in bed. The direction your bed faces is not just about furniture arrangement—it is about how your personal energy interacts with the Earths magnetic field, the rooms energy flow, and the cosmic cycles described in your birth chart. A bed placed in the right direction can support deep sleep, stable relationships, and strong vitality. A bed in the wrong direction can leave you tired, irritable, and stuck.",
+  heroIntroCn: "你一生中有三分之一的时间在床上度过。床的方向不仅仅是家具摆放的问题——它关乎你的个人能量如何与地球磁场、房间气流以及你命盘中描述的宇宙周期互动。摆放在正确方向的床可以支持深度睡眠、稳定的关系和充沛的活力。方向错误的床则可能让你疲惫、烦躁、停滞不前。",
+
+  searchIntent: {
+    primary: [
+      "which direction should my bed face",
+      "bed direction feng shui",
+      "best direction to sleep",
+      "bed placement feng shui"
+    ],
+    primaryCn: [
+      "床应该朝哪个方向",
+      "床位方向风水",
+      "睡觉最佳方向",
+      "床位摆放风水"
+    ],
+    secondary: [
+      "bazi bed direction",
+      "feng shui bedroom layout",
+      "sleep direction based on birth date"
+    ],
+    secondaryCn: [
+      "八字床位方向",
+      "卧室风水布局",
+      "根据出生日期选睡觉方向"
+    ],
+    related: [
+      "feng shui bedroom tips",
+      "how to arrange bedroom",
+      "best bed position",
+      "sleep quality feng shui"
+    ],
+    relatedCn: [
+      "卧室风水建议",
+      "如何布置卧室",
+      "最佳床的位置",
+      "睡眠质量风水"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People asking about bed direction often experience:",
+    questions: [
+      "I toss and turn all night, no matter how tired I am.",
+      "I wake up with headaches or body aches that disappear during the day.",
+      "My partner and I sleep better in hotels than in our own bed.",
+      "I have vivid nightmares or restless sleep even in a quiet room.",
+      "I read that bed direction matters, but every source says something different—how do I know what is right for me?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "问床位方向的人常常经历：",
+    questions: [
+      "不管多累，整晚都在翻来覆去。",
+      "醒来时头痛或身体酸痛，白天就消失了。",
+      "和伴侣在酒店睡得比在自己床上好。",
+      "即使在安静的房间里也会做噩梦或睡不安稳。",
+      "看到说床位方向很重要，但每个说法都不一样——怎么知道哪个适合自己？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Approaches View Bed Direction",
+    headingCn: "东西方如何看待床位方向",
+    easternTitle: "Eastern Feng Shui & BaZi",
+    easternTitleCn: "东方风水与八字",
+    easternDesc: "Eastern Feng Shui views bed direction as a critical factor in personal energy management. Your BaZi birth chart determines your personal favorable and unfavorable directions based on your Day Master element. The bed should face a direction that strengthens your core energy while avoiding directions that create conflict. Additionally, the bed must be positioned to see the door without being directly in line with it—a position called the command position that provides psychological safety and energetic stability.",
+    easternDescCn: "东方风水将床位方向视为个人能量管理的关键因素。你的八字命盘根据日主五行决定了你的个人吉凶方位。床应该面向能增强你核心能量的方向，同时避开产生冲突的方向。此外，床位必须摆放成能看到门但不对着门的位置——这个称为指挥位的布局能提供心理安全感和能量稳定性。",
+    westernTitle: "Western Sleep Science",
+    westernTitleCn: "西方睡眠科学",
+    westernDesc: "Western research focuses on how body orientation during sleep affects circadian rhythms, blood flow, and nervous system regulation. Studies suggest that sleeping with your head pointing north may align with Earths magnetic field for some people, while others sleep better in different orientations. The key Western factors are: minimizing electromagnetic exposure, ensuring proper airflow, reducing noise and light disruption, and maintaining a consistent sleep environment.",
+    westernDescCn: "西方研究关注睡眠时身体朝向如何影响昼夜节律、血液流动和神经系统调节。研究表明，对某些人来说头朝北睡可能与地球磁场对齐，而另一些人在其他方向睡得更好。西方关注的关键因素是：减少电磁暴露、确保良好通风、降低噪音和光线干扰、保持稳定的睡眠环境。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi-Based Personal Direction Analysis",
+        titleCn: "一、基于八字的个人方向分析",
+        intro: "Your BaZi chart reveals your personal best directions. A consultation typically focuses on:",
+        introCn: "你的八字命盘揭示了你的个人最佳方向。咨询通常关注：",
+        cards: [
+          {
+            title: "① Your Day Master Element",
+            titleCn: "① 你的日主五行",
+            desc: "Your core element determines which directions support you:",
+            descCn: "你的核心五行决定了哪些方向支持你：",
+            items: [
+              "Wood people: East and Southeast are most supportive",
+              "Fire people: South brings warmth and vitality",
+              "Earth people: Northeast and Southwest provide stability",
+              "Metal people: West and Northwest enhance clarity",
+              "Water people: North supports deep rest and intuition"
+            ],
+            itemsCn: [
+              "木命人：东和东南最为有利",
+              "火命人：南方带来温暖和活力",
+              "土命人：东北和西南提供稳定性",
+              "金命人：西和西北增强清晰度",
+              "水命人：北方支持深度休息和直觉"
+            ]
+          },
+          {
+            title: "② Your Personal Gua Number",
+            titleCn: "② 你的个人命卦",
+            desc: "Based on birth year and gender, your Gua number identifies four favorable and four unfavorable directions:",
+            descCn: "根据出生年份和性别，你的命卦确定了四个吉利方向和四个凶方向：",
+            items: [
+              "Sheng Qi (Life Energy): Best for vitality and success",
+              "Tian Yi (Heavenly Doctor): Best for health and recovery",
+              "Yan Nian (Longevity): Best for relationships and harmony",
+              "Fu Wei (Stable Position): Best for rest and meditation"
+            ],
+            itemsCn: [
+              "生气：最利于活力与成功",
+              "天医：最利于健康与恢复",
+              "延年：最利于关系与和谐",
+              "伏位：最利于休息与冥想"
+            ]
+          },
+          {
+            title: "③ Avoiding Conflicting Directions",
+            titleCn: "③ 避开相冲方向",
+            desc: "Just as some directions strengthen you, others weaken your energy:",
+            descCn: "就像有些方向能增强你，有些方向会削弱你的能量：",
+            items: [
+              "Jue Ming (Death Energy): Avoid completely for bed direction",
+              "Wu Gui (Five Ghosts): Can cause restlessness and nightmares",
+              "Liu Sha (Six Killings): May affect relationships",
+              "Huo Hai (Misfortune): Can block opportunities"
+            ],
+            itemsCn: [
+              "绝命：床位方向完全避开",
+              "五鬼：可能导致不安和噩梦",
+              "六煞：可能影响人际关系",
+              "祸害：可能阻碍机会"
+            ]
+          }
+        ]
+      },
+      {
+        title: "2. The Command Position: Room Layout Principles",
+        titleCn: "二、指挥位：房间布局原则",
+        desc: "Even with the right direction, bed placement within the room matters. The command position is the foundation of bedroom Feng Shui:",
+        descCn: "即使方向正确，床在房间内的摆放位置也很重要。指挥位是卧室风水的基础：",
+        focus: "Key placement rules:",
+        focusCn: "关键摆放规则：",
+        items: [
+          "Place the bed diagonally opposite the door, where you can see who enters",
+          "Avoid placing the bed directly in line with the door—this is called the coffin position",
+          "Do not place the bed under a window—your energy escapes during sleep",
+          "Never place the bed under a ceiling beam—creates pressure and health issues",
+          "Ensure space on both sides of the bed for balanced energy flow"
+        ],
+        itemsCn: [
+          "将床放在门的斜对角，能看到谁进来",
+          "避免床正对门——这称为棺材位",
+          "不要把床放在窗户下方——睡眠时你的能量会流失",
+          "切勿将床放在横梁下方——会产生压力和健康问题",
+          "确保床的两侧都有空间，以保持能量流动平衡"
+        ]
+      },
+      {
+        title: "3. Practical Adjustments for Immediate Improvement",
+        titleCn: "三、实用调整以立即改善",
+        desc: "If you cannot change your bed direction completely, these adjustments help:",
+        descCn: "如果你无法完全改变床的方向，这些调整会有帮助：",
+        focus: "Quick fixes:",
+        focusCn: "快速修复：",
+        items: [
+          "Use a solid headboard to create energetic backing and support",
+          "Place a small rug under the bed to ground the energy",
+          "Keep electronics away from the bedside to reduce electromagnetic stress",
+          "Use blackout curtains to create a womb-like sleep environment",
+          "Add a nightstand on each side for symmetry and balance"
+        ],
+        itemsCn: [
+          "使用实心床头板来创造能量背靠和支持",
+          "在床下铺一小块地毯以稳定能量",
+          "让电子产品远离床边以减少电磁压力",
+          "使用遮光窗帘创造类似子宫的睡眠环境",
+          "两侧各放一个床头柜以保持对称和平衡"
+        ]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "From Insomnia to Restful Sleep: A Bed Direction Adjustment",
+    titleCn: "从失眠到安睡：一次床位方向调整",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Ms. Wang (born 1988, Wu-Chen year) had suffered from chronic insomnia for three years. She tried meditation, sleep aids, and expensive mattresses, but nothing worked. She often woke up at 3 AM feeling anxious and unable to fall back asleep.",
+        textCn: "王女士（1988年生，戊辰年）患有慢性失眠三年。她尝试过冥想、助眠药和昂贵的床垫，但都没有效果。她经常在凌晨三点醒来，感到焦虑，无法再次入睡。"
+      },
+      {
+        label: "BaZi & Feng Shui Analysis",
+        labelCn: "八字与风水分析",
+        text: "Wangs BaZi showed an Earth-dominant Day Master with weak Water energy. Her bed was facing North (Water direction), which theoretically should support her—but her room layout violated the command position: the bed was directly in line with the door, and her head was under a window. The combination of poor layout and conflicting annual flying stars in her bedroom sector created a perfect storm for sleep disruption.",
+        textCn: "王女士的八字显示土旺日主，水能量偏弱。她的床朝北（水方向），理论上应该支持她——但她的房间布局违反了指挥位原则：床正对门，头部在窗户下方。糟糕的布局加上卧室区域不利的流年飞星，共同造成了睡眠中断。"
+      },
+      {
+        label: "Guidance",
+        labelCn: "指导建议",
+        text: "1. Rotate the bed to face Southwest (her Yan Nian direction for relationships and stability). 2. Move the bed away from the window and door line, placing it diagonally opposite the entrance. 3. Add a solid wooden headboard for energetic support. 4. Remove the TV and phone charger from the bedside.",
+        textCn: "1. 将床转向西南（她的延年方向，利于关系和稳定）。2. 将床移离窗户和门线，放在入口的斜对角。3. 添加实心木质床头板以获得能量支持。4. 移走床边的电视和手机充电器。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Within two weeks, Ms. Wang reported falling asleep within 15 minutes instead of lying awake for hours. She stopped waking up at 3 AM and described her sleep as deeper than it had been in years. She also noticed her relationship with her partner became less tense, which she attributed to the improved bedroom energy.",
+        textCn: "两周内，王女士报告说入睡时间从数小时缩短到15分钟以内。她不再凌晨三点醒来，形容自己的睡眠比多年来都更深。她还注意到与伴侣的关系变得不那么紧张，她将此归因于改善后的卧室能量。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "Your BaZi chart reveals your personal best bed direction based on your Day Master element and Gua number.",
+      "The command position—diagonal from the door, with clear view of the entrance—is essential for restful sleep.",
+      "Avoid placing your bed under windows, beams, or directly in line with the door.",
+      "Even small adjustments like adding a headboard or removing electronics can significantly improve sleep quality.",
+      "Bed direction affects not just sleep but also relationships, health, and daily energy levels."
+    ],
+    itemsCn: [
+      "你的八字命盘根据日主五行和命卦揭示了个人最佳床位方向。",
+      "指挥位——位于门的斜对角、能清楚看到入口——是安睡的关键。",
+      "避免将床放在窗户下方、横梁下方或正对门的位置。",
+      "即使是添加床头板或移走电子产品这样的小调整，也能显著改善睡眠质量。",
+      "床位方向不仅影响睡眠，还影响关系、健康和日常精力水平。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "adjust-home-feng-shui", question: "How to Adjust Home Feng Shui for Better Luck?", questionCn: "家里风水摆设如何调整提升运势？" },
+    { slug: "home-layout-energy", question: "Is My Home Layout Affecting My Energy?", questionCn: "我的房屋布局影响我的能量吗？" },
+    { slug: "workspace-arrangement", question: "How to Arrange My Workspace for Success?", questionCn: "如何布置我的工作空间以利事业？" }
+  ],
+
+  cta: {
+    textLine1: "Still unsure about your bed direction?",
+    textLine1Cn: "还不确定你的床位方向？",
+    textLine2: "Our consultants can analyze your birth chart and room layout to recommend the optimal bed placement for deep sleep and stable energy.",
+    textLine2Cn: "我们的咨询师可以分析你的命盘和房间布局，为你推荐最佳床位摆放，以获得深度睡眠和稳定能量。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/home-feng-shui/bed-direction",
+  publishedAt: "2026-08-22",
+  modifiedAt: "2026-08-22",
+  author: "Stellawei Editorial Team"
+};
