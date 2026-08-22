@@ -3920,7 +3920,7 @@ export const adjustHomeFengShui: KnowledgeArticle = {
     westernTitle: "Western Environmental Psychology",
     westernTitleCn: "西方环境心理学",
     westernDesc: "Western science studies how physical environments affect mental and emotional well-being. Research shows that natural light, color psychology, spatial layout, and clutter levels directly impact stress, productivity, and sleep quality. While it does not use Qi or Five Elements, the practical recommendations often overlap with Feng Shui—such as keeping pathways clear, using calming colors in bedrooms, and maximizing natural light.",
-    westernDescCn: "西方科学研究物理环境如何影响心理和情绪健康。研究表明，自然光、色彩心理学、空间布局和杂乱程度直接影响压力、效率和睡眠质量。虽然它不使用气或五行，但实用建议常与风水重合——比如保持通道畅通、在卧室使用 calming 颜色、最大化自然光。"
+    westernDescCn: "西方科学研究物理环境如何影响心理和情绪健康。研究表明，自然光、色彩心理学、空间布局和杂乱程度直接影响压力、效率和睡眠质量。虽然它不使用气或五行，但实用建议常与风水重合——比如保持通道畅通、在卧室使用让人平静的颜色、最大化自然光。"
   },
 
   methods: {
@@ -3947,7 +3947,7 @@ export const adjustHomeFengShui: KnowledgeArticle = {
             ],
             itemsCn: [
               "木旺的人受益于植物和绿色调",
-              "火旺的人在暖光和红色点缀下 thriving",
+              "火旺的人在暖光和红色点缀下更有活力",
               "土旺的人需要稳定、扎根的空间，配黄色和米色",
               "金旺的人偏好简洁线条、白色和整洁的空间",
               "水旺的人受流动形状、镜子和蓝色调支持"
@@ -4052,7 +4052,7 @@ export const adjustHomeFengShui: KnowledgeArticle = {
         label: "BaZi & Feng Shui Analysis",
         labelCn: "八字与风水分析",
         text: "Lius BaZi showed a weak Wood Day Master, but his home was facing West (Metal direction), which weakened his energy further. His bed was placed directly under a ceiling beam, and his desk faced a wall. The entryway was cluttered with shoes and boxes, blocking incoming energy.",
-        textCn: "刘先生的八字显示木日主偏弱，但他的家朝西（金方向），进一步削弱了他的能量。他的床正对着横梁，书桌面对墙壁。入口处堆满鞋子和箱子，阻挡了 incoming 能量。"
+        textCn: "刘先生的八字显示木日主偏弱，但他的家朝西（金方向），进一步削弱了他的能量。他的床正对着横梁，书桌面对墙壁。入口处堆满鞋子和箱子，阻挡了进来的能量。"
       },
       {
         label: "Guidance",
@@ -4098,7 +4098,7 @@ export const adjustHomeFengShui: KnowledgeArticle = {
     textLine1: "Your home should support you, not drain you.",
     textLine1Cn: "你的家应该支持你，而不是消耗你。",
     textLine2: "If you want a personalized Feng Shui analysis based on your birth chart and home layout, our consultants can provide tailored guidance.",
-    textLine2Cn: "如果你想要基于命盘和家居布局的个性化风水分析，我们的咨询师可以提供 tailored 指引。",
+    textLine2Cn: "如果你想要基于命盘和家居布局的个性化风水分析，我们的咨询师可以提供量身定制的指引。",
     button: "Book a Consultation",
     buttonCn: "预约咨询",
     link: "/booking"
