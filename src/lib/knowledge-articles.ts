@@ -403,6 +403,10 @@ import {
   unexpectedExpenses,
   adjustHomeFengShui,
   bedDirection,
+  homeLayoutEnergy,
+  workspaceArrangement,
+  homeColors,
+  negativeEnergyHome,
 } from "./knowledge-article-pages";
 
 // ==================== 文章索引 ====================
@@ -428,6 +432,10 @@ export const knowledgeArticles: Record<string, KnowledgeArticle> = {
   [unexpectedExpenses.slug]: unexpectedExpenses,
   [adjustHomeFengShui.slug]: adjustHomeFengShui,
   [bedDirection.slug]: bedDirection,
+  [homeLayoutEnergy.slug]: homeLayoutEnergy,
+  [workspaceArrangement.slug]: workspaceArrangement,
+  [homeColors.slug]: homeColors,
+  [negativeEnergyHome.slug]: negativeEnergyHome,
 };
 
 export function getArticleBySlug(slug: string): KnowledgeArticle | undefined {

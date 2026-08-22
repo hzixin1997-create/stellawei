@@ -4391,3 +4391,1117 @@ export const bedDirection: KnowledgeArticle = {
   modifiedAt: "2026-08-22",
   author: "Stellawei Editorial Team"
 };
+
+// ==================== Home Feng Shui: Is My Home Layout Affecting My Energy? ====================
+
+export const homeLayoutEnergy: KnowledgeArticle = {
+  slug: "home-layout-energy",
+  topicSlug: "home-feng-shui",
+  question: "Is My Home Layout Affecting My Energy?",
+  questionCn: "我的房屋布局影响我的能量吗？",
+  metaTitle: "Is My Home Layout Affecting My Energy? | StellaWei Knowledge Center",
+  metaDescription: "Feeling drained at home? Your floor plan might be the culprit. Learn how Feng Shui, BaZi, and Qi Men Dun Jia reveal how home layout shapes your health, mood, and fortune.",
+  metaTitleCn: "我的房屋布局影响我的能量吗？| Stellawei 知识中心",
+  metaDescriptionCn: "在家里感到疲惫？你的户型可能是罪魁祸首。了解风水、八字和奇门遁甲如何揭示房屋布局如何影响你的健康、情绪和运势。",
+  heroIntro: "You have probably noticed that some spaces make you feel alive and focused, while others drain you within minutes. It is not your imagination. The layout of your home—where rooms are placed, how energy flows between them, and what elements dominate each space—directly affects your physical health, emotional state, and even financial luck.",
+  heroIntroCn: "你可能注意到有些空间让你感到充满活力和专注，而另一些空间在几分钟内就让你疲惫不堪。这不是你的想象。你家的布局——房间的位置、能量在它们之间的流动方式、以及每个空间中主导的元素——直接影响你的身体健康、情绪状态甚至财运。",
+
+  searchIntent: {
+    primary: [
+      "is my home layout affecting my energy",
+      "home layout feng shui",
+      "house floor plan energy",
+      "feng shui home layout tips"
+    ],
+    primaryCn: [
+      "房屋布局影响能量吗",
+      "户型风水",
+      "房屋格局能量",
+      "家居布局风水建议"
+    ],
+    secondary: [
+      "qi men dun jia home layout",
+      "bazi house orientation",
+      "feng shui room placement"
+    ],
+    secondaryCn: [
+      "奇门遁甲家居布局",
+      "八字房屋朝向",
+      "风水房间位置"
+    ],
+    related: [
+      "feng shui floor plan",
+      "home energy flow",
+      "bad house layout",
+      "feng shui corrections"
+    ],
+    relatedCn: [
+      "风水户型图",
+      "家居能量流动",
+      "不好的房屋布局",
+      "风水化解"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People concerned about home layout often notice:",
+    questions: [
+      "I feel great outside the house, but the moment I walk in, my mood drops.",
+      "One room in my house always feels colder or darker than the others, no matter what I do.",
+      "My kitchen and bathroom face each other—could that be affecting my familys health?",
+      "The staircase faces the front door. I have heard this is bad Feng Shui, but why?",
+      "My apartment is long and narrow. It feels like energy gets stuck in the hallway."
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "担心房屋布局的人常常注意到：",
+    questions: [
+      "我在屋外感觉很好，但一进家门，情绪就低落了。",
+      "家里有一个房间不管怎么弄总是比其他房间冷或暗。",
+      "我的厨房和卫生间门对门——这会影响家人的健康吗？",
+      "楼梯正对大门。我听说这是不好的风水，但为什么？",
+      "我的公寓又长又窄。感觉能量卡在走廊里。"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Approaches View Home Layout",
+    headingCn: "东西方如何看待房屋布局",
+    easternTitle: "Eastern Feng Shui",
+    easternTitleCn: "东方风水",
+    easternDesc: "Eastern Feng Shui sees the home as a living organism with energy channels (Qi flow) that must remain open and balanced. The Bagua map divides your home into eight sectors, each governing a life area—wealth, relationships, health, career, and more. When rooms are misplaced or energy is blocked by walls, doors, or clutter, the corresponding life area suffers. BaZi analysis adds a personal layer: your birth chart determines which sectors of your home are most supportive for you personally.",
+    easternDescCn: "东方风水将家视为一个有能量通道（气流）的生命体，必须保持畅通和平衡。八卦图将你的家分为八个方位，每个方位掌管一个人生领域——财富、关系、健康、事业等等。当房间位置不当或能量被墙壁、门或杂物阻挡时，对应的人生领域就会受到影响。八字分析增加了一个个人层面：你的命盘决定了你家哪些方位对你个人最有利。",
+    westernTitle: "Western Environmental Psychology",
+    westernTitleCn: "西方环境心理学",
+    westernDesc: "Western science studies how spatial layout affects behavior, stress, and well-being. Research shows that open floor plans can increase social interaction but may reduce privacy. Long, narrow spaces create tunnel-like stress. Rooms without windows increase cortisol levels. Cluttered spaces elevate anxiety. The Western approach focuses on measurable outcomes: productivity, stress hormones, and sleep quality.",
+    westernDescCn: "西方科学研究空间布局如何影响行为、压力和健康。研究表明开放式平面可以增加社交互动但可能减少隐私。狭长空间会产生类似隧道的压力。没有窗户的房间会增加皮质醇水平。杂乱的空间会加剧焦虑。西方方法关注可衡量的结果：效率、压力荷尔蒙和睡眠质量。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. Bagua Map Analysis: Mapping Your Homes Energy",
+        titleCn: "一、八卦图分析：绘制你家的能量图",
+        intro: "The Bagua map is the foundation of Feng Shui layout analysis. A consultation typically covers:",
+        introCn: "八卦图是风水布局分析的基础。咨询通常涵盖：",
+        cards: [
+          {
+            title: "① The Eight Sectors",
+            titleCn: "① 八个方位",
+            desc: "Each area of your home corresponds to a life domain:",
+            descCn: "家的每个区域对应一个人生领域：",
+            items: [
+              "North: Career and life path",
+              "Northeast: Knowledge and self-cultivation",
+              "East: Health and family",
+              "Southeast: Wealth and abundance",
+              "South: Fame and reputation",
+              "Southwest: Relationships and marriage",
+              "West: Children and creativity",
+              "Northwest: Helpful people and mentors"
+            ],
+            itemsCn: [
+              "北方：事业和人生道路",
+              "东北方：知识和自我修养",
+              "东方：健康和家庭",
+              "东南方：财富和丰盛",
+              "南方：名声和声誉",
+              "西南方：关系和婚姻",
+              "西方：子女和创造力",
+              "西北方：贵人和导师"
+            ]
+          },
+          {
+            title: "② Common Layout Problems",
+            titleCn: "② 常见布局问题",
+            desc: "Certain layouts create predictable energy blocks:",
+            descCn: "某些布局会产生可预测的能量阻塞：",
+            items: [
+              "Missing corners: A missing southeast corner affects wealth",
+              "Bathroom in the center: Drains energy from all sectors",
+              "Stairs facing the door: Energy rushes out too quickly",
+              "Kitchen and bathroom adjacent: Fire and water clash",
+              "Bedroom over garage: Unstable foundation energy"
+            ],
+            itemsCn: [
+              "缺角：东南方缺角影响财运",
+              "中心卫生间：从所有方位流失能量",
+              "楼梯对门：能量流出太快",
+              "厨房和卫生间相邻：水火相冲",
+              "卧室在车库上方：地基能量不稳定"
+            ]
+          },
+          {
+            title: "③ BaZi Personalization",
+            titleCn: "③ 八字个性化",
+            desc: "Your birth chart reveals which sectors need extra support:",
+            descCn: "你的命盘揭示哪些方位需要额外支持：",
+            items: [
+              "Weak Wood people benefit from East sector enhancement",
+              "Weak Fire people need South sector activation",
+              "Your annual luck cycle may shift favorable sectors",
+              "Personalized cures target your specific imbalances"
+            ],
+            itemsCn: [
+              "木弱的人受益于东方方位的增强",
+              "火弱的人需要南方方位的激活",
+              "你的年度运势周期可能会改变有利方位",
+              "个性化化解针对你的具体不平衡"
+            ]
+          }
+        ]
+      },
+      {
+        title: "2. Qi Men Dun Jia: Energy Flow Diagnostics",
+        titleCn: "二、奇门遁甲：能量流动诊断",
+        desc: "Qi Men Dun Jia uses a spacetime model to diagnose energy blockages in your home layout:",
+        descCn: "奇门遁甲使用时空模型诊断你家布局中的能量阻塞：",
+        focus: "Diagnostic focus:",
+        focusCn: "诊断重点：",
+        items: [
+          "Identifying which rooms trap or leak energy",
+          "Determining optimal room functions based on current energy",
+          "Finding the best time for layout changes or renovations",
+          "Detecting hidden negative influences from neighboring structures"
+        ],
+        itemsCn: [
+          "识别哪些房间困住或泄漏能量",
+          "根据当前能量确定最佳房间功能",
+          "找到布局改变或装修的最佳时机",
+          "发现来自邻近建筑的隐藏负面影响"
+        ]
+      },
+      {
+        title: "3. Practical Layout Adjustments",
+        titleCn: "三、实用布局调整",
+        desc: "Simple changes that improve energy flow without renovation:",
+        descCn: "无需装修即可改善能量流动的简单改变：",
+        focus: "Quick fixes:",
+        focusCn: "快速修复：",
+        items: [
+          "Place a screen or plant to block direct door-to-door energy rush",
+          "Use mirrors to visually expand narrow hallways (but never face the bed)",
+          "Add lights in dark corners to activate stagnant energy",
+          "Keep the center of your home clear—this is the heart of your energy field",
+          "Use rugs to define separate energy zones in open floor plans"
+        ],
+        itemsCn: [
+          "放置屏风或植物阻挡门对门的直冲能量",
+          "使用镜子在视觉上扩展狭窄走廊（但不要对着床）",
+          "在暗角添加灯光以激活停滞的能量",
+          "保持家的中心区域畅通——这是你能量场的心脏",
+          "在开放式平面中使用地毯定义独立的能量区域"
+        ]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "From Chronic Fatigue to Renewed Vitality: A Layout Transformation",
+    titleCn: "从慢性疲劳到重获活力：一次布局转变",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Ms. Chen (born 1990, Geng-Wu year) had been experiencing unexplained fatigue, anxiety, and poor concentration for over a year. Medical tests showed nothing wrong, but she felt worse at home than anywhere else.",
+        textCn: "陈女士（1990年生，庚午年）一年多来一直感到不明原因的疲劳、焦虑和注意力不集中。医学检查显示没有问题，但她在家里比在任何地方都感觉更糟。"
+      },
+      {
+        label: "BaZi & Feng Shui Analysis",
+        labelCn: "八字与风水分析",
+        text: "Chens BaZi revealed a weak Water Day Master. Her apartment was long and narrow, with the bathroom in the center—a classic energy drain. Her bedroom was in the Northwest sector (Metal), which weakened her Water energy further. The kitchen stove faced the sink directly, creating a fire-water clash in the wealth sector.",
+        textCn: "陈女士的八字显示水日主偏弱。她的公寓又长又窄，卫生间在正中央——这是典型的能量流失格局。她的卧室在西北方位（金），进一步削弱了她的水能量。厨房炉灶正对着水槽，在财位形成了水火相冲。"
+      },
+      {
+        label: "Guidance",
+        labelCn: "指导建议",
+        text: "1. Place a large mirror on the narrow hallway wall to visually expand the space. 2. Add blue and black decor in the bedroom to strengthen Water energy. 3. Place a small plant between the stove and sink to harmonize fire and water. 4. Add a salt lamp in the center area to stabilize energy.",
+        textCn: "1. 在狭窄走廊墙上放置大镜子以在视觉上扩展空间。2. 在卧室添加蓝色和黑色装饰以增强水能量。3. 在炉灶和水槽之间放置小植物以调和火和水。4. 在中央区域添加盐灯以稳定能量。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Within one month, Ms. Chen reported feeling more energetic and focused. Her sleep improved, and she no longer dreaded coming home. She described the change as 'the house finally breathing with me instead of against me.'",
+        textCn: "一个月内，陈女士报告感到更有活力和专注力。她的睡眠改善了，不再害怕回家。她形容这种变化为「房子终于和我一起呼吸，而不是对抗我」。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "Your home layout directly affects your energy, mood, and life outcomes through Qi flow and sector alignment.",
+      "The Bagua map reveals which life areas are supported or weakened by your floor plan.",
+      "Common problems include missing corners, central bathrooms, stairs facing doors, and fire-water clashes.",
+      "BaZi analysis personalizes layout recommendations based on your birth chart.",
+      "Simple adjustments like mirrors, plants, lighting, and screens can significantly improve energy flow without renovation."
+    ],
+    itemsCn: [
+      "你的房屋布局通过气流和方位对齐直接影响你的能量、情绪和生活结果。",
+      "八卦图揭示你的户型支持或削弱哪些人生领域。",
+      "常见问题包括缺角、中央卫生间、楼梯对门和水火相冲。",
+      "八字分析根据你的命盘个性化布局建议。",
+      "简单的调整如镜子、植物、灯光和屏风可以显著改善能量流动，无需装修。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "adjust-home-feng-shui", question: "How to Adjust Home Feng Shui for Better Luck?", questionCn: "家里风水摆设如何调整提升运势？" },
+    { slug: "bed-direction", question: "Which Direction Should My Bed Face?", questionCn: "我的床应该朝哪个方向？" },
+    { slug: "workspace-arrangement", question: "How to Arrange My Workspace for Success?", questionCn: "如何布置我的工作空间以利事业？" }
+  ],
+
+  cta: {
+    textLine1: "Feeling off in your own home?",
+    textLine1Cn: "在自己家里感觉不对劲？",
+    textLine2: "Our consultants can analyze your floor plan and birth chart to identify layout problems and recommend personalized solutions.",
+    textLine2Cn: "我们的咨询师可以分析你的户型图和命盘，识别布局问题并推荐个性化解决方案。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/home-feng-shui/home-layout-energy",
+  publishedAt: "2026-08-22",
+  modifiedAt: "2026-08-22",
+  author: "Stellawei Editorial Team"
+};
+
+// ==================== Home Feng Shui: How to Arrange My Workspace for Success? ====================
+
+export const workspaceArrangement: KnowledgeArticle = {
+  slug: "workspace-arrangement",
+  topicSlug: "home-feng-shui",
+  question: "How to Arrange My Workspace for Success?",
+  questionCn: "如何布置我的工作空间以利事业？",
+  metaTitle: "How to Arrange My Workspace for Success? | StellaWei Knowledge Center",
+  metaDescription: "Your desk position could be blocking your career growth. Learn how Feng Shui, BaZi, and practical adjustments create a workspace that supports focus, productivity, and professional success.",
+  metaTitleCn: "如何布置我的工作空间以利事业？| Stellawei 知识中心",
+  metaDescriptionCn: "你的办公桌位置可能正在阻碍事业发展。了解风水、八字和实用调整如何创造一个支持专注、效率和职业成功的工作空间。",
+  heroIntro: "You spend eight hours a day at your desk. Where you sit, what you face, and what surrounds you during those hours directly shape your professional energy, decision-making clarity, and career momentum. A well-arranged workspace does not just look organized—it actively supports your ambitions. A poorly arranged one silently drains your focus and blocks opportunities.",
+  heroIntroCn: "你每天要在办公桌前度过八小时。你坐在哪里、面对什么、周围有什么，这些直接影响你的职业能量、决策清晰度和事业势头。一个布置良好的工作空间不只是看起来整洁——它积极支持你的抱负。一个布置不当的工作空间则默默消耗你的专注力并阻挡机会。",
+
+  searchIntent: {
+    primary: [
+      "how to arrange workspace for success",
+      "feng shui desk placement",
+      "office desk direction",
+      "workspace energy flow"
+    ],
+    primaryCn: [
+      "如何布置工作空间以利事业",
+      "风水办公桌摆放",
+      "办公桌方向",
+      "工作空间能量流动"
+    ],
+    secondary: [
+      "bazi career direction",
+      "qi men dun jia office",
+      "desk facing door feng shui"
+    ],
+    secondaryCn: [
+      "八字事业方向",
+      "奇门遁甲办公室",
+      "办公桌对门风水"
+    ],
+    related: [
+      "home office feng shui",
+      "productivity workspace",
+      "desk clutter organization",
+      "best desk position"
+    ],
+    relatedCn: [
+      "家庭办公室风水",
+      "效率工作空间",
+      "桌面杂物整理",
+      "最佳办公桌位置"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People seeking workspace optimization often feel:",
+    questions: [
+      "I sit at my desk for hours but accomplish very little. Something feels off.",
+      "My back faces the door, and I constantly feel anxious that someone will walk in behind me.",
+      "I am overwhelmed by clutter but do not know where to start.",
+      "I want a promotion, but my workspace feels stagnant—like nothing is moving forward.",
+      "I work from home and my office is also my bedroom. The energy feels confused."
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "寻求工作空间优化的人常常感到：",
+    questions: [
+      "我在办公桌前坐了几个小时却几乎没什么成果。感觉有些不对劲。",
+      "我的背对着门， constantly 感到焦虑，担心有人从后面走进来。",
+      "我被杂物淹没但不知道从哪里开始整理。",
+      "我想要晋升，但我的工作空间感觉停滞——像什么都没在推进。",
+      "我在家办公，办公室也是卧室。能量感觉很混乱。"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Approaches View Workspace Arrangement",
+    headingCn: "东西方如何看待工作空间布置",
+    easternTitle: "Eastern Feng Shui & BaZi",
+    easternTitleCn: "东方风水与八字",
+    easternDesc: "Eastern Feng Shui views your workspace as a command center where your professional destiny is shaped daily. Your BaZi chart determines your personal wealth and career directions. The desk must face a supportive direction and be positioned in the command position—seeing the door without being directly in line with it. The left side of the desk (Dragon side) represents incoming opportunities and should be kept active. The right side (Tiger side) represents stability and should be kept calm.",
+    easternDescCn: "东方风水将你的 workspace 视为一个指挥中心，你的职业命运每天都在这里被塑造。你的八字命盘决定了你的个人财富和事业方向。办公桌必须面向有利的方向，并摆放在指挥位——能看到门但不对着门。办公桌的左侧（龙边）代表 incoming 机会，应该保持活跃。右侧（虎边）代表稳定，应该保持平静。",
+    westernTitle: "Western Ergonomics & Productivity Science",
+    westernTitleCn: "西方人体工学与效率科学",
+    westernDesc: "Western research focuses on how physical workspace design affects cognitive performance. Studies show that facing a wall reduces creative thinking by 30%. Natural light improves alertness by 18%. Cluttered desks increase cortisol and reduce task completion rates. The ideal desk height, monitor position, and chair support prevent physical fatigue that drains mental energy.",
+    westernDescCn: "西方研究关注 physical 工作空间设计如何影响认知表现。研究表明面对墙壁会减少30%的创造性思维。自然光提高18%的警觉度。杂乱的桌面会增加皮质醇并降低任务完成率。理想的桌面高度、显示器位置和椅子支撑可以防止消耗精神能量的身体疲劳。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. The Command Position: Desk Placement Rules",
+        titleCn: "一、指挥位：办公桌摆放规则",
+        intro: "Your desk position is the single most important factor in workspace Feng Shui. Follow these principles:",
+        introCn: "你的办公桌位置是工作空间风水中最重要的单一因素。遵循这些原则：",
+        cards: [
+          {
+            title: "① Face the Door, Not the Wall",
+            titleCn: "① 面对门，不要面对墙",
+            desc: "Sitting with your back to the door creates vulnerability. Facing the wall blocks vision and opportunities:",
+            descCn: "背对门坐着会产生脆弱感。面对墙会阻挡视野和机会：",
+            items: [
+              "Place your desk diagonally opposite the door",
+              "If you must face a wall, hang a landscape painting with depth",
+              "Use a small mirror to see behind you if the door is at your back",
+              "Never sit directly in line with the door—energy rushes past too quickly"
+            ],
+            itemsCn: [
+              "将办公桌放在门的斜对角",
+              "如果必须面对墙，挂一幅有纵深感的山水画",
+              "如果门在你背后，使用小镜子看到后面",
+              "切勿正对门坐着——能量流经过太快"
+            ]
+          },
+          {
+            title: "② Your BaZi Career Direction",
+            titleCn: "② 你的八字事业方向",
+            desc: "Your birth chart reveals which direction supports your professional growth:",
+            descCn: "你的命盘揭示哪个方向支持你的职业发展：",
+            items: [
+              "Face your Sheng Qi direction for maximum career momentum",
+              "Place important documents in your Yan Nian direction",
+              "Keep your Fu Wei direction clear for stable decision-making",
+              "Avoid your Jue Ming direction completely for desk facing"
+            ],
+            itemsCn: [
+              "面向你的生气方向以获得最大的事业动力",
+              "将重要文件放在你的延年方向",
+              "保持你的伏位方向畅通以利稳定决策",
+              "完全避免将你的绝命方向作为办公桌朝向"
+            ]
+          },
+          {
+            title: "③ The Dragon and Tiger Sides",
+            titleCn: "③ 龙边和虎边",
+            desc: "The left and right sides of your desk have different energetic functions:",
+            descCn: "办公桌的左侧和右侧有不同的能量功能：",
+            items: [
+              "Left side (Dragon): Place phone, active projects, and incoming documents",
+              "Right side (Tiger): Keep organized files, reference materials, and stable items",
+              "Avoid clutter on both sides—especially the Dragon side which blocks opportunities",
+              "A small plant on the left attracts growth energy"
+            ],
+            itemsCn: [
+              "左侧（龙边）：放置电话、进行中的项目和 incoming 文件",
+              "右侧（虎边）：放置整理好的档案、参考资料和稳定物品",
+              "避免两侧杂乱——尤其是龙边，它会阻挡机会",
+              "左侧放小植物可以吸引成长能量"
+            ]
+          }
+        ]
+      },
+      {
+        title: "2. Qi Men Dun Jia: Timing and Energy Analysis",
+        titleCn: "二、奇门遁甲：时机与能量分析",
+        desc: "Qi Men Dun Jia reveals the optimal timing for workspace adjustments and identifies hidden energy blocks:",
+        descCn: "奇门遁甲揭示工作空间调整的最佳时机并识别隐藏的能量阻塞：",
+        focus: "Key applications:",
+        focusCn: "关键应用：",
+        items: [
+          "Best dates for rearranging your desk or office",
+          "Identifying which colleagues or neighbors drain your workspace energy",
+          "Optimal hours for important meetings and decisions",
+          "Hidden obstacles in your current layout that block promotion"
+        ],
+        itemsCn: [
+          "重新布置办公桌或办公室的最佳日期",
+          "识别哪些同事或邻居消耗你的工作空间能量",
+          "重要会议和决策的最佳时段",
+          "你当前布局中阻碍晋升的隐藏障碍"
+        ]
+      },
+      {
+        title: "3. Practical Workspace Adjustments",
+        titleCn: "三、实用工作空间调整",
+        desc: "Immediate changes that boost productivity without major renovation:",
+        descCn: "无需大规模装修即可提升效率的即时改变：",
+        focus: "Quick wins:",
+        focusCn: "快速见效：",
+        items: [
+          "Declutter your desktop completely—only keep current project materials",
+          "Add a small water feature or aquarium in the north sector for career flow",
+          "Place a crystal or stone paperweight in the center of your desk for stability",
+          "Use a desk lamp with warm light on the left side to activate Dragon energy",
+          "Position your computer monitor at eye level to prevent fatigue"
+        ],
+        itemsCn: [
+          "彻底清理你的桌面——只保留当前项目材料",
+          "在北方位添加小型水景或鱼缸以利事业流动",
+          "在办公桌中央放置水晶或石头镇纸以增加稳定性",
+          "在左侧使用暖光灯以激活龙边能量",
+          "将电脑显示器放在 eye level 以防止疲劳"
+        ]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "From Career Stagnation to Promotion: A Workspace Adjustment",
+    titleCn: "从事业停滞到晋升：一次工作空间调整",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Mr. Zhao (born 1983, Gui-Hai year) had been in the same position for four years despite strong performance reviews. He felt invisible at work and struggled to get his ideas noticed by leadership.",
+        textCn: "赵先生（1983年生，癸亥年）尽管绩效评估很好，但已经在同一职位上待了四年。他在工作中感到被忽视，很难让领导注意到他的想法。"
+      },
+      {
+        label: "BaZi & Feng Shui Analysis",
+        labelCn: "八字与风水分析",
+        text: "Zhaos BaZi showed a strong Water Day Master with a favorable Wood direction (East). His desk faced West (Metal), which clashed with his Water energy. His back was to the office door, creating constant subconscious stress. The right side of his desk was piled high with old files, blocking his Tiger side stability.",
+        textCn: "赵先生的八字显示水日主偏强，有利方向为木（东方）。他的办公桌朝西（金），与他的水能量相冲。他的背对着办公室门，产生了持续的潜意识压力。他的办公桌右侧堆满了旧文件，阻挡了虎边的稳定性。"
+      },
+      {
+        label: "Guidance",
+        labelCn: "指导建议",
+        text: "1. Rotate the desk to face East. 2. Move the desk so he could see the door without being directly in line with it. 3. Clear the right side completely and organize files in drawers. 4. Add a small bamboo plant on the left side. 5. Place a dark blue mousepad to strengthen Water energy.",
+        textCn: "1. 将办公桌转向朝东。2. 移动办公桌使他能看到门但不对着门。3. 彻底清理右侧并将文件整理进抽屉。4. 在左侧添加小竹子植物。5. 放置深蓝色鼠标垫以增强水能量。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Within three months, Mr. Zhao was assigned to lead a high-visibility project. Six months later, he received a promotion and a 25% salary increase. He reported feeling more confident in meetings and said his ideas 'finally had room to land.'",
+        textCn: "三个月内，赵先生被指派领导一个高可见度项目。六个月后，他获得了晋升和25%的加薪。他报告说在会议中感到更自信，并表示他的想法「终于有了落脚的空间」。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "Your desk position is the single most important factor in workspace energy and career success.",
+      "The command position—facing the door without being directly in line with it—provides psychological safety and energetic control.",
+      "Your BaZi chart reveals your personal best career direction for desk facing.",
+      "The left side of your desk (Dragon) attracts opportunities; the right side (Tiger) provides stability.",
+      "Simple adjustments like decluttering, adding plants, and improving lighting can dramatically shift your professional energy."
+    ],
+    itemsCn: [
+      "你的办公桌位置是工作空间能量和事业成功中最重要的单一因素。",
+      "指挥位——面对门但不对着门——提供心理安全感和能量控制。",
+      "你的八字命盘揭示了你个人最佳的办公桌朝向事业方向。",
+      "办公桌的左侧（龙边）吸引机会；右侧（虎边）提供稳定性。",
+      "简单的调整如清理杂物、添加植物和改善照明可以显著改变你的职业能量。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "adjust-home-feng-shui", question: "How to Adjust Home Feng Shui for Better Luck?", questionCn: "家里风水摆设如何调整提升运势？" },
+    { slug: "bed-direction", question: "Which Direction Should My Bed Face?", questionCn: "我的床应该朝哪个方向？" },
+    { slug: "home-layout-energy", question: "Is My Home Layout Affecting My Energy?", questionCn: "我的房屋布局影响我的能量吗？" }
+  ],
+
+  cta: {
+    textLine1: "Ready to transform your workspace?",
+    textLine1Cn: "准备好改变你的工作空间了吗？",
+    textLine2: "Our consultants can analyze your desk position, room layout, and birth chart to create a workspace that actively supports your career goals.",
+    textLine2Cn: "我们的咨询师可以分析你的办公桌位置、房间布局和命盘，创造一个积极支持你职业目标的工作空间。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/home-feng-shui/workspace-arrangement",
+  publishedAt: "2026-08-22",
+  modifiedAt: "2026-08-22",
+  author: "Stellawei Editorial Team"
+};
+
+// ==================== Home Feng Shui: What Colors Should I Use in My Home? ====================
+
+export const homeColors: KnowledgeArticle = {
+  slug: "home-colors",
+  topicSlug: "home-feng-shui",
+  question: "What Colors Should I Use in My Home?",
+  questionCn: "我家应该用什么颜色？",
+  metaTitle: "What Colors Should I Use in My Home? | StellaWei Knowledge Center",
+  metaDescription: "Color is energy. Learn how Feng Shui and BaZi help you choose the perfect colors for each room to support health, wealth, relationships, and personal growth.",
+  metaTitleCn: "我家应该用什么颜色？| Stellawei 知识中心",
+  metaDescriptionCn: "颜色就是能量。了解风水和八字如何帮助你为每个房间选择完美的颜色，以支持健康、财富、关系和个人成长。",
+  heroIntro: "Walk into a red room and your heart rate increases. Step into a blue space and your breathing slows. Color is not just decoration—it is energetic information that your body and mind absorb constantly. In Feng Shui, each color carries specific elemental energy that can strengthen or weaken your personal energy field, depending on your birth chart and the rooms function.",
+  heroIntroCn: "走进红色房间，你的心率会加快。踏入蓝色空间，你的呼吸会放缓。颜色不仅仅是装饰——它是你的身体和 mind 不断吸收的 energy 信息。在风水中，每种颜色携带特定的元素能量，根据你的命盘和房间功能，可以增强或削弱你的个人能量场。",
+
+  searchIntent: {
+    primary: [
+      "what colors should I use in my home",
+      "feng shui colors",
+      "best colors for home",
+      "home color feng shui"
+    ],
+    primaryCn: [
+      "家里应该用什么颜色",
+      "风水颜色",
+      "家居最佳颜色",
+      "家居颜色风水"
+    ],
+    secondary: [
+      "bazi lucky colors",
+      "five elements colors",
+      "feng shui bedroom colors"
+    ],
+    secondaryCn: [
+      "八字幸运色",
+      "五行颜色",
+      "卧室风水颜色"
+    ],
+    related: [
+      "color psychology home",
+      "home paint colors",
+      "feng shui color meanings",
+      "lucky colors home"
+    ],
+    relatedCn: [
+      "家居色彩心理学",
+      "家居油漆颜色",
+      "风水颜色含义",
+      "家居幸运色"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People asking about home colors often feel:",
+    questions: [
+      "I painted my bedroom red to feel energized, but now I cannot sleep.",
+      "My living room feels cold and unwelcoming, but I do not know which color would fix it.",
+      "I want to attract wealth—should I use gold, green, or purple?",
+      "Every room in my house is white because it is safe, but it feels sterile.",
+      "My childs room makes them hyperactive. Could the bright yellow walls be the problem?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "问家居颜色的人常常感到：",
+    questions: [
+      "我把卧室刷成红色想让自己有活力，但现在睡不着了。",
+      "我的客厅感觉冷漠不温馨，但不知道用什么颜色才能改善。",
+      "我想吸引财富——应该用金色、绿色还是紫色？",
+      "我家每个房间都是白色的因为安全，但感觉很 sterile。",
+      "我孩子的房间让他们过于亢奋。明亮的黄色墙壁可能是问题吗？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Approaches View Home Colors",
+    headingCn: "东西方如何看待家居颜色",
+    easternTitle: "Eastern Five Elements Color Theory",
+    easternTitleCn: "东方五行颜色理论",
+    easternDesc: "In Eastern Feng Shui, colors are expressions of the Five Elements—Wood, Fire, Earth, Metal, and Water. Each element has corresponding colors that carry its energy signature. Your BaZi birth chart reveals which elements you need to strengthen and which to avoid. The colors in your home should support your personal elemental balance while also matching the function of each room. For example, bedrooms need calming Water and Earth tones, while home offices benefit from energizing Wood and Fire accents.",
+    easternDescCn: "在东方风水中，颜色是五行——木、火、土、金、水的表达。每个元素都有对应的颜色，携带其能量特征。你的八字命盘揭示你需要增强哪些元素、避免哪些元素。家中的颜色应该支持你个人的元素平衡，同时匹配每个房间的功能。例如，卧室需要平静的水和土色调，而家庭办公室受益于 energizing 的木和火点缀。",
+    westernTitle: "Western Color Psychology",
+    westernTitleCn: "西方色彩心理学",
+    westernDesc: "Western research confirms that colors directly affect mood, behavior, and physiology. Blue lowers blood pressure and heart rate. Red increases alertness but can raise anxiety. Green promotes balance and reduces eye strain. Yellow stimulates creativity but can cause agitation in large amounts. The Western approach uses color to create specific psychological outcomes: calm bedrooms, focused offices, and social living rooms.",
+    westernDescCn: "西方研究证实颜色直接影响情绪、行为和生理。蓝色降低血压和心率。红色提高警觉度但可能增加焦虑。绿色促进平衡并减少眼睛疲劳。黄色刺激创造力但大量使用时可能引起烦躁。西方方法使用颜色创造特定的心理结果：平静的卧室、专注的办公室和社交型客厅。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi-Based Personal Color Palette",
+        titleCn: "一、基于八字的个人色彩 palette",
+        intro: "Your birth chart determines your personal lucky and unlucky colors:",
+        introCn: "你的命盘决定了你的个人吉利和不吉利颜色：",
+        cards: [
+          {
+            title: "① Your Favorable Colors",
+            titleCn: "① 你的有利颜色",
+            desc: "These colors strengthen your Day Master element:",
+            descCn: "这些颜色增强你的日主元素：",
+            items: [
+              "Wood people: Green, teal, and natural wood tones",
+              "Fire people: Red, orange, pink, and purple",
+              "Earth people: Yellow, beige, brown, and terracotta",
+              "Metal people: White, silver, gold, and metallic finishes",
+              "Water people: Black, navy, deep blue, and charcoal"
+            ],
+            itemsCn: [
+              "木命人：绿色、青绿色和自然木色调",
+              "火命人：红色、橙色、粉色和紫色",
+              "土命人：黄色、米色、棕色和赤陶色",
+              "金命人：白色、银色、金色和金属质感",
+              "水命人：黑色、藏青色、深蓝色和炭灰色"
+            ]
+          },
+          {
+            title: "② Colors to Avoid",
+            titleCn: "② 应避免的颜色",
+            desc: "These colors weaken or clash with your core energy:",
+            descCn: "这些颜色会削弱或与你的核心能量相冲：",
+            items: [
+              "Wood people: Avoid excessive white and metallic colors",
+              "Fire people: Avoid too much black and dark blue",
+              "Earth people: Avoid heavy use of green and plant tones",
+              "Metal people: Avoid dominant red and bright orange",
+              "Water people: Avoid excessive yellow and earth tones"
+            ],
+            itemsCn: [
+              "木命人：避免过多的白色和金属色",
+              "火命人：避免过多的黑色和深蓝色",
+              "土命人：避免大量使用绿色和植物色调",
+              "金命人：避免主导的红色和亮橙色",
+              "水命人：避免过多的黄色和土色调"
+            ]
+          },
+          {
+            title: "③ Room-by-Room Color Guidelines",
+            titleCn: "③ 逐房间颜色指南",
+            desc: "Each room has an ideal energetic quality:",
+            descCn: "每个房间都有理想的能量品质：",
+            items: [
+              "Bedroom: Soft blues, greens, and neutrals for rest",
+              "Living room: Warm earth tones and gentle reds for social energy",
+              "Kitchen: Warm yellows and oranges stimulate appetite",
+              "Home office: Greens and blues support focus",
+              "Bathroom: White and light blue promote cleanliness and flow"
+            ],
+            itemsCn: [
+              "卧室：柔和的蓝色、绿色和中性色以利休息",
+              "客厅：温暖的土色调和温和的红色以利社交能量",
+              "厨房：温暖的黄色和橙色刺激食欲",
+              "家庭办公室：绿色和蓝色支持专注",
+              "卫生间：白色和浅蓝色促进清洁和流动"
+            ]
+          }
+        ]
+      },
+      {
+        title: "2. Qi Men Dun Jia: Timing Color Changes",
+        titleCn: "二、奇门遁甲：颜色改变的时机",
+        desc: "Qi Men Dun Jia identifies the optimal timing for painting or redecorating:",
+        descCn: "奇门遁甲确定粉刷或重新装修的最佳时机：",
+        focus: "Timing considerations:",
+        focusCn: "时机考量：",
+        items: [
+          "Best months for major color changes in each sector",
+          "Days to avoid painting due to conflicting energy",
+          "Optimal times for accent walls versus full repaints",
+          "Seasonal color adjustments based on annual flying stars"
+        ],
+        itemsCn: [
+          "每个方位进行重大颜色更改的最佳月份",
+          "因能量相冲应避免粉刷的日子",
+          "做 accent 墙与全面重刷的最佳时机",
+          "基于流年飞星的季节性颜色调整"
+        ]
+      },
+      {
+        title: "3. Practical Color Applications",
+        titleCn: "三、实用颜色应用",
+        desc: "You do not need to repaint everything. Strategic color placement works:",
+        descCn: "你不需要重新粉刷所有东西。战略性颜色放置就有效：",
+        focus: "Easy applications:",
+        focusCn: "简单应用：",
+        items: [
+          "Add throw pillows and rugs in your favorable colors",
+          "Use artwork to introduce missing elements to a room",
+          "Place a colored vase or object in the corresponding Bagua sector",
+          "Change bedding seasonally to align with energy shifts",
+          "Use curtains to soften harsh wall colors"
+        ],
+        itemsCn: [
+          "添加你有利颜色的抱枕和地毯",
+          "使用艺术品为房间引入缺失的元素",
+          "在对应的八卦方位放置彩色花瓶或物品",
+          "根据季节更换床品以配合能量变化",
+          "使用窗帘柔化 harsh 的墙面颜色"
+        ]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "From Anxiety to Calm: A Bedroom Color Transformation",
+    titleCn: "从焦虑到平静：一次卧室颜色转变",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Ms. Lin (born 1992, Ren-Shen year) had been struggling with anxiety and insomnia for two years. Her bedroom was painted bright red with orange accents—colors she chose because they made her feel energized after work.",
+        textCn: "林女士（1992年生，壬申年）两年来一直与焦虑和失眠作斗争。她的卧室刷成了鲜红色，搭配橙色点缀——她选择这些颜色是因为它们让她下班后感到有活力。"
+      },
+      {
+        label: "BaZi & Feng Shui Analysis",
+        labelCn: "八字与风水分析",
+        text: "Lins BaZi showed a strong Metal Day Master with excessive Fire energy already present in her chart. The red and orange walls amplified her Fire to dangerous levels, creating mental restlessness and sleep disruption. Her bedroom was in the South sector, which added even more Fire energy.",
+        textCn: "林女士的八字显示金日主偏强，命盘中已经有过多的火能量。红色和橙色墙壁将她的火能量放大到危险水平，造成心神不宁和睡眠中断。她的卧室在南方位，这增加了更多火能量。"
+      },
+      {
+        label: "Guidance",
+        labelCn: "指导建议",
+        text: "1. Repaint the walls soft white with light blue accents. 2. Replace orange curtains with navy blue blackout curtains. 3. Add metallic silver picture frames to strengthen her Metal element. 4. Place a small water feature on the nightstand to introduce Water energy.",
+        textCn: "1. 将墙壁重新粉刷成柔和白色，搭配浅蓝色点缀。2. 将橙色窗帘换成藏青色遮光窗帘。3. 添加金属银色相框以增强她的金元素。4. 在床头柜上放置小型水景以引入水能量。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Within two weeks, Ms. Lin reported falling asleep faster and waking less during the night. Her anxiety decreased significantly. She described the new room as 'a sigh of relief' and said she actually looked forward to bedtime for the first time in years.",
+        textCn: "两周内，林女士报告入睡更快，夜间醒来次数减少。她的焦虑显著降低。她形容新房间为「如释重负」，并表示多年来第一次真正期待 bedtime。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "Colors are energetic information that directly affects your mood, health, and fortune.",
+      "Your BaZi chart reveals your personal favorable and unfavorable colors based on your Five Elements profile.",
+      "Each room has an ideal color quality—bedrooms need calm tones, offices need focus tones, living rooms need social tones.",
+      "You do not need to repaint everything; strategic accents and decor can shift energy effectively.",
+      "Timing color changes with annual energy shifts maximizes their impact."
+    ],
+    itemsCn: [
+      "颜色是能量信息，直接影响你的情绪、健康和运势。",
+      "你的八字命盘根据五行配置揭示了你个人有利和不利的颜色。",
+      "每个房间都有理想的颜色品质——卧室需要平静色调，办公室需要专注色调，客厅需要社交色调。",
+      "你不需要重新粉刷所有东西；战略性点缀和装饰可以有效改变能量。",
+      "配合年度能量变化选择颜色改变的时机可以最大化效果。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "adjust-home-feng-shui", question: "How to Adjust Home Feng Shui for Better Luck?", questionCn: "家里风水摆设如何调整提升运势？" },
+    { slug: "bed-direction", question: "Which Direction Should My Bed Face?", questionCn: "我的床应该朝哪个方向？" },
+    { slug: "negative-energy-home", question: "Is There Negative Energy in My Home?", questionCn: "我家里有负能量吗？" }
+  ],
+
+  cta: {
+    textLine1: "Color is one of the fastest ways to shift your homes energy.",
+    textLine1Cn: "颜色是改变家居能量最快的方式之一。",
+    textLine2: "Our consultants can analyze your birth chart and home layout to recommend the perfect color palette for each room.",
+    textLine2Cn: "我们的咨询师可以分析你的命盘和家居布局，为每个房间推荐完美的色彩搭配。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/home-feng-shui/home-colors",
+  publishedAt: "2026-08-22",
+  modifiedAt: "2026-08-22",
+  author: "Stellawei Editorial Team"
+};
+
+// ==================== Home Feng Shui: Is There Negative Energy in My Home? ====================
+
+export const negativeEnergyHome: KnowledgeArticle = {
+  slug: "negative-energy-home",
+  topicSlug: "home-feng-shui",
+  question: "Is There Negative Energy in My Home?",
+  questionCn: "我家里有负能量吗？",
+  metaTitle: "Is There Negative Energy in My Home? | StellaWei Knowledge Center",
+  metaDescription: "Feeling uneasy at home? Learn how to detect, diagnose, and clear negative energy using Feng Shui, BaZi, and Qi Men Dun Jia.",
+  metaTitleCn: "我家里有负能量吗？| Stellawei 知识中心",
+  metaDescriptionCn: "在家里感到不安？了解如何使用风水、八字和奇门遁甲检测、诊断和清除负能量。",
+  heroIntro: "Every home holds energy. Most of the time, that energy is neutral or positive—the accumulated warmth of daily life, shared meals, laughter, and rest. But sometimes, a home collects stagnant, heavy, or chaotic energy that makes the space feel oppressive, draining, or simply wrong. This negative energy can come from many sources: the physical layout, historical events, neighboring structures, or even the emotional residue of past conflicts.",
+  heroIntroCn: "每个家庭都持有能量。大多数时候，这种能量是中性的或积极的——日常生活积累的温暖、共享的餐食、笑声和休息。但有时，一个家庭会积聚停滞的、沉重的或混乱的能量，让空间感到压抑、消耗或 simply 不对劲。这种负能量可能来自许多来源：物理布局、历史事件、邻近建筑，甚至过去冲突的情绪残留。",
+
+  searchIntent: {
+    primary: [
+      "is there negative energy in my home",
+      "negative energy home signs",
+      "how to clear negative energy home",
+      "bad energy house feng shui"
+    ],
+    primaryCn: [
+      "家里有负能量吗",
+      "家里负能量迹象",
+      "如何清除家里负能量",
+      "房子不好能量风水"
+    ],
+    secondary: [
+      "feng shui house cleansing",
+      "qi men dun jia negative energy",
+      "bazi house energy"
+    ],
+    secondaryCn: [
+      "风水房屋净化",
+      "奇门遁甲负能量",
+      "八字房屋能量"
+    ],
+    related: [
+      "how to cleanse your home",
+      "house feels heavy",
+      "stagnant energy home",
+      "feng shui cures"
+    ],
+    relatedCn: [
+      "如何净化你的家",
+      "房子感觉很沉重",
+      "家里能量停滞",
+      "风水化解"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People sensing negative energy at home often notice:",
+    questions: [
+      "Something feels wrong in this house, but I cannot explain what.",
+      "Ever since I moved in, my health, relationships, or finances have declined.",
+      "My pets refuse to enter certain rooms or act strangely at home.",
+      "Guests comment that my home feels heavy or uncomfortable.",
+      "I have recurring nightmares or feel watched when I am alone."
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "感觉到家里有负能量的人常常注意到：",
+    questions: [
+      "这个房子感觉有些不对劲，但我无法解释是什么。",
+      "自从我搬进来，我的健康、关系或财务状况就下降了。",
+      "我的宠物拒绝进入某些房间或在家里表现怪异。",
+      "客人评论说我的家感觉很沉重或不舒服。",
+      "我做 recurring 噩梦或独处时感觉被注视。"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Approaches View Negative Energy",
+    headingCn: "东西方如何看待负能量",
+    easternTitle: "Eastern Energy Diagnostics",
+    easternTitleCn: "东方能量诊断",
+    easternDesc: "Eastern Feng Shui recognizes several types of negative energy (Sha Qi). Some are visible—like sharp corners pointing at your bed or a T-junction road facing your door. Others are invisible, such as the energetic residue of past trauma, conflicts, or deaths in a space. Qi Men Dun Jia can detect these hidden energy patterns by analyzing the spacetime coordinates of the home. BaZi reveals whether the home is inherently compatible with your personal energy or if it creates ongoing conflict.",
+    easternDescCn: "东方风水认识到几种类型的负能量（煞气）。有些是可看见的——比如尖锐的角对着你的床或T字路口正对着你的门。另一些是看不见的，比如空间中过去创伤、冲突或死亡的能量残留。奇门遁甲可以通过分析房屋的时空坐标来检测这些隐藏的能量模式。八字揭示房屋是否与你的个人能量本质兼容，或者它是否造成持续的冲突。",
+    westernTitle: "Western Environmental & Psychological Factors",
+    westernTitleCn: "西方环境与心理因素",
+    westernDesc: "Western science explains negative home sensations through measurable factors: poor ventilation leading to mold and low oxygen, electromagnetic fields from wiring and devices, noise pollution from traffic or neighbors, and inadequate lighting causing seasonal affective symptoms. Psychologically, spaces associated with trauma or conflict can trigger stress responses even years later—a phenomenon called contextual fear conditioning.",
+    westernDescCn: "西方科学通过可衡量的因素解释家里的负面感觉：通风不良导致霉菌和低氧、来自电线和设备的电磁场、来自交通或邻居的噪音污染、以及 inadequate 照明引起的季节性情感症状。心理上，与创伤或冲突相关的空间即使多年后也会触发压力反应——一种称为情境性恐惧条件反射的现象。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. Detecting Negative Energy Sources",
+        titleCn: "一、检测负能量来源",
+        intro: "Before clearing energy, you must identify its source. A comprehensive diagnostic includes:",
+        introCn: "在清除能量之前，你必须识别其来源。全面的诊断包括：",
+        cards: [
+          {
+            title: "① Physical Layout Sha Qi",
+            titleCn: "① 物理布局煞气",
+            desc: "Visible structural problems that create negative energy:",
+            descCn: "产生负能量的可见结构问题：",
+            items: [
+              "Sharp corners (poison arrows) pointing at beds or desks",
+              "Stairs directly facing the front door",
+              "Bathroom in the center of the home",
+              "Long, narrow hallways that trap energy",
+              "Missing corners in the floor plan"
+            ],
+            itemsCn: [
+              "尖锐的角（毒箭）对着床或办公桌",
+              "楼梯正对前门",
+              "卫生间在房屋正中央",
+              "狭长走廊困住能量",
+              "户型图缺角"
+            ]
+          },
+          {
+            title: "② Environmental Sha Qi",
+            titleCn: "② 环境煞气",
+            desc: "External factors affecting your homes energy:",
+            descCn: "影响你家能量的外部因素：",
+            items: [
+              "T-junction roads or sharp building corners facing your door",
+              "Overhead power lines or cell towers nearby",
+              "Neighbors with constant conflict or negative activity",
+              "Construction or demolition across the street",
+              "Underground water lines or geological faults"
+            ],
+            itemsCn: [
+              "T字路口或尖锐的建筑角正对着你的门",
+              "附近有高压电线或信号塔",
+              "邻居经常有冲突或负面活动",
+              "街对面的建筑工地或拆除工程",
+              "地下水管或地质断层"
+            ]
+          },
+          {
+            title: "③ Historical & Emotional Residue",
+            titleCn: "③ 历史和情绪残留",
+            desc: "Invisible energetic imprints from past events:",
+            descCn: "来自过去事件的不可见能量印记：",
+            items: [
+              "Previous residents who experienced tragedy or chronic illness",
+              "Arguments, violence, or divorce that occurred in the space",
+              "Deaths or accidents on the property",
+              "Your own prolonged periods of stress or depression",
+              "Inherited furniture with unknown history"
+            ],
+            itemsCn: [
+              "经历过悲剧或慢性病的 previous 住户",
+              "空间中发生过的争吵、暴力或离婚",
+              "房产上的死亡或事故",
+              "你自己长期的压力或抑郁期",
+              "来历不明的 inherited 家具"
+            ]
+          }
+        ]
+      },
+      {
+        title: "2. Qi Men Dun Jia: Energy Clearing Timing",
+        titleCn: "二、奇门遁甲：能量净化时机",
+        desc: "Qi Men Dun Jia identifies the optimal timing and methods for clearing negative energy:",
+        descCn: "奇门遁甲确定清除负能量的最佳时机和方法：",
+        focus: "Diagnostic applications:",
+        focusCn: "诊断应用：",
+        items: [
+          "Best dates and hours for space cleansing rituals",
+          "Identifying which sectors need immediate attention",
+          "Determining whether the negative energy is temporary or permanent",
+          "Selecting the most effective clearing method for your specific situation"
+        ],
+        itemsCn: [
+          "进行空间净化仪式的最佳日期和时辰",
+          "识别哪些方位需要立即关注",
+          "确定负能量是暂时的还是永久的",
+          "为你具体情况选择最有效的净化方法"
+        ]
+      },
+      {
+        title: "3. Practical Energy Clearing Methods",
+        titleCn: "三、实用能量净化方法",
+        desc: "Effective techniques to clear and refresh your homes energy:",
+        descCn: "清除和刷新你家能量的有效技巧：",
+        focus: "Step-by-step clearing:",
+        focusCn: "逐步净化：",
+        items: [
+          "Open all windows and doors for at least 30 minutes to allow stagnant energy to escape",
+          "Burn sage, sandalwood, or mugwort to purify the air and neutralize negative ions",
+          "Ring a bell or use a singing bowl in each corner to break up stuck energy",
+          "Place salt bowls in corners for 24 hours to absorb negativity, then discard",
+          "Add plants with rounded leaves to transform heavy energy into vitality"
+        ],
+        itemsCn: [
+          "打开所有门窗至少30分钟，让停滞的能量流出",
+          "燃烧鼠尾草、檀香或艾草以净化空气并中和负离子",
+          "在每个角落摇铃或使用颂钵以打破卡住的能量",
+          "在角落放置盐碗24小时以吸收负能量，然后丢弃",
+          "添加圆叶植物以将沉重能量转化为活力"
+        ]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Reclaiming a Home After Negative History",
+    titleCn: "在负面历史之后 reclaim 一个家庭",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Ms. Huang (born 1986, Bing-Yin year) bought a beautiful apartment at a suspiciously low price. Within three months, she developed chronic fatigue, her relationship ended, and her business lost a major client. She felt a heaviness in the master bedroom that made her avoid it.",
+        textCn: "黄女士（1986年生，丙寅年）以 suspiciously 低的价格买了一套漂亮的公寓。三个月内，她患上了慢性疲劳，恋情结束，生意失去了一个大客户。她感到主卧有一种沉重感，让她避开那个房间。"
+      },
+      {
+        label: "BaZi & Qi Men Analysis",
+        labelCn: "八字与奇门分析",
+        text: "Qi Men analysis revealed that the previous owner had experienced a tragic accident in the master bedroom three years prior. The energy imprint remained active. Huangs BaZi showed strong Fire energy, but the apartments Northwest sector (Metal) was dominant, creating a destructive cycle that weakened her health and relationships.",
+        textCn: "奇门分析显示前住户三年前在主卧经历了一场悲惨事故。能量印记仍然活跃。黄女士的八字显示火能量偏强，但公寓的西北方位（金）占主导，形成了削弱她健康和关系的破坏性 cycle。"
+      },
+      {
+        label: "Guidance",
+        labelCn: "指导建议",
+        text: "1. Professional space blessing with incense and chanting. 2. Complete deep cleaning with salt water on all surfaces. 3. Repaint the master bedroom in soft green (Wood) to balance the Metal excess. 4. Place a bowl of salt in each corner for 72 hours, then discard far from home. 5. Add a large plant with round leaves in the master bedroom.",
+        textCn: "1. 用香和诵经进行专业空间祝福。2. 用盐水彻底清洁所有表面。3. 将主卧重新粉刷成柔和绿色（木）以平衡过多的金。4. 在每个角落放置盐碗72小时，然后扔到离家很远的地方。5. 在主卧添加一盆大叶圆叶植物。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Within one month, Ms. Huang reported the heaviness in the bedroom was gone. Her energy levels improved, and new business opportunities emerged. She later learned from a neighbor that the previous owner had indeed passed away in the apartment—a fact the seller had not disclosed.",
+        textCn: "一个月内，黄女士报告卧室的沉重感消失了。她的精力水平改善了，新的商业机会出现了。后来她从一个邻居那里得知，前住户确实在公寓里去世了——这是卖家没有披露的事实。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "Negative home energy can come from physical layout, external environment, or historical emotional residue.",
+      "Common signs include persistent fatigue, relationship conflicts, health decline, and pets acting strangely.",
+      "Qi Men Dun Jia can diagnose hidden energy patterns and identify the best clearing methods and timing.",
+      "Practical clearing techniques include ventilation, sage burning, salt absorption, sound clearing, and plant placement.",
+      "Severe or persistent negative energy may require professional consultation and space blessing."
+    ],
+    itemsCn: [
+      "家居负能量可能来自物理布局、外部环境或历史情绪残留。",
+      "常见迹象包括持续疲劳、关系冲突、健康下降和宠物表现异常。",
+      "奇门遁甲可以诊断隐藏的能量模式并确定最佳净化方法和时机。",
+      "实用净化技巧包括通风、燃烧鼠尾草、盐吸收、声音净化和植物放置。",
+      "严重或持续的负能量可能需要专业咨询和空间祝福。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "adjust-home-feng-shui", question: "How to Adjust Home Feng Shui for Better Luck?", questionCn: "家里风水摆设如何调整提升运势？" },
+    { slug: "home-layout-energy", question: "Is My Home Layout Affecting My Energy?", questionCn: "我的房屋布局影响我的能量吗？" },
+    { slug: "home-colors", question: "What Colors Should I Use in My Home?", questionCn: "我家应该用什么颜色？" }
+  ],
+
+  cta: {
+    textLine1: "Feeling something is wrong in your home?",
+    textLine1Cn: "感觉家里有些不对劲？",
+    textLine2: "Our consultants can diagnose the source of negative energy and recommend personalized clearing methods to restore harmony.",
+    textLine2Cn: "我们的咨询师可以诊断负能量的来源并推荐个性化净化方法以恢复和谐。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/home-feng-shui/negative-energy-home",
+  publishedAt: "2026-08-22",
+  modifiedAt: "2026-08-22",
+  author: "Stellawei Editorial Team"
+};
