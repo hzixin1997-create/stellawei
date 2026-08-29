@@ -407,6 +407,7 @@ import {
   workspaceArrangement,
   homeColors,
   negativeEnergyHome,
+  amIOnRightPath,
 } from "./knowledge-article-pages";
 
 // ==================== 文章索引 ====================
@@ -436,6 +437,7 @@ export const knowledgeArticles: Record<string, KnowledgeArticle> = {
   [workspaceArrangement.slug]: workspaceArrangement,
   [homeColors.slug]: homeColors,
   [negativeEnergyHome.slug]: negativeEnergyHome,
+  [amIOnRightPath.slug]: amIOnRightPath,
 };
 
 export function getArticleBySlug(slug: string): KnowledgeArticle | undefined {

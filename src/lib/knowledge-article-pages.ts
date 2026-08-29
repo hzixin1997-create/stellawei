@@ -5505,3 +5505,228 @@ export const negativeEnergyHome: KnowledgeArticle = {
   modifiedAt: "2026-08-22",
   author: "Stellawei Editorial Team"
 };
+
+// ==================== Article: Am I on the Right Life Path? (Life Direction) ====================
+
+export const amIOnRightPath: KnowledgeArticle = {
+  slug: "am-i-on-right-path",
+  topicSlug: "life-direction",
+  question: "Am I on the Right Life Path?",
+  questionCn: "我走在正确的人生道路上吗？",
+  metaTitle: "Am I on the Right Life Path? | StellaWei Knowledge Center",
+  metaDescription: "Feeling uncertain about your direction? Eastern and Western divination tools offer different perspectives to help you understand your life path, evaluate major decisions, and align your choices with your deeper purpose.",
+  metaTitleCn: "我走在正确的人生道路上吗？| Stellawei 知识中心",
+  metaDescriptionCn: "对人生方向感到不确定？东西方命理工具从不同维度帮助你理解自己的人生道路、评估重大决定，并将选择与自己的深层使命对齐。",
+  heroIntro: "At some point, almost everyone questions whether they are on the right path. Maybe you are stuck in a job that does not fulfill you, living in a city that feels wrong, or surrounded by people who do not understand you. Sometimes the doubt creeps in slowly; other times it hits after a major life event—a breakup, a health scare, a milestone birthday. Eastern and Western divination tools approach this question differently—Eastern methods analyze your birth chart to reveal your inherent strengths, karmic patterns, and the cyclical timing of major life transitions, while Tarot helps you understand your current emotional landscape, subconscious fears, and the energies surrounding your present crossroads.",
+  heroIntroCn: "几乎每个人都会在某个时刻质疑自己是否走在正确的道路上。也许你被困在一份无法让你满足的工作中，住在一个感觉不对劲的城市，或者被不理解你的人包围。有时疑虑会慢慢渗入，有时则在重大生活事件后猛然袭来——分手、健康危机、 milestone 生日。东西方命理工具从不同角度切入这个问题——东方方法通过命盘分析揭示你的天赋优势、因果模式和重大人生转变的周期时机，塔罗则帮助你理解当下的情绪图景、潜意识恐惧和围绕当前十字路口的能量。",
+
+  searchIntent: {
+    primary: [
+      "am i on the right path",
+      "how to know if you're on the right path",
+      "is my life going in the right direction",
+      "signs you're on the wrong path"
+    ],
+    primaryCn: [
+      "我走在正确的人生道路上吗",
+      "怎么知道自己走的路对不对",
+      "我的人生方向对吗",
+      "走错路的迹象"
+    ],
+    secondary: [
+      "bazi life path analysis",
+      "zi wei dou shu life purpose",
+      "tarot life direction reading",
+      "qi men dun jia life decisions"
+    ],
+    secondaryCn: [
+      "八字人生道路分析",
+      "紫微斗数人生使命",
+      "塔罗人生方向解读",
+      "奇门遁甲人生决策"
+    ],
+    related: [
+      "life purpose signs",
+      "how to find your calling",
+      "career change timing",
+      "major life decisions"
+    ],
+    relatedCn: [
+      "人生使命迹象",
+      "如何找到使命",
+      "转行时机",
+      "重大人生决定"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People questioning their life path are often asking:",
+    questions: [
+      "I have a good job and stable life, so why do I feel so empty inside?",
+      "Everyone says I should be grateful, but I feel like something is missing. Am I being ungrateful or is this real?",
+      "I have been following the path my parents chose for me. Is it too late to change?",
+      "I just turned 30/40/50 and realized I have no idea what I actually want. Is that normal?",
+      "I keep starting over in new cities, new jobs, new relationships. Why can I not find where I belong?",
+      "I had a health scare and now everything feels pointless. How do I find meaning again?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "质疑人生方向的人，常常在问：",
+    questions: [
+      "我有份好工作、生活稳定，但为什么内心感到如此空虚？",
+      "每个人都说我该感恩，但我总觉得缺了什么。是我不知足，还是这是真实的感受？",
+      "我一直在走父母为我选的路。现在改变还来得及吗？",
+      "我刚满30/40/50岁，突然意识到我不知道自己真正想要什么。这正常吗？",
+      "我不断在新城市、新工作、新关系中重新开始。为什么找不到归属感？",
+      "我经历了一次健康危机，现在一切都感觉毫无意义。我如何重新找到意义？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Help Analyze Life Direction",
+    headingCn: "东西方命理如何帮助分析人生方向？",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods (BaZi, Qi Men Dun Jia, Zi Wei Dou Shu) analyze life direction through birth-time patterns, elemental composition, and palace configurations. BaZi examines your Day Master strength and the balance of Five Elements to reveal your inherent talents and natural inclinations. Qi Men Dun Jia evaluates the current spacetime energy to identify optimal timing for major life transitions. Zi Wei Dou Shu profiles your life purpose, karmic lessons, and cyclical fortune patterns through the twelve palaces, helping you understand which life chapters favor change and which favor stability.",
+    easternDescCn: "东方方法（八字、奇门遁甲、紫微斗数）通过出生时间规律、五行构成和宫位配置来分析人生方向。八字通过日主强弱和五行平衡揭示你的天赋才能和自然倾向。奇门遁甲评估当前时空能量，识别重大人生转变的最佳时机。紫微斗数通过十二宫位描绘你的人生使命、因果课题和周期运势模式，帮助你理解哪些人生阶段适合改变、哪些适合稳定。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination (primarily Tarot) is based on symbolic psychology and the collective unconscious. Through card imagery and intuitive interpretation, it reflects your present emotional state and deepest fears about change, reveals subconscious blocks that keep you stuck, and offers actionable guidance for navigating crossroads with clarity and confidence.",
+    westernDescCn: "西方命理（以塔罗为主）基于象征心理学与集体潜意识。通过牌面图像与直觉解读，反映你当下的情绪状态和对改变的最深层恐惧，揭示让你停滞不前的潜意识阻碍，并提供可执行的指引，帮助你在十字路口清晰而自信地前行。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi: Day Master and Five Elements Balance",
+        titleCn: "一、八字：日主与五行平衡",
+        intro: "BaZi uses your birth year, month, day, and hour to construct a Four Pillars chart. For life direction analysis, the focus is on:",
+        introCn: "八字使用你的出生年月日时构建四柱命盘。针对人生方向分析，重点在于：",
+        cards: [
+          {
+            title: "① Day Master Strength",
+            titleCn: "① 日主强弱",
+            desc: "Your Day Master reveals your core personality and natural strengths.",
+            descCn: "日主揭示你的核心性格和天赋优势。",
+            items: ["Core personality traits", "Natural talents and weaknesses", "Optimal environments", "Compatible life directions"],
+            itemsCn: ["核心性格特征", "天赋与短板", "最佳环境", "适配的人生方向"]
+          },
+          {
+            title: "② Five Elements Balance",
+            titleCn: "② 五行平衡",
+            desc: "The distribution of Wood, Fire, Earth, Metal, and Water in your chart reveals what you need to thrive.",
+            descCn: "命盘中木、火、土、金、水的分布揭示你需要什么才能蓬勃发展。",
+            items: ["Dominant and weak elements", "Favorable industries and environments", "Compatible relationships", "Health and lifestyle alignment"],
+            itemsCn: ["强旺与弱势五行", "有利行业与环境", "适配的人际关系", "健康与生活方式对齐"]
+          },
+          {
+            title: "③ Luck Cycle Timing",
+            titleCn: "③ 大运周期",
+            desc: "Your Major Luck cycles reveal when life transitions are most likely to succeed.",
+            descCn: "你的大运周期揭示人生转变最可能成功的时机。",
+            items: ["Current cycle energy", "Favorable years for change", "Periods to consolidate", "Transition windows"],
+            itemsCn: ["当前周期能量", "适合改变的有利年份", "需要巩固的时期", "转变窗口"]
+          }
+        ]
+      },
+      {
+        title: "2. Qi Men Dun Jia: Current Crossroads Energy",
+        titleCn: "二、奇门遁甲：当前十字路口能量",
+        desc: "Qi Men Dun Jia uses a spacetime model to analyze the current energy state and optimal timing for major life decisions.",
+        descCn: "奇门遁甲使用时空模型分析当前能量状态和重大人生决策的最佳时机。",
+        focus: "Key areas of focus:",
+        focusCn: "通常重点关注：",
+        items: ["Current life path energy", "Optimal timing for change", "Hidden obstacles and opportunities", "Outcome of different choices"],
+        itemsCn: ["当前人生道路能量", "改变的最佳时机", "隐藏阻碍与机遇", "不同选择的结果"]
+      },
+      {
+        title: "3. Zi Wei Dou Shu: Life Purpose and Karmic Patterns",
+        titleCn: "三、紫微斗数：人生使命与因果模式",
+        desc: "Zi Wei Dou Shu uses star combinations to profile your life purpose, karmic lessons, and favorable periods for transformation through the twelve palaces.",
+        descCn: "紫微斗数使用星曜组合描绘你的人生使命、因果课题和转变的有利时期。",
+        focus: "Key areas of focus:",
+        focusCn: "通常重点关注：",
+        items: ["Life purpose indicators", "Karmic lesson patterns", "Favorable periods for change", "Destiny vs. free will balance"],
+        itemsCn: ["人生使命指标", "因果课题模式", "转变的有利时期", "命运与自由意志的平衡"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Finding Direction After a Midlife Crisis",
+    titleCn: "中年危机后找到方向",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Mr. Wang (born 1978, Wu-Wu year), age 48, had spent 25 years in corporate finance. Despite a successful career and comfortable lifestyle, he felt increasingly empty and anxious. After a health scare in 2023, he began questioning everything.",
+        textCn: "王先生（1978年生，戊午年），48岁，已在企业财务领域工作25年。尽管事业成功、生活舒适，他却感到越来越空虚和焦虑。2023年一次健康危机后，他开始质疑一切。"
+      },
+      {
+        label: "BaZi Analysis",
+        labelCn: "八字分析",
+        text: "Mr. Wang's chart showed a strong Day Master with excess Metal and Water elements, indicating natural analytical abilities but also emotional suppression. His Career Palace was dominated by authority stars, explaining his corporate success, but his Destiny Palace revealed a strong Wood element calling for creative expression and teaching. His current Luck Cycle (2020-2030) showed a transition from stability to transformation.",
+        textCn: "王先生的命盘显示日主强旺，金水过旺，指示天生的分析能力但也存在情绪压抑。他的事业宫被官星主导，解释了他在企业的成功，但命宫显露强烈的木元素，呼唤创造性表达和教学。他当前的大运（2020-2030）显示从稳定向转变过渡。"
+      },
+      {
+        label: "Guidance",
+        labelCn: "指导建议",
+        text: "1. Gradually transition from full-time corporate work to consulting and mentoring. 2. The period 2024-2026 (Jia-Chen to Bing-Wu) favored teaching and knowledge-sharing activities. 3. Relocate to a city with more Wood-element energy (eastern direction, green spaces). 4. Start a financial literacy program for young professionals—combining his expertise with his newfound purpose.",
+        textCn: "1. 逐步从全职企业工作过渡到咨询和导师角色。2. 2024-2026年（甲辰至丙午）有利于教学与知识分享活动。3. 搬迁到木元素能量更强的城市（东方、绿地多）。4. 为年轻专业人士启动财务素养项目——将他的专业知识与新发现的使命结合。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "By 2025, Mr. Wang had reduced his corporate hours to part-time, launched a financial education workshop series for young entrepreneurs, and moved to a smaller city with more nature. He reported feeling 'alive for the first time in decades' and found deeper satisfaction in mentoring than in his previous executive role.",
+        textCn: "到2025年，王先生已将企业工作减为兼职，为年轻创业者推出了一系列财务教育工作坊，并搬迁到一个自然环境更多的小城市。他报告说感觉'几十年来第一次真正活着'，并在导师角色中找到了比之前的 executive 职位更深的满足感。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "BaZi reveals your inherent strengths, elemental needs, and the cyclical timing of major life transitions through Day Master and palace analysis.",
+      "Qi Men Dun Jia evaluates the current spacetime energy to identify optimal timing for change and hidden obstacles.",
+      "Zi Wei Dou Shu profiles your life purpose, karmic patterns, and favorable periods for transformation through the twelve palaces.",
+      "Tarot illuminates your present emotional landscape, subconscious fears, and the energies surrounding your current crossroads.",
+      "Feeling lost is often a sign that you are ready to grow—not that you have failed."
+    ],
+    itemsCn: [
+      "八字通过日主和宫位分析揭示你的天赋优势、五行需求和重大人生转变的周期时机。",
+      "奇门遁甲评估当前时空能量，识别改变的最佳时机和隐藏阻碍。",
+      "紫微斗数通过十二宫位描绘你的人生使命、因果模式和转变的有利时期。",
+      "塔罗照亮你当下的情绪图景、潜意识恐惧和围绕当前十字路口的能量。",
+      "感到迷失通常是你准备成长的信号——而不是你失败的证明。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "what-is-my-life-purpose", question: "What Is My Life Purpose?", questionCn: "我的人生使命是什么？" },
+    { slug: "should-i-move-city", question: "Should I Move to a New City?", questionCn: "我应该搬到新城市吗？" },
+    { slug: "next-decade-trajectory", question: "What Is My Life Trajectory for the Next Decade?", questionCn: "我未来十年的人生走势如何？" }
+  ],
+
+  cta: {
+    textLine1: "Feeling uncertain about your path?",
+    textLine1Cn: "对人生方向感到不确定？",
+    textLine2: "Our consultants can help you understand your unique life blueprint and identify the timing and direction that aligns with your deeper purpose.",
+    textLine2Cn: "我们的咨询师可以帮助你理解独特的人生蓝图，识别与你的深层使命对齐的时机和方向。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/life-direction/am-i-on-right-path",
+  publishedAt: "2026-08-29",
+  modifiedAt: "2026-08-29",
+  author: "Stellawei Editorial Team"
+};

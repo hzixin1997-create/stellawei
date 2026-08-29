@@ -2,7 +2,13 @@ import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let resend: Resend | null = null;
+function getResend() {
+  if (!resend && process.env.RESEND_API_KEY) {
+    resend = new Resend(process.env.RESEND_API_KEY);
+  }
+  return resend;
+}
 
 export async function POST(request: Request) {
   const supabase = await createClient();
@@ -71,9 +77,14 @@ export async function POST(request: Request) {
 }
 
 async function sendReferralSuccessEmail(email: string, name: string, language: string = 'en') {
+  const resendClient = getResend();
+  if (!resendClient) {
+    console.error('Email service not configured');
+    return;
+  }
   const isZh = language === 'zh';
   try {
-    await resend.emails.send({
+    await resendClient.emails.send({
       from: 'Stellawei <support@stellawei.org>',
       to: email,
       subject: isZh
