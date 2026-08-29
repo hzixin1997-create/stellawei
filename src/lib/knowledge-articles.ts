@@ -419,6 +419,12 @@ import {
   bestTimeToMarry,
   areWeCompatibleMarriage,
   howToImproveMarriage,
+  canIFindLostItem,
+  whereToLookLostItem,
+  willLostItemBeReturned,
+  whenFindLostItem,
+  isLostItemRecoverable,
+  whoTookLostItem,
 } from "./knowledge-article-pages";
 
 // ==================== 文章索引 ====================
@@ -460,6 +466,12 @@ export const knowledgeArticles: Record<string, KnowledgeArticle> = {
   [bestTimeToMarry.slug]: bestTimeToMarry,
   [areWeCompatibleMarriage.slug]: areWeCompatibleMarriage,
   [howToImproveMarriage.slug]: howToImproveMarriage,
+  [canIFindLostItem.slug]: canIFindLostItem,
+  [whereToLookLostItem.slug]: whereToLookLostItem,
+  [willLostItemBeReturned.slug]: willLostItemBeReturned,
+  [whenFindLostItem.slug]: whenFindLostItem,
+  [isLostItemRecoverable.slug]: isLostItemRecoverable,
+  [whoTookLostItem.slug]: whoTookLostItem,
 };
 
 export function getArticleBySlug(slug: string): KnowledgeArticle | undefined {

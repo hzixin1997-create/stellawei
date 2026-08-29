@@ -60,7 +60,7 @@ export const isHeSheTheRightPerson: KnowledgeArticle = {
       "We have been together for years, but I still have doubts—am I wasting time?",
       "My family does not approve. Are they wrong, or am I blinded by love?",
       "We argue constantly about the same things. Is this normal, or are we fundamentally incompatible?",
-      "They are great on paper, but something feels missing. Am I being too picky?",
+      "They are great on paper, but something feels 不见了. Am I being too picky?",
       "I have invested so much in this relationship. Should I keep trying, or is it time to let go?",
       "We are about to be long-distance for work. Should we continue this relationship?"
     ]
@@ -420,7 +420,7 @@ export const shouldIStayOrLeave: KnowledgeArticle = {
       {
         label: "Background",
         labelCn: "基本情况",
-        text: "Ms. Li (born 1988, Wu-Chen year) had been in a relationship for three years. Her partner was kind and stable, but she felt something was missing. She could not decide whether to stay or leave.",
+        text: "Ms. Li (born 1988, Wu-Chen year) had been in a relationship for three years. Her partner was kind and stable, but she felt something was 不见了. She could not decide whether to stay or leave.",
         textCn: "李女士（1988年生，戊辰年）恋爱三年。伴侣善良稳定，但她总觉得缺了什么。她无法决定是继续还是离开。"
       },
       {
@@ -1419,7 +1419,7 @@ export const willIGetPromotion: KnowledgeArticle = {
     intro: "People wondering about promotion timing are often asking:",
     questions: [
       "I have been in this role for two years. Is it time to ask, or should I wait?",
-      "My colleague got promoted, but I did not. What am I missing?",
+      "My colleague got promoted, but I did not. What am I 不见了?",
       "I am performing well, but my manager never mentions advancement. Should I bring it up?",
       "There is a reorganization coming. Is this a good or bad time to seek promotion?",
       "I was passed over last year. Will this year be different?",
@@ -2319,7 +2319,7 @@ export const whatCareerSuitsMe: KnowledgeArticle = {
   whyPeopleAsk: {
     intro: "People seeking career direction often feel:",
     questions: [
-      "I have tried three different industries and still feel unfulfilled. What am I missing?",
+      "I have tried three different industries and still feel unfulfilled. What am I 不见了?",
       "Everyone says I should be a manager, but I love doing hands-on work. Am I wrong?",
       "I am good at many things. How do I choose just one path?",
       "My parents want me to be a doctor, but my heart is in art. Should I follow passion or stability?",
@@ -4519,7 +4519,7 @@ export const homeLayoutEnergy: KnowledgeArticle = {
             desc: "Certain layouts create predictable energy blocks:",
             descCn: "某些布局会产生可预测的能量阻塞：",
             items: [
-              "Missing corners: A missing southeast corner affects wealth",
+              "Missing corners: A 不见了 southeast corner affects wealth",
               "Bathroom in the center: Drains energy from all sectors",
               "Stairs facing the door: Energy rushes out too quickly",
               "Kitchen and bathroom adjacent: Fire and water clash",
@@ -4635,7 +4635,7 @@ export const homeLayoutEnergy: KnowledgeArticle = {
     items: [
       "Your home layout directly affects your energy, mood, and life outcomes through Qi flow and sector alignment.",
       "The Bagua map reveals which life areas are supported or weakened by your floor plan.",
-      "Common problems include missing corners, central bathrooms, stairs facing doors, and fire-water clashes.",
+      "Common problems include 不见了 corners, central bathrooms, stairs facing doors, and fire-water clashes.",
       "BaZi analysis personalizes layout recommendations based on your birth chart.",
       "Simple adjustments like mirrors, plants, lighting, and screens can significantly improve energy flow without renovation."
     ],
@@ -5134,7 +5134,7 @@ export const homeColors: KnowledgeArticle = {
         focusCn: "简单应用：",
         items: [
           "Add throw pillows and rugs in your favorable colors",
-          "Use artwork to introduce missing elements to a room",
+          "Use artwork to introduce 不见了 elements to a room",
           "Place a colored vase or object in the corresponding Bagua sector",
           "Change bedding seasonally to align with energy shifts",
           "Use curtains to soften harsh wall colors"
@@ -5563,7 +5563,7 @@ export const amIOnRightPath: KnowledgeArticle = {
     intro: "People questioning their life path are often asking:",
     questions: [
       "I have a good job and stable life, so why do I feel so empty inside?",
-      "Everyone says I should be grateful, but I feel like something is missing. Am I being ungrateful or is this real?",
+      "Everyone says I should be grateful, but I feel like something is 不见了. Am I being ungrateful or is this real?",
       "I have been following the path my parents chose for me. Is it too late to change?",
       "I just turned 30/40/50 and realized I have no idea what I actually want. Is that normal?",
       "I keep starting over in new cities, new jobs, new relationships. Why can I not find where I belong?",
@@ -5744,7 +5744,7 @@ export const whatIsMyLifePurpose = {
   metaDescription: "Feeling lost about your purpose? Eastern and Western divination tools offer different perspectives to help you discover your unique mission and align your life choices.",
   metaTitleCn: "我的人生使命是什么？| Stellawei 知识中心",
   metaDescriptionCn: "对人生使命感到迷茫？东西方命理工具从不同维度帮助你发现自己的独特天赋与使命方向。",
-  heroIntro: "Many people reach a point where external achievements no longer feel fulfilling. You may have a successful career, stable relationships, and financial security—yet something essential feels missing. Eastern and Western divination tools approach this differently. Eastern methods analyze your birth chart to reveal innate talents and karmic lessons, while Tarot helps uncover what your subconscious already knows about your deeper calling.",
+  heroIntro: "Many people reach a point where external achievements no longer feel fulfilling. You may have a successful career, stable relationships, and financial security—yet something essential feels 不见了. Eastern and Western divination tools approach this differently. Eastern methods analyze your birth chart to reveal innate talents and karmic lessons, while Tarot helps uncover what your subconscious already knows about your deeper calling.",
   heroIntroCn: "许多人在事业有成、关系稳定之后，依然感到内心深处缺少了什么。东西方命理工具提供了不同的视角——东方方法通过命盘分析揭示你的天赋才能和因果课题，而塔罗则帮助你发现潜意识中早已知道的深层召唤。",
 
   searchIntent: {
@@ -8179,6 +8179,1344 @@ export const howToImproveMarriage = {
   },
 
   canonicalUrl: "https://stellawei.org/knowledge/marriage/how-to-improve-marriage",
+  publishedAt: "2026-08-29",
+  modifiedAt: "2026-08-29",
+  author: "Stellawei Editorial Team"
+};
+
+// ============================================================
+// Article: Can I Find My Lost Item?
+// ============================================================
+
+export const canIFindLostItem = {
+  slug: "can-i-find-lost-items",
+  topicSlug: "lost-items",
+  question: "Can I Find My Lost Item?",
+  questionCn: "我能找到丢失的物品吗？",
+  metaTitle: "Can I Find My Lost Item? | StellaWei Knowledge Center",
+  metaDescription: "Lost something important? Eastern and Western divination tools can help determine whether your item is recoverable and guide you toward finding it.",
+  metaTitleCn: "我能找到丢失的物品吗？| Stellawei 知识中心",
+  metaDescriptionCn: "丢了重要的东西？东西方命理工具可以帮助确定物品是否可找回，并指引你找到它。",
+  heroIntro: "Losing something valuable triggers a unique kind of panic. Whether it is a wallet, a phone, a piece of jewelry with sentimental value, or even a beloved pet, the moment of realization hits hard. You retrace your steps, check every pocket, and call every place you have been. But sometimes, logic is not enough. Eastern and Western divination tools approach lost items differently—Eastern methods, particularly Qi Men Dun Jia, use spacetime coordinates to determine whether the item is recoverable, where it might be, and who might have found it, while Tarot offers intuitive guidance on where to focus your search.",
+  heroIntroCn: "丢失贵重物品会引发一种独特的恐慌。无论是钱包、手机、有情感价值的珠宝，还是心爱的宠物，意识到丢失的那一刻都令人难以承受。你 原路返回，检查每个口袋，打电话给每个去过的地方。但有时，逻辑是不够的。东西方命理工具对失物有不同的处理方式——东方方法，特别是奇门遁甲，使用时空坐标来确定物品是否可找回、可能在哪里、谁可能捡到了它，而塔罗则提供直觉指引，告诉你应该把搜索重点放在哪里。",
+
+  searchIntent: {
+    primary: [
+      "can i find my lost item",
+      "will i find my lost wallet",
+      "lost item recovery",
+      "can lost items be found"
+    ],
+    primaryCn: [
+      "我能找到丢失的物品吗",
+      "我能找到丢失的钱包吗",
+      "失物找回",
+      "丢失的物品能找到吗"
+    ],
+    secondary: [
+      "qi men dun jia lost items",
+      "bazi lost object",
+      "tarot find lost item",
+      "divination lost objects"
+    ],
+    secondaryCn: [
+      "奇门遁甲找失物",
+      "八字失物",
+      "塔罗找失物",
+      "占卜失物"
+    ],
+    related: [
+      "how to find lost things",
+      "lost item locator",
+      "find my lost phone",
+      "不见了 item search"
+    ],
+    relatedCn: [
+      "如何找到丢失的东西",
+      "失物定位",
+      "找到丢失的手机",
+      "寻找遗失物品"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People who have lost something important are often asking:",
+    questions: [
+      "I lost my wallet hours ago. Is there any chance I will get it back?",
+      "My phone was stolen. Can divination tell me if it is recoverable?",
+      "I misplaced an heirloom with deep sentimental value. Will I see it again?",
+      "I think I left my bag at a restaurant but they say it is not there. Where else could it be?",
+      "My pet went 不见了. Can the stars help me find them?",
+      "I dropped my keys somewhere in the city. Is it even worth continuing to search?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "丢了重要东西的人，常常在问：",
+    questions: [
+      "我几小时前丢了钱包。还有找回来的可能吗？",
+      "我的手机被偷了。占卜能告诉我它还能找回来吗？",
+      "我 misplaced 了一件有深厚情感价值的传家宝。我还能再见到它吗？",
+      "我想我把包落在餐厅了但他们说不在。还可能在哪儿？",
+      "我的宠物走丢了。星象能帮我找到它吗？",
+      "我在城里的某个地方掉了钥匙。还值得继续找吗？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Help Find Lost Items",
+    headingCn: "东西方命理如何帮助寻找失物？",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods, particularly Qi Men Dun Jia, are exceptionally effective for locating lost items. Qi Men creates a spacetime map at the exact moment you realized the item was 不见了, revealing the item's current location, whether it is still in your vicinity, if someone else has found it, and the likelihood of recovery. Six Yao (Liu Yao) divination is another powerful method specifically designed for lost object inquiries.",
+    easternDescCn: "东方方法，特别是奇门遁甲，在定位失物方面异常有效。奇门在你意识到物品丢失的确切时刻创建时空地图，揭示物品的当前位置、是否仍在附近、是否有人捡到、以及找回的可能性。六爻占卜是另一种专门为失物问题设计的强大方法。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination, primarily Tarot, approaches lost items through intuitive guidance. While less precise than Qi Men for physical location, Tarot excels at revealing where to direct your energy, whether the item is worth pursuing, and what emotional or psychological factors may have contributed to the loss.",
+    westernDescCn: "西方命理，主要是塔罗，通过直觉指引来处理失物。虽然在物理定位上不如奇门精确，但塔罗擅长揭示应该将能量导向何处、物品是否值得追寻，以及哪些情绪或心理因素可能导致丢失。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. Qi Men Dun Jia: The Premier Lost Item Method",
+        titleCn: "一、奇门遁甲：首选失物方法",
+        intro: "Qi Men Dun Jia is widely considered the most accurate method for locating lost items.",
+        introCn: "奇门遁甲被广泛认为是定位失物最准确的方法。",
+        cards: [
+          {
+            title: "① Location Identification",
+            titleCn: "① 位置识别",
+            desc: "The Qi Men chart reveals the precise direction and approximate distance of your lost item.",
+            descCn: "奇门盘揭示失物的精确方向和大约距离。",
+            items: ["Direction analysis", "Distance estimation", "Location type"],
+            itemsCn: ["方向分析", "距离估算", "地点类型"]
+          },
+          {
+            title: "② Recovery Assessment",
+            titleCn: "② 找回评估",
+            desc: "The chart indicates whether the item is recoverable and how difficult recovery will be.",
+            descCn: "盘显示物品是否可找回以及找回的难度。",
+            items: ["Recovery probability", "Timeframe", "Obstacles"],
+            itemsCn: ["找回概率", "时间框架", "障碍"]
+          },
+          {
+            title: "③ Finder Identification",
+            titleCn: "③ 拾获者识别",
+            desc: "If someone else has the item, the chart can reveal their characteristics.",
+            descCn: "如果别人捡到了物品，盘可以揭示其特征。",
+            items: ["Finder description", "Intentions", "Return likelihood"],
+            itemsCn: ["拾获者描述", "意图", "归还可能性"]
+          }
+        ]
+      },
+      {
+        title: "2. Six Yao (Liu Yao): Lost Object Divination",
+        titleCn: "二、六爻：失物占卜",
+        desc: "Six Yao divination is specifically designed for lost object inquiries using coin tosses or yarrow stalks.",
+        descCn: "六爻占卜是专门为失物问题设计的，使用铜钱或蓍草。",
+        focus: "Key insights:",
+        focusCn: "关键洞察：",
+        items: ["Item location", "Recovery probability", "Finder details", "Return timing"],
+        itemsCn: ["物品位置", "找回概率", "拾获者详情", "归还时机"]
+      },
+      {
+        title: "3. Tarot: Intuitive Search Guidance",
+        titleCn: "三、塔罗：直觉搜索指引",
+        desc: "Tarot provides intuitive guidance on where to focus your search efforts.",
+        descCn: "塔罗提供直觉指引，告诉你应该把搜索重点放在哪里。",
+        focus: "Common lost item spreads:",
+        focusCn: "常见失物牌阵：",
+        items: ["Location guidance", "Recovery outlook", "Search strategy", "Emotional clarity"],
+        itemsCn: ["位置指引", "找回前景", "搜索策略", "情绪清晰度"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Recovering a Lost Family Heirloom",
+    titleCn: "找回丢失的家族传家宝",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Ms. Zhou (born 1990, Geng-Wu year) lost a jade bracelet that had been in her family for three generations. She had worn it daily and was 崩溃 by the loss. She had searched her home, office, and car multiple times with no success.",
+        textCn: "周女士（1990年生，庚午年）丢失了一只玉镯，这只镯子在她家传了三代。她每天都戴着它，对丢失感到 崩溃。她多次搜索了家里、办公室和车，都没有成功。"
+      },
+      {
+        label: "Qi Men Dun Jia Analysis",
+        labelCn: "奇门遁甲分析",
+        text: "The Qi Men chart revealed the bracelet was in the southeast direction, approximately 2 kilometers from her home, in a location associated with water and greenery. The chart indicated that someone had found it and intended to keep it, but that recovery was still possible if she acted within three days.",
+        textCn: "奇门盘显示玉镯在东南方向，大约离家2公里，在一个与水与绿植相关的地点。盘显示有人捡到了它并打算留着，但如果在三天内行动，仍然有可能找回。"
+      },
+      {
+        label: "Search and Recovery",
+        labelCn: "搜索与找回",
+        text: "Following the chart's guidance, Ms. Zhou visited a park with a lake in the southeast direction. She posted notices and spoke to park staff. A jogger had found the bracelet near the lake and, seeing her notice, returned it the next day.",
+        textCn: "按照盘的指引，周女士去了东南方向一个有湖的公园。她张贴了启事并与公园工作人员交谈。一位慢跑者在湖边捡到了玉镯，看到她的启事后第二天归还了。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Ms. Zhou recovered her bracelet within 48 hours. She described the experience as 'miraculous' and now keeps a backup copy of the Qi Men chart for all her valuable possessions.",
+        textCn: "周女士在48小时内找回了玉镯。她形容这次经历为「奇迹」，现在为所有贵重物品都备份了奇门盘。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "Qi Men Dun Jia is widely considered the most accurate Eastern method for locating lost items, providing specific direction, distance, and recovery probability.",
+      "Six Yao divination offers a structured approach to lost object inquiries through traditional casting methods.",
+      "Tarot provides valuable intuitive guidance on where to focus search efforts and whether recovery is worth pursuing."
+    ],
+    itemsCn: [
+      "奇门遁甲被广泛认为是定位失物最准确的东方方法，提供具体的方向、距离和找回概率。",
+      "六爻占卜通过传统起卦方法为失物问题提供结构化的处理方式。",
+      "塔罗为搜索重点提供有价值的直觉指引，以及是否值得追寻。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "where-to-look-lost-item", question: "Where Should I Look for My Lost Item?", questionCn: "我应该去哪里找丢失的物品？" },
+    { slug: "will-lost-item-be-returned", question: "Will My Lost Item Be Returned?", questionCn: "我的丢失物品会被归还吗？" },
+    { slug: "when-find-lost-item", question: "When Will I Find My Lost Item?", questionCn: "我什么时候能找到丢失的物品？" }
+  ],
+
+  cta: {
+    textLine1: "Lost something? There is still hope.",
+    textLine1Cn: "丢了东西？还有希望。",
+    textLine2: "If you have lost an important item and want to know if it is recoverable, where to search, and when it might be found, our consultants can provide detailed guidance using Qi Men Dun Jia and other divination methods.",
+    textLine2Cn: "如果你丢失了重要物品，想知道它是否可找回、去哪里搜索、以及何时可能找到，我们的咨询师可以使用奇门遁甲和其他命理方法提供详细指引。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/lost-items/can-i-find-lost-items",
+  publishedAt: "2026-08-29",
+  modifiedAt: "2026-08-29",
+  author: "Stellawei Editorial Team"
+};
+
+// ============================================================
+// Article: Where Should I Look for My Lost Item?
+// ============================================================
+
+export const whereToLookLostItem = {
+  slug: "where-to-look-lost-item",
+  topicSlug: "lost-items",
+  question: "Where Should I Look for My Lost Item?",
+  questionCn: "我应该去哪里找丢失的物品？",
+  metaTitle: "Where Should I Look for My Lost Item? | StellaWei Knowledge Center",
+  metaDescription: "Searching for a lost item? Eastern divination, especially Qi Men Dun Jia, can pinpoint the exact direction and type of location where your item might be.",
+  metaTitleCn: "我应该去哪里找丢失的物品？| Stellawei 知识中心",
+  metaDescriptionCn: "在寻找丢失的物品？东方命理，特别是奇门遁甲，可以精确定位物品可能在的确切方向和地点类型。",
+  heroIntro: "You have 原路返回 your steps, checked your pockets, and called every place you visited. But the item is still 不见了. At this point, random searching is inefficient. What if you knew exactly which direction to go, what type of place to look in, and how far to search? Eastern and Western divination tools can provide precisely this kind of guidance. Qi Men Dun Jia, in particular, has been used for centuries to locate lost objects with remarkable accuracy.",
+  heroIntroCn: "你已经 原路返回，检查了口袋，打电话给每个去过的地方。但物品仍然 不见了。此时，随机搜索是低效的。如果你知道确切该去哪个方向、找什么类型的地点、搜索多远呢？东西方命理工具可以提供这种精确的指引。奇门遁甲尤其如此，几个世纪以来一直被用于以惊人的准确度定位失物。",
+
+  searchIntent: {
+    primary: [
+      "where to look for lost item",
+      "lost item location",
+      "where is my lost wallet",
+      "find lost item location"
+    ],
+    primaryCn: [
+      "去哪里找丢失的物品",
+      "失物位置",
+      "我丢失的钱包在哪里",
+      "找到失物位置"
+    ],
+    secondary: [
+      "qi men dun jia location",
+      "divination find location",
+      "tarot lost item location",
+      "feng shui lost items"
+    ],
+    secondaryCn: [
+      "奇门遁甲位置",
+      "占卜找位置",
+      "塔罗失物位置",
+      "风水失物"
+    ],
+    related: [
+      "lost item search tips",
+      "how to find lost things",
+      "不见了 item locator",
+      "find my phone location"
+    ],
+    relatedCn: [
+      "失物搜索技巧",
+      "如何找到丢失的东西",
+      "遗失物品定位",
+      "找到手机位置"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People searching for lost items are often asking:",
+    questions: [
+      "I dropped my keys somewhere in the house. Which room should I check first?",
+      "I left my bag at a cafe or maybe the library. Which is more likely?",
+      "My phone fell out of my pocket while walking. Which direction should I retrace?",
+      "I think my pet escaped through a window. Where would they go?",
+      "My ring slipped off at the beach. Is it in the sand or the water?",
+      "I had my wallet yesterday but cannot remember where I used it last. How do I narrow it down?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "寻找失物的人，常常在问：",
+    questions: [
+      "我在房子里的某个地方掉了钥匙。应该先检查哪个房间？",
+      "我把包落在咖啡馆或可能是图书馆。哪个更有可能？",
+      "走路时手机从口袋掉出来了。应该 原路返回 哪个方向？",
+      "我想我的宠物从窗户逃走了。它会去哪里？",
+      "我的戒指在海滩上滑落了。在沙子里还是水里？",
+      "我昨天还有钱包但不记得最后在哪里用的。怎么缩小范围？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Identify Lost Item Locations",
+    headingCn: "东西方命理如何识别失物位置？",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods, especially Qi Men Dun Jia, excel at pinpointing lost item locations. Qi Men uses a spacetime chart to determine the exact direction (eight directions), distance (near, medium, far), and type of location (indoor, outdoor, water-related, high place, etc.). Six Yao divination can also identify whether the item is inside or outside, and in which general direction.",
+    easternDescCn: "东方方法，特别是奇门遁甲，擅长精确定位失物位置。奇门使用时空盘确定精确方向（八方）、距离（近、中、远）和地点类型（室内、室外、与水相关、高处等）。六爻占卜也可以识别物品在室内还是室外，以及大致方向。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination, primarily Tarot, provides intuitive location guidance through card symbolism. While less precise than Qi Men for physical coordinates, Tarot can suggest environments to search, emotional states to maintain during the search, and whether the item is in a familiar or unfamiliar place.",
+    westernDescCn: "西方命理，主要是塔罗，通过牌面象征提供直觉位置指引。虽然在物理坐标上不如奇门精确，但塔罗可以建议搜索的环境、搜索期间应保持的情绪状态，以及物品是在熟悉还是陌生的地方。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. Qi Men Dun Jia: Precise Location Mapping",
+        titleCn: "一、奇门遁甲：精确定位",
+        intro: "Qi Men Dun Jia provides the most detailed location information for lost items.",
+        introCn: "奇门遁甲为失物提供最详细的位置信息。",
+        cards: [
+          {
+            title: "① Direction Analysis",
+            titleCn: "① 方向分析",
+            desc: "The chart reveals which of the eight directions to search.",
+            descCn: "盘显示应该搜索哪个方向。",
+            items: ["Eight directions", "Primary direction", "Secondary direction"],
+            itemsCn: ["八方", "主方向", "副方向"]
+          },
+          {
+            title: "② Distance Estimation",
+            titleCn: "② 距离估算",
+            desc: "The chart indicates whether the item is close, medium distance, or far away.",
+            descCn: "盘显示物品在近处、中等距离还是远处。",
+            items: ["Near search", "Medium distance", "Far location"],
+            itemsCn: ["近处搜索", "中等距离", "远处位置"]
+          },
+          {
+            title: "③ Location Type",
+            titleCn: "③ 地点类型",
+            desc: "The chart reveals the type of place where the item is located.",
+            descCn: "盘显示物品所在地点的类型。",
+            items: ["Indoor/outdoor", "Water-related", "High/low place", "Public/private"],
+            itemsCn: ["室内/室外", "与水相关", "高处/低处", "公共/私人"]
+          }
+        ]
+      },
+      {
+        title: "2. Six Yao: General Location Indicators",
+        titleCn: "二、六爻：大致位置指标",
+        desc: "Six Yao divination provides general location information through hexagram analysis.",
+        descCn: "六爻占卜通过卦象分析提供大致位置信息。",
+        focus: "Key location indicators:",
+        focusCn: "关键位置指标：",
+        items: ["Inside/outside", "Direction hint", "Location type", "Distance clue"],
+        itemsCn: ["室内/室外", "方向提示", "地点类型", "距离线索"]
+      },
+      {
+        title: "3. Tarot: Environmental Guidance",
+        titleCn: "三、塔罗：环境指引",
+        desc: "Tarot suggests environments and emotional approaches to searching.",
+        descCn: "塔罗建议搜索的环境和情绪方式。",
+        focus: "Common location spreads:",
+        focusCn: "常见位置牌阵：",
+        items: ["Environment type", "Search approach", "Emotional state", "Familiar vs new place"],
+        itemsCn: ["环境类型", "搜索方式", "情绪状态", "熟悉还是新地方"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Locating a Missing Pet",
+    titleCn: "定位走失的宠物",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Mr. Huang (born 1982, Ren-Xu year) lost his golden retriever, Max, who had escaped through an open gate. He had searched the 小区 for hours with no success and was becoming desperate.",
+        textCn: "黄先生（1982年生，壬戌年）丢失了他的金毛寻回犬 Max，它从敞开的门逃走了。他已经在 小区 搜索了几个小时都没有成功，变得越来越绝望。"
+      },
+      {
+        label: "Qi Men Dun Jia Analysis",
+        labelCn: "奇门遁甲分析",
+        text: "The Qi Men chart indicated the dog was in the northwest direction, approximately 1.5 kilometers away, near a body of water with trees. The chart also showed the dog was safe but had been drawn to the water and was now resting in a shaded area.",
+        textCn: "奇门盘显示狗在西北方向，大约1.5公里远，靠近有树的水体。盘还显示狗是安全的，但被水吸引，现在在一个阴凉处休息。"
+      },
+      {
+        label: "Search and Recovery",
+        labelCn: "搜索与找回",
+        text: "Following the chart's guidance, Mr. Huang drove to a park with a pond in the northwest direction. He found Max sleeping under a tree near the water, exactly as the chart had described.",
+        textCn: "按照盘的指引，黄先生开车去了西北方向一个有池塘的公园。他发现 Max 正如盘所描述的那样，在水边的树下睡觉。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Max was recovered within four hours of the reading. Mr. Huang was amazed by the accuracy and has since used Qi Men for other important searches.",
+        textCn: "Max 在占卜后四小时内被找回。黄先生对准确度感到惊讶，此后在其他重要搜索中也使用了奇门。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "Qi Men Dun Jia provides the most precise location guidance, including direction, distance, and location type for lost items.",
+      "Six Yao divination offers reliable general location indicators such as inside/outside and approximate direction.",
+      "Tarot provides valuable environmental and emotional guidance to support your search efforts."
+    ],
+    itemsCn: [
+      "奇门遁甲提供最精确的位置指引，包括方向、距离和失物的地点类型。",
+      "六爻占卜提供可靠的总体位置指标，如室内/室外和大概方向。",
+      "塔罗提供有价值的环境和情绪指引来支持搜索工作。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "can-i-find-lost-items", question: "Can I Find My Lost Item?", questionCn: "我能找到丢失的物品吗？" },
+    { slug: "when-find-lost-item", question: "When Will I Find My Lost Item?", questionCn: "我什么时候能找到丢失的物品？" },
+    { slug: "is-lost-item-recoverable", question: "Is My Lost Item Recoverable?", questionCn: "我的丢失物品还能找回吗？" }
+  ],
+
+  cta: {
+    textLine1: "Stop searching randomly. Start searching with precision.",
+    textLine1Cn: "停止随机搜索。开始精准搜索。",
+    textLine2: "If you want to know exactly where to look for your lost item, our consultants can use Qi Men Dun Jia to provide precise direction, distance, and location guidance.",
+    textLine2Cn: "如果你想知道确切去哪里找丢失的物品，我们的咨询师可以使用奇门遁甲提供精确的方向、距离和位置指引。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/lost-items/where-to-look-lost-item",
+  publishedAt: "2026-08-29",
+  modifiedAt: "2026-08-29",
+  author: "Stellawei Editorial Team"
+};
+
+// ============================================================
+// Article: Will My Lost Item Be Returned?
+// ============================================================
+
+export const willLostItemBeReturned = {
+  slug: "will-lost-item-be-returned",
+  topicSlug: "lost-items",
+  question: "Will My Lost Item Be Returned?",
+  questionCn: "我的丢失物品会被归还吗？",
+  metaTitle: "Will My Lost Item Be Returned? | StellaWei Knowledge Center",
+  metaDescription: "Wondering if someone will return your lost item? Eastern and Western divination tools can assess the finder's intentions and the likelihood of return.",
+  metaTitleCn: "我的丢失物品会被归还吗？| Stellawei 知识中心",
+  metaDescriptionCn: "想知道有人会归还你的丢失物品吗？东西方命理工具可以评估拾获者的意图和归还的可能性。",
+  heroIntro: "You lost your wallet, your phone, or something precious. Someone found it. But will they do the right thing and return it? Or will they keep it, sell it, or simply ignore it? The uncertainty can be agonizing. Eastern and Western divination tools approach this question differently—Eastern methods, particularly Qi Men Dun Jia, can reveal the finder's character, intentions, and whether they plan to return the item, while Tarot provides intuitive insight into the situation and guidance on what actions might encourage a positive outcome.",
+  heroIntroCn: "你丢了钱包、手机或珍贵的东西。有人捡到了。但他们会做正确的事归还吗？还是会留着、卖掉，或 只是忽视？这种不确定性可能令人痛苦。东西方命理工具对这个问题有不同的处理方式——东方方法，特别是奇门遁甲，可以揭示拾获者的性格、意图，以及他们是否计划归还物品，而塔罗则提供对情况的直觉洞察和可能鼓励积极结果的行动指引。",
+
+  searchIntent: {
+    primary: [
+      "will my lost item be returned",
+      "will someone return my lost wallet",
+      "lost item return probability",
+      "will finder return lost item"
+    ],
+    primaryCn: [
+      "我的丢失物品会被归还吗",
+      "有人会归还我的钱包吗",
+      "失物归还概率",
+      "拾获者会归还失物吗"
+    ],
+    secondary: [
+      "qi men dun jia finder intentions",
+      "divination lost item return",
+      "tarot will item be returned",
+      "bazi lost item finder"
+    ],
+    secondaryCn: [
+      "奇门遁甲拾获者意图",
+      "占卜失物归还",
+      "塔罗物品会被归还吗",
+      "八字失物拾获者"
+    ],
+    related: [
+      "lost item honesty test",
+      "what to do if someone finds your lost item",
+      "lost and found ethics",
+      "recovering stolen items"
+    ],
+    relatedCn: [
+      "失物诚实测试",
+      "如果有人找到你的失物该怎么办",
+      "失物招领伦理",
+      "找回被盗物品"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People wondering about return likelihood are often asking:",
+    questions: [
+      "I lost my phone. If someone finds it, will they return it?",
+      "My wallet had cash and cards. Will a finder keep the cash and return the wallet?",
+      "I left an expensive item at a restaurant. Will the staff return it?",
+      "My pet was found by a neighbor but they have not contacted me. Will they keep it?",
+      "I dropped my engagement ring in public. What are the chances someone honest will find it?",
+      "Someone posted online that they found my item. Can I trust them to return it?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "想知道归还可能性的人，常常在问：",
+    questions: [
+      "我丢了手机。如果有人捡到，会归还吗？",
+      "我的钱包有现金和卡。拾获者会留着现金归还钱包吗？",
+      "我把贵重物品落在餐厅了。工作人员会归还吗？",
+      "我的宠物被邻居找到了但他们没有联系我。他们会留着吗？",
+      "我在公共场合掉了订婚戒指。诚实的人找到它的几率有多大？",
+      "有人在网上发帖说找到了我的物品。我能信任他们归还吗？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Assess Return Likelihood",
+    headingCn: "东西方命理如何评估归还可能性？",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods, particularly Qi Men Dun Jia, excel at analyzing the finder's intentions and character. The Qi Men chart can reveal whether the finder is honest or dishonest, whether they intend to keep or return the item, and what actions you can take to encourage return. Six Yao divination can also indicate the finder's disposition and the likelihood of recovery.",
+    easternDescCn: "东方方法，特别是奇门遁甲，擅长分析拾获者的意图和性格。奇门盘可以揭示拾获者是诚实还是不诚实，是否打算留着或归还物品，以及你可以采取什么行动来鼓励归还。六爻占卜也可以指示拾获者的性格和找回的可能性。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination, primarily Tarot, provides intuitive insight into the finder's character and the situation's outcome. While less specific than Qi Men about the finder's identity, Tarot can reveal whether the energy surrounding the situation favors return, what obstacles exist, and what actions might improve your chances.",
+    westernDescCn: "西方命理，主要是塔罗，提供对拾获者性格和情况结果的直觉洞察。虽然不如奇门具体关于拾获者身份，但塔罗可以揭示围绕情况是否有利于归还，存在什么障碍，以及什么行动可能提高几率。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. Qi Men Dun Jia: Finder Analysis",
+        titleCn: "一、奇门遁甲：拾获者分析",
+        intro: "Qi Men Dun Jia provides detailed insights into the person who found your item.",
+        introCn: "奇门遁甲提供关于捡到物品的人的详细洞察。",
+        cards: [
+          {
+            title: "① Finder Character",
+            titleCn: "① 拾获者性格",
+            desc: "The chart reveals whether the finder is honest, trustworthy, or dishonest.",
+            descCn: "盘显示拾获者是诚实、可信赖还是不诚实。",
+            items: ["Honesty indicators", "Trustworthiness", "Character traits"],
+            itemsCn: ["诚实指标", "可信度", "性格特征"]
+          },
+          {
+            title: "② Return Intentions",
+            titleCn: "② 归还意图",
+            desc: "The chart indicates whether the finder plans to return the item.",
+            descCn: "盘显示拾获者是否计划归还物品。",
+            items: ["Return likelihood", "Timing of return", "Conditions"],
+            itemsCn: ["归还可能性", "归还时机", "条件"]
+          },
+          {
+            title: "③ Action Guidance",
+            titleCn: "③ 行动指引",
+            desc: "The chart suggests what actions you can take to encourage return.",
+            descCn: "盘建议你可以采取什么行动来鼓励归还。",
+            items: ["Contact method", "Incentive approach", "Timing of action"],
+            itemsCn: ["联系方式", "激励方法", "行动时机"]
+          }
+        ]
+      },
+      {
+        title: "2. Six Yao: Return Probability",
+        titleCn: "二、六爻：归还概率",
+        desc: "Six Yao divination indicates the overall probability of recovery and the finder's disposition.",
+        descCn: "六爻占卜显示总体找回概率和拾获者性格。",
+        focus: "Key insights:",
+        focusCn: "关键洞察：",
+        items: ["Recovery probability", "Finder disposition", "Return timing", "Obstacles"],
+        itemsCn: ["找回概率", "拾获者性格", "归还时机", "障碍"]
+      },
+      {
+        title: "3. Tarot: Situational Energy",
+        titleCn: "三、塔罗：情境能量",
+        desc: "Tarot reveals the energetic dynamics surrounding your lost item situation.",
+        descCn: "塔罗揭示围绕失物情况的能量动态。",
+        focus: "Common return spreads:",
+        focusCn: "常见归还牌阵：",
+        items: ["Finder energy", "Return outlook", "Action guidance", "Outcome prediction"],
+        itemsCn: ["拾获者能量", "归还前景", "行动指引", "结果预测"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Recovering a Lost Wallet Through Finder Analysis",
+    titleCn: "通过拾获者分析找回丢失的钱包",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Mr. Li (born 1987, Ding-Mao year) lost his wallet containing cash, cards, and identification while shopping at a mall. He 原路返回 his steps but could not find it. He was particularly concerned because the wallet contained a significant amount of cash.",
+        textCn: "李先生（1987年生，丁卯年）在商场购物时丢失了装有现金、卡和身份证件的钱包。他 原路返回但找不到。他特别担心因为钱包里有大量现金。"
+      },
+      {
+        label: "Qi Men Dun Jia Analysis",
+        labelCn: "奇门遁甲分析",
+        text: "The Qi Men chart revealed that a middle-aged woman had found the wallet. Her chart showed she was honest and community-minded, but also cautious. The chart indicated she had reported the find to mall security but was waiting to see if the owner would come forward before turning it in completely.",
+        textCn: "奇门盘显示一位中年女士捡到了钱包。她的盘显示她诚实且关心社区，但也谨慎。盘显示她已向商场保安报告了发现，但正在等待看看失主是否会出现，再完全上交。"
+      },
+      {
+        label: "Recovery Action",
+        labelCn: "找回行动",
+        text: "Following the chart's guidance, Mr. Li contacted mall security directly rather than just checking the lost and found. The security guard confirmed a woman had reported finding a wallet and connected them. The wallet was returned with all contents intact.",
+        textCn: "按照盘的指引，李先生直接联系了商场保安，而不是只检查失物招领处。保安确认一位女士报告捡到了钱包，并帮他们联系。钱包被归还，所有物品完好无损。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Mr. Li recovered his wallet within 24 hours. He expressed gratitude to the finder and learned that understanding the finder's character and intentions was key to successful recovery.",
+        textCn: "李先生在24小时内找回了钱包。他向拾获者表达了感谢，并了解到理解拾获者的性格和意图是成功找回的关键。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "Qi Men Dun Jia provides detailed insights into the finder's character, intentions, and the likelihood of return.",
+      "Six Yao divination offers reliable assessment of overall recovery probability.",
+      "Understanding the finder's disposition helps determine the most effective approach to recovering your item."
+    ],
+    itemsCn: [
+      "奇门遁甲提供关于拾获者性格、意图和归还可能性的详细洞察。",
+      "六爻占卜提供总体找回概率的可靠评估。",
+      "理解拾获者的性格有助于确定找回物品的最有效方法。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "who-took-lost-item", question: "Who Took My Lost Item?", questionCn: "谁拿走了我的丢失物品？" },
+    { slug: "can-i-find-lost-items", question: "Can I Find My Lost Item?", questionCn: "我能找到丢失的物品吗？" },
+    { slug: "when-find-lost-item", question: "When Will I Find My Lost Item?", questionCn: "我什么时候能找到丢失的物品？" }
+  ],
+
+  cta: {
+    textLine1: "Not all finders are the same.",
+    textLine1Cn: "并非所有拾获者都一样。",
+    textLine2: "If you want to understand who found your item, their intentions, and the best approach to recover it, our consultants can use Qi Men Dun Jia and other methods to provide detailed guidance.",
+    textLine2Cn: "如果你想了解谁捡到了你的物品、他们的意图，以及找回的最佳方法，我们的咨询师可以使用奇门遁甲和其他方法提供详细指引。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/lost-items/will-lost-item-be-returned",
+  publishedAt: "2026-08-29",
+  modifiedAt: "2026-08-29",
+  author: "Stellawei Editorial Team"
+};
+
+// ============================================================
+// Article: When Will I Find My Lost Item?
+// ============================================================
+
+export const whenFindLostItem = {
+  slug: "when-find-lost-item",
+  topicSlug: "lost-items",
+  question: "When Will I Find My Lost Item?",
+  questionCn: "我什么时候能找到丢失的物品？",
+  metaTitle: "When Will I Find My Lost Item? | StellaWei Knowledge Center",
+  metaDescription: "Want to know when you will recover your lost item? Eastern and Western divination tools can estimate the timeframe for recovery.",
+  metaTitleCn: "我什么时候能找到丢失的物品？| Stellawei 知识中心",
+  metaDescriptionCn: "想知道何时能找回丢失的物品？东西方命理工具可以估算找回的时间框架。",
+  heroIntro: "Time is often the most agonizing factor when you have lost something. Every minute feels like an hour, every hour like a day. You want to know if you will find it today, this week, or if it is gone forever. Eastern and Western divination tools approach timing differently—Eastern methods, particularly Qi Men Dun Jia and Six Yao, can estimate specific timeframes based on cosmic cycles and hexagram dynamics, while Tarot provides intuitive guidance on the energetic flow of the situation and when conditions might align for recovery.",
+  heroIntroCn: "当你丢失东西时，时间通常是最令人痛苦的因素。每一分钟感觉像一小时，每一小时像一天。你想知道今天、这周会找到它，还是永远失去了。东西方命理工具对时机有不同的处理方式——东方方法，特别是奇门遁甲和六爻，可以根据宇宙周期和卦象动态估算具体时间框架，而塔罗则提供关于情况能量流动和何时条件可能对齐以利于找回的直觉指引。",
+
+  searchIntent: {
+    primary: [
+      "when will i find my lost item",
+      "how long to find lost item",
+      "lost item recovery time",
+      "when will my lost item be found"
+    ],
+    primaryCn: [
+      "我什么时候能找到丢失的物品",
+      "找到失物需要多久",
+      "失物找回时间",
+      "我的失物什么时候会被找到"
+    ],
+    secondary: [
+      "qi men dun jia timing",
+      "divination recovery timing",
+      "tarot when find lost item",
+      "six yao timing"
+    ],
+    secondaryCn: [
+      "奇门遁甲时机",
+      "占卜找回时机",
+      "塔罗何时找到失物",
+      "六爻时机"
+    ],
+    related: [
+      "lost item search timeline",
+      "how long before lost item is found",
+      "recovery time prediction",
+      "不见了 item timeframe"
+    ],
+    relatedCn: [
+      "失物搜索时间线",
+      "失物多久会被找到",
+      "找回时间预测",
+      "遗失物品时间框架"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People wondering about recovery timing are often asking:",
+    questions: [
+      "I lost my keys this morning. Will I find them today?",
+      "My phone was stolen yesterday. How long before I might recover it?",
+      "I misplaced an important document. Should I keep searching or start replacing it?",
+      "My pet went 不见了 three days ago. Is there still hope of finding it soon?",
+      "I dropped my ring at the beach yesterday. Should I search again today or wait?",
+      "Someone found my wallet but has not contacted me. When will they reach out?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "想知道找回时机的人，常常在问：",
+    questions: [
+      "我今天早上丢了钥匙。今天会找到吗？",
+      "我的手机昨天被偷了。多久可能找回？",
+      "我 misplaced 了一份重要文件。应该继续找还是开始补办？",
+      "我的宠物三天前走丢了。还有希望很快找到吗？",
+      "我昨天在海滩掉了戒指。应该今天再找还是等？",
+      "有人捡到了我的钱包但还没联系我。他们什么时候会联系？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Estimate Recovery Timing",
+    headingCn: "东西方命理如何估算找回时机？",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods, particularly Qi Men Dun Jia and Six Yao, excel at estimating recovery timeframes. Qi Men uses the spacetime chart to identify when the energetic conditions will align for recovery, often specifying hours, days, or months. Six Yao divination uses hexagram dynamics to estimate timing based on changing lines and their correspondence to real-world timeframes.",
+    easternDescCn: "东方方法，特别是奇门遁甲和六爻，擅长估算找回时间框架。奇门使用时空盘识别能量条件何时对齐以利于找回，通常指定小时、天或月。六爻占卜使用卦象动态基于变爻及其对应现实世界时间框架来估算时机。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination, primarily Tarot, provides intuitive timing guidance through card symbolism and spread dynamics. While less precise than Eastern methods for exact timeframes, Tarot can indicate whether recovery is imminent, delayed, or unlikely, and what energetic shifts might be needed for recovery to occur.",
+    westernDescCn: "西方命理，主要是塔罗，通过牌面象征和牌阵动态提供直觉时机指引。虽然不如东方方法对精确时间框架精确，但塔罗可以指示找回是即将发生、延迟还是不太可能，以及可能需要什么能量转变才能发生找回。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. Qi Men Dun Jia: Timing Estimation",
+        titleCn: "一、奇门遁甲：时机估算",
+        intro: "Qi Men Dun Jia provides precise timing estimates for recovery.",
+        introCn: "奇门遁甲为找回提供精确的时机估算。",
+        cards: [
+          {
+            title: "① Immediate Timing",
+            titleCn: "① 即时时机",
+            desc: "The chart reveals whether recovery is possible within hours or days.",
+            descCn: "盘显示是否在小时或天内可能找回。",
+            items: ["Hour analysis", "Day estimation", "Week projection"],
+            itemsCn: ["小时分析", "天数估算", "周预测"]
+          },
+          {
+            title: "② Seasonal Timing",
+            titleCn: "② 季节时机",
+            desc: "The chart indicates whether recovery might take weeks or months.",
+            descCn: "盘显示找回可能需要数周或数月。",
+            items: ["Month analysis", "Season estimation", "Year projection"],
+            itemsCn: ["月份分析", "季节估算", "年预测"]
+          },
+          {
+            title: "③ Optimal Action Timing",
+            titleCn: "③ 最佳行动时机",
+            desc: "The chart suggests the best times to take recovery actions.",
+            descCn: "盘建议采取找回行动的最佳时间。",
+            items: ["Search timing", "Contact timing", "Follow-up timing"],
+            itemsCn: ["搜索时机", "联系时机", "跟进时机"]
+          }
+        ]
+      },
+      {
+        title: "2. Six Yao: Hexagram Timing",
+        titleCn: "二、六爻：卦象时机",
+        desc: "Six Yao divination estimates timing through hexagram changing lines.",
+        descCn: "六爻占卜通过卦变爻来估算时机。",
+        focus: "Key timing indicators:",
+        focusCn: "关键时机指标：",
+        items: ["Changing line timing", "Hexagram progression", "Recovery window"],
+        itemsCn: ["变爻时机", "卦象进展", "找回窗口"]
+      },
+      {
+        title: "3. Tarot: Energetic Timing",
+        titleCn: "三、塔罗：能量时机",
+        desc: "Tarot provides intuitive timing guidance through energetic flow analysis.",
+        descCn: "塔罗通过能量流动分析提供直觉时机指引。",
+        focus: "Common timing spreads:",
+        focusCn: "常见时机牌阵：",
+        items: ["Imminent recovery", "Delayed recovery", "Energetic shifts", "Action windows"],
+        itemsCn: ["即将找回", "延迟找回", "能量转变", "行动窗口"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Timing the Recovery of a Missing Passport",
+    titleCn: "把握护照找回的时机",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Ms. Chen (born 1992, Ren-Shen year) lost her passport two weeks before an international trip. She had searched everywhere and was considering canceling her trip. She needed to know if there was any chance of recovery and when.",
+        textCn: "陈女士（1992年生，壬申年）在国际旅行前两周丢失了护照。她到处搜索过，正在考虑取消行程。她需要知道是否有找回的可能以及何时。"
+      },
+      {
+        label: "Qi Men Dun Jia Analysis",
+        labelCn: "奇门遁甲分析",
+        text: "The Qi Men chart indicated the passport was recoverable within three days. The chart showed it was in the east direction, in a location associated with paperwork and documents, and that recovery would occur through official channels rather than direct search.",
+        textCn: "奇门盘显示护照在三天内可找回。盘显示它在东方，在一个与文书和文件相关的地点，找回将通过官方渠道而非直接搜索发生。"
+      },
+      {
+        label: "Recovery Action",
+        labelCn: "找回行动",
+        text: "Following the chart's timing guidance, Ms. Chen contacted the immigration office on the third day after the reading. They had received her passport from a taxi driver who had found it in his vehicle. The timing aligned perfectly with the Qi Men prediction.",
+        textCn: "按照盘的时机指引，陈女士在占卜后第三天联系了移民局。他们收到了一位出租车司机上交的护照，他在车里找到了它。时机与奇门预测完全对齐。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Ms. Chen recovered her passport exactly three days after the reading, just in time for her trip. She was amazed by the timing accuracy and has since recommended Qi Men timing analysis to friends.",
+        textCn: "陈女士在占卜后正好三天找回了护照，刚好赶上行程。她对时机的准确度感到惊讶，此后向朋友推荐奇门时机分析。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "Qi Men Dun Jia provides precise timing estimates, often specifying exact days or even hours for recovery.",
+      "Six Yao divination uses hexagram dynamics to estimate timing through changing lines.",
+      "Understanding recovery timing helps you decide whether to continue searching, take alternative actions, or accept the loss."
+    ],
+    itemsCn: [
+      "奇门遁甲提供精确的时机估算，通常指定确切的找回日期甚至小时。",
+      "六爻占卜使用卦象动态通过变爻来估算时机。",
+      "理解找回时机帮助你决定是继续搜索、采取替代行动，还是接受损失。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "where-to-look-lost-item", question: "Where Should I Look for My Lost Item?", questionCn: "我应该去哪里找丢失的物品？" },
+    { slug: "will-lost-item-be-returned", question: "Will My Lost Item Be Returned?", questionCn: "我的丢失物品会被归还吗？" },
+    { slug: "is-lost-item-recoverable", question: "Is My Lost Item Recoverable?", questionCn: "我的丢失物品还能找回吗？" }
+  ],
+
+  cta: {
+    textLine1: "Timing is everything when searching for lost items.",
+    textLine1Cn: "寻找失物时，时机就是一切。",
+    textLine2: "If you want to know when you might recover your lost item, our consultants can use Qi Men Dun Jia and other methods to provide precise timing estimates.",
+    textLine2Cn: "如果你想知道何时可能找回丢失的物品，我们的咨询师可以使用奇门遁甲和其他方法提供精确的时机估算。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/lost-items/when-find-lost-item",
+  publishedAt: "2026-08-29",
+  modifiedAt: "2026-08-29",
+  author: "Stellawei Editorial Team"
+};
+
+// ============================================================
+// Article: Is My Lost Item Recoverable?
+// ============================================================
+
+export const isLostItemRecoverable = {
+  slug: "is-lost-item-recoverable",
+  topicSlug: "lost-items",
+  question: "Is My Lost Item Recoverable?",
+  questionCn: "我的丢失物品还能找回吗？",
+  metaTitle: "Is My Lost Item Recoverable? | StellaWei Knowledge Center",
+  metaDescription: "Wondering if your lost item is gone forever? Eastern and Western divination tools assess recoverability and guide your next steps.",
+  metaTitleCn: "我的丢失物品还能找回吗？| Stellawei 知识中心",
+  metaDescriptionCn: "想知道丢失的物品是否永远失去了？东西方命理工具评估可找回性并指引下一步。",
+  heroIntro: "The sinking feeling when you realize something is 不见了. You have searched everywhere 原路返回 your steps, and called every possible place. But still nothing. At this point, the question shifts from where is it to is it even worth continuing to search? Eastern and Western divination tools can help answer this critical question. Qi Men Dun Jia, in particular, can assess whether an item is recoverable, whether it has been destroyed, sold, or 只是放错了地方, and what your chances are of ever seeing it again.",
+  heroIntroCn: "当你意识到东西不见时的 沉重感。你已经到处搜索，原路返回，打电话给每个可能的地方。但仍然没有。此时，问题从它在哪里转移到了继续搜索是否值得？东西方命理工具可以帮助回答这个关键问题。奇门遁甲尤其可以评估物品是否可找回、是否已被毁坏、出售，或 只是放错了地方，以及你再见到它的几率有多大。",
+
+  searchIntent: {
+    primary: [
+      "is my lost item recoverable",
+      "can i recover my lost item",
+      "will i ever find my lost item",
+      "lost item recovery chances"
+    ],
+    primaryCn: [
+      "我的丢失物品还能找回吗",
+      "我能找回丢失的物品吗",
+      "我还能找到丢失的物品吗",
+      "失物找回几率"
+    ],
+    secondary: [
+      "qi men dun jia recoverability",
+      "divination lost item recovery",
+      "tarot lost item recovery",
+      "bazi lost item"
+    ],
+    secondaryCn: [
+      "奇门遁甲可找回性",
+      "占卜失物找回",
+      "塔罗失物找回",
+      "八字失物"
+    ],
+    related: [
+      "lost item gone forever",
+      "should i keep looking for lost item",
+      "accepting lost item",
+      "replacing lost item"
+    ],
+    relatedCn: [
+      "失物永远失去了",
+      "应该继续找失物吗",
+      "接受失物",
+      "替换丢失物品"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People wondering about recoverability are often asking:",
+    questions: [
+      "I have searched everywhere. Is it time to give up?",
+      "My phone was stolen. What are the chances I will get it back?",
+      "I lost a sentimental item. Is there any hope of recovery?",
+      "My pet has been 不见了 for a week. Should I keep searching?",
+      "I think my item fell into water. Is it destroyed?",
+      "Someone definitely took my wallet. Is recovery even possible?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "想知道可找回性的人，常常在问：",
+    questions: [
+      "我到处搜索了。是时候放弃了吗？",
+      "我的手机被偷了。找回来的几率有多大？",
+      "我丢失了一件有情感价值的物品。还有找回的希望吗？",
+      "我的宠物已经走丢一周了。应该继续搜索吗？",
+      "我想我的物品掉进水里了。它被毁坏了吗？",
+      "有人肯定拿了我的钱包。找回还有可能吗？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Assess Recoverability",
+    headingCn: "东西方命理如何评估可找回性？",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods, particularly Qi Men Dun Jia, excel at assessing recoverability. The Qi Men chart can determine whether an item is still intact, whether it has been damaged or destroyed, if someone has taken it, and the overall probability of recovery. Six Yao divination also provides clear indicators of whether recovery is possible or if the item is permanently lost.",
+    easternDescCn: "东方方法，特别是奇门遁甲，擅长评估可找回性。奇门盘可以确定物品是否仍然完好、是否已被损坏或毁坏、是否有人拿走了它，以及总体找回概率。六爻占卜也提供明确的指标，显示找回是否可能，或物品是否永久丢失。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination, primarily Tarot, provides intuitive insight into recoverability through energetic assessment. Tarot can reveal whether the energetic conditions favor recovery, what obstacles exist, and whether acceptance or continued effort is the better path.",
+    westernDescCn: "西方命理，主要是塔罗，通过能量评估提供对可找回性的直觉洞察。塔罗可以揭示能量条件是否有利于找回，存在什么障碍，以及接受或继续努力哪条是更好的道路。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. Qi Men Dun Jia: Recoverability Assessment",
+        titleCn: "一、奇门遁甲：可找回性评估",
+        intro: "Qi Men Dun Jia provides the most comprehensive recoverability assessment.",
+        introCn: "奇门遁甲提供最全面的可找回性评估。",
+        cards: [
+          {
+            title: "① Item Condition",
+            titleCn: "① 物品状况",
+            desc: "The chart reveals whether the item is intact, damaged, or destroyed.",
+            descCn: "盘显示物品是完好、损坏还是毁坏。",
+            items: ["Intact indicator", "Damage signs", "Destruction assessment"],
+            itemsCn: ["完好指标", "损坏迹象", "毁坏评估"]
+          },
+          {
+            title: "② Recovery Probability",
+            titleCn: "② 找回概率",
+            desc: "The chart provides a clear assessment of recovery likelihood.",
+            descCn: "盘提供明确的找回可能性评估。",
+            items: ["High probability", "Medium probability", "Low probability"],
+            itemsCn: ["高概率", "中等概率", "低概率"]
+          },
+          {
+            title: "③ Path to Recovery",
+            titleCn: "③ 找回路径",
+            desc: "If recovery is possible, the chart indicates the best approach.",
+            descCn: "如果找回可能，盘指示最佳方法。",
+            items: ["Search strategy", "Contact approach", "Timing guidance"],
+            itemsCn: ["搜索策略", "联系方式", "时机指引"]
+          }
+        ]
+      },
+      {
+        title: "2. Six Yao: Loss Confirmation",
+        titleCn: "二、六爻：丢失确认",
+        desc: "Six Yao divination provides clear yes/no indicators of recoverability.",
+        descCn: "六爻占卜提供明确的可找回性是否指标。",
+        focus: "Key indicators:",
+        focusCn: "关键指标：",
+        items: ["Recovery yes/no", "Permanent loss signs", "Recovery conditions", "Action guidance"],
+        itemsCn: ["找回是/否", "永久丢失迹象", "找回条件", "行动指引"]
+      },
+      {
+        title: "3. Tarot: Acceptance vs Action",
+        titleCn: "三、塔罗：接受还是行动",
+        desc: "Tarot helps determine whether to continue searching or accept the loss.",
+        descCn: "塔罗帮助决定是继续搜索还是接受损失。",
+        focus: "Common assessment spreads:",
+        focusCn: "常见评估牌阵：",
+        items: ["Recovery energy", "Acceptance guidance", "Action worthiness", "Moving forward"],
+        itemsCn: ["找回能量", "接受指引", "行动价值", "向前看"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Assessing Recoverability of a Stolen Bicycle",
+    titleCn: "评估被盗自行车的可找回性",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Mr. Wang (born 1988, Wu-Chen year) had his bicycle stolen from outside his apartment building. He had reported it to the police but had little hope. He wanted to know if recovery was even possible or if he should just buy a new one.",
+        textCn: "王先生（1988年生，戊辰年）的自行车在公寓楼外被盗。他向警方报了案但希望渺茫。他想知道找回是否还有可能，还是该买辆新的。"
+      },
+      {
+        label: "Qi Men Dun Jia Analysis",
+        labelCn: "奇门遁甲分析",
+        text: "The Qi Men chart indicated the bicycle had been taken by a young male who lived nearby. The chart showed the bicycle was still intact but had been repainted. Recovery probability was assessed as medium—possible but requiring specific action within five days.",
+        textCn: "奇门盘显示自行车被一位住在附近的年轻男性拿走了。盘显示自行车仍然完好但被重新喷漆了。找回概率被评估为中等——可能但需要在五天内采取特定行动。"
+      },
+      {
+        label: "Recovery Action",
+        labelCn: "找回行动",
+        text: "Following the chart's guidance, Mr. Wang posted notices in his 小区 with a reward offer. A neighbor recognized the description and informed him that a young man in the next building had recently acquired a similar bicycle. Mr. Wang contacted the police, who recovered the bicycle.",
+        textCn: "按照盘的指引，王先生在 小区 张贴了悬赏启事。一位邻居认出了描述，告诉他隔壁楼的一个年轻人最近买了一辆类似的自行车。王先生联系了警方，警方找回了自行车。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "The bicycle was recovered within four days. The assessment that recovery was medium-probability and time-sensitive proved accurate. Mr. Wang noted that without the timing guidance, he might have delayed action and missed the window.",
+        textCn: "自行车在四天内被找回。找回概率为中等且时间敏感的评估被证明是准确的。王先生注意到，如果没有时机指引，他可能会延迟行动并错过窗口。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "Qi Men Dun Jia provides the most comprehensive recoverability assessment, including item condition, recovery probability, and optimal recovery strategy.",
+      "Six Yao divination offers clear yes/no indicators of whether recovery is possible.",
+      "Understanding recoverability helps you make informed decisions about whether to continue searching, take alternative actions, or accept the loss."
+    ],
+    itemsCn: [
+      "奇门遁甲提供最全面的可找回性评估，包括物品状况、找回概率和最佳找回策略。",
+      "六爻占卜提供找回是否可能的明确是否指标。",
+      "理解可找回性帮助你做出明智的决定，是继续搜索、采取替代行动，还是接受损失。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "can-i-find-lost-items", question: "Can I Find My Lost Item?", questionCn: "我能找到丢失的物品吗？" },
+    { slug: "when-find-lost-item", question: "When Will I Find My Lost Item?", questionCn: "我什么时候能找到丢失的物品？" },
+    { slug: "will-lost-item-be-returned", question: "Will My Lost Item Be Returned?", questionCn: "我的丢失物品会被归还吗？" }
+  ],
+
+  cta: {
+    textLine1: "Not all losses are permanent.",
+    textLine1Cn: "并非所有损失都是永久的。",
+    textLine2: "If you want to know whether your lost item is recoverable and what your best course of action is, our consultants can use Qi Men Dun Jia and other methods to provide a detailed assessment.",
+    textLine2Cn: "如果你想知道丢失的物品是否可找回，以及最佳行动方案是什么，我们的咨询师可以使用奇门遁甲和其他方法提供详细评估。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/lost-items/is-lost-item-recoverable",
+  publishedAt: "2026-08-29",
+  modifiedAt: "2026-08-29",
+  author: "Stellawei Editorial Team"
+};
+
+// ============================================================
+// Article: Who Took My Lost Item?
+// ============================================================
+
+export const whoTookLostItem = {
+  slug: "who-took-lost-item",
+  topicSlug: "lost-items",
+  question: "Who Took My Lost Item?",
+  questionCn: "谁拿走了我的丢失物品？",
+  metaTitle: "Who Took My Lost Item? | StellaWei Knowledge Center",
+  metaDescription: "Trying to identify who took your lost item? Eastern and Western divination tools can provide clues about the finder's identity and characteristics.",
+  metaTitleCn: "谁拿走了我的丢失物品？| Stellawei 知识中心",
+  metaDescriptionCn: "试图识别谁拿走了你的丢失物品？东西方命理工具可以提供关于拾获者身份和特征的线索。",
+  heroIntro: "Your item is 不见了. You are fairly certain someone took it, but you have no idea who. Was it a stranger? A colleague? A friend? Or did you simply misplace it? The uncertainty can be maddening. Eastern and Western divination tools approach this question differently—Eastern methods, particularly Qi Men Dun Jia, can reveal detailed characteristics of the person who has your item, including their age, gender, appearance, and intentions, while Tarot provides intuitive insight into the person's energy and motivations.",
+  heroIntroCn: "你的物品不见了。你相当确定有人拿走了它，但你不知道是谁。是陌生人？同事？朋友？还是你只是放错了地方？这种不确定性可能令人发狂。东西方命理工具对这个问题有不同的处理方式——东方方法，特别是奇门遁甲，可以揭示持有你物品的人的详细特征，包括年龄、性别、外貌和意图，而塔罗则提供关于此人能量和动机的直觉洞察。",
+
+  searchIntent: {
+    primary: [
+      "who took my lost item",
+      "who found my lost item",
+      "who stole my item",
+      "identify lost item finder"
+    ],
+    primaryCn: [
+      "谁拿走了我的丢失物品",
+      "谁找到了我的丢失物品",
+      "谁偷了我的物品",
+      "识别失物拾获者"
+    ],
+    secondary: [
+      "qi men dun jia finder identity",
+      "divination identify thief",
+      "tarot who took item",
+      "bazi lost item finder"
+    ],
+    secondaryCn: [
+      "奇门遁甲拾获者身份",
+      "占卜识别小偷",
+      "塔罗谁拿了物品",
+      "八字失物拾获者"
+    ],
+    related: [
+      "lost item suspect",
+      "who stole my wallet",
+      "identify item thief",
+      "lost item investigation"
+    ],
+    relatedCn: [
+      "失物嫌疑人",
+      "谁偷了我的钱包",
+      "识别物品小偷",
+      "失物调查"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People wondering about the finder's identity are often asking:",
+    questions: [
+      "My wallet was stolen. Can divination tell me who took it?",
+      "My phone disappeared from my desk at work. Which colleague took it?",
+      "My item went 不见了 at a party. Was it one of my friends?",
+      "My pet was taken from my yard. Who would do this?",
+      "My bag was left in a taxi but the driver denies having it. Is he lying?",
+      "I think someone in my family moved my item. Who was it?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "想知道拾获者身份的人，常常在问：",
+    questions: [
+      "我的钱包被偷了。占卜能告诉我谁拿了吗？",
+      "我的手机从办公桌消失了。哪个同事拿了？",
+      "我的物品在派对上不见了。是我的朋友之一吗？",
+      "我的宠物从我院子里被带走了。谁会这样做？",
+      "我的包落在出租车里但司机否认有。他在撒谎吗？",
+      "我想家里有人动了我的东西。是谁？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Identify the Finder",
+    headingCn: "东西方命理如何识别拾获者？",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods, particularly Qi Men Dun Jia, excel at identifying the person who has your item. The Qi Men chart can reveal detailed characteristics including age range, gender, physical appearance, personality traits, and even their current location relative to yours. Six Yao divination can also provide clues about whether the finder is known or unknown to you.",
+    easternDescCn: "东方方法，特别是奇门遁甲，擅长识别持有你物品的人。奇门盘可以揭示详细特征，包括年龄范围、性别、外貌、性格特征，甚至他们相对于你的当前位置。六爻占卜也可以提供线索，显示拾获者是你认识的还是不认识的。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination, primarily Tarot, provides intuitive insight into the finder's energy and motivations. While less specific than Qi Men about physical characteristics, Tarot can reveal whether the person is trustworthy, their emotional state, and what motivated them to take or keep the item.",
+    westernDescCn: "西方命理，主要是塔罗，提供对拾获者能量和动机的直觉洞察。虽然不如奇门对物理特征具体，但塔罗可以揭示此人是否可信赖、他们的情绪状态，以及是什么动机促使他们拿走或留着物品。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. Qi Men Dun Jia: Finder Profile",
+        titleCn: "一、奇门遁甲：拾获者画像",
+        intro: "Qi Men Dun Jia provides the most detailed profile of the person who has your item.",
+        introCn: "奇门遁甲提供最详细的持有你物品的人的画像。",
+        cards: [
+          {
+            title: "① Physical Characteristics",
+            titleCn: "① 身体特征",
+            desc: "The chart reveals age range, gender, height, build, and distinguishing features.",
+            descCn: "盘显示年龄范围、性别、身高、体型和 显著特征。",
+            items: ["Age range", "Gender", "Physical build", "Distinguishing features"],
+            itemsCn: ["年龄范围", "性别", "体格", "显著特征"]
+          },
+          {
+            title: "② Personality Traits",
+            titleCn: "② 性格特征",
+            desc: "The chart indicates the person's character, honesty level, and intentions.",
+            descCn: "盘显示此人的性格、诚实程度和意图。",
+            items: ["Character assessment", "Honesty level", "Motivation analysis"],
+            itemsCn: ["性格评估", "诚实程度", "动机分析"]
+          },
+          {
+            title: "③ Location and Movement",
+            titleCn: "③ 位置与动向",
+            desc: "The chart reveals where the person is relative to you and whether they are moving.",
+            descCn: "盘显示此人相对于你的位置，以及是否在移动。",
+            items: ["Relative location", "Movement direction", "Distance from you"],
+            itemsCn: ["相对位置", "移动方向", "与你的距离"]
+          }
+        ]
+      },
+      {
+        title: "2. Six Yao: Known vs Unknown Finder",
+        titleCn: "二、六爻：认识还是不认识拾获者",
+        desc: "Six Yao divination indicates whether the finder is someone you know or a stranger.",
+        descCn: "六爻占卜显示拾获者是你认识的人还是陌生人。",
+        focus: "Key indicators:",
+        focusCn: "关键指标：",
+        items: ["Known vs unknown", "Relationship type", "Distance indicator", "Return likelihood"],
+        itemsCn: ["认识还是不认识", "关系类型", "距离指标", "归还可能性"]
+      },
+      {
+        title: "3. Tarot: Energetic Profile",
+        titleCn: "三、塔罗：能量画像",
+        desc: "Tarot provides intuitive insight into the person's energy and motivations.",
+        descCn: "塔罗提供对此人能量和动机的直觉洞察。",
+        focus: "Common identification spreads:",
+        focusCn: "常见识别牌阵：",
+        items: ["Person's energy", "Motivation", "Trustworthiness", "Next actions"],
+        itemsCn: ["个人能量", "动机", "可信度", "下一步行动"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Identifying a Workplace Thief",
+    titleCn: "识别工作场所小偷",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Ms. Zhang (born 1985, Yi-Chou year) had her expensive headphones stolen from her desk at work. She worked in a small office with only five colleagues and was distraught about not knowing who to trust.",
+        textCn: "张女士（1985年生，乙丑年）的昂贵耳机从办公桌上被盗。她在一家只有五位同事的小办公室工作，对不知道信任谁感到心烦意乱。"
+      },
+      {
+        label: "Qi Men Dun Jia Analysis",
+        labelCn: "奇门遁甲分析",
+        text: "The Qi Men chart indicated the thief was a male colleague, approximately 30-35 years old, with a medium build and a tendency toward secretive behavior. The chart showed he had taken the item on impulse rather than premeditation and that he was feeling guilty but afraid to admit it.",
+        textCn: "奇门盘显示小偷是一位男同事，大约30-35岁，中等体型，有 隐秘行为倾向。盘显示他是一时冲动而非预谋拿走物品，而且他感到内疚但害怕承认。"
+      },
+      {
+        label: "Resolution",
+        labelCn: "解决",
+        text: "Based on the profile, Ms. Zhang subtly created an opportunity for the person matching the description to return the item without 对峙. She announced she was organizing a desk cleanup and found the headphones 'mysteriously' returned the next morning.",
+        textCn: "基于画像，张女士巧妙地创造了一个机会，让符合描述的人可以在不 对峙 的情况下归还物品。她宣布正在组织桌面清理，第二天早上耳机「神秘地」被归还了。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "The headphones were returned without direct 对峙 or damaged workplace relationships. Ms. Zhang noted that understanding the person's character and motivations allowed her to handle the situation with wisdom rather than accusation.",
+        textCn: "耳机被归还了，没有直接 对峙 或破坏工作场所关系。张女士注意到，理解此人的性格和动机让她能够以智慧而非指责来处理情况。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "Qi Men Dun Jia provides the most detailed finder profile, including physical characteristics, personality traits, and location.",
+      "Six Yao divination indicates whether the finder is known or unknown to you.",
+      "Understanding who has your item helps determine the most effective recovery strategy."
+    ],
+    itemsCn: [
+      "奇门遁甲提供最详细的拾获者画像，包括身体特征、性格特征和位置。",
+      "六爻占卜显示拾获者是你认识的还是不认识的。",
+      "理解谁持有你的物品有助于确定最有效的找回策略。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "will-lost-item-be-returned", question: "Will My Lost Item Be Returned?", questionCn: "我的丢失物品会被归还吗？" },
+    { slug: "can-i-find-lost-items", question: "Can I Find My Lost Item?", questionCn: "我能找到丢失的物品吗？" },
+    { slug: "where-to-look-lost-item", question: "Where Should I Look for My Lost Item?", questionCn: "我应该去哪里找丢失的物品？" }
+  ],
+
+  cta: {
+    textLine1: "Knowing who took it is the first step to recovery.",
+    textLine1Cn: "知道谁拿了它是找回的第一步。",
+    textLine2: "If you want to identify who has your lost item and understand their intentions, our consultants can use Qi Men Dun Jia and other methods to provide detailed finder profiles.",
+    textLine2Cn: "如果你想识别谁持有你的丢失物品并了解他们的意图，我们的咨询师可以使用奇门遁甲和其他方法提供详细的拾获者画像。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/lost-items/who-took-lost-item",
   publishedAt: "2026-08-29",
   modifiedAt: "2026-08-29",
   author: "Stellawei Editorial Team"
