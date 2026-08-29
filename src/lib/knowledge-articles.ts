@@ -414,6 +414,8 @@ import {
   findTrueCalling,
   rightLifeDecisions,
   willMarriageGoSmoothly,
+  whenIsBestTimeToGetMarried,
+  isMyPartnerMarriageMaterial,
 } from "./knowledge-article-pages";
 
 // ==================== 文章索引 ====================
@@ -450,6 +452,8 @@ export const knowledgeArticles: Record<string, KnowledgeArticle> = {
   [findTrueCalling.slug]: findTrueCalling,
   [rightLifeDecisions.slug]: rightLifeDecisions,
   [willMarriageGoSmoothly.slug]: willMarriageGoSmoothly,
+  [whenIsBestTimeToGetMarried.slug]: whenIsBestTimeToGetMarried,
+  [isMyPartnerMarriageMaterial.slug]: isMyPartnerMarriageMaterial,
 };
 
 export function getArticleBySlug(slug: string): KnowledgeArticle | undefined {
