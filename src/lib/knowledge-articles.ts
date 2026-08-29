@@ -413,6 +413,7 @@ import {
   nextDecadeTrajectory,
   findTrueCalling,
   rightLifeDecisions,
+  willMarriageGoSmoothly,
 } from "./knowledge-article-pages";
 
 // ==================== 文章索引 ====================
@@ -448,6 +449,7 @@ export const knowledgeArticles: Record<string, KnowledgeArticle> = {
   [nextDecadeTrajectory.slug]: nextDecadeTrajectory,
   [findTrueCalling.slug]: findTrueCalling,
   [rightLifeDecisions.slug]: rightLifeDecisions,
+  [willMarriageGoSmoothly.slug]: willMarriageGoSmoothly,
 };
 
 export function getArticleBySlug(slug: string): KnowledgeArticle | undefined {
