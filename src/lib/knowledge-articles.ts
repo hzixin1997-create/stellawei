@@ -416,6 +416,9 @@ import {
   willMarriageGoSmoothly,
   whenIsBestTimeToGetMarried,
   isMyPartnerMarriageMaterial,
+  bestTimeToMarry,
+  areWeCompatibleMarriage,
+  howToImproveMarriage,
 } from "./knowledge-article-pages";
 
 // ==================== 文章索引 ====================
@@ -454,6 +457,9 @@ export const knowledgeArticles: Record<string, KnowledgeArticle> = {
   [willMarriageGoSmoothly.slug]: willMarriageGoSmoothly,
   [whenIsBestTimeToGetMarried.slug]: whenIsBestTimeToGetMarried,
   [isMyPartnerMarriageMaterial.slug]: isMyPartnerMarriageMaterial,
+  [bestTimeToMarry.slug]: bestTimeToMarry,
+  [areWeCompatibleMarriage.slug]: areWeCompatibleMarriage,
+  [howToImproveMarriage.slug]: howToImproveMarriage,
 };
 
 export function getArticleBySlug(slug: string): KnowledgeArticle | undefined {

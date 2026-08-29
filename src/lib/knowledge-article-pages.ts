@@ -7514,3 +7514,672 @@ export const isMyPartnerMarriageMaterial = {
   modifiedAt: "2026-08-29",
   author: "Stellawei Editorial Team"
 };
+
+// ============================================================
+// Article: Best Time to Marry
+// ============================================================
+
+export const bestTimeToMarry = {
+  slug: "best-time-to-marry",
+  topicSlug: "marriage",
+  question: "What Is the Best Time to Marry?",
+  questionCn: "什么时候结婚最好？",
+  metaTitle: "What Is the Best Time to Marry? | StellaWei Knowledge Center",
+  metaDescription: "Trying to figure out the right age or life stage to get married? Eastern and Western divination tools help you understand when you are truly ready for this commitment.",
+  metaTitleCn: "什么时候结婚最好？| Stellawei 知识中心",
+  metaDescriptionCn: "试图弄清楚结婚的合适年龄或人生阶段？东西方命理工具帮助你了解何时真正为这一承诺做好准备。",
+  heroIntro: "There is no universal right age to marry. Some people are ready at twenty-five. Others are not ready until forty. The question is not when society thinks you should marry, but when you are truly ready. Eastern and Western divination tools approach this differently—Eastern methods analyze your birth chart to identify life stages when partnership energy is strongest, while Tarot helps you understand your emotional maturity and whether you are prepared for the depth of commitment that marriage requires.",
+  heroIntroCn: "没有普遍正确的结婚年龄。有些人二十五岁就准备好了。有些人四十岁才准备好。问题不是社会认为你应该什么时候结婚，而是你什么时候真正准备好了。东西方命理工具提供了不同的视角——东方方法通过命盘分析识别伴侣能量最强的生命阶段，而塔罗则帮助你理解情绪成熟度，以及你是否为婚姻所需的承诺深度做好了准备。",
+
+  searchIntent: {
+    primary: [
+      "best age to get married",
+      "when should i get married",
+      "right time to marry",
+      "best life stage to marry"
+    ],
+    primaryCn: [
+      "最佳结婚年龄",
+      "我应该什么时候结婚",
+      "结婚的合适时机",
+      "最佳结婚人生阶段"
+    ],
+    secondary: [
+      "bazi marriage age",
+      "marriage timing astrology",
+      "tarot marriage readiness",
+      "feng shui marriage age"
+    ],
+    secondaryCn: [
+      "八字结婚年龄",
+      "婚姻时机占星",
+      "塔罗婚姻准备度",
+      "风水结婚年龄"
+    ],
+    related: [
+      "too young to marry",
+      "too old to marry",
+      "marriage readiness signs",
+      "life stage marriage"
+    ],
+    relatedCn: [
+      "太年轻不能结婚",
+      "太老不能结婚",
+      "婚姻准备度征兆",
+      "人生阶段婚姻"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People wondering about the best time to marry are often asking:",
+    questions: [
+      "All my friends are married. Am I falling behind?",
+      "I am in my thirties and still single. Have I missed my window?",
+      "My parents married young and want me to do the same. Is that right for me?",
+      "I am focused on my career. Will waiting hurt my chances of finding a partner?",
+      "I feel ready but my partner does not. Should I wait or move on?",
+      "I have been with my partner for years. Are we waiting too long?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "想知道最佳结婚时机的人，常常在问：",
+    questions: [
+      "我所有的朋友都结婚了。我落后了吗？",
+      "我三十多岁了还单身。我错过窗口期了吗？",
+      "我父母年轻时结婚，希望我也这样。这适合我吗？",
+      "我专注于事业。等待会损害我找到伴侣的机会吗？",
+      "我感觉准备好了但伴侣没有。我应该等还是离开？",
+      "我和伴侣在一起很多年了。我们等得太久了吗？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Determine the Best Time to Marry",
+    headingCn: "东西方命理如何确定最佳结婚时机？",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods (BaZi, Zi Wei Dou Shu) analyze marriage timing through life cycle patterns and palace activation. BaZi identifies when your Spouse Palace and Spouse Star are most active, indicating periods when partnership energy naturally flows. Zi Wei Dou Shu profiles your marriage timing through the Marriage Palace, revealing whether early, middle, or late marriage aligns with your destiny pattern.",
+    easternDescCn: "东方方法（八字、紫微斗数）通过生命周期规律和宫位激活来分析结婚时机。八字识别配偶宫和配偶星最活跃的时期，指示伴侣能量自然流动的时期。紫微斗数通过夫妻宫描绘结婚时机，揭示早婚、中婚还是晚婚与你的命运模式对齐。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination (primarily Tarot) is based on symbolic psychology and the collective unconscious. Through card imagery and intuitive interpretation, it reflects your emotional readiness for marriage, reveals any internal conflicts about timing, and offers guidance on when you will feel most prepared for this lifelong commitment.",
+    westernDescCn: "西方命理（以塔罗为主）基于象征心理学与集体潜意识。通过牌面图像与直觉解读，反映你对婚姻的情绪准备度，揭示关于时机的任何内在冲突，并提供关于你何时会对这一终身承诺感到最有准备的指引。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi: Life Stage and Marriage Timing",
+        titleCn: "一、八字：人生阶段与结婚时机",
+        intro: "BaZi uses your birth chart to identify life stages when marriage energy is strongest.",
+        introCn: "八字使用命盘识别婚姻能量最强的人生阶段。",
+        cards: [
+          {
+            title: "① Spouse Palace Activation",
+            titleCn: "① 配偶宫激活",
+            desc: "Years when your Spouse Palace is activated by favorable elements indicate optimal marriage timing.",
+            descCn: "配偶宫被有利元素激活的年份指示最佳结婚时机。",
+            items: ["Palace activation years", "Favorable elements", "Timing windows"],
+            itemsCn: ["宫位激活年份", "喜用五行", "时机窗口"]
+          },
+          {
+            title: "② Luck Cycle Support",
+            titleCn: "② 大运支持",
+            desc: "Marrying during a supportive luck cycle creates a foundation for long-term marital happiness.",
+            descCn: "在有支持的大运周期结婚为长期婚姻幸福创造基础。",
+            items: ["Cycle analysis", "Support indicators", "Favorable decades"],
+            itemsCn: ["周期分析", "支持指标", "有利十年"]
+          },
+          {
+            title: "③ Partner Timing",
+            titleCn: "③ 伴侣时机",
+            desc: "Comparing both charts reveals when your marriage energies align most harmoniously.",
+            descCn: "对比双方命盘揭示你们的婚姻能量何时最和谐对齐。",
+            items: ["Mutual activation", "Shared cycles", "Alignment timing"],
+            itemsCn: ["互相激活", "共同周期", "对齐时机"]
+          }
+        ]
+      },
+      {
+        title: "2. Zi Wei Dou Shu: Marriage Timing Profile",
+        titleCn: "二、紫微斗数：结婚时机画像",
+        desc: "Zi Wei Dou Shu profiles your optimal marriage timing through the Marriage Palace and Life Palace.",
+        descCn: "紫微斗数通过夫妻宫和命宫描绘最佳结婚时机。",
+        focus: "Key timing indicators:",
+        focusCn: "关键时机指标：",
+        items: ["Early marriage indicators", "Middle marriage timing", "Late marriage patterns", "Optimal age range"],
+        itemsCn: ["早婚指标", "中婚时机", "晚婚模式", "最佳年龄范围"]
+      },
+      {
+        title: "3. Tarot: Readiness Assessment",
+        titleCn: "三、塔罗：准备度评估",
+        desc: "Tarot helps you understand your emotional readiness and whether you are truly prepared for marriage.",
+        descCn: "塔罗帮助你理解情绪准备度，以及你是否真的为婚姻做好了准备。",
+        focus: "Common readiness spreads:",
+        focusCn: "常见准备度牌阵：",
+        items: ["Emotional maturity", "Commitment readiness", "Fear assessment", "Timing guidance"],
+        itemsCn: ["情绪成熟度", "承诺准备度", "恐惧评估", "时机指引"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Finding the Right Time to Marry",
+    titleCn: "找到合适的结婚时机",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Ms. Yang (born 1986, Bing-Yin year) was thirty-eight and single. She had focused on her career throughout her twenties and thirties, and now wondered if she had waited too long. Her parents were worried, and she felt pressure from all sides.",
+        textCn: "杨女士（1986年生，丙寅年）三十八岁单身。她整个二十多岁和三十多岁都专注于事业，现在想知道是否等得太久了。她的父母很担心，她感到来自各方的压力。"
+      },
+      {
+        label: "BaZi Analysis",
+        labelCn: "八字分析",
+        text: "Ms. Yang's chart revealed that her Spouse Star was strong but had been suppressed by her intense career-focused luck cycle. Her upcoming decade (2024-2033) would bring a shift toward partnership energy, with 2026-2028 being particularly favorable for meeting a compatible partner and marrying.",
+        textCn: "杨女士的命盘显示配偶星强劲，但一直被她强烈的事业导向大运周期压制。即将到来的十年（2024-2033）将带来向伴侣能量的转变，2026-2028年特别适合遇到合适的伴侣并结婚。"
+      },
+      {
+        label: "Zi Wei Dou Shu Analysis",
+        labelCn: "紫微斗数分析",
+        text: "Her Marriage Palace indicated a late-marriage pattern, with the most favorable period beginning at age thirty-nine. The reading revealed that her destiny pattern favored establishing herself professionally before entering marriage, and that her late marriage would likely be more stable and fulfilling than an earlier one would have been.",
+        textCn: "她的夫妻宫显示晚婚模式，最有利的时期从三十九岁开始。解读显示她的命运模式倾向于在进入婚姻前先在职业上站稳脚跟，而且她的晚婚可能比早婚更稳定和满足。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Ms. Yang met her partner in early 2026 and married in 2027. She reports feeling grateful that she waited, as her career stability and emotional maturity have created a strong foundation for her marriage.",
+        textCn: "杨女士于2026年初遇到伴侣，2027年结婚。她表示很庆幸自己等待了，因为职业稳定和情绪成熟为婚姻创造了坚实的基础。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "Eastern systems (BaZi, Zi Wei) identify optimal marriage timing through birth-chart analysis, revealing when partnership energy is strongest in your life cycle.",
+      "Western Tarot helps assess your emotional readiness and reveals whether you are truly prepared for the depth of commitment marriage requires.",
+      "The best time to marry is unique to each person—what matters is alignment between your life stage, emotional maturity, and cosmic timing."
+    ],
+    itemsCn: [
+      "东方八字、紫微通过命盘分析识别最佳结婚时机，揭示伴侣能量在你生命周期中最强的时期。",
+      "西方塔罗帮助评估情绪准备度，揭示你是否真的为婚姻所需的承诺深度做好了准备。",
+      "最佳结婚时机对每个人都是独特的——重要的是人生阶段、情绪成熟度和宇宙时机之间的对齐。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "when-is-best-time-to-get-married", question: "When Is the Best Time to Get Married?", questionCn: "什么时候结婚最好？" },
+    { slug: "is-my-partner-marriage-material", question: "Is My Partner Marriage Material?", questionCn: "我的伴侣适合结婚吗？" },
+    { slug: "will-marriage-go-smoothly", question: "Will My Marriage Go Smoothly?", questionCn: "我的婚姻会顺利吗？" }
+  ],
+
+  cta: {
+    textLine1: "Your perfect time to marry is written in the stars.",
+    textLine1Cn: "你完美的结婚时机写在星象中。",
+    textLine2: "If you would like a personalized analysis of your optimal marriage timing, life stage readiness, and partner compatibility, our consultants can provide detailed guidance.",
+    textLine2Cn: "如果你想要个性化的最佳结婚时机、人生阶段准备度和伴侣配对分析，我们的咨询师可以提供详细指引。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/marriage/best-time-to-marry",
+  publishedAt: "2026-08-29",
+  modifiedAt: "2026-08-29",
+  author: "Stellawei Editorial Team"
+};
+
+// ============================================================
+// Article: Are We Compatible for Marriage?
+// ============================================================
+
+export const areWeCompatibleMarriage = {
+  slug: "are-we-compatible-marriage",
+  topicSlug: "marriage",
+  question: "Are We Compatible for Marriage?",
+  questionCn: "我们适合结婚吗？",
+  metaTitle: "Are We Compatible for Marriage? | StellaWei Knowledge Center",
+  metaDescription: "Wondering if you and your partner are truly compatible for marriage? Eastern and Western divination tools analyze your elemental harmony, communication styles, and long-term alignment.",
+  metaTitleCn: "我们适合结婚吗？| Stellawei 知识中心",
+  metaDescriptionCn: "想知道你和伴侣是否真的适合结婚？东西方命理工具分析你们的五行和谐、沟通风格和长期对齐度。",
+  heroIntro: "Love is not enough to make a marriage work. Compatibility matters. How you handle conflict, manage money, raise children, and support each other's dreams—these practical dynamics determine whether a marriage thrives or fails. Eastern and Western divination tools approach compatibility differently—Eastern methods analyze birth-chart alignment to reveal elemental harmony, communication patterns, and values compatibility, while Tarot helps you understand the emotional undercurrents and subconscious dynamics that shape your partnership.",
+  heroIntroCn: "爱不足以让婚姻运转。配对度很重要。你如何处理冲突、管理金钱、抚养孩子、支持彼此的梦想——这些实际动态决定婚姻是繁荣还是失败。东西方命理工具对配对度提供了不同的视角——东方方法通过命盘对齐分析揭示五行和谐、沟通模式和价值观兼容性，而塔罗则帮助你理解塑造伴侣关系的暗流情绪和潜意识动态。",
+
+  searchIntent: {
+    primary: [
+      "are we compatible for marriage",
+      "marriage compatibility test",
+      "should we get married compatibility",
+      "marriage compatibility check"
+    ],
+    primaryCn: [
+      "我们适合结婚吗",
+      "婚姻配对测试",
+      "我们应该结婚吗配对",
+      "婚姻配对检查"
+    ],
+    secondary: [
+      "bazi marriage matching",
+      "zi wei dou shu compatibility",
+      "tarot relationship compatibility",
+      "feng shui couple compatibility"
+    ],
+    secondaryCn: [
+      "八字合婚",
+      "紫微斗数配对",
+      "塔罗关系配对",
+      "风水伴侣配对"
+    ],
+    related: [
+      "love compatibility test",
+      "relationship compatibility",
+      "marriage success factors",
+      "couple compatibility quiz"
+    ],
+    relatedCn: [
+      "爱情配对测试",
+      "关系配对",
+      "婚姻成功因素",
+      "伴侣配对测试"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People wondering about marriage compatibility are often asking:",
+    questions: [
+      "We love each other but argue constantly. Are we compatible?",
+      "My partner and I have very different personalities. Can opposites really attract long-term?",
+      "We agree on big things but fight about small things. Is that a bad sign?",
+      "My family thinks we are not compatible. Should I trust their judgment?",
+      "We have different communication styles. Will that destroy our marriage?",
+      "Our values about money and family are different. Can we make it work?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "想知道婚姻配对度的人，常常在问：",
+    questions: [
+      "我们彼此相爱但经常争吵。我们合适吗？",
+      "我和伴侣性格非常不同。异性真的能长期相吸吗？",
+      "我们在大事上意见一致但在小事上争吵。这是坏征兆吗？",
+      "我家人认为我们不合适。我该信任他们的判断吗？",
+      "我们有不同的沟通方式。这会毁掉我们的婚姻吗？",
+      "我们在金钱和家庭方面的价值观不同。我们能成功吗？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Assess Marriage Compatibility",
+    headingCn: "东西方命理如何评估婚姻配对度？",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods (BaZi, Zi Wei Dou Shu) assess marriage compatibility through comprehensive birth-chart analysis. BaZi examines the Five Elements interaction between partners, analyzing whether your elemental compositions complement or clash. Zi Wei Dou Shu profiles your partnership through the Marriage Palace and other key palaces, revealing relationship patterns, communication styles, and long-term harmony potential.",
+    easternDescCn: "东方方法（八字、紫微斗数）通过全面的命盘分析来评估婚姻配对度。八字检查双方的五行互动，分析五行构成是互补还是冲突。紫微斗数通过夫妻宫和其他关键宫位描绘伴侣关系，揭示关系模式、沟通风格和长期和谐潜力。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination (primarily Tarot) is based on symbolic psychology and the collective unconscious. Through card imagery and intuitive interpretation, it reflects the emotional dynamics between you and your partner, reveals hidden tensions or harmonies, and offers guidance on strengthening your connection.",
+    westernDescCn: "西方命理（以塔罗为主）基于象征心理学与集体潜意识。通过牌面图像与直觉解读，反映你和伴侣之间的情绪动态，揭示隐藏的张力或和谐，并提供加强连接的指引。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi: Elemental Compatibility Analysis",
+        titleCn: "一、八字：五行配对分析",
+        intro: "BaZi uses both partners' birth charts to assess whether your energies naturally harmonize or conflict.",
+        introCn: "八字使用双方的出生命盘来评估你们的能量是天然和谐还是冲突。",
+        cards: [
+          {
+            title: "① Five Elements Balance",
+            titleCn: "① 五行平衡",
+            desc: "Analyzing how your elemental compositions interact reveals your natural compatibility.",
+            descCn: "分析五行构成如何互动，揭示天然配对度。",
+            items: ["Complementary elements", "Clashing patterns", "Balance harmony"],
+            itemsCn: ["互补五行", "冲突模式", "平衡和谐"]
+          },
+          {
+            title: "② Day Master Interaction",
+            titleCn: "② 日主互动",
+            desc: "Your Day Masters reveal how you naturally relate to each other.",
+            descCn: "你们的日主揭示如何天然地互相相处。",
+            items: ["Support patterns", "Conflict indicators", "Communication style"],
+            itemsCn: ["支持模式", "冲突指标", "沟通风格"]
+          },
+          {
+            title: "③ Palace Alignment",
+            titleCn: "③ 宫位对齐",
+            desc: "Comparing key palaces reveals alignment in values, goals, and life direction.",
+            descCn: "对比关键宫位揭示价值观、目标和生活方向的对齐度。",
+            items: ["Career alignment", "Family values", "Life goals"],
+            itemsCn: [ "事业对齐", "家庭价值观", "人生目标" ]
+          }
+        ]
+      },
+      {
+        title: "2. Zi Wei Dou Shu: Partnership Harmony Profile",
+        titleCn: "二、紫微斗数：伴侣和谐画像",
+        desc: "Zi Wei Dou Shu profiles your partnership harmony through star combinations and palace interactions.",
+        descCn: "紫微斗数通过星曜组合和宫位互动描绘伴侣和谐度。",
+        focus: "Key harmony indicators:",
+        focusCn: "关键和谐指标：",
+        items: ["Star compatibility", "Palace harmony", "Communication pattern", "Conflict resolution"],
+        itemsCn: ["星曜兼容性", "宫位和谐", "沟通模式", "冲突解决"]
+      },
+      {
+        title: "3. Tarot: Relationship Dynamics Reading",
+        titleCn: "三、塔罗：关系动态解读",
+        desc: "Tarot reveals the emotional and spiritual dynamics between you and your partner.",
+        descCn: "塔罗揭示你和伴侣之间的情绪和精神动态。",
+        focus: "Common compatibility spreads:",
+        focusCn: "常见配对度牌阵：",
+        items: ["Connection strength", "Challenge areas", "Growth potential", "Future harmony"],
+        itemsCn: ["连接强度", "挑战领域", "成长潜力", "未来和谐"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Discovering Compatibility Through Birth Charts",
+    titleCn: "通过命盘发现配对度",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Mr. Wu (born 1985, Yi-Chou year) and Ms. Lin (born 1988, Wu-Chen year) had been dating for two years. They loved each other deeply but found themselves arguing about money, family time, and future plans. They wondered if they were truly compatible for marriage.",
+        textCn: "吴先生（1985年生，乙丑年）和林女士（1988年生，戊辰年）交往两年。他们深爱着彼此，但发现自己在金钱、家庭时间和未来计划方面争吵。他们想知道是否真的适合结婚。"
+      },
+      {
+        label: "BaZi Analysis",
+        labelCn: "八字分析",
+        text: "Their charts revealed strong Earth compatibility, creating a stable foundation. However, Mr. Wu's chart showed a preference for saving and stability, while Ms. Lin's chart indicated a desire for growth and adventure. Their communication styles also differed—he was direct and practical, while she was intuitive and emotional.",
+        textCn: "他们的命盘显示强烈的土元素兼容性，创造了稳定的基础。然而，吴先生的命盘显示对储蓄和稳定的偏好，而林女士的命盘指示对成长和冒险的渴望。他们的沟通方式也不同——他直接务实，而她直觉感性。"
+      },
+      {
+        label: "Zi Wei Dou Shu Analysis",
+        labelCn: "紫微斗数分析",
+        text: "Their Marriage Palace showed a 'complementary strengths' pattern. While they had different approaches to life, their differences actually balanced each other. The reading indicated that if they learned to appreciate each other's strengths rather than trying to change each other, their marriage would be both stable and dynamic.",
+        textCn: "他们的夫妻宫显示「互补优势」模式。虽然他们对生活有不同的方式，但差异实际上互相平衡。解读显示，如果他们学会欣赏彼此的优势而不是试图改变对方，他们的婚姻将既稳定又充满活力。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "The couple married after understanding their compatibility pattern. They established clear communication protocols and learned to value their differences. Five years later, they report a deeply satisfying marriage where their contrasting strengths have created a powerful partnership.",
+        textCn: "在了解配对模式后，这对夫妇结婚了。他们建立了清晰的沟通协议，并学会了欣赏差异。五年后，他们报告了一段深深满足的婚姻，他们对比鲜明的优势创造了强大的伙伴关系。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "Eastern systems (BaZi, Zi Wei) excel at analyzing compatibility through elemental harmony, palace alignment, and communication pattern assessment.",
+      "Western Tarot provides insight into emotional dynamics, hidden tensions, and the spiritual connection between partners.",
+      "Compatibility is not about being identical—it is about understanding how your differences complement each other and committing to growth together."
+    ],
+    itemsCn: [
+      "东方八字、紫微擅长通过五行和谐、宫位对齐和沟通模式评估来分析配对度。",
+      "西方塔罗提供对情绪动态、隐藏张力和伴侣之间精神连接的洞察。",
+      "配对度不是关于完全相同——而是关于理解差异如何互补，并承诺一起成长。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "is-my-partner-marriage-material", question: "Is My Partner Marriage Material?", questionCn: "我的伴侣适合结婚吗？" },
+    { slug: "will-marriage-go-smoothly", question: "Will My Marriage Go Smoothly?", questionCn: "我的婚姻会顺利吗？" },
+    { slug: "when-is-best-time-to-get-married", question: "When Is the Best Time to Get Married?", questionCn: "什么时候结婚最好？" }
+  ],
+
+  cta: {
+    textLine1: "True compatibility is written in the stars.",
+    textLine1Cn: "真正的配对度写在星象中。",
+    textLine2: "If you would like a personalized compatibility analysis to understand your partnership's strengths, challenges, and long-term potential, our consultants can provide detailed insights.",
+    textLine2Cn: "如果你想要个性化的配对度分析来了解伴侣关系的优势、挑战和长期潜力，我们的咨询师可以提供详细洞察。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/marriage/are-we-compatible-marriage",
+  publishedAt: "2026-08-29",
+  modifiedAt: "2026-08-29",
+    author: "Stellawei Editorial Team"
+};
+
+// ============================================================
+// Article: How to Improve My Marriage
+// ============================================================
+
+export const howToImproveMarriage = {
+  slug: "how-to-improve-marriage",
+  topicSlug: "marriage",
+  question: "How to Improve My Marriage?",
+  questionCn: "如何改善我的婚姻？",
+  metaTitle: "How to Improve My Marriage? | StellaWei Knowledge Center",
+  metaDescription: "Looking to strengthen your marriage? Eastern and Western divination tools offer insights into communication patterns, emotional dynamics, and practical steps to deepen your connection.",
+  metaTitleCn: "如何改善我的婚姻？| Stellawei 知识中心",
+  metaDescriptionCn: "想要加强婚姻？东西方命理工具提供沟通模式、情绪动态和加深连接的实用步骤的洞察。",
+  heroIntro: "Every marriage goes through seasons. Some are bright and flourishing. Others feel cold and distant. If you are in a season where things feel off, know that this is not the end— it is an invitation to grow. Eastern and Western divination tools approach marriage improvement differently—Eastern methods analyze your birth charts to identify communication blocks, elemental imbalances, and timing cycles that may be affecting your relationship, while Tarot helps you understand the emotional undercurrents and subconscious patterns that need healing.",
+  heroIntroCn: "每段婚姻都经历季节。有些是明亮和繁荣的。其他感觉寒冷和疏远。如果你处于一个感觉不对劲的季节，要知道这不是结束——而是成长的邀请。东西方命理工具对婚姻改善提供了不同的视角——东方方法通过命盘分析识别沟通障碍、五行失衡和可能影响关系的运势周期，而塔罗则帮助你理解需要治愈的暗流情绪和潜意识模式。",
+
+  searchIntent: {
+    primary: [
+      "how to improve marriage",
+      "save my marriage",
+      "marriage improvement tips",
+      "how to fix marriage problems"
+    ],
+    primaryCn: [
+      "如何改善婚姻",
+      "挽救婚姻",
+      "婚姻改善技巧",
+      "如何解决婚姻问题"
+    ],
+    secondary: [
+      "bazi marriage harmony",
+      "feng shui marriage improvement",
+      "tarot marriage healing",
+      "marriage counseling alternatives"
+    ],
+    secondaryCn: [
+      "八字婚姻和谐",
+      "风水婚姻改善",
+      "塔罗婚姻疗愈",
+      "婚姻咨询替代方案"
+    ],
+    related: [
+      "marriage communication tips",
+      "rekindle marriage spark",
+      "marriage therapy",
+      "relationship repair"
+    ],
+    relatedCn: [
+      "婚姻沟通技巧",
+      "重燃婚姻火花",
+      "婚姻治疗",
+      "关系修复"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People looking to improve their marriage are often asking:",
+    questions: [
+      "We used to be so close but now feel like roommates. How do we reconnect?",
+      "We argue about the same things over and over. How do we break the cycle?",
+      "The spark is gone. Can we get it back?",
+      "My partner and I have grown apart. Is it too late to find common ground?",
+      "We are both stressed and taking it out on each other. How do we stop?",
+      "I love my partner but I am not in love anymore. Can we fix this?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "想要改善婚姻的人，常常在问：",
+    questions: [
+      "我们曾经很亲密但现在感觉像室友。我们如何重新连接？",
+      "我们一遍又一遍地为同样的事情争吵。我们如何打破循环？",
+      "火花消失了。我们能找回来吗？",
+      "我和伴侣渐行渐远。找到共同点还来得及吗？",
+      "我们都很有压力，互相发泄。我们如何停止？",
+      "我爱我的伴侣但不再恋爱了。我们能修复吗？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Help Improve Marriage",
+    headingCn: "东西方命理如何帮助改善婚姻？",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods (BaZi, Feng Shui, Zi Wei Dou Shu) analyze marriage challenges through birth-chart patterns and environmental energy. BaZi identifies elemental imbalances between partners that may create friction, while Feng Shui evaluates your home's energy flow and how it affects your relationship. Zi Wei Dou Shu profiles your marriage dynamics through the Marriage Palace, revealing communication patterns and areas needing attention.",
+    easternDescCn: "东方方法（八字、风水、紫微斗数）通过命盘模式和环境能量分析婚姻挑战。八字识别双方之间可能产生摩擦的五行失衡，而风水评估家的能量流动及其对关系的影响。紫微斗数通过夫妻宫描绘婚姻动态，揭示沟通模式和需要关注的领域。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination (primarily Tarot) is based on symbolic psychology and the collective unconscious. Through card imagery and intuitive interpretation, it reflects the emotional dynamics between you and your partner, reveals unconscious patterns that may be creating distance, and offers guidance for healing and reconnection.",
+    westernDescCn: "西方命理（以塔罗为主）基于象征心理学与集体潜意识。通过牌面图像与直觉解读，反映你和伴侣之间的情绪动态，揭示可能在制造距离的潜意识模式，并提供疗愈和重新连接的指引。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi: Identifying Elemental Imbalances",
+        titleCn: "一、八字：识别五行失衡",
+        intro: "BaZi identifies elemental imbalances that may be creating friction in your marriage.",
+        introCn: "八字识别可能在婚姻中制造摩擦的五行失衡。",
+        cards: [
+          {
+            title: "① Elemental Clash Analysis",
+            titleCn: "① 五行冲突分析",
+            desc: "Identifying which elements are clashing between partners and how to restore balance.",
+            descCn: "识别伴侣之间哪些五行在冲突，以及如何恢复平衡。",
+            items: ["Clashing elements", "Balancing strategies", "Harmony restoration"],
+            itemsCn: ["冲突五行", "平衡策略", "和谐恢复"]
+          },
+          {
+            title: "② Communication Pattern Analysis",
+            titleCn: "② 沟通模式分析",
+            desc: "Understanding how your natural communication styles interact.",
+            descCn: "理解天然沟通方式如何互动。",
+            items: ["Expression styles", "Listening patterns", "Conflict triggers"],
+            itemsCn: ["表达方式", "倾听模式", "冲突触发点"]
+          },
+          {
+            title: "③ Timing Assessment",
+            titleCn: "③ 时机评估",
+            desc: "Identifying whether current luck cycles are creating temporary stress.",
+            descCn: "识别当前运势周期是否在制造暂时压力。",
+            items: ["Current cycle impact", "Stress timing", "Recovery periods"],
+            itemsCn: ["当前周期影响", "压力时机", "恢复期"]
+          }
+        ]
+      },
+      {
+        title: "2. Feng Shui: Home Environment Optimization",
+        titleCn: "二、风水：家居环境优化",
+        desc: "Feng Shui evaluates how your home environment affects your marriage energy.",
+        descCn: "风水评估家居环境如何影响婚姻能量。",
+        focus: "Key areas to optimize:",
+        focusCn: "关键优化领域：",
+        items: ["Bedroom energy", "Relationship corner", "Clutter clearing", "Color harmony"],
+        itemsCn: ["卧室能量", "关系角落", "清理杂物", "色彩和谐"]
+      },
+      {
+        title: "3. Tarot: Emotional Healing Guidance",
+        titleCn: "三、塔罗：情绪疗愈指引",
+        desc: "Tarot reveals the emotional wounds and patterns that need healing in your marriage.",
+        descCn: "塔罗揭示婚姻中需要治愈的情绪创伤和模式。",
+        focus: "Common healing spreads:",
+        focusCn: "常见疗愈牌阵：",
+        items: ["Relationship wounds", "Healing path", "Reconnection steps", "Future vision"],
+        itemsCn: ["关系创伤", "疗愈道路", "重新连接步骤", "未来愿景"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Healing a Strained Marriage",
+    titleCn: "疗愈紧张的婚姻",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Mr. and Mrs. Huang (husband born 1984, Jia-Zi year; wife born 1986, Bing-Yin year) had been married for eight years. They had two children and successful careers, but their marriage had become distant and argumentative. They were considering separation but wanted to try everything before giving up.",
+        textCn: "黄先生和黄太太（丈夫1984年生，甲子年；妻子1986年生，丙寅年）结婚八年。他们有两个孩子和成功的事业，但婚姻变得疏远和争吵。他们正在考虑分居，但想在放弃前尝试一切。"
+      },
+      {
+        label: "BaZi Analysis",
+        labelCn: "八字分析",
+        text: "Their charts revealed a Water-Fire clash that had intensified during their current luck cycle. Mr. Huang's strong Water energy made him emotionally reserved, while Mrs. Huang's strong Fire energy made her expressive and passionate. Their communication styles were fundamentally different, creating misunderstandings.",
+        textCn: "他们的命盘显示水火冲突在当前大运周期加剧。黄先生强水能量使他情绪内敛，而黄太太强火能量使她表达丰富和热情。他们的沟通方式根本不同，造成误解。"
+      },
+      {
+        label: "Feng Shui Analysis",
+        labelCn: "风水分析",
+        text: "Their bedroom had the bed positioned against a window, creating unstable energy. The relationship corner of their home was cluttered with work materials, blocking partnership energy. The colors in their bedroom were too stimulating, preventing restful sleep and intimate connection.",
+        textCn: "他们的卧室床靠窗摆放，创造不稳定能量。家的关系角落堆满了工作材料，阻挡伴侣能量。卧室颜色太刺激，阻止安稳睡眠和亲密连接。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "After repositioning their bed, clearing the relationship corner, and adjusting bedroom colors, the couple reported immediate improvements in sleep and mood. They also learned to appreciate their different communication styles rather than fighting against them. Within six months, they described their marriage as 'better than ever.'",
+        textCn: "在重新摆放床、清理关系角落和调整卧室颜色后，这对夫妇报告睡眠和情绪立即改善。他们还学会了欣赏彼此不同的沟通方式，而不是对抗。六个月内，他们形容婚姻「比以往任何时候都好」。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "Eastern systems (BaZi, Feng Shui) identify elemental imbalances and environmental factors that may be creating friction in your marriage.",
+      "Western Tarot reveals emotional wounds and subconscious patterns that need healing for your marriage to thrive.",
+      "Marriage improvement requires understanding both the energetic dynamics (Eastern) and the emotional landscape (Western) of your partnership."
+    ],
+    itemsCn: [
+      "东方八字、风水识别可能在婚姻中制造摩擦的五行失衡和环境因素。",
+      "西方塔罗揭示婚姻繁荣需要治愈的情绪创伤和潜意识模式。",
+      "婚姻改善需要理解伴侣关系的能量动态（东方）和情绪图景（西方）。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "will-marriage-go-smoothly", question: "Will My Marriage Go Smoothly?", questionCn: "我的婚姻会顺利吗？" },
+    { slug: "can-we-fix-our-relationship", question: "How to Fix a Relationship?", questionCn: "我怎么修复一段关系？" },
+    { slug: "is-he-she-the-right-person", question: "Is He/She the Right Person for Me?", questionCn: "他/她是对的人吗？" }
+  ],
+
+  cta: {
+    textLine1: "Every marriage can be improved with the right guidance.",
+    textLine1Cn: "每段婚姻都可以通过正确的指引得到改善。",
+    textLine2: "If you would like a personalized marriage analysis to identify imbalances, communication blocks, and practical steps for improvement, our consultants can provide detailed guidance.",
+    textLine2Cn: "如果你想要个性化的婚姻分析来识别失衡、沟通障碍和改善的实用步骤，我们的咨询师可以提供详细指引。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/marriage/how-to-improve-marriage",
+  publishedAt: "2026-08-29",
+  modifiedAt: "2026-08-29",
+  author: "Stellawei Editorial Team"
+};
