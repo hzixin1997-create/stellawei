@@ -411,6 +411,8 @@ import {
   whatIsMyLifePurpose,
   shouldIMoveCity,
   nextDecadeTrajectory,
+  findTrueCalling,
+  rightLifeDecisions,
 } from "./knowledge-article-pages";
 
 // ==================== 文章索引 ====================
@@ -444,6 +446,8 @@ export const knowledgeArticles: Record<string, KnowledgeArticle> = {
   [whatIsMyLifePurpose.slug]: whatIsMyLifePurpose,
   [shouldIMoveCity.slug]: shouldIMoveCity,
   [nextDecadeTrajectory.slug]: nextDecadeTrajectory,
+  [findTrueCalling.slug]: findTrueCalling,
+  [rightLifeDecisions.slug]: rightLifeDecisions,
 };
 
 export function getArticleBySlug(slug: string): KnowledgeArticle | undefined {

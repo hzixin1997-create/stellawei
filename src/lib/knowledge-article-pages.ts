@@ -6399,3 +6399,449 @@ export const nextDecadeTrajectory = {
   modifiedAt: "2026-08-29",
   author: "Stellawei Editorial Team"
 };
+
+// ============================================================
+// Article: How to Find My True Calling
+// ============================================================
+
+export const findTrueCalling = {
+  slug: "find-true-calling",
+  topicSlug: "life-direction",
+  question: "How to Find My True Calling?",
+  questionCn: "如何找到我的真正使命？",
+  metaTitle: "How to Find My True Calling? | StellaWei Knowledge Center",
+  metaDescription: "Feeling lost about what you are meant to do? Eastern and Western divination tools help uncover your innate gifts, karmic path, and the work that truly fulfills you.",
+  metaTitleCn: "如何找到我的真正使命？| Stellawei 知识中心",
+  metaDescriptionCn: "对命中注定要做的事感到迷茫？东西方命理工具帮助你发现天赋才能、因果道路和真正让你满足的事业。",
+  heroIntro: "Many people spend years in jobs that pay well but leave them empty. The question of true calling is not about finding one perfect career—it is about aligning what you do with who you are. Eastern and Western divination tools approach this differently. Eastern methods analyze your birth chart to reveal inherent talents and karmic lessons, while Tarot helps uncover what your heart already knows but your mind keeps overriding.",
+  heroIntroCn: "许多人在高薪工作中度过了空虚的多年。真正使命的问题不是找到一个完美的职业——而是将你所做的事与真实的你对齐。东西方命理工具提供了不同的视角——东方方法通过命盘分析揭示天赋才能和因果课题，而塔罗则帮助你发现内心早已知道但头脑一直在否定的东西。",
+
+  searchIntent: {
+    primary: [
+      "how to find my true calling",
+      "what is my calling in life",
+      "how to discover my purpose",
+      "finding my passion and purpose"
+    ],
+    primaryCn: [
+      "如何找到我的真正使命",
+      "我的人生召唤是什么",
+      "如何发现人生目标",
+      "找到热情与使命"
+    ],
+    secondary: [
+      "bazi talent analysis",
+      "zi wei dou shu career palace",
+      "tarot calling reading",
+      "karmic path astrology"
+    ],
+    secondaryCn: [
+      "八字天赋分析",
+      "紫微斗数官禄宫",
+      "塔罗看使命",
+      "因果道路占星"
+    ],
+    related: [
+      "career alignment",
+      "soul purpose work",
+      "life direction clarity",
+      "meaningful work"
+    ],
+    relatedCn: [
+      "职业对齐",
+      "灵魂目的工作",
+      "人生方向清晰",
+      "有意义的工作"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People searching for their true calling are often asking:",
+    questions: [
+      "I am good at my job but it feels meaningless. Is there something else I should be doing?",
+      "I have many talents but none feel like 'the one.' How do I choose?",
+      "I keep switching careers hoping to find the right fit. Will I ever know?",
+      "Everyone says follow your passion, but I do not know what mine is. What is wrong with me?",
+      "I had a dream career in mind but reality did not match. Was I wrong about my calling?",
+      "I am successful by society's standards but feel empty. Is this all there is?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "寻找真正使命的人，常常在问：",
+    questions: [
+      "我擅长我的工作但它感觉毫无意义。我应该做别的事吗？",
+      "我有很多才能但没有一个是那个对的感觉。怎么选？",
+      "我不断换工作希望找到合适的。我什么时候才能知道？",
+      "每个人都说追随热情，但我不知道我的热情是什么。我有问题吗？",
+      "我曾有一个梦想职业但现实不匹配。我对使命的理解错了吗？",
+      "按社会标准我很成功但感到空虚。人生就是这样了吗？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Help Find Your True Calling",
+    headingCn: "东西方命理如何帮助找到真正使命？",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods (BaZi, Zi Wei Dou Shu) analyze true calling through birth-time patterns and palace configurations. BaZi examines your Day Master strength and the balance of Five Elements to reveal natural talents and optimal career directions. Zi Wei Dou Shu profiles your life purpose through the Career Palace and Life Palace, showing which types of work align with your destiny pattern and which will drain your energy.",
+    easternDescCn: "东方方法（八字、紫微斗数）通过出生时间规律和宫位配置来分析真正使命。八字通过日主强弱和五行平衡揭示天赋才能和最佳职业方向。紫微斗数通过官禄宫和命宫描绘人生使命，显示哪些类型的工作与命运模式对齐、哪些会消耗你的能量。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination (primarily Tarot) is based on symbolic psychology and the collective unconscious. Through card imagery and intuitive interpretation, it reflects your deepest desires and fears about work, reveals subconscious blocks that keep you from pursuing meaningful work, and offers guidance for aligning your career with your authentic self.",
+    westernDescCn: "西方命理（以塔罗为主）基于象征心理学与集体潜意识。通过牌面图像与直觉解读，反映你对工作最深层的渴望和恐惧，揭示阻碍你追寻有意义工作的潜意识障碍，并提供将职业与真实自我对齐的指引。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi: Talent and Career Direction Analysis",
+        titleCn: "一、八字：天赋与职业方向分析",
+        intro: "BaZi uses your birth chart to identify your natural strengths and optimal career paths.",
+        introCn: "八字使用命盘识别你的天然优势和最佳职业道路。",
+        cards: [
+          {
+            title: "① Day Master Analysis",
+            titleCn: "① 日主分析",
+            desc: "Your Day Master reveals your core personality and natural work style.",
+            descCn: "日主揭示你的核心性格和天然工作风格。",
+            items: ["Ten God analysis", "Favorable elements", "Career directions"],
+            itemsCn: ["十神分析", "喜用神", "职业方向"]
+          },
+          {
+            title: "② Career Palace",
+            titleCn: "② 官禄宫",
+            desc: "The Career Palace shows your professional destiny and optimal work environment.",
+            descCn: "官禄宫显示你的职业命运和最佳工作环境。",
+            items: ["Palace stars", "Work environment", "Career timing"],
+            itemsCn: ["宫位星曜", "工作环境", "职业时机"]
+          },
+          {
+            title: "③ Wealth Palace",
+            titleCn: "③ 财帛宫",
+            desc: "The Wealth Palace reveals how you best create and receive value.",
+            descCn: "财帛宫揭示你如何最好地创造和接收价值。",
+            items: ["Value creation style", "Income patterns", "Wealth timing"],
+            itemsCn: ["价值创造方式", "收入模式", "财富时机"]
+          }
+        ]
+      },
+      {
+        title: "2. Zi Wei Dou Shu: Life Purpose Mapping",
+        titleCn: "二、紫微斗数：人生使命描绘",
+        desc: "Zi Wei Dou Shu uses star combinations to map your life purpose and calling.",
+        descCn: "紫微斗数通过星曜组合描绘人生使命和召唤。",
+        focus: "Key palaces for calling discovery:",
+        focusCn: "发现使命的关键宫位：",
+        items: ["Life Palace - soul purpose", "Career Palace - professional path", "Wealth Palace - value alignment", "Travel Palace - expansion opportunities"],
+        itemsCn: ["命宫 - 灵魂使命", "官禄宫 - 职业道路", "财帛宫 - 价值对齐", "迁移宫 - 拓展机会"]
+      },
+      {
+        title: "3. Tarot: Heart vs Mind Alignment",
+        titleCn: "三、塔罗：心脑对齐",
+        desc: "Tarot helps resolve the conflict between what you think you should do and what your heart truly wants.",
+        descCn: "塔罗帮助解决你认为应该做的事和内心真正想做的事之间的冲突。",
+        focus: "Common spreads for calling discovery:",
+        focusCn: "常用于发现使命的牌阵：",
+        items: ["Current path vs soul path", "Hidden passions", "Fear blocks", "Next steps"],
+        itemsCn: ["当前道路与灵魂道路", "隐藏热情", "恐惧阻碍", "下一步行动"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "From Corporate Drone to Fulfilled Creator",
+    titleCn: "从企业螺丝钉到满足的创造者",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Mr. Chen (born 1983, Gui-Hai year) had spent 15 years in corporate finance. He was well-paid but deeply unhappy, suffering from chronic stress and a sense that his life was passing him by.",
+        textCn: "陈先生（1983年生，癸亥年）在企业财务部门工作了15年。他薪资优厚但深感不快乐，长期承受压力和人生虚度的感觉。"
+      },
+      {
+        label: "BaZi Analysis",
+        labelCn: "八字分析",
+        text: "Mr. Chen's chart showed a strong Water Day Master with abundant Wood support, indicating natural creativity, communication skills, and teaching ability. His Career Palace contained strong artistic and creative stars, while his finance-heavy career was depleting his natural Water-Flow energy.",
+        textCn: "陈先生的命盘显示强水日主，木元素充沛，指示天然创造力、沟通能力和教学天赋。他的官禄宫含有强烈的艺术和创造星曜，而他财务密集的职业正在消耗他的天然水流能量。"
+      },
+      {
+        label: "Zi Wei Dou Shu Analysis",
+        labelCn: "紫微斗数分析",
+        text: "His Life Palace contained the star Tian Tong (Heavenly Child), associated with joy, creativity, and working with young people. This strongly indicated his calling lay in education or creative fields rather than finance.",
+        textCn: "他的命宫有天童星，与快乐、创造力和与年轻人工作相关。这强烈指示他的使命在于教育或创意领域，而非财务。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Mr. Chen transitioned to a financial literacy educator role, creating online courses for young professionals. Within two years, he had built a six-figure education business and reported feeling 'alive for the first time in 15 years.'",
+        textCn: "陈先生转型为金融素养教育者，为年轻专业人士创建在线课程。两年内，他建立了六位数字的教育业务，并表示15年来第一次感到活着。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "Eastern systems (BaZi, Zi Wei) analyze birth-time patterns to reveal your innate talents, optimal career directions, and karmic lessons related to work.",
+      "Western Tarot helps resolve the conflict between societal expectations and your authentic desires, revealing what truly fulfills you.",
+      "Your true calling is not a single job title but an alignment between your natural gifts, your values, and the impact you want to have on the world."
+    ],
+    itemsCn: [
+      "东方八字、紫微通过出生时间规律揭示天赋才能、最佳职业方向和工作相关的因果课题。",
+      "西方塔罗帮助解决社会期望与真实渴望之间的冲突，揭示什么真正让你满足。",
+      "你的真正使命不是一个单一职位，而是天赋、价值观和想要对世界产生的影响之间的对齐。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "what-is-my-life-purpose", question: "What is My Life Purpose?", questionCn: "我的人生使命是什么？" },
+    { slug: "am-i-on-right-path", question: "Am I on the Right Life Path?", questionCn: "我走在正确的人生道路上吗？" },
+    { slug: "next-decade-trajectory", question: "What Does the Next Decade Hold for Me?", questionCn: "未来十年我的运势如何？" }
+  ],
+
+  cta: {
+    textLine1: "Your calling is waiting to be discovered.",
+    textLine1Cn: "你的使命正在等待被发现。",
+    textLine2: "If you would like a personalized analysis of your birth chart, natural talents, and optimal career direction, our consultants can provide detailed guidance.",
+    textLine2Cn: "如果你想要个性化的命盘分析、天赋才能和最佳职业方向的解读，我们的咨询师可以提供详细指引。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/life-direction/find-true-calling",
+  publishedAt: "2026-08-29",
+  modifiedAt: "2026-08-29",
+  author: "Stellawei Editorial Team"
+};
+
+// ============================================================
+// Article: How to Make the Right Life Decisions
+// ============================================================
+
+export const rightLifeDecisions = {
+  slug: "right-life-decisions",
+  topicSlug: "life-direction",
+  question: "How to Make the Right Life Decisions?",
+  questionCn: "如何做出正确的人生决定？",
+  metaTitle: "How to Make the Right Life Decisions? | StellaWei Knowledge Center",
+  metaDescription: "Facing a major life decision? Eastern and Western divination tools offer clarity on timing, consequences, and alignment with your deeper path.",
+  metaTitleCn: "如何做出正确的人生决定？| Stellawei 知识中心",
+  metaDescriptionCn: "面临重大人生决定？东西方命理工具为时机、后果和与深层道路的对齐提供清晰指引。",
+  heroIntro: "Life is a series of decisions—some small, some life-altering. Should you take the job offer? End the relationship? Move across the country? Start the business? When logic and emotion conflict, it is hard to know which voice to trust. Eastern and Western divination tools approach decision-making differently—Eastern methods analyze timing cycles and energetic compatibility to identify when conditions favor success, while Tarot helps you understand your true motivations and the unseen forces influencing your choice.",
+  heroIntroCn: "人生是一系列决定——有些微小，有些改变人生。应该接受工作邀请吗？结束关系吗？搬到另一个国家吗？创业吗？当逻辑和情绪冲突时，很难知道该信任哪个声音。东西方命理工具对决策提供了不同的视角——东方方法分析时机周期和能量兼容性来识别何时条件有利于成功，而塔罗则帮助你理解真实动机和影响你选择的隐藏力量。",
+
+  searchIntent: {
+    primary: [
+      "how to make life decisions",
+      "major life decision advice",
+      "how to know if a decision is right",
+      "difficult life choices guidance"
+    ],
+    primaryCn: [
+      "如何做出人生决定",
+      "重大人生决定建议",
+      "怎么知道决定对不对",
+      "困难人生选择指引"
+    ],
+    secondary: [
+      "bazi decision timing",
+      "qi men dun jia decision making",
+      "tarot decision spread",
+      "feng shui decision guidance"
+    ],
+    secondaryCn: [
+      "八字决策时机",
+      "奇门遁甲决策",
+      "塔罗决策牌阵",
+      "风水决策指引"
+    ],
+    related: [
+      "career decision timing",
+      "relationship decision help",
+      "move or stay decision",
+      "investment decision"
+    ],
+    relatedCn: [
+      "职业决定时机",
+      "关系决定帮助",
+      "离开还是留下",
+      "投资决定"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People facing major decisions are often asking:",
+    questions: [
+      "My head says yes but my gut says no. Which should I trust?",
+      "I have two good options and cannot choose. How do I decide?",
+      "Everyone is giving me different advice. How do I know what is right for me?",
+      "I made a decision but now I am second-guessing myself. Did I choose wrong?",
+      "The stakes are high and I am afraid of making a mistake. How do I move forward?",
+      "I keep postponing the decision. Is the universe telling me something?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "面临重大决定的人，常常在问：",
+    questions: [
+      "我的头脑说行但直觉说不行。该信哪个？",
+      "我有两个好选项无法选择。怎么决定？",
+      "每个人都在给我不同的建议。我怎么知道什么对我合适？",
+      "我做了决定但现在在怀疑自己。我选错了吗？",
+      "风险很高，我害怕犯错。怎么前进？",
+      "我一直在推迟决定。宇宙在告诉我什么吗？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Help with Major Decisions",
+    headingCn: "东西方命理如何帮助重大决定？",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods (BaZi, Qi Men Dun Jia) analyze decision-making through timing cycles and energetic assessment. BaZi examines your current luck cycle to determine whether the timing supports major changes or favors patience. Qi Men Dun Jia creates a spacetime model of your specific situation, revealing hidden factors, optimal timing, and the most favorable direction for action.",
+    easternDescCn: "东方方法（八字、奇门遁甲）通过时机周期和能量评估来分析决策。八字检查当前大运周期来确定时机是否支持重大改变或有利于耐心。奇门遁甲为你的具体情况创建时空模型，揭示隐藏因素、最佳时机和最有利的行动方向。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination (primarily Tarot) is based on symbolic psychology and the collective unconscious. Through card imagery and intuitive interpretation, it reflects your true feelings about each option, reveals fears and desires you may be suppressing, and offers guidance for making choices aligned with your authentic self.",
+    westernDescCn: "西方命理（以塔罗为主）基于象征心理学与集体潜意识。通过牌面图像与直觉解读，反映你对每个选项的真实感受，揭示你可能在压抑的恐惧和渴望，并提供与真实自我对齐的选择指引。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi: Timing and Luck Cycle Analysis",
+        titleCn: "一、八字：时机与大运分析",
+        intro: "BaZi uses your birth chart to determine whether current timing supports your intended decision.",
+        introCn: "八字使用命盘确定当前时机是否支持你的意图决定。",
+        cards: [
+          {
+            title: "① Current Luck Cycle",
+            titleCn: "① 当前大运",
+            desc: "Understanding whether you are in a favorable or challenging cycle for major changes.",
+            descCn: "理解你是否处于有利于重大改变或需要耐心的周期。",
+            items: ["Cycle element analysis", "Favorable actions", "Timing windows"],
+            itemsCn: ["周期五行分析", "有利行动", "时机窗口"]
+          },
+          {
+            title: "② Yearly Flow",
+            titleCn: "② 流年运势",
+            desc: "The current year's energy influences how your decisions will unfold.",
+            descCn: "当前年份的能量影响你的决定如何展开。",
+            items: ["Annual element", "Conflict indicators", "Support factors"],
+            itemsCn: ["年度五行", "冲突指标", "支持因素"]
+          },
+          {
+            title: "③ Decision Timing",
+            titleCn: "③ 决策时机",
+            desc: "Identifying the most favorable months or seasons for action.",
+            descCn: "识别最有利的行动月份或季节。",
+            items: ["Monthly analysis", "Seasonal timing", "Action windows"],
+            itemsCn: ["月度分析", "季节时机", "行动窗口"]
+          }
+        ]
+      },
+      {
+        title: "2. Qi Men Dun Jia: Situation Assessment",
+        titleCn: "二、奇门遁甲：局势评估",
+        desc: "Qi Men Dun Jia creates a detailed spacetime map of your decision situation.",
+        descCn: "奇门遁甲为你的决策情况创建详细的时空地图。",
+        focus: "Key assessment areas:",
+        focusCn: "关键评估领域：",
+        items: ["Current situation energy", "Hidden factors", "Optimal timing", "Outcome prediction"],
+        itemsCn: ["当前局势能量", "隐藏因素", "最佳时机", "结果预测"]
+      },
+      {
+        title: "3. Tarot: Option Comparison",
+        titleCn: "三、塔罗：选项比较",
+        desc: "Tarot provides clarity when choosing between multiple paths.",
+        descCn: "塔罗在多条道路之间选择时提供清晰指引。",
+        focus: "Common decision spreads:",
+        focusCn: "常见决策牌阵：",
+        items: ["Option A vs Option B", "Hidden factors", "Emotional guidance", "Outcome preview"],
+        itemsCn: ["选项甲对比选项乙", "隐藏因素", "情绪指引", "结果预览"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Choosing Between Security and Calling",
+    titleCn: "在安全与使命之间选择",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Ms. Li (born 1987, Ding-Mao year) was offered a promotion to director level at her current company, but also had an opportunity to co-found a startup in an industry she was passionate about. She was torn between security and her dream.",
+        textCn: "李女士（1987年生，丁卯年）收到了当前公司晋升总监的 offer，但也有机会共同创办一家她热爱的行业的创业公司。她在安全与梦想之间纠结。"
+      },
+      {
+        label: "BaZi Analysis",
+        labelCn: "八字分析",
+        text: "Ms. Li's chart showed she was entering a 10-year Fire luck cycle (2024-2033), which favored entrepreneurship, leadership, and creative ventures. Her previous Earth cycle had been stable but restrictive. The timing strongly supported taking the risk.",
+        textCn: "李女士的命盘显示她正进入十年火运周期（2024-2033），有利于创业、领导和创意事业。她之前的土运周期稳定但受限。时机强烈支持冒险。"
+      },
+      {
+        label: "Qi Men Dun Jia Analysis",
+        labelCn: "奇门遁甲分析",
+        text: "The reading revealed that the startup opportunity aligned with her favorable direction (South) and timing (Summer 2024). The corporate promotion, while safe, was in a direction that depleted her natural energy.",
+        textCn: "解读显示创业机会与她的喜用方向（南方）和时机（2024年夏季）对齐。企业晋升虽然安全，但方向消耗她的天然能量。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Ms. Li chose the startup. After initial challenges, the company secured Series A funding in 2025. She reports feeling 'more alive and purposeful than ever before,' and her income now exceeds her previous corporate salary.",
+        textCn: "李女士选择了创业。经过初期挑战，公司于2025年获得A轮融资。她报告感到比以往任何时候都更有活力和使命感，收入现在超过了之前的企业薪资。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "Eastern systems (BaZi, Qi Men) excel at timing analysis, revealing when conditions favor action versus patience.",
+      "Western Tarot provides emotional clarity and reveals subconscious factors that may be influencing your decision.",
+      "The right decision is not just about logic—it is about alignment between timing, energy, and your authentic self."
+    ],
+    itemsCn: [
+      "东方八字、奇门擅长时机分析，揭示何时条件有利于行动、何时需要耐心。",
+      "西方塔罗提供情绪清晰度，揭示可能影响决定的潜意识因素。",
+      "正确的决定不仅仅是关于逻辑——而是关于时机、能量和真实自我之间的对齐。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "am-i-on-right-path", question: "Am I on the Right Life Path?", questionCn: "我走在正确的人生道路上吗？" },
+    { slug: "find-true-calling", question: "How to Find My True Calling?", questionCn: "如何找到我的真正使命？" },
+    { slug: "should-i-move-city", question: "Should I Move to a New City?", questionCn: "我应该换个城市生活吗？" }
+  ],
+
+  cta: {
+    textLine1: "Every decision shapes your future.",
+    textLine1Cn: "每个决定都在塑造你的未来。",
+    textLine2: "If you are facing a major life decision and want clarity on timing, consequences, and alignment with your path, our consultants can provide personalized guidance.",
+    textLine2Cn: "如果你正面临重大人生决定，想要关于时机、后果和与道路对齐的清晰度，我们的咨询师可以提供个性化指引。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/life-direction/right-life-decisions",
+  publishedAt: "2026-08-29",
+  modifiedAt: "2026-08-29",
+  author: "Stellawei Editorial Team"
+};
