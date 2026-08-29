@@ -5518,7 +5518,7 @@ export const amIOnRightPath: KnowledgeArticle = {
   metaTitleCn: "我走在正确的人生道路上吗？| Stellawei 知识中心",
   metaDescriptionCn: "对人生方向感到不确定？东西方命理工具从不同维度帮助你理解自己的人生道路、评估重大决定，并将选择与自己的深层使命对齐。",
   heroIntro: "At some point, almost everyone questions whether they are on the right path. Maybe you are stuck in a job that does not fulfill you, living in a city that feels wrong, or surrounded by people who do not understand you. Sometimes the doubt creeps in slowly; other times it hits after a major life event—a breakup, a health scare, a milestone birthday. Eastern and Western divination tools approach this question differently—Eastern methods analyze your birth chart to reveal your inherent strengths, karmic patterns, and the cyclical timing of major life transitions, while Tarot helps you understand your current emotional landscape, subconscious fears, and the energies surrounding your present crossroads.",
-  heroIntroCn: "几乎每个人都会在某个时刻质疑自己是否走在正确的道路上。也许你被困在一份无法让你满足的工作中，住在一个感觉不对劲的城市，或者被不理解你的人包围。有时疑虑会慢慢渗入，有时则在重大生活事件后猛然袭来——分手、健康危机、 milestone 生日。东西方命理工具从不同角度切入这个问题——东方方法通过命盘分析揭示你的天赋优势、因果模式和重大人生转变的周期时机，塔罗则帮助你理解当下的情绪图景、潜意识恐惧和围绕当前十字路口的能量。",
+  heroIntroCn: "许多人在倦怠的工作中、不合适的环境里，或经历重大人生转折后，开始质疑自己是否走在正确的道路上。东西方命理工具提供了不同的视角——东方方法通过命盘分析揭示你的天赋优势和人生周期的时机规律，而塔罗则反映你当下的情绪状态和潜意识恐惧。",
 
   searchIntent: {
     primary: [
@@ -5680,7 +5680,7 @@ export const amIOnRightPath: KnowledgeArticle = {
         label: "Outcome",
         labelCn: "实际结果",
         text: "By 2025, Mr. Wang had reduced his corporate hours to part-time, launched a financial education workshop series for young entrepreneurs, and moved to a smaller city with more nature. He reported feeling 'alive for the first time in decades' and found deeper satisfaction in mentoring than in his previous executive role.",
-        textCn: "到2025年，王先生已将企业工作减为兼职，为年轻创业者推出了一系列财务教育工作坊，并搬迁到一个自然环境更多的小城市。他报告说感觉'几十年来第一次真正活着'，并在导师角色中找到了比之前的 executive 职位更深的满足感。"
+        textCn: "到2025年，王先生已将企业工作减为兼职，为年轻创业者推出了一系列财务教育工作坊，并搬迁到一个自然环境更多的小城市。他报告说感觉'几十年来第一次真正活着'，并在导师角色中找到了比之前的高管职位更深的满足感。"
       }
     ],
     disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
