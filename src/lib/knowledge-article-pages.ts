@@ -5730,3 +5730,672 @@ export const amIOnRightPath: KnowledgeArticle = {
   modifiedAt: "2026-08-29",
   author: "Stellawei Editorial Team"
 };
+
+// ============================================================
+// Article: What is My Life Purpose?
+// ============================================================
+
+export const whatIsMyLifePurpose = {
+  slug: "what-is-my-life-purpose",
+  topicSlug: "life-direction",
+  question: "What is My Life Purpose?",
+  questionCn: "我的人生使命是什么？",
+  metaTitle: "What is My Life Purpose? | StellaWei Knowledge Center",
+  metaDescription: "Feeling lost about your purpose? Eastern and Western divination tools offer different perspectives to help you discover your unique mission and align your life choices.",
+  metaTitleCn: "我的人生使命是什么？| Stellawei 知识中心",
+  metaDescriptionCn: "对人生使命感到迷茫？东西方命理工具从不同维度帮助你发现自己的独特天赋与使命方向。",
+  heroIntro: "Many people reach a point where external achievements no longer feel fulfilling. You may have a successful career, stable relationships, and financial security—yet something essential feels missing. Eastern and Western divination tools approach this differently. Eastern methods analyze your birth chart to reveal innate talents and karmic lessons, while Tarot helps uncover what your subconscious already knows about your deeper calling.",
+  heroIntroCn: "许多人在事业有成、关系稳定之后，依然感到内心深处缺少了什么。东西方命理工具提供了不同的视角——东方方法通过命盘分析揭示你的天赋才能和因果课题，而塔罗则帮助你发现潜意识中早已知道的深层召唤。",
+
+  searchIntent: {
+    primary: [
+      "what is my life purpose",
+      "how to find my calling",
+      "what am i meant to do",
+      "life purpose meaning"
+    ],
+    primaryCn: [
+      "我的人生使命是什么",
+      "如何找到人生方向",
+      "我注定该做什么",
+      "人生意义是什么"
+    ],
+    secondary: [
+      "bazi life purpose",
+      "zi wei dou shu destiny",
+      "tarot life purpose reading",
+      "karmic lessons astrology"
+    ],
+    secondaryCn: [
+      "八字看人生使命",
+      "紫微斗数看命运",
+      "塔罗看人生方向",
+      "因果课题占星"
+    ],
+    related: [
+      "career calling",
+      "soul mission",
+      "spiritual awakening",
+      "life path number"
+    ],
+    relatedCn: [
+      "职业召唤",
+      "灵魂使命",
+      "灵性觉醒",
+      "生命灵数"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People questioning their life purpose are often asking:",
+    questions: [
+      "I have a good job but feel empty inside. Is this all there is?",
+      "I have many interests but cannot commit to one path. What is wrong with me?",
+      "Everyone seems to have it figured out except me. Why am I so lost?",
+      "I have achieved what society defines as success, so why do I feel unfulfilled?",
+      "I keep changing careers and cities. Will I ever find where I belong?",
+      "I had a spiritual experience and now everything feels different. What does this mean?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "质疑人生使命的人，常常在问：",
+    questions: [
+      "我有份好工作但内心空虚。人生就是这样了吗？",
+      "我有很多兴趣但无法专注一条道路。我有问题吗？",
+      "每个人都好像找到了方向，只有我迷茫。为什么？",
+      "我已经实现了社会定义的成功，为什么还是不满足？",
+      "我不断换工作和城市。什么时候才能找到归属？",
+      "我经历了一次灵性体验，现在一切都感觉不同了。这意味着什么？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Help Discover Life Purpose",
+    headingCn: "东西方命理如何帮助发现人生使命？",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods (BaZi, Zi Wei Dou Shu) analyze life purpose through birth-time patterns and elemental composition. BaZi examines your Day Master strength and the balance of Five Elements to reveal inherent talents and natural inclinations. Zi Wei Dou Shu profiles your life purpose, karmic lessons, and cyclical fortune patterns through the twelve palaces, helping you understand which life chapters favor exploration and which favor commitment.",
+    easternDescCn: "东方方法（八字、紫微斗数）通过出生时间规律和五行构成来分析人生使命。八字通过日主强弱和五行平衡揭示天赋才能和自然倾向。紫微斗数通过十二宫位描绘人生使命、因果课题和周期运势模式，帮助你理解哪些人生阶段适合探索、哪些适合深耕。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination (primarily Tarot) is based on symbolic psychology and the collective unconscious. Through card imagery and intuitive interpretation, it reflects your present emotional state and deepest desires, reveals subconscious blocks that keep you from pursuing your calling, and offers actionable guidance for aligning your daily life with your deeper purpose.",
+    westernDescCn: "西方命理（以塔罗为主）基于象征心理学与集体潜意识。通过牌面图像与直觉解读，反映当下的情绪状态和最深层的渴望，揭示阻碍你追寻使命的潜意识障碍，并提供可执行的指引，帮助你将日常生活与深层目标对齐。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi: Day Master and Talent Analysis",
+        titleCn: "一、八字：日主与天赋分析",
+        intro: "BaZi uses your birth year, month, day, and hour to construct a Four Pillars chart. For life purpose analysis, the focus is on:",
+        introCn: "八字使用你的出生年月日时构建四柱命盘。针对人生使命分析，重点在于：",
+        cards: [
+          {
+            title: "① Day Master Strength",
+            titleCn: "① 日主强弱",
+            desc: "The Day Master reveals your core personality and natural strengths.",
+            descCn: "日主揭示你的核心性格和天然优势。",
+            items: ["Strong vs weak Day Master", "Favorable elements", "Natural talents"],
+            itemsCn: ["日主强弱判断", "喜用神", "天赋方向"]
+          },
+          {
+            title: "② Five Elements Balance",
+            titleCn: "② 五行平衡",
+            desc: "Elemental composition reveals your inherent gifts and challenges.",
+            descCn: "五行构成揭示天赋和挑战。",
+            items: ["Dominant elements", "Missing elements", "Elemental harmony"],
+            itemsCn: ["主导五行", "缺失五行", "五行调和"]
+          },
+          {
+            title: "③ Karmic Patterns",
+            titleCn: "③ 因果模式",
+            desc: "Repeated patterns reveal your soul's lessons and growth direction.",
+            descCn: "重复模式揭示灵魂的课题和成长方向。",
+            items: ["Recurring themes", "Life lessons", "Growth opportunities"],
+            itemsCn: ["重复主题", "人生课题", "成长机会"]
+          }
+        ]
+      },
+      {
+        title: "2. Zi Wei Dou Shu: Palace Analysis",
+        titleCn: "二、紫微斗数：宫位分析",
+        desc: "Zi Wei Dou Shu uses star combinations to profile your life purpose through the twelve palaces.",
+        descCn: "紫微斗数通过十二宫位星曜组合描绘人生使命。",
+        focus: "Key palaces for life purpose:",
+        focusCn: "与人生使命相关的关键宫位：",
+        items: ["Life Palace - overall destiny", "Career Palace - professional calling", "Wealth Palace - value creation", "Travel Palace - expansion opportunities"],
+        itemsCn: ["命宫 - 整体命运", "官禄宫 - 职业召唤", "财帛宫 - 价值创造", "迁移宫 - 拓展机会"]
+      },
+      {
+        title: "3. Tarot: Subconscious Exploration",
+        titleCn: "三、塔罗：潜意识探索",
+        desc: "Tarot helps uncover what your conscious mind may be blocking or denying about your true calling.",
+        descCn: "塔罗帮助发现你的意识层面可能在回避或否认的真实召唤。",
+        focus: "Common spreads for life purpose:",
+        focusCn: "常用于人生使命的牌阵：",
+        items: ["Current path vs soul path", "Hidden talents", "Obstacles to purpose", "Next steps"],
+        itemsCn: ["当前道路与灵魂道路", "隐藏天赋", "使命障碍", "下一步行动"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Finding Purpose Through Self-Discovery",
+    titleCn: "通过自我发现找到使命",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Mr. Liu (born 1985, Yi-Chou year) was a successful marketing director at a Fortune 500 company. Despite his achievements, he felt a persistent emptiness and wondered if he was meant for something different.",
+        textCn: "刘先生（1985年生，乙丑年）是一家财富五百强公司的营销总监。尽管事业有成，他仍持续感到空虚，怀疑自己是否注定要做不同的事。"
+      },
+      {
+        label: "BaZi Analysis",
+        labelCn: "八字分析",
+        text: "Mr. Liu's chart revealed a strong Wood Day Master with abundant Water support, indicating natural talent for teaching, mentoring, and guiding others. His Career Palace showed a pattern of service and education, suggesting his soul path involved helping others grow rather than corporate competition.",
+        textCn: "刘先生的命盘显示强木日主，水元素充沛，指示教学、指导和引导他人的天赋。他的官禄宫呈现服务和教育模式，暗示灵魂道路是帮助他人成长，而非企业竞争。"
+      },
+      {
+        label: "Zi Wei Dou Shu Analysis",
+        labelCn: "紫微斗数分析",
+        text: "His Life Palace contained the star Tian Liang (Heavenly Beam), associated with wisdom, counseling, and spiritual guidance. This confirmed his calling lay in mentoring and educational roles rather than traditional corporate advancement.",
+        textCn: "他的命宫有天梁星，与智慧、咨询和灵性指导相关。这证实了他的使命在于指导和教学角色，而非传统的企业晋升。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Mr. Liu transitioned to a career coaching role, combining his corporate experience with his natural mentoring abilities. He now runs a successful career coaching practice and reports feeling 'finally whole' for the first time in his adult life.",
+        textCn: "刘先生转型为职业教练，将企业经验与天然指导能力结合。他现在经营着成功的职业教练业务，并表示成年后第一次感到终于完整了。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "Eastern systems (BaZi, Zi Wei) analyze birth-time patterns to reveal inherent talents, karmic lessons, and optimal timing for pursuing your calling.",
+      "Western Tarot illuminates subconscious knowledge and emotional blocks that may be keeping you from recognizing your true purpose.",
+      "Life purpose is not a single destination but an evolving journey of aligning your actions with your authentic self."
+    ],
+    itemsCn: [
+      "东方八字、紫微通过出生时间规律揭示天赋才能、因果课题和追求使命的最佳时机。",
+      "西方塔罗照亮潜意识知识和情绪阻碍，这些可能正在阻止你认识真实使命。",
+      "人生使命不是单一终点，而是将行动与真实自我对齐的持续旅程。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "am-i-on-right-path", question: "Am I on the Right Life Path?", questionCn: "我走在正确的人生道路上吗？" },
+    { slug: "should-i-move-city", question: "Should I Move to a New City?", questionCn: "我应该换个城市生活吗？" },
+    { slug: "next-decade-trajectory", question: "What Does the Next Decade Hold for Me?", questionCn: "未来十年我的运势如何？" }
+  ],
+
+  cta: {
+    textLine1: "Your life purpose is unique to you.",
+    textLine1Cn: "你的人生使命是独一无二的。",
+    textLine2: "If you would like a more personalized analysis of your birth chart, current life situation, and deeper calling, our consultants can provide guidance tailored to your situation.",
+    textLine2Cn: "如果你想要更个性化的命盘分析、当前生活状况和深层召唤的解读，我们的咨询师可以根据你的具体情况提供指引。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/life-direction/what-is-my-life-purpose",
+  publishedAt: "2026-08-29",
+  modifiedAt: "2026-08-29",
+  author: "Stellawei Editorial Team"
+};
+
+// ============================================================
+// Article: Should I Move to a New City?
+// ============================================================
+
+export const shouldIMoveCity = {
+  slug: "should-i-move-city",
+  topicSlug: "life-direction",
+  question: "Should I Move to a New City?",
+  questionCn: "我应该换个城市生活吗？",
+  metaTitle: "Should I Move to a New City? | StellaWei Knowledge Center",
+  metaDescription: "Considering a major relocation? Eastern and Western divination tools can help you evaluate whether moving aligns with your life path, timing, and deeper needs.",
+  metaTitleCn: "我应该换个城市生活吗？| Stellawei 知识中心",
+  metaDescriptionCn: "考虑重大搬迁？东西方命理工具帮助你评估搬家是否与人生道路、时机和深层需求对齐。",
+  heroIntro: "Many people feel the pull to start fresh somewhere new. Sometimes it is for career opportunities, sometimes for love, and sometimes simply because the current city no longer feels like home. Eastern and Western divination tools approach this differently—Eastern methods analyze whether the timing aligns with your luck cycle and which directions energetically support you, while Tarot helps you understand your true motivations and fears about leaving.",
+  heroIntroCn: "许多人感到去新地方重新开始的召唤。有时是为了职业机会，有时是为了爱情，有时仅仅因为当前的城市不再感觉像家。东西方命理工具提供了不同的视角——东方方法分析时机是否与大运周期对齐、哪些方位在能量上支持你，而塔罗则帮助你理解离开的真实动机和恐惧。",
+
+  searchIntent: {
+    primary: [
+      "should i move to a new city",
+      "is it the right time to move",
+      "where should i live astrology",
+      "best city for me based on birth chart"
+    ],
+    primaryCn: [
+      "我应该换个城市吗",
+      "现在是搬家的好时机吗",
+      "根据占星我适合住哪里",
+      "根据八字哪个城市最适合我"
+    ],
+    secondary: [
+      "bazi favorable directions",
+      "feng shui relocation timing",
+      "tarot moving reading",
+      "qi men dun jia relocation"
+    ],
+    secondaryCn: [
+      "八字喜用方位",
+      "风水搬家时机",
+      "塔罗看搬家",
+      "奇门遁甲看搬迁"
+    ],
+    related: [
+      "relocation timing",
+      "best direction to move",
+      "feng shui for moving",
+      "city compatibility"
+    ],
+    relatedCn: [
+      "搬迁时机",
+      "最佳搬家方向",
+      "搬家风水",
+      "城市适配度"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People considering a move are often asking:",
+    questions: [
+      "I feel stuck in my current city. Would a new environment help me grow?",
+      "I got a job offer in another city. Is this opportunity aligned with my path?",
+      "My partner wants to move but I am hesitant. What does this mean for us?",
+      "I have always dreamed of living somewhere else. Is it time to take the leap?",
+      "My current city feels energetically draining. Is this a sign to leave?",
+      "I am moving for work but worried about leaving my support system behind."
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "考虑搬家的人，常常在问：",
+    questions: [
+      "我在当前城市感到被困。新环境能帮助我成长吗？",
+      "我收到了另一个城市的工作邀请。这个机会与我的道路对齐吗？",
+      "伴侣想搬家但我很犹豫。这对我们意味着什么？",
+      "我一直梦想住在别处。是时候迈出这一步了吗？",
+      "我当前的城市感觉能量消耗。这是离开的信号吗？",
+      "我为工作而搬家，但担心离开支持系统。"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Help Evaluate Relocation",
+    headingCn: "东西方命理如何帮助评估搬迁？",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods (BaZi, Feng Shui, Qi Men Dun Jia) analyze relocation through favorable directions, timing cycles, and energetic compatibility. BaZi identifies your favorable elements and directions based on your birth chart. Feng Shui evaluates the energetic qualities of different locations. Qi Men Dun Jia assesses current timing for major moves and potential outcomes.",
+    easternDescCn: "东方方法（八字、风水、奇门遁甲）通过喜用方位、时机周期和能量兼容性来分析搬迁。八字根据命盘识别你的喜用元素和有利方向。风水评估不同地点的能量特质。奇门遁甲评估当前搬家的时机和潜在结果。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination (primarily Tarot) is based on symbolic psychology and the collective unconscious. Through card imagery and intuitive interpretation, it reflects your true feelings about leaving, reveals fears and hopes about the new location, and offers guidance for making a decision aligned with your authentic self.",
+    westernDescCn: "西方命理（以塔罗为主）基于象征心理学与集体潜意识。通过牌面图像与直觉解读，反映你对离开的真实感受，揭示对新地点的恐惧和希望，并提供与真实自我对齐的决策指引。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi: Favorable Directions Analysis",
+        titleCn: "一、八字：喜用方位分析",
+        intro: "BaZi uses your birth chart to identify directions that support your energy and those that deplete it.",
+        introCn: "八字使用命盘识别支持你能量的方向和消耗你能量的方向。",
+        cards: [
+          {
+            title: "① Favorable Elements",
+            titleCn: "① 喜用五行",
+            desc: "Your favorable elements determine which directions support your growth.",
+            descCn: "喜用五行决定哪些方向支持你的成长。",
+            items: ["Wood - East", "Fire - South", "Earth - Center", "Metal - West", "Water - North"],
+            itemsCn: ["木 - 东方", "火 - 南方", "土 - 中央", "金 - 西方", "水 - 北方"]
+          },
+          {
+            title: "② Direction Compatibility",
+            titleCn: "② 方位适配",
+            desc: "Specific cities and regions carry different elemental energies.",
+            descCn: "特定城市和地区携带不同的五行能量。",
+            items: ["Coastal cities - Water energy", "Mountain regions - Earth energy", "Tech hubs - Metal energy"],
+            itemsCn: ["沿海城市 - 水能量", "山区 - 土能量", "科技中心 - 金能量"]
+          },
+          {
+            title: "③ Timing Assessment",
+            titleCn: "③ 时机评估",
+            desc: "Your current luck cycle indicates whether now is favorable for major moves.",
+            descCn: "当前大运周期指示现在是否适合重大搬迁。",
+            items: ["Current cycle analysis", "Favorable years", "Transition timing"],
+            itemsCn: ["当前周期分析", "有利年份", "转换时机"]
+          }
+        ]
+      },
+      {
+        title: "2. Feng Shui: Location Energy Analysis",
+        titleCn: "二、风水：地点能量分析",
+        desc: "Feng Shui evaluates the energetic qualities of potential new locations based on geography, climate, and urban design.",
+        descCn: "风水根据地理、气候和城市设计评估潜在新地点的能量特质。",
+        focus: "Key considerations:",
+        focusCn: "关键考量因素：",
+        items: ["Geographic landscape", "Urban energy flow", "Climate compatibility", "Local culture resonance"],
+        itemsCn: ["地理格局", "城市能量流动", "气候适配", "当地文化共鸣"]
+      },
+      {
+        title: "3. Qi Men Dun Jia: Relocation Timing",
+        titleCn: "三、奇门遁甲：搬迁时机",
+        desc: "Qi Men Dun Jia uses a spacetime model to analyze the optimal timing and potential outcomes of relocation.",
+        descCn: "奇门遁甲使用时空模型分析搬迁的最佳时机和潜在结果。",
+        focus: "Key areas of focus:",
+        focusCn: "通常重点关注：",
+        items: ["Current timing assessment", "Directional energy", "Outcome prediction", "Risk factors"],
+        itemsCn: ["当前时机评估", "方向能量", "结果预测", "风险因素"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Finding the Right Place Through Divination",
+    titleCn: "通过命理找到合适的地方",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Ms. Zhang (born 1988, Wu-Chen year) had lived in Shanghai for 10 years. She felt increasingly drained and unfulfilled, despite career success. She was considering moves to Shenzhen, Chengdu, or overseas.",
+        textCn: "张女士（1988年生，戊辰年）在上海住了十年。尽管事业成功，她越来越感到疲惫和空虚。她正在考虑搬到深圳、成都或海外。"
+      },
+      {
+        label: "BaZi Analysis",
+        labelCn: "八字分析",
+        text: "Ms. Zhang's chart showed a strong Earth Day Master with Fire support, indicating she needed more Earth and Fire energy. Shanghai's Water-heavy environment was depleting her natural energy. Chengdu, with its mountainous Earth energy, was identified as most supportive.",
+        textCn: "张女士的命盘显示强土日主，火元素支持，指示她需要更多的土和火能量。上海的水元素环境正在消耗她的天然能量。成都的山地土能量被识别为最有支持力。"
+      },
+      {
+        label: "Qi Men Dun Jia Analysis",
+        labelCn: "奇门遁甲分析",
+        text: "The reading indicated that 2024 was a favorable year for relocation, with the southwest direction (Chengdu's direction from Shanghai) showing strong supportive energy.",
+        textCn: "解读显示2024年是搬迁的有利年份，西南方向（从上海到成都的方向）显示强支持能量。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Ms. Zhang moved to Chengdu in mid-2024. She reports feeling more grounded, creative, and socially connected. Her career has also evolved in unexpected positive directions.",
+        textCn: "张女士于2024年中搬到成都。她报告感到更踏实、更有创造力、社交联系更紧密。她的事业也朝意想不到的正向发展。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "Eastern systems (BaZi, Feng Shui, Qi Men) analyze your energetic compatibility with different locations and identify optimal timing for relocation.",
+      "Western Tarot helps clarify your emotional readiness, true motivations, and subconscious fears about major life changes.",
+      "The right location supports your natural energy while the wrong one drains it—understanding your elemental nature is key."
+    ],
+    itemsCn: [
+      "东方八字、风水、奇门分析你与不同地点的能量兼容性，识别最佳搬迁时机。",
+      "西方塔罗帮助澄清你的情绪准备度、真实动机和对重大改变的潜意识恐惧。",
+      "合适的地点支持你的天然能量，不合适的消耗它——理解你的五行本性是关键。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "am-i-on-right-path", question: "Am I on the Right Life Path?", questionCn: "我走在正确的人生道路上吗？" },
+    { slug: "what-is-my-life-purpose", question: "What is My Life Purpose?", questionCn: "我的人生使命是什么？" },
+    { slug: "next-decade-trajectory", question: "What Does the Next Decade Hold for Me?", questionCn: "未来十年我的运势如何？" }
+  ],
+
+  cta: {
+    textLine1: "Every relocation decision is deeply personal.",
+    textLine1Cn: "每个搬迁决定都是高度个人化的。",
+    textLine2: "If you would like a personalized analysis of your favorable directions, optimal timing, and energetic compatibility with potential locations, our consultants can provide guidance.",
+    textLine2Cn: "如果你想要个性化的喜用方位、最佳时机和与潜在地点能量兼容性的分析，我们的咨询师可以提供指引。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/life-direction/should-i-move-city",
+  publishedAt: "2026-08-29",
+  modifiedAt: "2026-08-29",
+  author: "Stellawei Editorial Team"
+};
+
+// ============================================================
+// Article: What Does the Next Decade Hold for Me?
+// ============================================================
+
+export const nextDecadeTrajectory = {
+  slug: "next-decade-trajectory",
+  topicSlug: "life-direction",
+  question: "What Does the Next Decade Hold for Me?",
+  questionCn: "未来十年我的运势如何？",
+  metaTitle: "What Does the Next Decade Hold for Me? | StellaWei Knowledge Center",
+  metaDescription: "Curious about your next ten years? Eastern and Western divination tools offer different perspectives on long-term forecasting, major life transitions, and cyclical patterns.",
+  metaTitleCn: "未来十年我的运势如何？| Stellawei 知识中心",
+  metaDescriptionCn: "对未来十年好奇？东西方命理工具对长期预测、重大人生转变和周期模式提供了不同的视角。",
+  heroIntro: "Major life decisions often require a longer view. Should you commit to this career path for the next decade? Is now the right time to start a family or launch a business? Eastern and Western divination tools approach long-term forecasting differently—Eastern methods analyze your birth chart to map decade-long luck cycles and identify favorable periods for major endeavors, while Tarot helps you understand the energies and themes that will shape your coming years.",
+  heroIntroCn: "重大人生决定通常需要更长远的视角。你应该在未来十年坚守这条职业道路吗？现在是组建家庭或创业的正确时机吗？东西方命理工具对长期预测提供了不同的视角——东方方法通过命盘分析绘制十年大运周期，识别重大事业的有利时期，而塔罗则帮助你理解将塑造未来几年的能量和主题。",
+
+  searchIntent: {
+    primary: [
+      "what does the next decade hold",
+      "next 10 years prediction",
+      "decade forecast astrology",
+      "long term fortune telling"
+    ],
+    primaryCn: [
+      "未来十年运势",
+      "十年大运预测",
+      "十年占星预测",
+      "长期运势占卜"
+    ],
+    secondary: [
+      "bazi decade luck cycle",
+      "zi wei dou shu big period",
+      "tarot year ahead reading",
+      "major life transitions timing"
+    ],
+    secondaryCn: [
+      "八字十年大运",
+      "紫微斗数大限",
+      "塔罗年度运势",
+      "重大人生转变时机"
+    ],
+    related: [
+      "career decade planning",
+      "marriage timing decade",
+      "wealth cycle forecast",
+      "life milestone prediction"
+    ],
+    relatedCn: [
+      "十年职业规划",
+      "十年婚姻时机",
+      "财富周期预测",
+      "人生里程碑预测"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People curious about their next decade are often asking:",
+    questions: [
+      "I am at a major crossroads. What do the next ten years look like for me?",
+      "Should I invest in this career path for the long term or pivot now?",
+      "Is this the right decade to start a family, or should I focus on career first?",
+      "I have a big dream but worry about timing. When will the energy support it?",
+      "My current decade has been challenging. Will the next one be better?",
+      "I want to make a major investment. Is the next decade favorable for wealth growth?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "对未来十年好奇的人，常常在问：",
+    questions: [
+      "我站在重大十字路口。未来十年对我来说会是什么样的？",
+      "我应该长期投入这条职业道路，还是现在转向？",
+      "这十年适合组建家庭，还是应该先专注事业？",
+      "我有一个大梦想但担心时机。什么时候能量会支持它？",
+      "我这十年很有挑战。下一个会更好吗？",
+      "我想做一笔重大投资。未来十年对财富增长有利吗？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Approach Decade Forecasting",
+    headingCn: "东西方命理如何看待十年预测？",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods (BaZi, Zi Wei Dou Shu) are specifically designed for long-term forecasting through decade-long luck cycles. BaZi maps your major luck periods (Da Yun), each lasting approximately 10 years, revealing the dominant energies, opportunities, and challenges of each decade. Zi Wei Dou Shu uses Big Period (Da Xian) analysis to profile major life themes, transitions, and turning points across ten-year cycles.",
+    easternDescCn: "东方方法（八字、紫微斗数）专门通过十年大运周期进行长期预测。八字绘制你的大运周期，每个约持续十年，揭示每个十年的主导能量、机会和挑战。紫微斗数使用大限分析描绘十年周期中的主要人生主题、转变和转折点。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination (primarily Tarot) approaches decade forecasting through yearly spreads and thematic readings. While less structured for long-term prediction, it excels at revealing the emotional and spiritual themes that will shape your coming years, helping you prepare mentally and emotionally for major transitions.",
+    westernDescCn: "西方命理（以塔罗为主）通过年度牌阵和主题解读来预测十年。虽然对长期预测的结构化程度较低，但它擅长揭示将塑造未来几年的情绪和精神主题，帮助你在心理上和情绪上为重大转变做好准备。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi: Decade Luck Cycle (Da Yun) Analysis",
+        titleCn: "一、八字：十年大运分析",
+        intro: "BaZi divides your life into approximately 10-year luck cycles, each with distinct energies and opportunities.",
+        introCn: "八字将人生分为约十年的大运周期，每个周期有不同的能量和机会。",
+        cards: [
+          {
+            title: "① Current Luck Cycle",
+            titleCn: "① 当前大运",
+            desc: "Understanding your current decade's dominant elements and themes.",
+            descCn: "理解当前十年的主导元素和主题。",
+            items: ["Dominant element", "Favorable activities", "Potential challenges"],
+            itemsCn: ["主导五行", "有利活动", "潜在挑战"]
+          },
+          {
+            title: "② Upcoming Cycles",
+            titleCn: "② 即将到来 的大运",
+            desc: "Previewing the energies of your next two to three decades.",
+            descCn: "预览未来两到三个十年的能量。",
+            items: ["Next cycle preview", "Transition timing", "Major opportunities"],
+            itemsCn: ["下一周期预览", "转换时机", "重大机会"]
+          },
+          {
+            title: "③ Decade Planning",
+            titleCn: "③ 十年规划",
+            desc: "Using cycle knowledge to plan major life decisions.",
+            descCn: "利用周期知识规划重大人生决定。",
+            items: ["Career timing", "Relationship timing", "Wealth timing"],
+            itemsCn: ["事业时机", "感情时机", "财富时机"]
+          }
+        ]
+      },
+      {
+        title: "2. Zi Wei Dou Shu: Big Period (Da Xian) Analysis",
+        titleCn: "二、紫微斗数：大限分析",
+        desc: "Zi Wei Dou Shu uses Big Period analysis to profile major life themes across decade-long cycles.",
+        descCn: "紫微斗数使用大限分析描绘十年周期中的主要人生主题。",
+        focus: "Key palaces for decade analysis:",
+        focusCn: "十年分析的关键宫位：",
+        items: ["Life Palace - overall decade theme", "Career Palace - professional decade", "Wealth Palace - financial decade", "Travel Palace - relocation opportunities"],
+        itemsCn: ["命宫 - 整体十年主题", "官禄宫 - 事业十年", "财帛宫 - 财富十年", "迁移宫 - 搬迁机会"]
+      },
+      {
+        title: "3. Tarot: Thematic Year-Ahead Readings",
+        titleCn: "三、塔罗：年度主题解读",
+        desc: "Tarot provides thematic guidance for the coming years through yearly spread readings.",
+        descCn: "塔罗通过年度牌阵为未来年份提供主题指引。",
+        focus: "Common year-ahead spreads:",
+        focusCn: "常见年度牌阵：",
+        items: ["Year theme card", "Challenge cards", "Opportunity cards", "Guidance cards"],
+        itemsCn: ["年度主题牌", "挑战牌", "机会牌", "指引牌"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Navigating a Decade of Transformation",
+    titleCn: "导航十年转变",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Ms. Wang (born 1992, Ren-Shen year) was 33 and facing a pivotal moment. She was considering marriage, a career change, and possibly starting a business. She wanted to understand how the next decade would unfold.",
+        textCn: "王女士（1992年生，壬申年）当时33岁，面临关键时刻。她正在考虑结婚、转行和可能创业。她想了解未来十年将如何展开。"
+      },
+      {
+        label: "BaZi Analysis",
+        labelCn: "八字分析",
+        text: "Ms. Wang's chart showed she was entering a 10-year Fire luck cycle (2024-2033), which would bring increased visibility, leadership opportunities, and creative energy. Her previous Water cycle had been introspective and challenging. The Fire cycle was predicted to be her most productive and successful decade.",
+        textCn: "王女士的命盘显示她正进入十年火运周期（2024-2033），将带来更多曝光、领导机会和创造能量。她之前的水运周期是内省和有挑战的。火运周期被预测为她最富有成效和成功的十年。"
+      },
+      {
+        label: "Zi Wei Dou Shu Analysis",
+        labelCn: "紫微斗数分析",
+        text: "Her Big Period analysis confirmed this interpretation. The Career Palace in her upcoming decade showed strong stars for entrepreneurship and leadership, while the Marriage Palace indicated that 2025-2027 would be favorable for relationship commitment.",
+        textCn: "她的大限分析证实了这一解读。未来十年的官禄宫显示强烈的创业和领导星曜，而夫妻宫指示2025-2027年适合感情承诺。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Ms. Wang married in 2025 and launched her consulting business in 2026. By 2028, her practice had grown to six figures, and she describes her current decade as 'the most aligned and fulfilling period of my life.'",
+        textCn: "王女士于2025年结婚，2026年创办咨询公司。到2028年，她的业务已增长至六位数，她形容当前十年为'我生命中最对齐和满足的时期。'"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异，咨询旨在帮助理解问题，而非保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "Eastern systems (BaZi, Zi Wei) excel at decade-long forecasting through structured luck cycle analysis, revealing dominant energies and optimal timing for major decisions.",
+      "Western Tarot provides thematic and emotional guidance for navigating the energies and challenges of coming years.",
+      "Understanding your decade cycles helps you align major life decisions with favorable periods and prepare for challenging ones."
+    ],
+    itemsCn: [
+      "东方八字、紫微通过结构化大运周期分析擅长十年预测，揭示主导能量和重大决定的最佳时机。",
+      "西方塔罗为导航未来几年的能量和挑战提供主题和情绪指引。",
+      "理解十年周期帮助你将对齐重大人生决定与有利时期，并为挑战时期做好准备。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "am-i-on-right-path", question: "Am I on the Right Life Path?", questionCn: "我走在正确的人生道路上吗？" },
+    { slug: "what-is-my-life-purpose", question: "What is My Life Purpose?", questionCn: "我的人生使命是什么？" },
+    { slug: "should-i-move-city", question: "Should I Move to a New City?", questionCn: "我应该换个城市生活吗？" }
+  ],
+
+  cta: {
+    textLine1: "Your next decade is a canvas waiting to be painted.",
+    textLine1Cn: "你的下一个十年是等待描绘的画布。",
+    textLine2: "If you would like a personalized decade forecast analyzing your luck cycles, major transitions, and optimal timing for key decisions, our consultants can provide detailed guidance.",
+    textLine2Cn: "如果你想要个性化的十年运势预测，分析大运周期、重大转变和关键决定的最佳时机，我们的咨询师可以提供详细指引。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/life-direction/next-decade-trajectory",
+  publishedAt: "2026-08-29",
+  modifiedAt: "2026-08-29",
+  author: "Stellawei Editorial Team"
+};

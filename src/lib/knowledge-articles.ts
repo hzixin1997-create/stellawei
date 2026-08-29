@@ -408,6 +408,9 @@ import {
   homeColors,
   negativeEnergyHome,
   amIOnRightPath,
+  whatIsMyLifePurpose,
+  shouldIMoveCity,
+  nextDecadeTrajectory,
 } from "./knowledge-article-pages";
 
 // ==================== 文章索引 ====================
@@ -438,6 +441,9 @@ export const knowledgeArticles: Record<string, KnowledgeArticle> = {
   [homeColors.slug]: homeColors,
   [negativeEnergyHome.slug]: negativeEnergyHome,
   [amIOnRightPath.slug]: amIOnRightPath,
+  [whatIsMyLifePurpose.slug]: whatIsMyLifePurpose,
+  [shouldIMoveCity.slug]: shouldIMoveCity,
+  [nextDecadeTrajectory.slug]: nextDecadeTrajectory,
 };
 
 export function getArticleBySlug(slug: string): KnowledgeArticle | undefined {
