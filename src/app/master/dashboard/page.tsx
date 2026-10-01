@@ -1235,7 +1235,7 @@ export default function MasterDashboard() {
                           const allSelected = morning.every(s => current.includes(s))
                           const newSlots = allSelected
                             ? current.filter(s => !morning.includes(s))
-                            : [...new Set([...current, ...morning])]
+                            : Array.from(new Set([...current, ...morning]))
                           saveAvailabilityForDate(selectedAvailabilityDate, newSlots)
                         }}
                         disabled={savingSlots}
@@ -1252,7 +1252,7 @@ export default function MasterDashboard() {
                           const allSelected = afternoon.every(s => current.includes(s))
                           const newSlots = allSelected
                             ? current.filter(s => !afternoon.includes(s))
-                            : [...new Set([...current, ...afternoon])]
+                            : Array.from(new Set([...current, ...afternoon]))
                           saveAvailabilityForDate(selectedAvailabilityDate, newSlots)
                         }}
                         disabled={savingSlots}
@@ -1269,7 +1269,7 @@ export default function MasterDashboard() {
                           const allSelected = evening.every(s => current.includes(s))
                           const newSlots = allSelected
                             ? current.filter(s => !evening.includes(s))
-                            : [...new Set([...current, ...evening])]
+                            : Array.from(new Set([...current, ...evening]))
                           saveAvailabilityForDate(selectedAvailabilityDate, newSlots)
                         }}
                         disabled={savingSlots}
