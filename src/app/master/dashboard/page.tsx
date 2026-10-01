@@ -1231,7 +1231,12 @@ export default function MasterDashboard() {
                         className="bg-violet-600 text-white border-violet-600 hover:bg-violet-700"
                         onClick={() => {
                           const morning = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30']
-                          saveAvailabilityForDate(selectedAvailabilityDate, morning)
+                          const current = availableSlots || []
+                          const allSelected = morning.every(s => current.includes(s))
+                          const newSlots = allSelected
+                            ? current.filter(s => !morning.includes(s))
+                            : [...new Set([...current, ...morning])]
+                          saveAvailabilityForDate(selectedAvailabilityDate, newSlots)
                         }}
                         disabled={savingSlots}
                       >
@@ -1243,7 +1248,12 @@ export default function MasterDashboard() {
                         className="bg-violet-600 text-white border-violet-600 hover:bg-violet-700"
                         onClick={() => {
                           const afternoon = ['14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30']
-                          saveAvailabilityForDate(selectedAvailabilityDate, afternoon)
+                          const current = availableSlots || []
+                          const allSelected = afternoon.every(s => current.includes(s))
+                          const newSlots = allSelected
+                            ? current.filter(s => !afternoon.includes(s))
+                            : [...new Set([...current, ...afternoon])]
+                          saveAvailabilityForDate(selectedAvailabilityDate, newSlots)
                         }}
                         disabled={savingSlots}
                       >
@@ -1255,7 +1265,12 @@ export default function MasterDashboard() {
                         className="bg-violet-600 text-white border-violet-600 hover:bg-violet-700"
                         onClick={() => {
                           const evening = ['19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30']
-                          saveAvailabilityForDate(selectedAvailabilityDate, evening)
+                          const current = availableSlots || []
+                          const allSelected = evening.every(s => current.includes(s))
+                          const newSlots = allSelected
+                            ? current.filter(s => !evening.includes(s))
+                            : [...new Set([...current, ...evening])]
+                          saveAvailabilityForDate(selectedAvailabilityDate, newSlots)
                         }}
                         disabled={savingSlots}
                       >
