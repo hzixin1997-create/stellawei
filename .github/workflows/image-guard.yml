@@ -1,0 +1,44 @@
+name: Image Guard
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  image-check:
+    name: 图片完整性守门(CI 强制)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Pillow
+        run: pip install Pillow
+
+      - name: Verify images (PR)
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1
+          python3 scripts/verify-images.py --ci --base "origin/${{ github.base_ref }}" --head "HEAD"
+
+      - name: Verify images (push)
+        if: github.event_name == 'push'
+        run: |
+          BASE="${{ github.event.before }}"
+          if [ "$BASE" = "0000000000000000000000000000000000000000" ] || ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+            echo "无法获取 push 前 SHA,退化为校验最近 1 个 commit"
+            BASE="HEAD~1"
+            git cat-file -e "$BASE^{commit}" 2>/dev/null || BASE="HEAD"
+          fi
+          python3 scripts/verify-images.py --ci --base "$BASE" --head "HEAD"
