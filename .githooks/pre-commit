@@ -1,0 +1,14 @@
+#!/bin/sh
+# Stellawei 图片守门 pre-commit hook
+# 安装: git config core.hooksPath .githooks
+# 作用: 提交前对暂存区图片做快速完整性检查(大小/解码/格式),阻止损坏图片入库。
+# CI (.github/workflows/image-guard.yml) 是最终强制检查,本 hook 仅作辅助防线。
+
+REPO_ROOT=$(git rev-parse --show-toplevel)
+cd "$REPO_ROOT" || exit 1
+
+if ! python3 scripts/verify-images.py --staged; then
+    echo ""
+    echo "图片完整性检查未通过。提交已阻止。"
+    exit 1
+fi
