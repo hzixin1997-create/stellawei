@@ -377,7 +377,7 @@ export const whenWillIMeetMyTrueLove: KnowledgeArticle = {
     reviewedByCn: "由 Stellawei 编辑团队审阅"
   },
 
-  canonicalUrl: "https://stellawei.org/knowledge/relationship/when-will-i-meet-my-true-love",
+  canonicalUrl: "https://stellawei.org/knowledge/relationship/when-will-i-meet-my-soulmate",
   publishedAt: "2026-07-25",
   modifiedAt: "2026-07-27",
   author: "Stellawei Editorial Team"
