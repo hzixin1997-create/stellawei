@@ -29,9 +29,7 @@ export const metadata: Metadata = {
     title: "Stellawei - Professional Fortune Telling",
     description: "Real human masters for spiritual guidance. Transparent fixed pricing, verified credentials.",
   },
-  alternates: {
-    canonical: "https://stellawei.org",
-  },
+  // 注意：不在全局设置 canonical，由各页面自行声明，避免子页面继承错误的 canonical
 };
 
 function detectLanguageFromHeaders(): string {
