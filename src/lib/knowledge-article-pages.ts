@@ -60,7 +60,7 @@ export const isHeSheTheRightPerson: KnowledgeArticle = {
       "We have been together for years, but I still have doubts—am I wasting time?",
       "My family does not approve. Are they wrong, or am I blinded by love?",
       "We argue constantly about the same things. Is this normal, or are we fundamentally incompatible?",
-      "They are great on paper, but something feels 不见了. Am I being too picky?",
+      "They are great on paper, but something feels missing. Am I being too picky?",
       "I have invested so much in this relationship. Should I keep trying, or is it time to let go?",
       "We are about to be long-distance for work. Should we continue this relationship?"
     ]
@@ -378,15 +378,15 @@ export const shouldIStayOrLeave: KnowledgeArticle = {
             desc: "How your Day Master interacts with your partner's elements reveals compatibility patterns.",
             descCn: "你的日主如何与伴侣的五行互动，揭示适配模式。",
             items: ["Complementary vs. clashing elements", "Balance assessment", "Growth potential"],
-            itemsCn: ["互补 对比 相冲五行", "平衡评估", "成长潜力"]
+            itemsCn: ["互补对比相冲五行", "平衡评估", "成长潜力"]
           },
           {
             title: "③ Luck Cycle Timing",
             titleCn: "③ 大运时机",
-            desc: "Current and 后续 major luck periods influence relationship dynamics.",
-            descCn: "当前和 后续 大运周期影响关系动态。",
+            desc: "Current and subsequent major luck periods influence relationship dynamics.",
+            descCn: "当前和后续大运周期影响关系动态。",
             items: ["Current cycle impact", "Upcoming transitions", "Decision timing windows"],
-            itemsCn: ["当前周期影响", " 后续 转变", "决策时机窗口"]
+            itemsCn: ["当前周期影响", " 后续转变", "决策时机窗口"]
           }
         ]
       },
@@ -420,13 +420,13 @@ export const shouldIStayOrLeave: KnowledgeArticle = {
       {
         label: "Background",
         labelCn: "基本情况",
-        text: "Ms. Li (born 1988, Wu-Chen year) had been in a relationship for three years. Her partner was kind and stable, but she felt something was 不见了. She could not decide whether to stay or leave.",
+        text: "Ms. Li (born 1988, Wu-Chen year) had been in a relationship for three years. Her partner was kind and stable, but she felt something was missing. She could not decide whether to stay or leave.",
         textCn: "李女士（1988年生，戊辰年）恋爱三年。伴侣善良稳定，但她总觉得缺了什么。她无法决定是继续还是离开。"
       },
       {
         label: "BaZi Analysis",
         labelCn: "八字分析",
-        text: "Ms. Li's chart showed a strong Wood Day Master, while her partner's chart was Metal-dominant. Metal conquers Wood in Five Elements, creating a persistent energetic 流失. Her Spouse Palace also showed signs of instability.",
+        text: "Ms. Li's chart showed a strong Wood Day Master, while her partner's chart was Metal-dominant. Metal conquers Wood in Five Elements, creating a persistent energetic drain. Her Spouse Palace also showed signs of instability.",
         textCn: "李女士命盘显示强木日主，伴侣命局金旺。五行中金克木，形成了持续的能量消耗。她的配偶宫也显示不稳定迹象。"
       },
       {
@@ -609,10 +609,10 @@ export const howToFixARelationship: KnowledgeArticle = {
           {
             title: "③ Luck Cycles",
             titleCn: "③ 大运流年",
-            desc: "Current and 后续 major luck periods reveal when relationship events are most likely.",
-            descCn: "当前和 后续 大运周期揭示关系事件最可能发生的时间。",
+            desc: "Current and subsequent major luck periods reveal when relationship events are most likely.",
+            descCn: "当前和后续大运周期揭示关系事件最可能发生的时间。",
             items: ["Current cycle analysis", "Upcoming transitions", "Favorable windows"],
-            itemsCn: ["当前周期分析", " 后续 转变", "有利窗口"]
+            itemsCn: ["当前周期分析", " 后续转变", "有利窗口"]
           }
         ]
       },
@@ -838,7 +838,7 @@ export const shouldIContactMyEx: KnowledgeArticle = {
             desc: "Your current major luck cycle influences relationship decisions.",
             descCn: "当前大运周期影响关系决策。",
             items: ["Current cycle energy", "Upcoming transitions", "Decision timing"],
-            itemsCn: ["当前周期能量", " 后续 转变", "决策时机"]
+            itemsCn: ["当前周期能量", " 后续转变", "决策时机"]
           }
         ]
       },
@@ -860,7 +860,7 @@ export const shouldIContactMyEx: KnowledgeArticle = {
         focus: "Key areas of focus:",
         focusCn: "通常重点关注：",
         items: ["Relationship structure", "Compatibility patterns", "Timing indicators", "Closure vs. reunion"],
-        itemsCn: ["关系结构", "适配模式", "时机指标", "放下 对比 复合"]
+        itemsCn: ["关系结构", "适配模式", "时机指标", "放下对比复合"]
       }
     ]
   },
@@ -1061,10 +1061,10 @@ export const whenIsTheBestTimeToStartDating: KnowledgeArticle = {
           {
             title: "③ Luck Cycles",
             titleCn: "③ 大运流年",
-            desc: "Current and 后续 major luck periods reveal when relationship events are most likely.",
-            descCn: "当前和 后续 大运周期揭示关系事件最可能发生的时间。",
+            desc: "Current and subsequent major luck periods reveal when relationship events are most likely.",
+            descCn: "当前和后续大运周期揭示关系事件最可能发生的时间。",
             items: ["Current cycle analysis", "Upcoming transitions", "Favorable windows"],
-            itemsCn: ["当前周期分析", " 后续 转变", "有利窗口"]
+            itemsCn: ["当前周期分析", " 后续转变", "有利窗口"]
           }
         ]
       },
@@ -1146,7 +1146,7 @@ export const shouldIChangeCareer: KnowledgeArticle = {
   metaDescription: "When you feel stuck, unfulfilled, or uncertain about your professional direction, Eastern and Western divination tools can help you understand your innate strengths, optimal timing, and whether a career change aligns with your life path.",
   metaTitleCn: "我应该转行吗？| Stellawei 知识中心",
   metaDescriptionCn: "当你感到迷茫、不满足或不确定职业方向时，东西方命理工具可以帮助你理解自己的天赋优势、最佳时机，以及转行是否符合你的人生道路。",
-  heroIntro: "Career dissatisfaction is one of the most common sources of stress in modern life. You may feel stuck in a role that 流失s you, wonder if the grass is greener elsewhere, or question whether you are on the right path at all. Eastern and Western divination tools approach this question differently—Eastern methods analyze your birth chart to reveal innate strengths, favorable timing for transitions, and whether your current path aligns with your destiny pattern, while Tarot helps you understand your subconscious motivations, hidden fears about change, and what you truly need from your work.",
+  heroIntro: "Career dissatisfaction is one of the most common sources of stress in modern life. You may feel stuck in a role that drains you, wonder if the grass is greener elsewhere, or question whether you are on the right path at all. Eastern and Western divination tools approach this question differently—Eastern methods analyze your birth chart to reveal innate strengths, favorable timing for transitions, and whether your current path aligns with your destiny pattern, while Tarot helps you understand your subconscious motivations, hidden fears about change, and what you truly need from your work.",
   heroIntroCn: "许多人在长期倦怠、缺乏成就感、或者被升职瓶颈卡住后开始问这个问题。东西方命理工具提供了不同的视角——东方方法侧重命盘中的天赋与时机，塔罗则聚焦你内心真正的需求和恐惧。",
 
   searchIntent: {
@@ -1193,7 +1193,7 @@ export const shouldIChangeCareer: KnowledgeArticle = {
   whyPeopleAsk: {
     intro: "People considering a career change are often wrestling with:",
     questions: [
-      "I feel 流失ed every Sunday night. Is this just burnout, or am I in the wrong field entirely?",
+      "I feel drained every Sunday night. Is this just burnout, or am I in the wrong field entirely?",
       "I have been in this industry for ten years. Starting over feels terrifying—but so does staying here for twenty more.",
       "Everyone says I should be grateful for this stable job. Why do I feel so empty?",
       "I have a passion project that could become a business. Is the risk worth it?",
@@ -1242,7 +1242,7 @@ export const shouldIChangeCareer: KnowledgeArticle = {
             desc: "The career palace reveals your professional strengths, suitable industries, and work style.",
             descCn: "事业宫揭示你的职业优势、适合的行业和工作风格。",
             items: ["Palace element and stability", "Suitable industry types", "Leadership vs. support roles", "Entrepreneurship potential"],
-            itemsCn: ["宫位五行与稳定性", "适合的行业类型", "领导角色 对比 支持角色", "创业潜力"]
+            itemsCn: ["宫位五行与稳定性", "适合的行业类型", "领导角色对比支持角色", "创业潜力"]
           },
           {
             title: "② Day Master and Wealth/Authority Stars",
@@ -1255,10 +1255,10 @@ export const shouldIChangeCareer: KnowledgeArticle = {
           {
             title: "③ Luck Cycle Timing",
             titleCn: "③ 大运流年时机",
-            desc: "Current and 后续 major luck periods reveal when career transitions are most favorable.",
+            desc: "Current and subsequent major luck periods reveal when career transitions are most favorable.",
             descCn: "当前和后续大运周期揭示职业转换最有利的时机。",
             items: ["Current cycle career energy", "Transition timing windows", "Favorable years for change", "Stability vs. risk periods"],
-            itemsCn: ["当前周期事业能量", "转换时机窗口", "有利于改变的年份", "稳定期 对比 风险期"]
+            itemsCn: ["当前周期事业能量", "转换时机窗口", "有利于改变的年份", "稳定期对比风险期"]
           }
         ]
       },
@@ -1373,7 +1373,7 @@ export const willIGetPromotion: KnowledgeArticle = {
   metaDescription: "When you are eyeing a promotion, Eastern and Western divination tools can help you understand your current career energy, the timing of advancement opportunities, and what you can do to position yourself for success.",
   metaTitleCn: "今年我会升职吗？| Stellawei 知识中心",
   metaDescriptionCn: "当你盯着晋升机会时，东西方命理工具可以帮助你理解当前的事业能量、晋升机会的时机，以及你可以做什么来为自己的成功做好准备。",
-  heroIntro: "Career advancement is a top priority for many professionals, yet the path to promotion is 很少 一帆风顺. You may be doing everything right—working hard, meeting targets, building relationships—but still feel uncertain about whether this is the year you move up. Eastern and Western divination tools approach this question differently—Eastern methods analyze your birth chart to reveal your current career energy cycle, whether your luck period supports advancement, and the best timing to make your move, while Tarot helps you understand your own confidence level, hidden obstacles in your mindset, and how you are perceived by decision-makers.",
+  heroIntro: "Career advancement is a top priority for many professionals, yet the path to promotion is rarely smooth sailing. You may be doing everything right—working hard, meeting targets, building relationships—but still feel uncertain about whether this is the year you move up. Eastern and Western divination tools approach this question differently—Eastern methods analyze your birth chart to reveal your current career energy cycle, whether your luck period supports advancement, and the best timing to make your move, while Tarot helps you understand your own confidence level, hidden obstacles in your mindset, and how you are perceived by decision-makers.",
   heroIntroCn: "许多人在努力工作多年、业绩达标、人际关系也不错之后，依然不确定今年是否有晋升机会。东西方命理工具提供了不同的视角——东方方法通过命盘分析你当前的事业能量周期、大运是否支持晋升、以及最佳行动时机，塔罗则帮助你理解自己的信心水平、心态中的隐藏阻碍，以及决策层如何看待你。",
 
   searchIntent: {
@@ -1419,7 +1419,7 @@ export const willIGetPromotion: KnowledgeArticle = {
     intro: "People wondering about promotion timing are often asking:",
     questions: [
       "I have been in this role for two years. Is it time to ask, or should I wait?",
-      "My colleague got promoted, but I did not. What am I 不见了?",
+      "My colleague got promoted, but I did not. What am I missing?",
       "I am performing well, but my manager never mentions advancement. Should I bring it up?",
       "There is a reorganization coming. Is this a good or bad time to seek promotion?",
       "I was passed over last year. Will this year be different?",
@@ -1480,7 +1480,7 @@ export const willIGetPromotion: KnowledgeArticle = {
           {
             title: "③ Annual Cycle Timing",
             titleCn: "③ 流年时机",
-            desc: "The current and 后续 annual cycles reveal when promotion opportunities are most likely.",
+            desc: "The current and subsequent annual cycles reveal when promotion opportunities are most likely.",
             descCn: "当前和后续流年揭示晋升机会最可能出现的时间。",
             items: ["Current year career energy", "Promotion timing windows", "Favorable quarters", "Competition intensity"],
             itemsCn: ["当年事业能量", "晋升时机窗口", "有利季度", "竞争激烈度"]
@@ -1968,7 +1968,7 @@ export const howToAdvanceCurrentRole: KnowledgeArticle = {
       {
         label: "Background",
         labelCn: "基本情况",
-        text: "Mr. Liu (born 1991, Xin-Wei year) was a software engineer at a fintech company for four years. He was technically excellent but 很少 interacted with leadership. He watched less skilled colleagues get promoted.",
+        text: "Mr. Liu (born 1991, Xin-Wei year) was a software engineer at a fintech company for four years. He was technically excellent but rarely interacted with leadership. He watched less skilled colleagues get promoted.",
         textCn: "刘先生（1991年生，辛未年），在一家金融科技公司做了四年软件工程师。他技术出色，但很少与领导层互动。他看着技能不如他的同事获得晋升。"
       },
       {
@@ -2319,7 +2319,7 @@ export const whatCareerSuitsMe: KnowledgeArticle = {
   whyPeopleAsk: {
     intro: "People seeking career direction often feel:",
     questions: [
-      "I have tried three different industries and still feel unfulfilled. What am I 不见了?",
+      "I have tried three different industries and still feel unfulfilled. What am I missing?",
       "Everyone says I should be a manager, but I love doing hands-on work. Am I wrong?",
       "I am good at many things. How do I choose just one path?",
       "My parents want me to be a doctor, but my heart is in art. Should I follow passion or stability?",
@@ -2418,7 +2418,7 @@ export const whatCareerSuitsMe: KnowledgeArticle = {
       {
         label: "Background",
         labelCn: "基本情况",
-        text: "Ms. Sun (born 1993, Gui-You year) had worked in sales for five years. She was good at it but felt 流失ed and unfulfilled. She had no idea what else she could do.",
+        text: "Ms. Sun (born 1993, Gui-You year) had worked in sales for five years. She was good at it but felt drained and unfulfilled. She had no idea what else she could do.",
         textCn: "孙女士（1993年生，癸酉年），在销售岗位工作了五年。她很擅长但感到疲惫和空虚。她不知道自己还能做什么。"
       },
       {
@@ -2547,7 +2547,7 @@ export const wealthFortuneTrend: KnowledgeArticle = {
       "I have been working hard but my savings are not growing. What is blocking my wealth?",
       "Some years I earn well, others I struggle. Is there a pattern I can understand?",
       "I want to invest but I am afraid of losing money. Is this a good time for me?",
-      "My friends seem to get rich easily while I 勉强 break even. Am I doing something wrong?",
+      "My friends seem to get rich easily while I barely break even. Am I doing something wrong?",
       "I had a windfall last year but this year everything feels tight. Is this normal?",
       "Should I focus on earning more or protecting what I have right now?"
     ]
@@ -2558,7 +2558,7 @@ export const wealthFortuneTrend: KnowledgeArticle = {
       "我一直在努力工作，但存款没有增长。是什么阻碍了我的财富？",
       "有些年份我赚得不错，有些年份我挣扎求生。有没有我可以理解的模式？",
       "我想投资但害怕亏钱。现在对我来说是好时机吗？",
-      "我的朋友们似乎很容易致富，而我 勉强 收支平衡。我做错什么了吗？",
+      "我的朋友们似乎很容易致富，而我勉强收支平衡。我做错什么了吗？",
       "去年我有一笔意外之财，但今年一切都感觉很紧。这正常吗？",
       "我现在应该专注于赚更多，还是保护已有的？"
     ]
@@ -2606,7 +2606,7 @@ export const wealthFortuneTrend: KnowledgeArticle = {
           {
             title: "③ Luck Cycle Wealth Timing",
             titleCn: "③ 大运财运时机",
-            desc: "Current and 后续 major luck periods reveal when wealth opportunities are most likely.",
+            desc: "Current and subsequent major luck periods reveal when wealth opportunities are most likely.",
             descCn: "当前和后续大运周期揭示财富机会最可能出现的时间。",
             items: ["Current cycle wealth energy", "Upcoming favorable periods", "Caution periods", "Investment timing windows"],
             itemsCn: ["当前周期财富能量", "后续有利期", "谨慎期", "投资时机窗口"]
@@ -2643,13 +2643,13 @@ export const wealthFortuneTrend: KnowledgeArticle = {
       {
         label: "Background",
         labelCn: "基本情况",
-        text: "Ms. Huang (born 1985, Yi-Chou year) had inconsistent income for years. Some months she earned well, others she 勉强 covered expenses. She wanted to understand her wealth pattern.",
-        textCn: "黄女士（1985年生，乙丑年），多年来收入不稳定。有些月份赚得不错，有些月份 勉强 够支付开支。她想了解自己的财富模式。"
+        text: "Ms. Huang (born 1985, Yi-Chou year) had inconsistent income for years. Some months she earned well, others she barely covered expenses. She wanted to understand her wealth pattern.",
+        textCn: "黄女士（1985年生，乙丑年），多年来收入不稳定。有些月份赚得不错，有些月份勉强够支付开支。她想了解自己的财富模式。"
       },
       {
         label: "BaZi Analysis",
         labelCn: "八字分析",
-        text: "Ms. Huang's chart showed an Earth Day Master with a Wealth Star that activated in cycles. Her analysis revealed that her wealth energy peaked during Metal years and seasons, while Wood periods brought financial 流失.",
+        text: "Ms. Huang's chart showed an Earth Day Master with a Wealth Star that activated in cycles. Her analysis revealed that her wealth energy peaked during Metal years and seasons, while Wood periods brought financial drain.",
         textCn: "黄女士的命盘显示土日主，财星以周期方式激活。她的分析揭示她的财富能量在金年、金季节达到顶峰，而木期带来财务消耗。"
       },
       {
@@ -2794,11 +2794,11 @@ export const whenWillFinancesImprove: KnowledgeArticle = {
     headingCn: "东西方命理如何帮助识别财务恢复时机？",
     easternTitle: "Eastern Divination",
     easternTitleCn: "东方命理",
-    easternDesc: "Eastern methods (BaZi, Qi Men Dun Jia, Zi Wei Dou Shu) analyze financial recovery timing through birth-time patterns, elemental cycles, and palace configurations. BaZi examines your current luck cycle and 后续 transitions to identify when financial energy will shift. Qi Men Dun Jia evaluates the current energy state and trajectory. Zi Wei Dou Shu profiles your wealth cycles and recovery patterns.",
+    easternDesc: "Eastern methods (BaZi, Qi Men Dun Jia, Zi Wei Dou Shu) analyze financial recovery timing through birth-time patterns, elemental cycles, and palace configurations. BaZi examines your current luck cycle and subsequent transitions to identify when financial energy will shift. Qi Men Dun Jia evaluates the current energy state and trajectory. Zi Wei Dou Shu profiles your wealth cycles and recovery patterns.",
     easternDescCn: "东方方法（八字、奇门遁甲、紫微斗数）通过出生时间规律、五行周期和宫位配置来分析财务恢复时机。八字检查当前大运和后续转变来识别财务能量何时会转变。奇门遁甲评估当前能量状态和轨迹。紫微斗数描绘你的财富周期和恢复模式。",
     westernTitle: "Western Divination",
     westernTitleCn: "西方命理",
-    westernDesc: "Western divination (primarily Tarot) is based on symbolic psychology and the collective unconscious. Through card imagery and intuitive interpretation, it reflects your present emotional state around money, reveals hidden fears and limiting beliefs, and offers actionable guidance for 度过 the current financial challenge with clarity and confidence.",
+    westernDesc: "Western divination (primarily Tarot) is based on symbolic psychology and the collective unconscious. Through card imagery and intuitive interpretation, it reflects your present emotional state around money, reveals hidden fears and limiting beliefs, and offers actionable guidance for navigating the current financial challenge with clarity and confidence.",
     westernDescCn: "西方命理（以塔罗为主）基于象征心理学与集体潜意识。通过牌面图像与直觉解读，反映你对金钱的当下情感状态，揭示隐藏恐惧和限制性信念，并提供可执行的指引，帮助以清晰和信心应对当前财务挑战。"
   },
 
@@ -2831,7 +2831,7 @@ export const whenWillFinancesImprove: KnowledgeArticle = {
           {
             title: "③ Annual Flow Analysis",
             titleCn: "③ 流年分析",
-            desc: "The current and 后续 annual cycles reveal shorter-term financial shifts.",
+            desc: "The current and subsequent annual cycles reveal shorter-term financial shifts.",
             descCn: "当前和后续流年揭示短期财务转变。",
             items: ["Current year financial outlook", "Next year improvement timing", "Monthly energy shifts", "Seasonal wealth patterns"],
             itemsCn: ["当年财务展望", "次年改善时机", "月度能量转变", "季节性财富模式"]
@@ -2863,7 +2863,7 @@ export const whenWillFinancesImprove: KnowledgeArticle = {
 
   caseStudy: {
     title: "Navigating Financial Downturn to Recovery",
-    titleCn: " 度过 财务低谷到恢复",
+    titleCn: " 度过财务低谷到恢复",
     sections: [
       {
         label: "Background",
@@ -3099,8 +3099,8 @@ export const shouldIMakeMajorPurchase: KnowledgeArticle = {
       {
         label: "BaZi Analysis",
         labelCn: "八字分析",
-        text: "Ms. Lin's chart showed she was in a challenging luck cycle for major purchases until mid-2025. Her Wealth Star was strong but her Resource element was 不足. The analysis suggested waiting would bring better opportunities and less stress.",
-        textCn: "林女士的命盘显示她直到2025年中都处在一个对大额消费有挑战性的大运。她的财星强劲但印星 不足。分析建议等待会带来更好的机会和更少的压力。"
+        text: "Ms. Lin's chart showed she was in a challenging luck cycle for major purchases until mid-2025. Her Wealth Star was strong but her Resource element was insufficient. The analysis suggested waiting would bring better opportunities and less stress.",
+        textCn: "林女士的命盘显示她直到2025年中都处在一个对大额消费有挑战性的大运。她的财星强劲但印星不足。分析建议等待会带来更好的机会和更少的压力。"
       },
       {
         label: "Guidance",
@@ -3174,8 +3174,8 @@ export const howToIncreaseIncome: KnowledgeArticle = {
   metaDescription: "When you want to boost your earning potential, Eastern and Western divination tools can reveal your natural income pathways, optimal timing for growth, and what might be blocking your financial expansion.",
   metaTitleCn: "如何增加我的收入？| Stellawei 知识中心",
   metaDescriptionCn: "当你想提升收入潜力时，东西方命理工具可以揭示你天生的收入路径、增长的最佳时机，以及什么可能阻碍了你的财务扩展。",
-  heroIntro: "Increasing income is one of the most common financial goals, yet the path is 很少 一帆风顺. Sometimes the answer is asking for a raise, sometimes it is switching industries, and sometimes it is starting a side business. The right approach depends on your unique energy pattern. Eastern and Western divination tools help identify the income strategies most aligned with your nature and timing.",
-  heroIntroCn: "增加收入是最常见的财务目标之一，但道路 并非总是 一帆风顺。有时答案是要求加薪，有时是换行业，有时是开始副业。正确的方法取决于你独特的能量模式。东西方命理工具帮助识别最与你的本性和时机对齐的收入策略。",
+  heroIntro: "Increasing income is one of the most common financial goals, yet the path is rarely smooth sailing. Sometimes the answer is asking for a raise, sometimes it is switching industries, and sometimes it is starting a side business. The right approach depends on your unique energy pattern. Eastern and Western divination tools help identify the income strategies most aligned with your nature and timing.",
+  heroIntroCn: "增加收入是最常见的财务目标之一，但道路并非总是一帆风顺。有时答案是要求加薪，有时是换行业，有时是开始副业。正确的方法取决于你独特的能量模式。东西方命理工具帮助识别最与你的本性和时机对齐的收入策略。",
 
   searchIntent: {
     primary: [
@@ -3318,8 +3318,8 @@ export const howToIncreaseIncome: KnowledgeArticle = {
       {
         label: "Background",
         labelCn: "基本情况",
-        text: "Mr. Zhou (born 1984, Jia-Zi year) had a stable job but wanted to increase his income. He tried stock trading and lost money, then tried freelancing but found it 精疲力竭.",
-        textCn: "周先生（1984年生，甲子年），有稳定的工作但想增加收入。他尝试股票交易亏了钱，然后尝试自由职业但发现很 精疲力竭。"
+        text: "Mr. Zhou (born 1984, Jia-Zi year) had a stable job but wanted to increase his income. He tried stock trading and lost money, then tried freelancing but found it exhausting.",
+        textCn: "周先生（1984年生，甲子年），有稳定的工作但想增加收入。他尝试股票交易亏了钱，然后尝试自由职业但发现很精疲力竭。"
       },
       {
         label: "BaZi Analysis",
@@ -3543,8 +3543,8 @@ export const saveOrInvest: KnowledgeArticle = {
       {
         label: "Background",
         labelCn: "基本情况",
-        text: "Ms. Ma (born 1990, Geng-Wu year) had saved 100,000 yuan. She was 犹豫 between keeping it all in savings for security or investing half for growth.",
-        textCn: "马女士（1990年生，庚午年），存了十万元。她在为安全起见全部存入储蓄和投一半用于增长之间 犹豫。"
+        text: "Ms. Ma (born 1990, Geng-Wu year) had saved 100,000 yuan. She was torn between keeping it all in savings for security or investing half for growth.",
+        textCn: "马女士（1990年生，庚午年），存了十万元。她在为安全起见全部存入储蓄和投一半用于增长之间犹豫。"
       },
       {
         label: "BaZi Analysis",
@@ -3694,8 +3694,8 @@ export const unexpectedExpenses: KnowledgeArticle = {
     headingCn: "东西方命理如何帮助预见财务挑战？",
     easternTitle: "Eastern Divination",
     easternTitleCn: "东方命理",
-    easternDesc: "Eastern methods (BaZi, Qi Men Dun Jia, Zi Wei Dou Shu) analyze potential unexpected expenses through birth-time patterns, elemental cycles, and palace configurations. BaZi examines your current luck cycle for risk periods. Qi Men Dun Jia evaluates current energy for hidden financial 流失s. Zi Wei Dou Shu profiles your financial resilience and challenge periods.",
-    easternDescCn: "东方方法（八字、奇门遁甲、紫微斗数）通过出生时间规律、五行周期和宫位配置来分析潜在意外开支。八字检查当前大运中的风险期。奇门遁甲评估当前能量中的隐藏财务 流失。紫微斗数描绘你的财务韧性和挑战期。",
+    easternDesc: "Eastern methods (BaZi, Qi Men Dun Jia, Zi Wei Dou Shu) analyze potential unexpected expenses through birth-time patterns, elemental cycles, and palace configurations. BaZi examines your current luck cycle for risk periods. Qi Men Dun Jia evaluates current energy for hidden financial drains. Zi Wei Dou Shu profiles your financial resilience and challenge periods.",
+    easternDescCn: "东方方法（八字、奇门遁甲、紫微斗数）通过出生时间规律、五行周期和宫位配置来分析潜在意外开支。八字检查当前大运中的风险期。奇门遁甲评估当前能量中的隐藏财务流失。紫微斗数描绘你的财务韧性和挑战期。",
     westernTitle: "Western Divination",
     westernTitleCn: "西方命理",
     westernDesc: "Western divination (primarily Tarot) is based on symbolic psychology and the collective unconscious. Through card imagery and intuitive interpretation, it reflects your present anxiety about financial security, reveals subconscious patterns that may attract financial challenges, and offers actionable guidance for building peace of mind.",
@@ -3715,10 +3715,10 @@ export const unexpectedExpenses: KnowledgeArticle = {
           {
             title: "① Current Cycle Risk Assessment",
             titleCn: "① 当前周期风险评估",
-            desc: "Identifying periods where financial 流失s are more likely.",
-            descCn: "识别财务 流失 更可能出现的时期。",
-            items: ["High-risk timing windows", "Potential 流失 sources", "Mitigation strategies", "Preparation periods"],
-            itemsCn: ["高风险时机窗口", "潜在 流失 来源", "缓解策略", "准备期"]
+            desc: "Identifying periods where financial drains are more likely.",
+            descCn: "识别财务流失更可能出现的时期。",
+            items: ["High-risk timing windows", "Potential drain sources", "Mitigation strategies", "Preparation periods"],
+            itemsCn: ["高风险时机窗口", "潜在流失来源", "缓解策略", "准备期"]
           },
           {
             title: "② Resource Element Protection",
@@ -3740,13 +3740,13 @@ export const unexpectedExpenses: KnowledgeArticle = {
       },
       {
         title: "2. Qi Men Dun Jia: Hidden Drain Assessment",
-        titleCn: "二、奇门遁甲：隐藏 流失 评估",
-        desc: "Qi Men Dun Jia uses a spacetime model to analyze current energy for hidden financial 流失s and unexpected costs.",
-        descCn: "奇门遁甲使用时空模型分析当前能量中的隐藏财务 流失 和意外开支。",
+        titleCn: "二、奇门遁甲：隐藏流失评估",
+        desc: "Qi Men Dun Jia uses a spacetime model to analyze current energy for hidden financial drains and unexpected costs.",
+        descCn: "奇门遁甲使用时空模型分析当前能量中的隐藏财务流失和意外开支。",
         focus: "Key areas of focus:",
         focusCn: "通常重点关注：",
-        items: ["Current 流失 energy", "Unexpected cost timing", "Risk mitigation opportunities", "Protection strategies"],
-        itemsCn: ["当前 流失 能量", "意外开支时机", "风险缓解机会", "保护策略"]
+        items: ["Current drain energy", "Unexpected cost timing", "Risk mitigation opportunities", "Protection strategies"],
+        itemsCn: ["当前流失能量", "意外开支时机", "风险缓解机会", "保护策略"]
       },
       {
         title: "3. Zi Wei Dou Shu: Financial Resilience Profile",
@@ -3763,7 +3763,7 @@ export const unexpectedExpenses: KnowledgeArticle = {
 
   caseStudy: {
     title: "Preparing for and Navigating Unexpected Costs",
-    titleCn: "为意外开支做准备并 度过",
+    titleCn: "为意外开支做准备并度过",
     sections: [
       {
         label: "Background",
@@ -3797,14 +3797,14 @@ export const unexpectedExpenses: KnowledgeArticle = {
   keyTakeaways: {
     items: [
       "BaZi analysis identifies periods when unexpected expenses are more likely.",
-      "Qi Men Dun Jia assesses current energy for hidden financial 流失s.",
+      "Qi Men Dun Jia assesses current energy for hidden financial drains.",
       "Zi Wei Dou Shu profiles your financial resilience and challenge timing.",
       "Tarot uncovers anxiety patterns that may be attracting financial stress.",
       "Preparation is the best defense against unexpected expenses—knowing when to prepare is key."
     ],
     itemsCn: [
       "八字分析识别意外开支更可能出现的时期。",
-      "奇门遁甲评估当前能量中的隐藏财务 流失。",
+      "奇门遁甲评估当前能量中的隐藏财务流失。",
       "紫微斗数描绘你的财务韧性和挑战时机。",
       "塔罗揭示可能吸引财务压力的焦虑模式。",
       "准备是对抗意外开支的最佳防御——知道什么时候准备是关键。"
@@ -4519,7 +4519,7 @@ export const homeLayoutEnergy: KnowledgeArticle = {
             desc: "Certain layouts create predictable energy blocks:",
             descCn: "某些布局会产生可预测的能量阻塞：",
             items: [
-              "Missing corners: A 不见了 southeast corner affects wealth",
+              "Missing corners: A missing southeast corner affects wealth",
               "Bathroom in the center: Drains energy from all sectors",
               "Stairs facing the door: Energy rushes out too quickly",
               "Kitchen and bathroom adjacent: Fire and water clash",
@@ -4635,7 +4635,7 @@ export const homeLayoutEnergy: KnowledgeArticle = {
     items: [
       "Your home layout directly affects your energy, mood, and life outcomes through Qi flow and sector alignment.",
       "The Bagua map reveals which life areas are supported or weakened by your floor plan.",
-      "Common problems include 不见了 corners, central bathrooms, stairs facing doors, and fire-water clashes.",
+      "Common problems include missing corners, central bathrooms, stairs facing doors, and fire-water clashes.",
       "BaZi analysis personalizes layout recommendations based on your birth chart.",
       "Simple adjustments like mirrors, plants, lighting, and screens can significantly improve energy flow without renovation."
     ],
@@ -5134,7 +5134,7 @@ export const homeColors: KnowledgeArticle = {
         focusCn: "简单应用：",
         items: [
           "Add throw pillows and rugs in your favorable colors",
-          "Use artwork to introduce 不见了 elements to a room",
+          "Use artwork to introduce missing elements to a room",
           "Place a colored vase or object in the corresponding Bagua sector",
           "Change bedding seasonally to align with energy shifts",
           "Use curtains to soften harsh wall colors"
@@ -5563,7 +5563,7 @@ export const amIOnRightPath: KnowledgeArticle = {
     intro: "People questioning their life path are often asking:",
     questions: [
       "I have a good job and stable life, so why do I feel so empty inside?",
-      "Everyone says I should be grateful, but I feel like something is 不见了. Am I being ungrateful or is this real?",
+      "Everyone says I should be grateful, but I feel like something is missing. Am I being ungrateful or is this real?",
       "I have been following the path my parents chose for me. Is it too late to change?",
       "I just turned 30/40/50 and realized I have no idea what I actually want. Is that normal?",
       "I keep starting over in new cities, new jobs, new relationships. Why can I not find where I belong?",
@@ -5744,7 +5744,7 @@ export const whatIsMyLifePurpose = {
   metaDescription: "Feeling lost about your purpose? Eastern and Western divination tools offer different perspectives to help you discover your unique mission and align your life choices.",
   metaTitleCn: "我的人生使命是什么？| Stellawei 知识中心",
   metaDescriptionCn: "对人生使命感到迷茫？东西方命理工具从不同维度帮助你发现自己的独特天赋与使命方向。",
-  heroIntro: "Many people reach a point where external achievements no longer feel fulfilling. You may have a successful career, stable relationships, and financial security—yet something essential feels 不见了. Eastern and Western divination tools approach this differently. Eastern methods analyze your birth chart to reveal innate talents and karmic lessons, while Tarot helps uncover what your subconscious already knows about your deeper calling.",
+  heroIntro: "Many people reach a point where external achievements no longer feel fulfilling. You may have a successful career, stable relationships, and financial security—yet something essential feels missing. Eastern and Western divination tools approach this differently. Eastern methods analyze your birth chart to reveal innate talents and karmic lessons, while Tarot helps uncover what your subconscious already knows about your deeper calling.",
   heroIntroCn: "许多人在事业有成、关系稳定之后，依然感到内心深处缺少了什么。东西方命理工具提供了不同的视角——东方方法通过命盘分析揭示你的天赋才能和因果课题，而塔罗则帮助你发现潜意识中早已知道的深层召唤。",
 
   searchIntent: {
@@ -6288,7 +6288,7 @@ export const nextDecadeTrajectory = {
           },
           {
             title: "② Upcoming Cycles",
-            titleCn: "② 即将到来 的大运",
+            titleCn: "② 即将到来的大运",
             desc: "Previewing the energies of your next two to three decades.",
             descCn: "预览未来两到三个十年的能量。",
             items: ["Next cycle preview", "Transition timing", "Major opportunities"],
@@ -8198,7 +8198,7 @@ export const canIFindLostItem = {
   metaTitleCn: "我能找到丢失的物品吗？| Stellawei 知识中心",
   metaDescriptionCn: "丢了重要的东西？东西方命理工具可以帮助确定物品是否可找回，并指引你找到它。",
   heroIntro: "Losing something valuable triggers a unique kind of panic. Whether it is a wallet, a phone, a piece of jewelry with sentimental value, or even a beloved pet, the moment of realization hits hard. You retrace your steps, check every pocket, and call every place you have been. But sometimes, logic is not enough. Eastern and Western divination tools approach lost items differently—Eastern methods, particularly Qi Men Dun Jia, use spacetime coordinates to determine whether the item is recoverable, where it might be, and who might have found it, while Tarot offers intuitive guidance on where to focus your search.",
-  heroIntroCn: "丢失贵重物品会引发一种独特的恐慌。无论是钱包、手机、有情感价值的珠宝，还是心爱的宠物，意识到丢失的那一刻都令人难以承受。你 原路返回，检查每个口袋，打电话给每个去过的地方。但有时，逻辑是不够的。东西方命理工具对失物有不同的处理方式——东方方法，特别是奇门遁甲，使用时空坐标来确定物品是否可找回、可能在哪里、谁可能捡到了它，而塔罗则提供直觉指引，告诉你应该把搜索重点放在哪里。",
+  heroIntroCn: "丢失贵重物品会引发一种独特的恐慌。无论是钱包、手机、有情感价值的珠宝，还是心爱的宠物，意识到丢失的那一刻都令人难以承受。你原路返回，检查每个口袋，打电话给每个去过的地方。但有时，逻辑是不够的。东西方命理工具对失物有不同的处理方式——东方方法，特别是奇门遁甲，使用时空坐标来确定物品是否可找回、可能在哪里、谁可能捡到了它，而塔罗则提供直觉指引，告诉你应该把搜索重点放在哪里。",
 
   searchIntent: {
     primary: [
@@ -8229,7 +8229,7 @@ export const canIFindLostItem = {
       "how to find lost things",
       "lost item locator",
       "find my lost phone",
-      "不见了 item search"
+      "missing item search"
     ],
     relatedCn: [
       "如何找到丢失的东西",
@@ -8246,7 +8246,7 @@ export const canIFindLostItem = {
       "My phone was stolen. Can divination tell me if it is recoverable?",
       "I misplaced an heirloom with deep sentimental value. Will I see it again?",
       "I think I left my bag at a restaurant but they say it is not there. Where else could it be?",
-      "My pet went 不见了. Can the stars help me find them?",
+      "My pet went missing. Can the stars help me find them?",
       "I dropped my keys somewhere in the city. Is it even worth continuing to search?"
     ]
   },
@@ -8267,7 +8267,7 @@ export const canIFindLostItem = {
     headingCn: "东西方命理如何帮助寻找失物？",
     easternTitle: "Eastern Divination",
     easternTitleCn: "东方命理",
-    easternDesc: "Eastern methods, particularly Qi Men Dun Jia, are exceptionally effective for locating lost items. Qi Men creates a spacetime map at the exact moment you realized the item was 不见了, revealing the item's current location, whether it is still in your vicinity, if someone else has found it, and the likelihood of recovery. Six Yao (Liu Yao) divination is another powerful method specifically designed for lost object inquiries.",
+    easternDesc: "Eastern methods, particularly Qi Men Dun Jia, are exceptionally effective for locating lost items. Qi Men creates a spacetime map at the exact moment you realized the item was missing, revealing the item's current location, whether it is still in your vicinity, if someone else has found it, and the likelihood of recovery. Six Yao (Liu Yao) divination is another powerful method specifically designed for lost object inquiries.",
     easternDescCn: "东方方法，特别是奇门遁甲，在定位失物方面异常有效。奇门在你意识到物品丢失的确切时刻创建时空地图，揭示物品的当前位置、是否仍在附近、是否有人捡到、以及找回的可能性。六爻占卜是另一种专门为失物问题设计的强大方法。",
     westernTitle: "Western Divination",
     westernTitleCn: "西方命理",
@@ -8341,8 +8341,8 @@ export const canIFindLostItem = {
       {
         label: "Background",
         labelCn: "基本情况",
-        text: "Ms. Zhou (born 1990, Geng-Wu year) lost a jade bracelet that had been in her family for three generations. She had worn it daily and was 崩溃 by the loss. She had searched her home, office, and car multiple times with no success.",
-        textCn: "周女士（1990年生，庚午年）丢失了一只玉镯，这只镯子在她家传了三代。她每天都戴着它，对丢失感到 崩溃。她多次搜索了家里、办公室和车，都没有成功。"
+        text: "Ms. Zhou (born 1990, Geng-Wu year) lost a jade bracelet that had been in her family for three generations. She had worn it daily and was devastated by the loss. She had searched her home, office, and car multiple times with no success.",
+        textCn: "周女士（1990年生，庚午年）丢失了一只玉镯，这只镯子在她家传了三代。她每天都戴着它，对丢失感到崩溃。她多次搜索了家里、办公室和车，都没有成功。"
       },
       {
         label: "Qi Men Dun Jia Analysis",
@@ -8420,8 +8420,8 @@ export const whereToLookLostItem = {
   metaDescription: "Searching for a lost item? Eastern divination, especially Qi Men Dun Jia, can pinpoint the exact direction and type of location where your item might be.",
   metaTitleCn: "我应该去哪里找丢失的物品？| Stellawei 知识中心",
   metaDescriptionCn: "在寻找丢失的物品？东方命理，特别是奇门遁甲，可以精确定位物品可能在的确切方向和地点类型。",
-  heroIntro: "You have 原路返回 your steps, checked your pockets, and called every place you visited. But the item is still 不见了. At this point, random searching is inefficient. What if you knew exactly which direction to go, what type of place to look in, and how far to search? Eastern and Western divination tools can provide precisely this kind of guidance. Qi Men Dun Jia, in particular, has been used for centuries to locate lost objects with remarkable accuracy.",
-  heroIntroCn: "你已经 原路返回，检查了口袋，打电话给每个去过的地方。但物品仍然 不见了。此时，随机搜索是低效的。如果你知道确切该去哪个方向、找什么类型的地点、搜索多远呢？东西方命理工具可以提供这种精确的指引。奇门遁甲尤其如此，几个世纪以来一直被用于以惊人的准确度定位失物。",
+  heroIntro: "You have retraced your steps, checked your pockets, and called every place you visited. But the item is still missing. At this point, random searching is inefficient. What if you knew exactly which direction to go, what type of place to look in, and how far to search? Eastern and Western divination tools can provide precisely this kind of guidance. Qi Men Dun Jia, in particular, has been used for centuries to locate lost objects with remarkable accuracy.",
+  heroIntroCn: "你已经原路返回，检查了口袋，打电话给每个去过的地方。但物品仍然不见了。此时，随机搜索是低效的。如果你知道确切该去哪个方向、找什么类型的地点、搜索多远呢？东西方命理工具可以提供这种精确的指引。奇门遁甲尤其如此，几个世纪以来一直被用于以惊人的准确度定位失物。",
 
   searchIntent: {
     primary: [
@@ -8451,7 +8451,7 @@ export const whereToLookLostItem = {
     related: [
       "lost item search tips",
       "how to find lost things",
-      "不见了 item locator",
+      "missing item locator",
       "find my phone location"
     ],
     relatedCn: [
@@ -8478,7 +8478,7 @@ export const whereToLookLostItem = {
     questions: [
       "我在房子里的某个地方掉了钥匙。应该先检查哪个房间？",
       "我把包落在咖啡馆或可能是图书馆。哪个更有可能？",
-      "走路时手机从口袋掉出来了。应该 原路返回 哪个方向？",
+      "走路时手机从口袋掉出来了。应该原路返回哪个方向？",
       "我想我的宠物从窗户逃走了。它会去哪里？",
       "我的戒指在海滩上滑落了。在沙子里还是水里？",
       "我昨天还有钱包但不记得最后在哪里用的。怎么缩小范围？"
@@ -8564,8 +8564,8 @@ export const whereToLookLostItem = {
       {
         label: "Background",
         labelCn: "基本情况",
-        text: "Mr. Huang (born 1982, Ren-Xu year) lost his golden retriever, Max, who had escaped through an open gate. He had searched the 小区 for hours with no success and was becoming desperate.",
-        textCn: "黄先生（1982年生，壬戌年）丢失了他的金毛寻回犬 Max，它从敞开的门逃走了。他已经在 小区 搜索了几个小时都没有成功，变得越来越绝望。"
+        text: "Mr. Huang (born 1982, Ren-Xu year) lost his golden retriever, Max, who had escaped through an open gate. He had searched the residential complex for hours with no success and was becoming desperate.",
+        textCn: "黄先生（1982年生，壬戌年）丢失了他的金毛寻回犬 Max，它从敞开的门逃走了。他已经在小区搜索了几个小时都没有成功，变得越来越绝望。"
       },
       {
         label: "Qi Men Dun Jia Analysis",
@@ -8644,7 +8644,7 @@ export const willLostItemBeReturned = {
   metaTitleCn: "我的丢失物品会被归还吗？| Stellawei 知识中心",
   metaDescriptionCn: "想知道有人会归还你的丢失物品吗？东西方命理工具可以评估拾获者的意图和归还的可能性。",
   heroIntro: "You lost your wallet, your phone, or something precious. Someone found it. But will they do the right thing and return it? Or will they keep it, sell it, or simply ignore it? The uncertainty can be agonizing. Eastern and Western divination tools approach this question differently—Eastern methods, particularly Qi Men Dun Jia, can reveal the finder's character, intentions, and whether they plan to return the item, while Tarot provides intuitive insight into the situation and guidance on what actions might encourage a positive outcome.",
-  heroIntroCn: "你丢了钱包、手机或珍贵的东西。有人捡到了。但他们会做正确的事归还吗？还是会留着、卖掉，或 只是忽视？这种不确定性可能令人痛苦。东西方命理工具对这个问题有不同的处理方式——东方方法，特别是奇门遁甲，可以揭示拾获者的性格、意图，以及他们是否计划归还物品，而塔罗则提供对情况的直觉洞察和可能鼓励积极结果的行动指引。",
+  heroIntroCn: "你丢了钱包、手机或珍贵的东西。有人捡到了。但他们会做正确的事归还吗？还是会留着、卖掉，或只是忽视？这种不确定性可能令人痛苦。东西方命理工具对这个问题有不同的处理方式——东方方法，特别是奇门遁甲，可以揭示拾获者的性格、意图，以及他们是否计划归还物品，而塔罗则提供对情况的直觉洞察和可能鼓励积极结果的行动指引。",
 
   searchIntent: {
     primary: [
@@ -8787,8 +8787,8 @@ export const willLostItemBeReturned = {
       {
         label: "Background",
         labelCn: "基本情况",
-        text: "Mr. Li (born 1987, Ding-Mao year) lost his wallet containing cash, cards, and identification while shopping at a mall. He 原路返回 his steps but could not find it. He was particularly concerned because the wallet contained a significant amount of cash.",
-        textCn: "李先生（1987年生，丁卯年）在商场购物时丢失了装有现金、卡和身份证件的钱包。他 原路返回但找不到。他特别担心因为钱包里有大量现金。"
+        text: "Mr. Li (born 1987, Ding-Mao year) lost his wallet containing cash, cards, and identification while shopping at a mall. He retraced his steps but could not find it. He was particularly concerned because the wallet contained a significant amount of cash.",
+        textCn: "李先生（1987年生，丁卯年）在商场购物时丢失了装有现金、卡和身份证件的钱包。他原路返回但找不到。他特别担心因为钱包里有大量现金。"
       },
       {
         label: "Qi Men Dun Jia Analysis",
@@ -8898,7 +8898,7 @@ export const whenFindLostItem = {
       "lost item search timeline",
       "how long before lost item is found",
       "recovery time prediction",
-      "不见了 item timeframe"
+      "missing item timeframe"
     ],
     relatedCn: [
       "失物搜索时间线",
@@ -8914,7 +8914,7 @@ export const whenFindLostItem = {
       "I lost my keys this morning. Will I find them today?",
       "My phone was stolen yesterday. How long before I might recover it?",
       "I misplaced an important document. Should I keep searching or start replacing it?",
-      "My pet went 不见了 three days ago. Is there still hope of finding it soon?",
+      "My pet went missing three days ago. Is there still hope of finding it soon?",
       "I dropped my ring at the beach yesterday. Should I search again today or wait?",
       "Someone found my wallet but has not contacted me. When will they reach out?"
     ]
@@ -9089,8 +9089,8 @@ export const isLostItemRecoverable = {
   metaDescription: "Wondering if your lost item is gone forever? Eastern and Western divination tools assess recoverability and guide your next steps.",
   metaTitleCn: "我的丢失物品还能找回吗？| Stellawei 知识中心",
   metaDescriptionCn: "想知道丢失的物品是否永远失去了？东西方命理工具评估可找回性并指引下一步。",
-  heroIntro: "The sinking feeling when you realize something is 不见了. You have searched everywhere 原路返回 your steps, and called every possible place. But still nothing. At this point, the question shifts from where is it to is it even worth continuing to search? Eastern and Western divination tools can help answer this critical question. Qi Men Dun Jia, in particular, can assess whether an item is recoverable, whether it has been destroyed, sold, or 只是放错了地方, and what your chances are of ever seeing it again.",
-  heroIntroCn: "当你意识到东西不见时的 沉重感。你已经到处搜索，原路返回，打电话给每个可能的地方。但仍然没有。此时，问题从它在哪里转移到了继续搜索是否值得？东西方命理工具可以帮助回答这个关键问题。奇门遁甲尤其可以评估物品是否可找回、是否已被毁坏、出售，或 只是放错了地方，以及你再见到它的几率有多大。",
+  heroIntro: "The sinking feeling when you realize something is missing. You have searched everywhere, retraced your steps, and called every possible place. But still nothing. At this point, the question shifts from where is it to is it even worth continuing to search? Eastern and Western divination tools can help answer this critical question. Qi Men Dun Jia, in particular, can assess whether an item is recoverable, whether it has been destroyed, sold, or simply misplaced, and what your chances are of ever seeing it again.",
+  heroIntroCn: "当你意识到东西不见时的沉重感。你已经到处搜索，原路返回，打电话给每个可能的地方。但仍然没有。此时，问题从它在哪里转移到了继续搜索是否值得？东西方命理工具可以帮助回答这个关键问题。奇门遁甲尤其可以评估物品是否可找回、是否已被毁坏、出售，或只是放错了地方，以及你再见到它的几率有多大。",
 
   searchIntent: {
     primary: [
@@ -9137,7 +9137,7 @@ export const isLostItemRecoverable = {
       "I have searched everywhere. Is it time to give up?",
       "My phone was stolen. What are the chances I will get it back?",
       "I lost a sentimental item. Is there any hope of recovery?",
-      "My pet has been 不见了 for a week. Should I keep searching?",
+      "My pet has been missing for a week. Should I keep searching?",
       "I think my item fell into water. Is it destroyed?",
       "Someone definitely took my wallet. Is recovery even possible?"
     ]
@@ -9245,8 +9245,8 @@ export const isLostItemRecoverable = {
       {
         label: "Recovery Action",
         labelCn: "找回行动",
-        text: "Following the chart's guidance, Mr. Wang posted notices in his 小区 with a reward offer. A neighbor recognized the description and informed him that a young man in the next building had recently acquired a similar bicycle. Mr. Wang contacted the police, who recovered the bicycle.",
-        textCn: "按照盘的指引，王先生在 小区 张贴了悬赏启事。一位邻居认出了描述，告诉他隔壁楼的一个年轻人最近买了一辆类似的自行车。王先生联系了警方，警方找回了自行车。"
+        text: "Following the chart's guidance, Mr. Wang posted notices in his residential complex with a reward offer. A neighbor recognized the description and informed him that a young man in the next building had recently acquired a similar bicycle. Mr. Wang contacted the police, who recovered the bicycle.",
+        textCn: "按照盘的指引，王先生在小区张贴了悬赏启事。一位邻居认出了描述，告诉他隔壁楼的一个年轻人最近买了一辆类似的自行车。王先生联系了警方，警方找回了自行车。"
       },
       {
         label: "Outcome",
@@ -9312,7 +9312,7 @@ export const whoTookLostItem = {
   metaDescription: "Trying to identify who took your lost item? Eastern and Western divination tools can provide clues about the finder's identity and characteristics.",
   metaTitleCn: "谁拿走了我的丢失物品？| Stellawei 知识中心",
   metaDescriptionCn: "试图识别谁拿走了你的丢失物品？东西方命理工具可以提供关于拾获者身份和特征的线索。",
-  heroIntro: "Your item is 不见了. You are fairly certain someone took it, but you have no idea who. Was it a stranger? A colleague? A friend? Or did you simply misplace it? The uncertainty can be maddening. Eastern and Western divination tools approach this question differently—Eastern methods, particularly Qi Men Dun Jia, can reveal detailed characteristics of the person who has your item, including their age, gender, appearance, and intentions, while Tarot provides intuitive insight into the person's energy and motivations.",
+  heroIntro: "Your item is missing. You are fairly certain someone took it, but you have no idea who. Was it a stranger? A colleague? A friend? Or did you simply misplace it? The uncertainty can be maddening. Eastern and Western divination tools approach this question differently—Eastern methods, particularly Qi Men Dun Jia, can reveal detailed characteristics of the person who has your item, including their age, gender, appearance, and intentions, while Tarot provides intuitive insight into the person's energy and motivations.",
   heroIntroCn: "你的物品不见了。你相当确定有人拿走了它，但你不知道是谁。是陌生人？同事？朋友？还是你只是放错了地方？这种不确定性可能令人发狂。东西方命理工具对这个问题有不同的处理方式——东方方法，特别是奇门遁甲，可以揭示持有你物品的人的详细特征，包括年龄、性别、外貌和意图，而塔罗则提供关于此人能量和动机的直觉洞察。",
 
   searchIntent: {
@@ -9359,7 +9359,7 @@ export const whoTookLostItem = {
     questions: [
       "My wallet was stolen. Can divination tell me who took it?",
       "My phone disappeared from my desk at work. Which colleague took it?",
-      "My item went 不见了 at a party. Was it one of my friends?",
+      "My item went missing at a party. Was it one of my friends?",
       "My pet was taken from my yard. Who would do this?",
       "My bag was left in a taxi but the driver denies having it. Is he lying?",
       "I think someone in my family moved my item. Who was it?"
@@ -9404,7 +9404,7 @@ export const whoTookLostItem = {
             title: "① Physical Characteristics",
             titleCn: "① 身体特征",
             desc: "The chart reveals age range, gender, height, build, and distinguishing features.",
-            descCn: "盘显示年龄范围、性别、身高、体型和 显著特征。",
+            descCn: "盘显示年龄范围、性别、身高、体型和显著特征。",
             items: ["Age range", "Gender", "Physical build", "Distinguishing features"],
             itemsCn: ["年龄范围", "性别", "体格", "显著特征"]
           },
@@ -9463,19 +9463,19 @@ export const whoTookLostItem = {
         label: "Qi Men Dun Jia Analysis",
         labelCn: "奇门遁甲分析",
         text: "The Qi Men chart indicated the thief was a male colleague, approximately 30-35 years old, with a medium build and a tendency toward secretive behavior. The chart showed he had taken the item on impulse rather than premeditation and that he was feeling guilty but afraid to admit it.",
-        textCn: "奇门盘显示小偷是一位男同事，大约30-35岁，中等体型，有 隐秘行为倾向。盘显示他是一时冲动而非预谋拿走物品，而且他感到内疚但害怕承认。"
+        textCn: "奇门盘显示小偷是一位男同事，大约30-35岁，中等体型，有隐秘行为倾向。盘显示他是一时冲动而非预谋拿走物品，而且他感到内疚但害怕承认。"
       },
       {
         label: "Resolution",
         labelCn: "解决",
-        text: "Based on the profile, Ms. Zhang subtly created an opportunity for the person matching the description to return the item without 对峙. She announced she was organizing a desk cleanup and found the headphones 'mysteriously' returned the next morning.",
-        textCn: "基于画像，张女士巧妙地创造了一个机会，让符合描述的人可以在不 对峙 的情况下归还物品。她宣布正在组织桌面清理，第二天早上耳机「神秘地」被归还了。"
+        text: "Based on the profile, Ms. Zhang subtly created an opportunity for the person matching the description to return the item without confrontation. She announced she was organizing a desk cleanup and found the headphones 'mysteriously' returned the next morning.",
+        textCn: "基于画像，张女士巧妙地创造了一个机会，让符合描述的人可以在不对峙的情况下归还物品。她宣布正在组织桌面清理，第二天早上耳机「神秘地」被归还了。"
       },
       {
         label: "Outcome",
         labelCn: "实际结果",
-        text: "The headphones were returned without direct 对峙 or damaged workplace relationships. Ms. Zhang noted that understanding the person's character and motivations allowed her to handle the situation with wisdom rather than accusation.",
-        textCn: "耳机被归还了，没有直接 对峙 或破坏工作场所关系。张女士注意到，理解此人的性格和动机让她能够以智慧而非指责来处理情况。"
+        text: "The headphones were returned without direct confrontation or damaged workplace relationships. Ms. Zhang noted that understanding the person's character and motivations allowed her to handle the situation with wisdom rather than accusation.",
+        textCn: "耳机被归还了，没有直接对峙或破坏工作场所关系。张女士注意到，理解此人的性格和动机让她能够以智慧而非指责来处理情况。"
       }
     ],
     disclaimer: "Case is anonymized. Results vary by individual. Consultations aim to help you understand your situation, not guarantee outcomes.",
