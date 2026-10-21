@@ -9521,3 +9521,1101 @@ export const whoTookLostItem = {
   modifiedAt: "2026-08-29",
   author: "Stellawei Editorial Team"
 };
+
+
+// ==================== 宠物健康板块 ====================
+
+export const howIsMyPetsHealth = {
+  slug: "how-is-my-pets-health",
+  topicSlug: "pet-health",
+  question: "How is my pet's health?",
+  questionCn: "我的宠物健康状况如何？",
+  metaTitle: "How Is My Pet's Health? | StellaWei Knowledge Center",
+  metaDescription: "Worried about your pet's health? Eastern and Western divination tools assess your pet's energy patterns, identify potential imbalances, and guide proactive care decisions.",
+  metaTitleCn: "我的宠物健康状况如何？| Stellawei 知识中心",
+  metaDescriptionCn: "担心宠物的健康？东西方命理工具评估宠物的能量模式，识别潜在失衡，并指导主动护理决策。",
+  heroIntro: "Your pet cannot tell you when something feels off. They rely entirely on your observation and intuition. Maybe your dog is sleeping more than usual, or your cat has been grooming less, or your bird seems quieter than normal. You want to know: is my pet okay? Eastern and Western divination tools can help assess your pet's current health energy. BaZi analysis of your pet's birth or adoption chart reveals elemental imbalances that may affect their wellbeing, while Qi Men Dun Jia provides a snapshot of their current energetic state. Combined with veterinary care, these insights help you understand your pet's health from a holistic perspective.",
+  heroIntroCn: "宠物无法告诉你它们哪里不舒服。它们完全依赖你的观察和直觉。也许你的狗睡得比平时多，或者你的猫梳理毛发少了，或者你的鸟看起来比平时安静。你想知道：我的宠物还好吗？东西方命理工具可以帮助评估宠物当前的健康能量。通过宠物的出生或领养命盘进行八字分析，揭示可能影响它们福祉的五行失衡；奇门遁甲则提供它们当前能量状态的快照。结合兽医护理，这些洞察帮助你从整体角度理解宠物的健康。",
+
+  searchIntent: {
+    primary: [
+      "how is my pet's health",
+      "pet health assessment",
+      "is my pet healthy",
+      "pet health check divination"
+    ],
+    primaryCn: [
+      "我的宠物健康状况如何",
+      "宠物健康评估",
+      "我的宠物健康吗",
+      "宠物健康占卜"
+    ],
+    secondary: [
+      "bazi pet health analysis",
+      "qi men dun jia pet health",
+      "tarot pet health reading",
+      "pet energy imbalance"
+    ],
+    secondaryCn: [
+      "八字宠物健康分析",
+      "奇门遁甲宠物健康",
+      "塔罗宠物健康解读",
+      "宠物能量失衡"
+    ],
+    related: [
+      "pet health warning signs",
+      "pet wellness guidance",
+      "pet preventive care",
+      "pet holistic health"
+    ],
+    relatedCn: [
+      "宠物健康警告信号",
+      "宠物健康指导",
+      "宠物预防护理",
+      "宠物整体健康"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "Pet owners concerned about health are often asking:",
+    questions: [
+      "My cat has been sleeping more than usual. Is something wrong?",
+      "My dog is not eating as much as before. Should I be concerned?",
+      "My pet seems less energetic lately. Is this just aging or a health issue?",
+      "My bird's feathers look dull. Does that indicate poor health?",
+      "My pet is drinking a lot more water than usual. What does that mean?",
+      "I just feel like something is off with my pet, but I cannot pinpoint it."
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "担心宠物健康的铲屎官，常常在问：",
+    questions: [
+      "我的猫最近睡得比平时多。有什么问题吗？",
+      "我的狗吃得比以前少了。我应该担心吗？",
+      "我的宠物最近精力不太旺盛。这是正常衰老还是健康问题？",
+      "我的鸟羽毛看起来很暗淡。这表明健康不好吗？",
+      "我的宠物喝水比平时多很多。这意味着什么？",
+      "我只是感觉宠物有点不对劲，但说不上来具体是什么。"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Assess Pet Health",
+    headingCn: "东西方命理如何评估宠物健康",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods, particularly BaZi and Qi Men Dun Jia, assess pet health through elemental analysis. By constructing a chart from your pet's birth time or adoption date, practitioners identify elemental imbalances—excess Fire may indicate inflammation, weak Water may suggest kidney concerns, or imbalanced Earth may point to digestive issues. Qi Men Dun Jia provides a real-time energetic snapshot of your pet's current condition, revealing whether their energy is strengthening, stable, or declining.",
+    easternDescCn: "东方方法，特别是八字和奇门遁甲，通过五行分析评估宠物健康。通过宠物的出生时间或领养日期排盘，命理师识别五行失衡——火过旺可能预示炎症，水弱可能暗示肾脏问题，土失衡可能指向消化问题。奇门遁甲提供宠物当前状态的实时能量快照，揭示它们的能量是在增强、稳定还是衰退。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination, primarily Tarot, offers intuitive insight into your pet's energetic and emotional state. Tarot can reveal whether behavioral changes are rooted in physical discomfort, emotional stress, or environmental factors. It can also indicate whether your pet's current phase is temporary or signals a deeper pattern requiring attention.",
+    westernDescCn: "西方命理，主要是塔罗，提供对宠物能量和情绪状态的直觉洞察。塔罗可以揭示行为变化是源于身体不适、情绪压力还是环境因素。它还可以表明宠物当前阶段是暂时的，还是预示着需要关注的更深层次模式。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi: Pet Elemental Profile",
+        titleCn: "一、八字：宠物五行画像",
+        intro: "BaZi analysis of your pet's birth or adoption chart reveals their elemental constitution and potential health tendencies.",
+        introCn: "通过宠物的出生或领养命盘进行八字分析，揭示它们的五行体质和潜在健康倾向。",
+        cards: [
+          {
+            title: "① Elemental Constitution",
+            titleCn: "① 五行体质",
+            desc: "Understanding your pet's dominant and weak elements helps anticipate health patterns.",
+            descCn: "了解宠物的主导和弱势五行，有助于预判健康模式。",
+            items: ["Dominant element traits", "Weak element vulnerabilities", "Seasonal sensitivities"],
+            itemsCn: ["主导五行特征", "弱势五行弱点", "季节性敏感"]
+          },
+          {
+            title: "② Imbalance Indicators",
+            titleCn: "② 失衡指标",
+            desc: "Elemental excess or deficiency can point to specific health tendencies.",
+            descCn: "五行过旺或不足可能指向特定的健康倾向。",
+            items: ["Excess Fire: inflammation", "Weak Water: kidney", "Imbalanced Earth: digestion"],
+            itemsCn: ["火过旺：炎症", "水弱：肾脏", "土失衡：消化"]
+          },
+          {
+            title: "③ Proactive Care Guidance",
+            titleCn: "③ 主动护理指引",
+            desc: "Elemental insights guide diet, environment, and activity adjustments.",
+            descCn: "五行洞察指导饮食、环境和活动调整。",
+            items: ["Dietary recommendations", "Environmental harmony", "Activity timing"],
+            itemsCn: ["饮食建议", "环境和谐", "活动时间"]
+          }
+        ]
+      },
+      {
+        title: "2. Qi Men Dun Jia: Current Health Snapshot",
+        titleCn: "二、奇门遁甲：当前健康快照",
+        desc: "Qi Men Dun Jia provides a real-time assessment of your pet's current energetic state.",
+        descCn: "奇门遁甲提供宠物当前能量状态的实时评估。",
+        focus: "Key indicators:",
+        focusCn: "关键指标：",
+        items: ["Current energy level", "Health trajectory", "External influences", "Optimal care window"],
+        itemsCn: ["当前能量水平", "健康趋势", "外部影响", "最佳护理窗口"]
+      },
+      {
+        title: "3. Tarot: Emotional and Energetic Reading",
+        titleCn: "三、塔罗：情绪与能量解读",
+        desc: "Tarot helps determine whether behavioral changes stem from physical, emotional, or environmental causes.",
+        descCn: "塔罗帮助判断行为变化是源于身体、情绪还是环境因素。",
+        focus: "Common pet health spreads:",
+        focusCn: "常见宠物健康牌阵：",
+        items: ["Energy assessment", "Emotional state", "Environmental factors", "Care guidance"],
+        itemsCn: ["能量评估", "情绪状态", "环境因素", "护理指引"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Understanding a Cat's Sudden Lethargy",
+    titleCn: "了解猫咪突然的精神萎靡",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Ms. Zhao (born 1990, Geng-Wu year) had a five-year-old British Shorthair cat named Mochi who had become increasingly lethargic over two weeks. Mochi was sleeping more, playing less, and had a slightly reduced appetite. A veterinary checkup found no obvious illness, but Ms. Zhao felt something was still off.",
+        textCn: "赵女士（1990年生，庚午年）养了一只五岁的英国短毛猫叫Mochi，两周来变得越来越萎靡。Mochi睡得更多、玩得少了，食欲也略有下降。兽医检查没有发现明显疾病，但赵女士感觉还是不太对劲。"
+      },
+      {
+        label: "BaZi Analysis",
+        labelCn: "八字分析",
+        text: "Using Mochi's adoption date to construct a chart, the analysis revealed a Water-dominant constitution currently in a strong Earth period. Earth controls Water, suggesting a period of suppressed natural energy. The chart also showed weak Fire, which in pet health terms often correlates with low vitality and digestive warmth.",
+        textCn: "通过Mochi的领养日期排盘，分析显示水主导的五行体质正处于强土期。土克水，意味着自然能量被压制的时期。盘还显示火弱，在宠物健康中通常与活力不足和消化温暖度相关。"
+      },
+      {
+        label: "Qi Men Dun Jia Assessment",
+        labelCn: "奇门遁甲评估",
+        text: "The Qi Men chart indicated that Mochi's energy was not declining but compressed—like a temporary holding pattern. The chart suggested the condition would begin improving within three weeks, with a favorable window for supportive care in the second week.",
+        textCn: "奇门盘显示Mochi的能量不是在衰退，而是被压缩——像一个暂时的保持模式。盘建议状况会在三周内开始改善，第二周是辅助护理的有利窗口。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Ms. Zhao adjusted Mochi's diet to include warming foods per the elemental guidance and added a heated sleeping pad. Mochi's energy began returning in the third week, exactly as the chart predicted. A follow-up vet visit confirmed all health markers were normal.",
+        textCn: "赵女士按照五行指引调整了Mochi的饮食，加入了温性食物，并加了加热睡垫。Mochi的精力在第三周开始恢复，与盘的预测完全一致。复查确认所有健康指标正常。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Divination complements but does not replace veterinary care.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异。命理辅助但不替代兽医护理。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "BaZi analysis of your pet's birth or adoption chart reveals elemental imbalances that may influence their health patterns.",
+      "Qi Men Dun Jia provides a real-time energetic snapshot, showing whether your pet's condition is improving, stable, or needs attention.",
+      "Divination insights are most effective when combined with regular veterinary care—think of them as a complementary lens, not a replacement."
+    ],
+    itemsCn: [
+      "通过宠物的出生或领养命盘进行八字分析，揭示可能影响其健康模式的五行失衡。",
+      "奇门遁甲提供实时能量快照，显示宠物的状况是在改善、稳定还是需要关注。",
+      "命理洞察与定期兽医护理结合时最有效——把它们当作补充视角，而非替代。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "will-pet-recover", question: "Will My Pet Recover from Illness?", questionCn: "我的宠物会从疾病中康复吗？" },
+    { slug: "worried-about-pet-behavior", question: "Should I Worry About My Pet's Behavior?", questionCn: "我应该担心宠物的行为吗？" },
+    { slug: "will-pet-live-long", question: "Will My Pet Live a Long Life?", questionCn: "我的宠物会长寿吗？" }
+  ],
+
+  cta: {
+    textLine1: "Your pet's health is worth understanding from every angle.",
+    textLine1Cn: "宠物的健康值得从每个角度去理解。",
+    textLine2: "If you want a deeper energetic assessment of your pet's health patterns, our consultants can use BaZi and Qi Men Dun Jia to provide personalized insights that complement veterinary care.",
+    textLine2Cn: "如果你想更深入地评估宠物的健康能量模式，我们的咨询师可以运用八字和奇门遁甲提供个性化洞察，作为兽医护理的补充。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/pet-health/how-is-my-pets-health",
+  publishedAt: "2026-10-21",
+  modifiedAt: "2026-10-21",
+  author: "Stellawei Editorial Team"
+};
+
+export const willPetRecover = {
+  slug: "will-pet-recover",
+  topicSlug: "pet-health",
+  question: "Will my pet recover from illness?",
+  questionCn: "我的宠物会从疾病中康复吗？",
+  metaTitle: "Will My Pet Recover from Illness? | StellaWei Knowledge Center",
+  metaDescription: "Facing a pet's illness is heartbreaking. Eastern and Western divination tools assess recovery probability, optimal treatment timing, and your pet's healing potential.",
+  metaTitleCn: "我的宠物会从疾病中康复吗？| Stellawei 知识中心",
+  metaDescriptionCn: "面对宠物疾病令人心碎。东西方命理工具评估康复概率、最佳治疗时机和宠物的康复潜力。",
+  heroIntro: "The diagnosis hit you hard. Your beloved companion is sick, and you are facing the hardest question a pet owner can ask: will they recover? You are doing everything the vet recommends, but you need something more—a sense of the bigger picture. Is your pet's body fighting effectively? Is this illness a passing storm or a longer journey? What can you do to support their healing? Eastern and Western divination tools can help assess recovery prospects. Six Yao divination provides clear indicators of healing potential, Qi Men Dun Jia identifies optimal treatment windows, and BaZi reveals whether your pet's current life cycle supports recovery.",
+  heroIntroCn: "诊断结果让你很沉重。你心爱的伙伴生病了，你正面临铲屎官最难的问题：它们会康复吗？你在做兽医建议的一切，但你需要更多——一个更大的图景。你宠物的身体在有效抗争吗？这场疾病是暂时的风暴还是更长的旅程？你能做什么来支持它们康复？东西方命理工具可以帮助评估康复前景。六爻占卜提供康复潜力的明确指标，奇门遁甲识别最佳治疗窗口，八字揭示宠物当前的生命周期是否支持康复。",
+
+  searchIntent: {
+    primary: [
+      "will my pet recover",
+      "pet illness recovery chances",
+      "pet recovery prediction",
+      "will my sick pet get better"
+    ],
+    primaryCn: [
+      "我的宠物会康复吗",
+      "宠物疾病康复几率",
+      "宠物康复预测",
+      "我生病的宠物会好起来吗"
+    ],
+    secondary: [
+      "six yao pet recovery",
+      "qi men dun jia pet healing",
+      "bazi pet illness",
+      "divination pet recovery"
+    ],
+    secondaryCn: [
+      "六爻宠物康复",
+      "奇门遁甲宠物治疗",
+      "八字宠物疾病",
+      "占卜宠物康复"
+    ],
+    related: [
+      "pet chronic illness management",
+      "pet healing energy",
+      "pet treatment timing",
+      "pet recovery support"
+    ],
+    relatedCn: [
+      "宠物慢性病管理",
+      "宠物疗愈能量",
+      "宠物治疗时机",
+      "宠物康复支持"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "Pet owners facing illness are often asking:",
+    questions: [
+      "My dog was diagnosed with a serious illness. What are the real chances of recovery?",
+      "My cat has been sick for weeks. Should I keep hoping or prepare for the worst?",
+      "The vet says treatment could work but is not certain. How do I decide what to do?",
+      "My pet is old and sick. Is recovery even possible at their age?",
+      "I want to do everything possible, but I do not want my pet to suffer. What is the right path?",
+      "Are there signs that my pet's body is fighting the illness effectively?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "面对宠物疾病的铲屎官，常常在问：",
+    questions: [
+      "我的狗被诊断出严重疾病。康复的真正几率有多大？",
+      "我的猫已经病了几周。我应该继续抱有希望还是做最坏的打算？",
+      "兽医说治疗可能有效但不确定。我该怎么决定？",
+      "我的宠物年纪大了又生病。在它们的年龄康复还有可能吗？",
+      "我想尽一切可能，但不想让宠物受苦。正确的道路是什么？",
+      "有没有迹象表明我的身体在有效对抗疾病？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Assess Recovery",
+    headingCn: "东西方命理如何评估康复前景",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods offer structured recovery assessment. Six Yao divination provides clear yes/no indicators with supporting context—whether recovery is likely, what conditions support healing, and what obstacles exist. Qi Men Dun Jia identifies optimal treatment windows and reveals whether your pet's current energy supports aggressive treatment or palliative care. BaZi shows whether your pet is in a favorable life cycle phase for recovery.",
+    easternDescCn: "东方方法提供结构化的康复评估。六爻占卜提供明确的指标和支撑背景——康复是否可能、什么条件支持疗愈、存在什么障碍。奇门遁甲识别最佳治疗窗口，揭示宠物的当前能量适合积极治疗还是舒缓护理。八字显示宠物是否处于有利于康复的生命周期阶段。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination, primarily Tarot, provides insight into the emotional and energetic dimensions of recovery. Tarot can reveal your pet's will to fight, whether their spirit is strong or tired, and what type of support—medical, emotional, or environmental—would be most healing right now.",
+    westernDescCn: "西方命理，主要是塔罗，提供对康复情绪和能量维度的洞察。塔罗可以揭示宠物的求生意志、精神是强还是疲惫，以及什么类型的支持——医疗、情绪还是环境——当下最具疗愈效果。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. Six Yao: Recovery Probability",
+        titleCn: "一、六爻：康复概率",
+        intro: "Six Yao divination provides clear indicators of recovery likelihood and supporting conditions.",
+        introCn: "六爻占卜提供康复可能性的明确指标和支撑条件。",
+        cards: [
+          {
+            title: "① Recovery Indicators",
+            titleCn: "① 康复指标",
+            desc: "The hexagram reveals whether conditions favor recovery.",
+            descCn: "卦象显示条件是否有利于康复。",
+            items: ["Strong recovery signs", "Conditional recovery", "Guarded prognosis"],
+            itemsCn: ["强康复迹象", "条件性康复", "谨慎预后"]
+          },
+          {
+            title: "② Supporting Factors",
+            titleCn: "② 支撑因素",
+            desc: "What conditions or actions can improve recovery chances.",
+            descCn: "什么条件或行动可以提高康复几率。",
+            items: ["Treatment timing", "Environmental factors", "Caregiver support"],
+            itemsCn: ["治疗时机", "环境因素", "护理者支持"]
+          },
+          {
+            title: "③ Obstacle Analysis",
+            titleCn: "③ 障碍分析",
+            desc: "What challenges exist and how to navigate them.",
+            descCn: "存在什么挑战以及如何 navigate。",
+            items: ["Primary obstacles", "Timing challenges", "Mitigation strategies"],
+            itemsCn: ["主要障碍", "时机挑战", "缓解策略"]
+          }
+        ]
+      },
+      {
+        title: "2. Qi Men Dun Jia: Treatment Windows",
+        titleCn: "二、奇门遁甲：治疗窗口",
+        desc: "Qi Men Dun Jia identifies the most favorable times for treatment decisions and interventions.",
+        descCn: "奇门遁甲识别最有利于治疗决策和干预的时机。",
+        focus: "Key indicators:",
+        focusCn: "关键指标：",
+        items: ["Optimal treatment window", "Energy trajectory", "Intervention timing", "Recovery milestones"],
+        itemsCn: ["最佳治疗窗口", "能量轨迹", "干预时机", "康复里程碑"]
+      },
+      {
+        title: "3. BaZi: Life Cycle Support",
+        titleCn: "三、八字：生命周期支持",
+        desc: "BaZi reveals whether your pet's current life phase supports recovery and healing.",
+        descCn: "八字揭示宠物当前的生命阶段是否支持康复和疗愈。",
+        focus: "Key indicators:",
+        focusCn: "关键指标：",
+        items: ["Life cycle phase", "Vitality assessment", "Recovery support level", "Care approach"],
+        itemsCn: ["生命周期阶段", "活力评估", "康复支持水平", "护理方式"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Recovery Assessment for a Dog with Chronic Kidney Disease",
+    titleCn: "患有慢性肾病狗狗的康复评估",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Mr. Chen (born 1985, Yi-Chou year) had a nine-year-old Golden Retriever named Buddy diagnosed with early-stage chronic kidney disease. The vet said with proper management, Buddy could live comfortably for years, but Mr. Chen wanted to understand the fuller picture—how aggressive should treatment be, and what was Buddy's real prognosis?",
+        textCn: "陈先生（1985年生，乙丑年）养了一只九岁的金毛寻回犬叫Buddy，被诊断出早期慢性肾病。兽医说如果管理得当，Buddy可以舒适地生活多年，但陈先生想了解更全面的图景——治疗应该有多积极，Buddy的真正预后是什么？"
+      },
+      {
+        label: "Six Yao Analysis",
+        labelCn: "六爻分析",
+        text: "The Six Yao reading showed a conditional recovery pattern—not full reversal, but effective management with good quality of life. The changing lines indicated that early intervention and dietary discipline would be decisive factors. The hexagram suggested a two-year favorable window ahead.",
+        textCn: "六爻读数显示条件性康复模式——不是完全逆转，而是有效管理下的良好生活质量。变爻显示早期干预和饮食纪律将是决定性因素。卦象显示前方有两年的有利窗口。"
+      },
+      {
+        label: "Qi Men Dun Jia Assessment",
+        labelCn: "奇门遁甲评估",
+        text: "The Qi Men chart identified the current month as an optimal window for initiating a comprehensive treatment plan. It also revealed that Buddy's energy was stronger than his symptoms suggested—his body was still fighting effectively and would respond well to supportive care.",
+        textCn: "奇门盘识别当月为启动综合治疗计划的最佳窗口。它还显示Buddy的能量比症状所暗示的要强——他的身体仍在有效抗争，会对辅助护理做出良好反应。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Mr. Chen implemented the treatment plan immediately. Two years later, Buddy's kidney values had stabilized and he remained active and comfortable. The vet noted that Buddy's case was one of the best-managed CKD cases she had seen. The two-year favorable window had been used well.",
+        textCn: "陈先生立即实施了治疗计划。两年后，Buddy的肾脏指标已经稳定，他仍然活跃舒适。兽医指出Buddy的病例是她见过的管理最好的慢性肾病案例之一。两年的有利窗口被充分利用了。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Divination complements but does not replace veterinary care.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异。命理辅助但不替代兽医护理。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "Six Yao divination provides clear recovery probability indicators with supporting conditions and obstacles.",
+      "Qi Men Dun Jia identifies optimal treatment windows and reveals whether your pet's body is responding effectively.",
+      "Recovery assessment combines divination insight with veterinary care to give you the fullest possible picture for decision-making."
+    ],
+    itemsCn: [
+      "六爻占卜提供明确的康复概率指标，包括支撑条件和障碍。",
+      "奇门遁甲识别最佳治疗窗口，揭示宠物的身体是否在有效反应。",
+      "康复评估将命理洞察与兽医护理结合，为决策提供最全面的图景。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "how-is-my-pets-health", question: "How is my pet's health?", questionCn: "我的宠物健康状况如何？" },
+    { slug: "will-pet-live-long", question: "Will my pet live a long life?", questionCn: "我的宠物会长寿吗？" },
+    { slug: "worried-about-pet-behavior", question: "Should I worry about my pet's behavior?", questionCn: "我应该担心宠物的行为吗？" }
+  ],
+
+  cta: {
+    textLine1: "Facing your pet's illness is one of life's hardest moments.",
+    textLine1Cn: "面对宠物疾病是人生最艰难的时刻之一。",
+    textLine2: "If you need clarity about your pet's recovery prospects and want guidance on the best path forward, our consultants can provide a compassionate, detailed assessment using Six Yao and Qi Men Dun Jia.",
+    textLine2Cn: "如果你需要了解宠物康复前景的清晰图景，并希望获得最佳前进道路的指引，我们的咨询师可以用六爻和奇门遁甲提供富有同情心的详细评估。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/pet-health/will-pet-recover",
+  publishedAt: "2026-10-21",
+  modifiedAt: "2026-10-21",
+  author: "Stellawei Editorial Team"
+};
+
+export const worriedAboutPetBehavior = {
+  slug: "worried-about-pet-behavior",
+  topicSlug: "pet-health",
+  question: "Should I be worried about my pet's behavior?",
+  questionCn: "我应该担心宠物的行为吗？",
+  metaTitle: "Should I Worry About My Pet's Behavior? | StellaWei Knowledge Center",
+  metaDescription: "Sudden behavior changes in pets can signal health issues, emotional stress, or environmental imbalance. Learn how divination tools help identify root causes and solutions.",
+  metaTitleCn: "我应该担心宠物的行为吗？| Stellawei 知识中心",
+  metaDescriptionCn: "宠物的突然行为变化可能预示健康问题、情绪压力或环境失衡。了解命理工具如何帮助识别根本原因和解决方案。",
+  heroIntro: "Your calm, loving pet has suddenly become aggressive. Or your social dog now hides when visitors arrive. Maybe your cat, who always used the litter box, has started having accidents. Behavior changes in pets are never random—they are communication. The question is: what is your pet trying to tell you? Is this a health issue requiring veterinary attention? Emotional stress from a household change? Or an environmental imbalance in your home's energy? Eastern and Western divination tools can help identify the root cause. Qi Men Dun Jia reveals behavioral energy patterns, Feng Shui analysis uncovers environmental stressors, and Tarot provides intuitive insight into your pet's emotional state.",
+  heroIntroCn: "你平静可爱的宠物突然变得具有攻击性。或者你社交的狗现在在访客到来时躲起来。也许你的猫总是在猫砂盆里方便，现在开始随地大小便。宠物的行为变化从来不是随机的——它们是一种沟通。问题是：你的宠物想告诉你什么？这是需要兽医关注的健康问题？家庭变化带来的情绪压力？还是家居能量的环境失衡？东西方命理工具可以帮助识别根本原因。奇门遁甲揭示行为能量模式，风水分析发现环境压力源，塔罗提供对宠物情绪状态的直觉洞察。",
+
+  searchIntent: {
+    primary: [
+      "pet behavior changes",
+      "why is my pet acting weird",
+      "sudden pet aggression",
+      "pet behavior problems"
+    ],
+    primaryCn: [
+      "宠物行为变化",
+      "为什么我的宠物行为异常",
+      "宠物突然攻击性",
+      "宠物行为问题"
+    ],
+    secondary: [
+      "qi men dun jia pet behavior",
+      "feng shui pet behavior",
+      "tarot pet emotions",
+      "pet energy imbalance behavior"
+    ],
+    secondaryCn: [
+      "奇门遁甲宠物行为",
+      "风水宠物行为",
+      "塔罗宠物情绪",
+      "宠物能量失衡行为"
+    ],
+    related: [
+      "pet stress signs",
+      "pet anxiety causes",
+      "pet environmental sensitivity",
+      "pet behavior solutions"
+    ],
+    relatedCn: [
+      "宠物压力信号",
+      "宠物焦虑原因",
+      "宠物环境敏感",
+      "宠物行为解决方案"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "Pet owners noticing behavior changes are often asking:",
+    questions: [
+      "My cat suddenly started scratching furniture aggressively. What is going on?",
+      "My dog has been barking excessively at nothing. Should I be worried?",
+      "My pet used to be social but now hides all the time. What changed?",
+      "My normally gentle pet snapped at me. Is this a health issue or a behavior issue?",
+      "My pet keeps going to the same spot in the house and staring at nothing. Why?",
+      "We moved recently and my pet's behavior completely changed. Is this stress?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "注意到宠物行为变化的铲屎官，常常在问：",
+    questions: [
+      "我的猫突然开始猛烈抓家具。发生了什么？",
+      "我的狗一直对着什么都没有的地方狂吠。我应该担心吗？",
+      "我的宠物以前很社交，现在总是躲起来。什么变了？",
+      "我通常温和的宠物对我龇牙了。这是健康问题还是行为问题？",
+      "我的宠物一直去家里同一个地方盯着什么都没有的地方看。为什么？",
+      "我们最近搬家了，宠物的行为完全变了。这是压力吗？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Assess Pet Behavior",
+    headingCn: "东西方命理如何评估宠物行为",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern approaches address behavior through energy and environment. Qi Men Dun Jia reveals the energetic pattern behind behavioral changes—whether the root is physical discomfort, emotional disturbance, or external environmental stress. Feng Shui analysis of your home identifies spatial imbalances that may affect your pet: sharp angles creating pressure, cluttered areas blocking energy flow, or room placements that conflict with your pet's elemental nature.",
+    easternDescCn: "东方方法通过能量和环境来解决行为问题。奇门遁甲揭示行为变化背后的能量模式——根源是身体不适、情绪困扰还是外部环境压力。家居风水分析识别可能影响宠物的空间失衡：尖角造成压力、杂乱区域阻碍能量流动、或房间布局与宠物五行属性冲突。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination, primarily Tarot, provides direct insight into your pet's emotional experience. Tarot can reveal whether your pet is anxious, fearful, in pain, or responding to unseen energetic changes in the household. It can also indicate what type of intervention—medical, behavioral, or environmental—would be most effective.",
+    westernDescCn: "西方命理，主要是塔罗，直接洞察宠物的情绪体验。塔罗可以揭示宠物是焦虑、恐惧、疼痛，还是对家庭中看不见的能量变化做出反应。它还可以表明什么类型的干预——医疗、行为还是环境——最有效。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. Qi Men Dun Jia: Behavioral Energy Pattern",
+        titleCn: "一、奇门遁甲：行为能量模式",
+        intro: "Qi Men Dun Jia reveals the underlying energetic cause of behavior changes.",
+        introCn: "奇门遁甲揭示行为变化背后的潜在能量原因。",
+        cards: [
+          {
+            title: "① Root Cause Analysis",
+            titleCn: "① 根本原因分析",
+            desc: "Is the behavior rooted in physical, emotional, or environmental factors?",
+            descCn: "行为是源于身体、情绪还是环境因素？",
+            items: ["Physical discomfort signs", "Emotional disturbance patterns", "Environmental triggers"],
+            itemsCn: ["身体不适信号", "情绪困扰模式", "环境触发因素"]
+          },
+          {
+            title: "② Energy Direction",
+            titleCn: "② 能量方向",
+            desc: "Is the behavior a reaction to past events or present conditions?",
+            descCn: "行为是对过去事件的反应还是当前状况的反应？",
+            items: ["Past trauma indicators", "Current stress sources", "Future anxiety patterns"],
+            itemsCn: ["过去创伤指标", "当前压力源", "未来焦虑模式"]
+          },
+          {
+            title: "③ Intervention Path",
+            titleCn: "③ 干预路径",
+            desc: "What approach will most effectively address the behavior?",
+            descCn: "什么方法最能有效解决这个问题行为？",
+            items: ["Veterinary referral signals", "Environmental adjustment", "Emotional support approach"],
+            itemsCn: ["兽医转诊信号", "环境调整", "情绪支持方式"]
+          }
+        ]
+      },
+      {
+        title: "2. Feng Shui: Environmental Impact Assessment",
+        titleCn: "二、风水：环境影响评估",
+        desc: "Feng Shui analysis identifies home energy patterns that may contribute to pet behavior issues.",
+        descCn: "风水分析识别可能导致宠物行为问题的家居能量模式。",
+        focus: "Key assessment areas:",
+        focusCn: "关键评估领域：",
+        items: ["Pet's sleeping area energy", "Sharp angle pressure points", "Clutter zones", "Elemental compatibility of spaces"],
+        itemsCn: ["宠物睡眠区能量", "尖角压力点", "杂乱区域", "空间的五行兼容性"]
+      },
+      {
+        title: "3. Tarot: Pet Emotional Reading",
+        titleCn: "三、塔罗：宠物情绪解读",
+        desc: "Tarot provides intuitive insight into your pet's inner emotional state.",
+        descCn: "塔罗提供对宠物内在情绪状态的直觉洞察。",
+        focus: "Common behavior spreads:",
+        focusCn: "常见行为牌阵：",
+        items: ["Emotional state assessment", "Fear/anxiety identification", "Trust level indicator", "Healing path"],
+        itemsCn: ["情绪状态评估", "恐惧/焦虑识别", "信任度指标", "疗愈路径"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Resolving Sudden Aggression in a Formerly Gentle Cat",
+    titleCn: "解决原本温顺猫咪的突然攻击性",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Ms. Liu (born 1988, Wu-Chen year) had a three-year-old Ragdoll cat named Luna who had always been calm and affectionate. Over three weeks, Luna became increasingly aggressive—hissing at family members, attacking furniture, and hiding for hours. A vet check found no physical illness.",
+        textCn: "刘女士（1988年生，戊辰年）养了一只三岁的布偶猫叫Luna，一直以来都平静亲人。三周以来，Luna变得越来越具攻击性——对家人哈气、攻击家具、躲藏几个小时。兽医检查没有发现身体疾病。"
+      },
+      {
+        label: "Qi Men Dun Jia Analysis",
+        labelCn: "奇门遁甲分析",
+        text: "The Qi Men chart revealed that Luna's behavioral change was environmental, not emotional or physical. The chart showed a strong Metal energy surge in the northwest sector of the home—the exact location where Ms. Liu had recently placed a large mirrored furniture piece. Luna's sleeping area was directly in the path of this energy reflection.",
+        textCn: "奇门盘显示Luna的行为变化是环境性的，不是情绪或身体问题。盘显示家中西北 sector 有强烈的金能量涌动——正是刘女士最近放置了一面大型镜面家具的位置。Luna的睡眠区直接在这个能量反射的路径上。"
+      },
+      {
+        label: "Feng Shui Adjustment",
+        labelCn: "风水调整",
+        text: "Following the analysis, Ms. Liu moved Luna's bed to the southeast sector (Wood energy, which harmonizes with Luna's Water-dominant chart) and placed a plant buffer between the mirror and the sleeping area. She also added a small fountain to introduce flowing Water energy.",
+        textCn: "按照分析，刘女士把Luna的床移到了东南 sector（木能量，与Luna水主导的命盘和谐），并在镜子和睡眠区之间放置了植物缓冲。她还加了一个小喷泉引入流动的水能量。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Luna's aggressive behavior began diminishing within five days. After two weeks, she had returned to her calm, affectionate self. Ms. Liu reported that Luna actually seemed happier than before the behavior change, suggesting the environmental stress had been building for some time.",
+        textCn: "Luna的攻击性行为在五天内开始减少。两周后，她恢复了平静亲人的状态。刘女士报告说Luna看起来比行为变化之前更快乐，说明环境压力已经积累了相当长的时间。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Always rule out medical causes with a veterinarian first.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异。请始终先排除兽医诊断的医疗原因。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "Sudden behavior changes in pets are communication—always rule out medical causes with a vet first.",
+      "Qi Men Dun Jia can identify whether the root cause is physical, emotional, or environmental.",
+      "Feng Shui adjustments can resolve behavior issues caused by environmental energy imbalances."
+    ],
+    itemsCn: [
+      "宠物的突然行为变化是一种沟通——请始终先排除兽医诊断的医疗原因。",
+      "奇门遁甲可以识别根源是身体、情绪还是环境因素。",
+      "风水调整可以解决由环境能量失衡引起的行为问题。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "how-is-my-pets-health", question: "How is my pet's health?", questionCn: "我的宠物健康状况如何？" },
+    { slug: "will-pet-recover", question: "Will my pet recover from illness?", questionCn: "我的宠物会从疾病中康复吗？" },
+    { slug: "best-time-new-pet", question: "When is the best time to get a new pet?", questionCn: "什么时候养新宠物最好？" }
+  ],
+
+  cta: {
+    textLine1: "Your pet is trying to tell you something.",
+    textLine1Cn: "你的宠物在试图告诉你什么。",
+    textLine2: "If your pet's behavior has changed and you want to understand why, our consultants can use Qi Men Dun Jia and Feng Shui analysis to identify the root cause and recommend effective solutions.",
+    textLine2Cn: "如果你的宠物行为发生了变化，你想知道原因，我们的咨询师可以用奇门遁甲和风水分析识别根本原因并推荐有效的解决方案。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/pet-health/worried-about-pet-behavior",
+  publishedAt: "2026-10-21",
+  modifiedAt: "2026-10-21",
+  author: "Stellawei Editorial Team"
+};
+
+export const bestTimeNewPet = {
+  slug: "best-time-new-pet",
+  topicSlug: "pet-health",
+  question: "When is the best time to get a new pet?",
+  questionCn: "什么时候养新宠物最好？",
+  metaTitle: "When Is the Best Time to Get a New Pet? | StellaWei Knowledge Center",
+  metaDescription: "Timing matters when bringing a new pet home. Eastern divination reveals your pet compatibility window, optimal adoption timing, and the best energetic match for your household.",
+  metaTitleCn: "什么时候养新宠物最好？| Stellawei 知识中心",
+  metaDescriptionCn: "带新宠物回家的时机很重要。东方命理揭示你的宠物缘分窗口、最佳领养时机以及最适合你家庭的能量匹配。",
+  heroIntro: "You feel ready to welcome a new furry family member. But when? Adopting during the wrong life phase can lead to challenges for both you and your pet. The right timing creates a harmonious bond from day one. Eastern divination offers powerful tools for this decision. BaZi compatibility analysis between you and your potential pet reveals whether your energies support each other. Qi Men Dun Jia identifies the optimal adoption window. And Feng Shui guidance ensures your home is energetically prepared to welcome its newest resident.",
+  heroIntroCn: "你准备好欢迎新的毛茸茸家庭成员了。但什么时候？在错误的生命阶段领养可能给你和宠物都带来挑战。正确的时机从第一天起就创造和谐的纽带。东方命理为这个决定提供了强大的工具。你和你潜在宠物之间的八字兼容性分析揭示你们的能量是否互相支持。奇门遁甲识别最佳领养窗口。风水指引确保你的家已经做好了迎接最新成员的能量准备。",
+
+  searchIntent: {
+    primary: [
+      "best time to get a pet",
+      "when to adopt a pet",
+      "right time for new pet",
+      "pet adoption timing"
+    ],
+    primaryCn: [
+      "养宠物的最佳时机",
+      "什么时候领养宠物",
+      "养新宠物的正确时机",
+      "宠物领养时机"
+    ],
+    secondary: [
+      "bazi pet compatibility",
+      "qi men dun jia pet adoption",
+      "feng shui for new pet",
+      "pet zodiac compatibility"
+    ],
+    secondaryCn: [
+      "八字宠物兼容性",
+      "奇门遁甲宠物领养",
+      "新宠物风水",
+      "宠物生肖兼容性"
+    ],
+    related: [
+      "choosing the right pet",
+      "pet and owner compatibility",
+      "new pet preparation",
+      "pet adoption readiness"
+    ],
+    relatedCn: [
+      "选择合适的宠物",
+      "宠物与主人兼容性",
+      "新宠物准备",
+      "宠物领养准备度"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People considering a new pet are often asking:",
+    questions: [
+      "I want to get a dog, but I am not sure if now is the right time. How do I know?",
+      "My last pet passed away recently. When is it okay to get a new one?",
+      "I work long hours. Is my schedule compatible with having a pet?",
+      "Should I get a puppy/kitten or an older pet? What suits me better?",
+      "My partner and I disagree on when to get a pet. How do we decide?",
+      "I have had bad luck with pets in the past. Is there a compatibility issue?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "考虑养新宠物的人，常常在问：",
+    questions: [
+      "我想养一只狗，但不确定现在是否是正确的时机。我怎么知道？",
+      "我的上一只宠物最近去世了。什么时候可以养新的？",
+      "我的工作时间很长。我的日程适合养宠物吗？",
+      "我应该养幼犬/幼猫还是成年宠物？什么更适合我？",
+      "我和伴侣对什么时候养宠物有分歧。我们如何决定？",
+      "我过去养宠物运气不好。是否存在兼容性问题？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern Divination Determines Pet Timing",
+    headingCn: "东方命理如何确定宠物时机",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods assess pet timing through compatibility and energy alignment. BaZi analysis compares your chart with your potential pet's chart (or the adoption date) to reveal compatibility levels and potential friction points. Qi Men Dun Jia identifies the optimal adoption window—a time when the energetic conditions support a smooth transition and strong bond formation. Feng Shui ensures your home environment is ready to support the new pet's energy.",
+    easternDescCn: "东方方法通过兼容性和能量对齐评估宠物时机。八字分析将你的命盘与你潜在宠物的命盘（或领养日期）进行比较，揭示兼容性水平和潜在摩擦点。奇门遁甲识别最佳领养窗口——能量条件支持平稳过渡和强烈纽带形成的时机。风水确保你的家居环境已准备好支持新宠物的能量。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination, primarily Tarot, provides intuitive insight into your readiness for a new pet. Tarot can reveal whether your current life phase supports the commitment of pet ownership, what type of pet personality would complement yours, and whether any unresolved emotions from previous pet experiences need attention first.",
+    westernDescCn: "西方命理，主要是塔罗，提供对你是否准备好养新宠物的直觉洞察。塔罗可以揭示你当前的生命阶段是否支持养宠物的承诺，什么类型的宠物性格最能补充你的性格，以及之前宠物经历中是否有未解决的情绪需要先处理。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi: Owner-Pet Compatibility",
+        titleCn: "一、八字：主人与宠物兼容性",
+        intro: "BaZi compatibility analysis between owner and potential pet reveals the quality of the energetic bond.",
+        introCn: "主人与潜在宠物之间的八字兼容性分析揭示能量纽带的质量。",
+        cards: [
+          {
+            title: "① Elemental Harmony",
+            titleCn: "① 五行和谐",
+            desc: "How your elemental profile interacts with your pet's.",
+            descCn: "你的五行画像与宠物的如何互动。",
+            items: ["Complementary elements", "Supporting cycles", "Challenging combinations"],
+            itemsCn: ["互补五行", "相生循环", "挑战组合"]
+          },
+          {
+            title: "② Bond Quality Indicators",
+            titleCn: "② 纽带质量指标",
+            desc: "What type of relationship the charts suggest.",
+            descCn: "命盘暗示什么类型的关系。",
+            items: ["Deep natural bond", "Growth-oriented pairing", "Teaching/learning dynamic"],
+            itemsCn: ["深厚天然纽带", "成长导向配对", "教学/学习动态"]
+          },
+          {
+            title: "③ Timing Alignment",
+            titleCn: "③ 时机对齐",
+            desc: "Whether your current life phase supports pet ownership.",
+            descCn: "你当前的生命阶段是否支持养宠物。",
+            items: ["Readiness window", "Energy availability", "Life stability factors"],
+            itemsCn: ["准备度窗口", "能量可用性", "生活稳定因素"]
+          }
+        ]
+      },
+      {
+        title: "2. Qi Men Dun Jia: Optimal Adoption Window",
+        titleCn: "二、奇门遁甲：最佳领养窗口",
+        desc: "Qi Men Dun Jia identifies the most favorable time to bring a new pet home.",
+        descCn: "奇门遁甲识别带新宠物回家的最有利时机。",
+        focus: "Key indicators:",
+        focusCn: "关键指标：",
+        items: ["Optimal adoption month", "Smooth transition timing", "Bond formation window", "Household harmony period"],
+        itemsCn: ["最佳领养月份", "平稳过渡时机", "纽带形成窗口", "家庭和谐期"]
+      },
+      {
+        title: "3. Feng Shui: Home Preparation",
+        titleCn: "三、风水：家居准备",
+        desc: "Feng Shui guidance prepares your home to welcome the new pet's energy.",
+        descCn: "风水指引准备家居以迎接新宠物的能量。",
+        focus: "Key preparation areas:",
+        focusCn: "关键准备领域：",
+        items: ["Pet's sleeping area placement", "Energy flow optimization", "Elemental balance", "Pet's directional harmony"],
+        itemsCn: ["宠物睡眠区位置", "能量流优化", "五行平衡", "宠物方向和谐"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Finding the Right Timing for a New Dog",
+    titleCn: "寻找养新狗的合适时机",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Ms. Yang (born 1992, Ren-Shen year) had been wanting to adopt a dog for months, but two previous attempts had fallen through—one adoption fell ill before she could take it home, and another had severe behavioral issues that made adoption impossible. She began to wonder if she was simply not meant to have a dog, or if timing was the issue.",
+        textCn: "杨女士（1992年生，壬申年）想领养一只狗已经好几个月了，但前两次尝试都失败了——一次是领养前狗生病了，另一只有严重的行为问题导致无法领养。她开始想自己是否注定不该养狗，还是时机问题。"
+      },
+      {
+        label: "BaZi Compatibility Analysis",
+        labelCn: "八字兼容性分析",
+        text: "Ms. Yang's chart showed a strong Metal constitution with a current need for Water energy—dogs, in elemental terms, often represent loyalty (Earth) and warmth (Fire). The analysis suggested she needed a Water-supporting pet rather than a Fire-intense one. This meant a calm, older dog would be more compatible than an energetic puppy.",
+        textCn: "杨女士的命盘显示强金体质，当前需要水能量——用五行术语来说，狗通常代表忠诚（土）和温暖（火）。分析建议她需要水属性的宠物而不是火属性强烈的。这意味着一只平静的成年狗比精力旺盛的幼犬更适合她。"
+      },
+      {
+        label: "Qi Men Dun Jia Timing",
+        labelCn: "奇门遁甲时机",
+        text: "The Qi Men chart identified a six-week window, starting in the second month of autumn, as optimal for pet adoption. The chart also indicated that the right dog would have a Water-influenced marking pattern (dark or blue-black coloring) and would be found through a western connection.",
+        textCn: "奇门盘识别了一个六周的窗口，从秋季第二个月开始，是领养宠物的最佳时机。盘还显示合适的狗会有水属性的花纹（深色或蓝黑色），并且会通过西方的联系找到。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Ms. Yang waited for the window and adopted a four-year-old black Labrador mix from a shelter in the western part of her city. The bond was immediate and profound. Two years later, she describes it as the best decision she ever made, and the compatibility is evident in their daily life together.",
+        textCn: "杨女士等待了窗口期，从城市西部的收容所领养了一只四岁的黑色拉布拉多混血。纽带立即而深刻。两年后，她形容这是她有史以来最好的决定，兼容性在他们每天的生活中显而易见。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Pet adoption should always prioritize the animal's welfare.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异。宠物领养应始终以动物的福祉为优先。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "BaZi compatibility analysis between owner and pet reveals whether your energies support a harmonious relationship.",
+      "Qi Men Dun Jia identifies optimal adoption windows when conditions favor a smooth transition and strong bond.",
+      "Feng Shui preparation of your home creates an energetically welcoming environment for your new pet."
+    ],
+    itemsCn: [
+      "主人与宠物之间的八字兼容性分析揭示你们的能量是否支持和谐的关系。",
+      "奇门遁甲识别最佳领养窗口，此时条件有利于平稳过渡和强烈纽带。",
+      "家居风水准备为新宠物创造一个能量上欢迎的环境。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "how-is-my-pets-health", question: "How is my pet's health?", questionCn: "我的宠物健康状况如何？" },
+    { slug: "worried-about-pet-behavior", question: "Should I worry about my pet's behavior?", questionCn: "我应该担心宠物的行为吗？" },
+    { slug: "will-pet-live-long", question: "Will my pet live a long life?", questionCn: "我的宠物会长寿吗？" }
+  ],
+
+  cta: {
+    textLine1: "The right pet at the right time changes everything.",
+    textLine1Cn: "正确时机的正确宠物会改变一切。",
+    textLine2: "If you are considering a new pet and want to ensure the best possible start, our consultants can provide compatibility analysis and timing guidance using BaZi and Qi Men Dun Jia.",
+    textLine2Cn: "如果你正在考虑养新宠物并希望确保最好的开始，我们的咨询师可以用八字和奇门遁甲提供兼容性分析和时机指引。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/pet-health/best-time-new-pet",
+  publishedAt: "2026-10-21",
+  modifiedAt: "2026-10-21",
+  author: "Stellawei Editorial Team"
+};
+
+export const willPetLiveLong = {
+  slug: "will-pet-live-long",
+  topicSlug: "pet-health",
+  question: "Will my pet live a long life?",
+  questionCn: "我的宠物会长寿吗？",
+  metaTitle: "Will My Pet Live a Long Life? | StellaWei Knowledge Center",
+  metaDescription: "Wondering about your pet's lifespan? BaZi vitality analysis and Qi Men Dun Jia health windows reveal your pet's longevity potential and key care periods for maximum wellbeing.",
+  metaTitleCn: "我的宠物会长寿吗？| Stellawei 知识中心",
+  metaDescriptionCn: "想知道宠物的寿命？八字活力分析和奇门遁甲健康窗口揭示宠物的长寿潜力和关键护理期。",
+  heroIntro: "You look at your beloved companion and wonder: how much time do we have together? It is the question every pet owner eventually faces. Whether your pet is young and healthy or entering their senior years, understanding their longevity potential helps you make the most of every moment. Eastern divination offers unique insights into pet longevity. BaZi vitality analysis reveals your pet's constitutional life force strength, while Qi Men Dun Jia identifies critical health windows—periods when extra care makes the biggest difference. These insights help you plan proactively for your pet's long-term wellbeing.",
+  heroIntroCn: "你看着你心爱的伙伴想：我们还有多少时间在一起？这是每个铲屎官最终都要面对的问题。无论你的宠物年轻健康还是进入老年期，了解它们的长寿潜力帮助你充分利用每一刻。东方命理提供对宠物寿命的独特洞察。八字活力分析揭示宠物体质生命力强度，奇门遁甲识别关键健康窗口——额外护理产生最大影响的时期。这些洞察帮助你主动规划宠物的长期福祉。",
+
+  searchIntent: {
+    primary: [
+      "will my pet live long",
+      "pet lifespan prediction",
+      "how long will my pet live",
+      "pet longevity signs"
+    ],
+    primaryCn: [
+      "我的宠物会长寿吗",
+      "宠物寿命预测",
+      "我的宠物能活多久",
+      "宠物长寿迹象"
+    ],
+    secondary: [
+      "bazi pet longevity",
+      "qi men dun jia pet lifespan",
+      "pet vitality analysis",
+      "pet life force assessment"
+    ],
+    secondaryCn: [
+      "八字宠物寿命",
+      "奇门遁甲宠物寿命",
+      "宠物活力分析",
+      "宠物生命力评估"
+    ],
+    related: [
+      "senior pet care",
+      "pet aging gracefully",
+      "pet health maintenance",
+      "extending pet lifespan"
+    ],
+    relatedCn: [
+      "老年宠物护理",
+      "宠物优雅衰老",
+      "宠物健康维护",
+      "延长宠物寿命"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "Pet owners thinking about longevity are often asking:",
+    questions: [
+      "My dog is already eight years old. How much longer might he live?",
+      "My cat seems very healthy. Does that mean she will live a long life?",
+      "I have a breed with known health issues. Should I worry about lifespan?",
+      "My pet is showing signs of aging. How do I help them age gracefully?",
+      "Are there specific years when my pet needs extra health attention?",
+      "I want to do everything possible to help my pet live a long, happy life. Where do I start?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "思考宠物寿命的铲屎官，常常在问：",
+    questions: [
+      "我的狗已经八岁了。他还能活多久？",
+      "我的猫看起来很健康。这意味着她会长寿吗？",
+      "我养的是一个有已知健康问题的品种。我应该担心寿命吗？",
+      "我的宠物正在显现衰老迹象。我该如何帮助他们优雅地老去？",
+      "有没有特定的年份我的宠物需要额外的健康关注？",
+      "我想尽一切可能帮助我的宠物过上长寿快乐的生活。从哪里开始？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern Divination Assesses Pet Longevity",
+    headingCn: "东方命理如何评估宠物寿命",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods assess longevity through constitutional vitality and cyclical patterns. BaZi analysis of your pet's chart reveals their base life force strength—some pets are constitutionally robust with strong vitality, while others may need more support. Qi Men Dun Jia identifies critical health windows: specific months or years when your pet's energy is more vulnerable and preventive care is most important. Zi Wei Dou Shu can map longer-term vitality cycles.",
+    easternDescCn: "东方方法通过体质活力和周期模式评估寿命。宠物命盘的八字分析揭示其基础生命力强度——有些宠物体质强健、生命力旺盛，而另一些可能需要更多支持。奇门遁甲识别关键健康窗口：宠物能量更脆弱、预防护理最重要的特定月份或年份。紫微斗数可以绘制更长期的活力周期。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination, primarily Tarot, provides insight into your pet's overall life energy and soul journey. Tarot can reveal whether your pet's life force is strong or delicate, what lessons this pet is here to teach you, and how to honor their journey at every stage of life.",
+    westernDescCn: "西方命理，主要是塔罗，提供对宠物整体生命能量和灵魂旅程的洞察。塔罗可以揭示宠物的生命力是强还是脆弱，这个宠物来这里教你什么功课，以及如何在宠物生命的每个阶段尊重它们的旅程。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi: Vitality Strength Analysis",
+        titleCn: "一、八字：生命力强度分析",
+        intro: "BaZi analysis reveals your pet's constitutional life force and longevity potential.",
+        introCn: "八字分析揭示宠物的体质生命力和长寿潜力。",
+        cards: [
+          {
+            title: "① Vitality Indicators",
+            titleCn: "① 活力指标",
+            desc: "Key chart elements that indicate life force strength.",
+            descCn: "表明显示生命力强弱的关键命盘因素。",
+            items: ["Day Master strength", "Support element balance", "Root depth assessment"],
+            itemsCn: ["日主强度", "支持元素平衡", "根基深度评估"]
+          },
+          {
+            title: "② Longevity Factors",
+            titleCn: "② 长寿因素",
+            desc: "Elements in the chart that support or challenge longevity.",
+            descCn: "命盘中支持或挑战寿命的因素。",
+            items: ["Strong vitality markers", "Health vulnerability points", "Recovery capacity"],
+            itemsCn: ["强活力标志", "健康脆弱点", "恢复能力"]
+          },
+          {
+            title: "③ Care Implications",
+            titleCn: "③ 护理启示",
+            desc: "What the vitality analysis means for daily care decisions.",
+            descCn: "活力分析对日常护理决策的意义。",
+            items: ["Dietary priorities", "Activity balance", "Stress management"],
+            itemsCn: ["饮食优先级", "活动平衡", "压力管理"]
+          }
+        ]
+      },
+      {
+        title: "2. Qi Men Dun Jia: Critical Health Windows",
+        titleCn: "二、奇门遁甲：关键健康窗口",
+        desc: "Qi Men Dun Jia identifies specific periods when your pet's health needs extra attention.",
+        descCn: "奇门遁甲识别宠物健康需要额外关注的特定时期。",
+        focus: "Key indicators:",
+        focusCn: "关键指标：",
+        items: ["Vulnerable periods", "Preventive care windows", "Optimal checkup timing", "Energy dip forecasts"],
+        itemsCn: ["脆弱期", "预防护理窗口", "最佳检查时机", "能量低谷预测"]
+      },
+      {
+        title: "3. Zi Wei Dou Shu: Long-term Cycles",
+        titleCn: "三、紫微斗数：长期周期",
+        desc: "Zi Wei Dou Shu maps longer-term vitality patterns across your pet's life stages.",
+        descCn: "紫微斗数绘制宠物各生命阶段的长期活力模式。",
+        focus: "Key indicators:",
+        focusCn: "关键指标：",
+        items: ["Life stage transitions", "Vitality peaks and valleys", "Senior care timeline", "Quality of life factors"],
+        itemsCn: ["生命阶段转换", "活力高峰和低谷", "老年护理时间线", "生活质量因素"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Longevity Planning for a Senior Cat",
+    titleCn: "老年猫的长寿规划",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Mr. Wu (born 1980, Geng-Shen year) had a twelve-year-old orange tabby named Marmalade. Marmalade had been healthy overall but was showing signs of aging—slightly slower movement, more sleeping, and mild weight loss. Mr. Wu wanted to know how to best support Marmalade's remaining years.",
+        textCn: "吴先生（1980年生，庚申年）养了一只十二岁的橘猫叫Marmalade。Marmalade总体健康，但正在显现衰老迹象——动作稍慢、睡得更多、体重轻微下降。吴先生想知道如何最好地支持Marmalade的余生。"
+      },
+      {
+        label: "BaZi Vitality Analysis",
+        labelCn: "八字活力分析",
+        text: "Marmalade's chart (constructed from adoption date) revealed a strong Wood Day Master with deep roots—a constitutionally robust cat with good longevity potential. The analysis suggested Marmalade had a natural vitality that, with proper support, could extend well beyond average lifespan for his breed.",
+        textCn: "Marmalade的命盘（通过领养日期排盘）显示强木日主和深厚的根基——一只体质强健、长寿潜力好的猫。分析显示Marmalade有天然的生命力，在适当支持下可以远超品种的平均寿命。"
+      },
+      {
+        label: "Qi Men Dun Jia Health Windows",
+        labelCn: "奇门遁甲健康窗口",
+        text: "The Qi Men chart identified two critical health windows ahead: the coming winter (kidney vulnerability) and the following autumn (digestive sensitivity). The chart recommended specific preventive measures for each window—warming foods and supplements for winter, and dietary adjustment for autumn.",
+        textCn: "奇门盘识别了前方两个关键健康窗口：即将到来的冬季（肾脏脆弱期）和第二年秋季（消化敏感期）。盘建议为每个窗口采取特定的预防措施——冬季用温暖的食物和补充剂，秋季调整饮食。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Mr. Wu followed the preventive guidance carefully. Marmalade sailed through both windows without health incidents. Now fourteen, Marmalade remains active and engaged—a happy senior cat whose vet recently commented that his health markers are better than many cats half his age.",
+        textCn: "吴先生认真遵循了预防指引。Marmalade顺利通过了两个窗口期，没有健康事故。现在十四岁的Marmalade仍然活跃投入——一只快乐的老年猫，他的兽医最近评论说他的健康指标比许多年龄只有他一半的猫还要好。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Longevity assessment supports but does not replace veterinary care.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异。寿命评估辅助但不替代兽医护理。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "BaZi vitality analysis reveals your pet's constitutional life force strength and longevity potential.",
+      "Qi Men Dun Jia identifies critical health windows when preventive care makes the biggest difference.",
+      "Longevity planning combines divination insight with excellent veterinary care to maximize your pet's quality of life at every stage."
+    ],
+    itemsCn: [
+      "八字活力分析揭示宠物的体质生命力强度和长寿潜力。",
+      "奇门遁甲识别关键健康窗口，预防护理在此时产生最大效果。",
+      "寿命规划将命理洞察与卓越的兽医护理结合，最大化宠物在每个阶段的生活质量。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "how-is-my-pets-health", question: "How is my pet's health?", questionCn: "我的宠物健康状况如何？" },
+    { slug: "will-pet-recover", question: "Will my pet recover from illness?", questionCn: "我的宠物会从疾病中康复吗？" },
+    { slug: "best-time-new-pet", question: "When is the best time to get a new pet?", questionCn: "什么时候养新宠物最好？" }
+  ],
+
+  cta: {
+    textLine1: "Every year with your pet is a gift. Make the most of them.",
+    textLine1Cn: "与宠物在一起的每一年都是礼物。充分利用它们。",
+    textLine2: "If you want to understand your pet's longevity potential and create a proactive care plan, our consultants can provide a detailed vitality assessment using BaZi and Qi Men Dun Jia.",
+    textLine2Cn: "如果你想了解宠物的长寿潜力并制定主动护理计划，我们的咨询师可以用八字和奇门遁甲提供详细的活力评估。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/pet-health/will-pet-live-long",
+  publishedAt: "2026-10-21",
+  modifiedAt: "2026-10-21",
+  author: "Stellawei Editorial Team"
+};

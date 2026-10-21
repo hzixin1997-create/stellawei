@@ -425,6 +425,11 @@ import {
   whenFindLostItem,
   isLostItemRecoverable,
   whoTookLostItem,
+  howIsMyPetsHealth,
+  willPetRecover,
+  worriedAboutPetBehavior,
+  bestTimeNewPet,
+  willPetLiveLong,
 } from "./knowledge-article-pages";
 
 // ==================== 文章索引 ====================
@@ -472,6 +477,11 @@ export const knowledgeArticles: Record<string, KnowledgeArticle> = {
   [whenFindLostItem.slug]: whenFindLostItem,
   [isLostItemRecoverable.slug]: isLostItemRecoverable,
   [whoTookLostItem.slug]: whoTookLostItem,
+  [howIsMyPetsHealth.slug]: howIsMyPetsHealth,
+  [willPetRecover.slug]: willPetRecover,
+  [worriedAboutPetBehavior.slug]: worriedAboutPetBehavior,
+  [bestTimeNewPet.slug]: bestTimeNewPet,
+  [willPetLiveLong.slug]: willPetLiveLong,
 };
 
 export function getArticleBySlug(slug: string): KnowledgeArticle | undefined {
