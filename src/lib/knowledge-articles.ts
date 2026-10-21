@@ -430,6 +430,13 @@ import {
   worriedAboutPetBehavior,
   bestTimeNewPet,
   willPetLiveLong,
+  improvePetWellbeing,
+  goodTimeToInvest,
+  investmentSuitsFortune,
+  investInStocks,
+  willInvestmentProfit,
+  stocksOrRealEstate,
+  whenSeeReturns,
 } from "./knowledge-article-pages";
 
 // ==================== 文章索引 ====================
@@ -482,6 +489,13 @@ export const knowledgeArticles: Record<string, KnowledgeArticle> = {
   [worriedAboutPetBehavior.slug]: worriedAboutPetBehavior,
   [bestTimeNewPet.slug]: bestTimeNewPet,
   [willPetLiveLong.slug]: willPetLiveLong,
+  [improvePetWellbeing.slug]: improvePetWellbeing,
+  [goodTimeToInvest.slug]: goodTimeToInvest,
+  [investmentSuitsFortune.slug]: investmentSuitsFortune,
+  [investInStocks.slug]: investInStocks,
+  [willInvestmentProfit.slug]: willInvestmentProfit,
+  [stocksOrRealEstate.slug]: stocksOrRealEstate,
+  [whenSeeReturns.slug]: whenSeeReturns,
 };
 
 export function getArticleBySlug(slug: string): KnowledgeArticle | undefined {

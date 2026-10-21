@@ -10609,3 +10609,1526 @@ export const willPetLiveLong = {
   modifiedAt: "2026-10-21",
   author: "Stellawei Editorial Team"
 };
+
+// ==================== 宠物健康 · 第 6 篇 ====================
+
+export const improvePetWellbeing = {
+  slug: "improve-pet-wellbeing",
+  topicSlug: "pet-health",
+  question: "How can I improve my pet's wellbeing?",
+  questionCn: "如何改善宠物的健康状况？",
+  metaTitle: "How Can I Improve My Pet's Wellbeing? | StellaWei Knowledge Center",
+  metaDescription: "Want to help your pet thrive? Eastern and Western divination tools reveal your pet's elemental needs, environmental adjustments, and lifestyle changes for optimal health and happiness.",
+  metaTitleCn: "如何改善宠物的健康状况？| Stellawei 知识中心",
+  metaDescriptionCn: "想帮助你的宠物茁壮成长？东西方命理工具揭示宠物的五行需求、环境调整和生活方式改变，以实现最佳健康和幸福。",
+  heroIntro: "Wellbeing is more than the absence of illness—it is the presence of vitality, joy, and balance. When your pet is surviving instead of thriving, the answer might not be another vet visit. It might be understanding what their body and spirit actually need. Eastern BaZi and Feng Shui both offer guidance: what does your pet need to truly flourish?",
+  heroIntroCn: "健康不只是没有疾病——它是活力、快乐和平衡的存在。当你的宠物只是在\"活着\"而不是在\"生活\"时，答案可能不是再去一次医院，而是去理解它们的身体和精神真正需要什么。东方八字和风水都认同：看懂宠物的需求，才能让它们真正茁壮成长。",
+
+  searchIntent: {
+    primary: [
+      "how to improve pet wellbeing",
+      "pet health improvement tips",
+      "pet wellness guide",
+      "how to make my pet healthier"
+    ],
+    primaryCn: [
+      "如何改善宠物健康",
+      "宠物健康改善建议",
+      "宠物健康指南",
+      "如何让我的宠物更健康"
+    ],
+    secondary: [
+      "bazi pet wellness",
+      "feng shui pet health",
+      "pet energy balance",
+      "holistic pet care"
+    ],
+    secondaryCn: [
+      "八字宠物健康",
+      "风水宠物健康",
+      "宠物能量平衡",
+      "宠物整体护理"
+    ],
+    related: [
+      "pet diet optimization",
+      "pet exercise needs",
+      "pet emotional health",
+      "pet environmental enrichment"
+    ],
+    relatedCn: [
+      "宠物饮食优化",
+      "宠物运动需求",
+      "宠物情绪健康",
+      "宠物环境丰富化"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "Pet owners seeking better wellbeing for their companions often feel:",
+    questions: [
+      "My cat is healthy but seems bored and listless. How do I help her thrive?",
+      "I feed my dog well, but he still seems low-energy. What am I missing?",
+      "Is there more to pet health than just food and vet visits?",
+      "My pet was happier at our old house. Is the environment affecting him?",
+      "I want to give my pet the best life possible—where do I even start?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "想给宠物更好生活的铲屎官，常常感到：",
+    questions: [
+      "我的猫身体没问题，但总是无精打采——怎么让它活得更开心？",
+      "狗粮买得也不差，可它精力还是不好。我到底缺了什么？",
+      "宠物健康除了吃和看病，还有更多要做的吗？",
+      "搬家之后它就没以前开心了。是环境的问题吗？",
+      "我想给它最好的生活——到底从哪里开始？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Improve Pet Wellbeing",
+    headingCn: "东西方命理如何改善宠物健康",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods take a holistic approach to pet wellbeing. BaZi analysis reveals your pet's elemental constitution—what elements they need more of, what to reduce, and how their diet, environment, and daily routine can be adjusted for optimal balance. Feng Shui assessment of your home identifies environmental factors that may be draining your pet's energy: poor sleeping area placement, blocked energy flow, or incompatible room assignments.",
+    easternDescCn: "东方方法采取整体方式改善宠物健康。八字分析揭示宠物的五行体质——需要增加什么五行、减少什么、以及如何调整饮食、环境和日常作息以达到最佳平衡。家居风水评估识别可能消耗宠物能量的环境因素：睡眠区位置不佳、能量流受阻或房间分配不兼容。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination, primarily Tarot, provides intuitive insight into your pet's emotional and spiritual needs. Tarot can reveal whether your pet needs more stimulation, more rest, deeper connection with you, or a change in their daily environment. It helps you understand not just what your pet needs physically, but what they need to feel truly content.",
+    westernDescCn: "西方命理，主要是塔罗，提供对宠物情绪和精神需求的直觉洞察。塔罗可以揭示宠物是需要更多刺激、更多休息、与你更深的连接，还是日常环境的改变。它帮助你理解宠物不仅在身体上需要什么，还需要什么才能真正感到满足。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi: Elemental Wellness Profile",
+        titleCn: "一、八字：五行健康画像",
+        intro: "BaZi analysis of your pet's chart reveals their elemental constitution and what they need to thrive.",
+        introCn: "宠物命盘的八字分析揭示五行体质和它们茁壮成长所需的条件。",
+        cards: [
+          {
+            title: "① Elemental Needs",
+            titleCn: "① 五行需求",
+            desc: "Which elements your pet needs more of and which to moderate.",
+            descCn: "宠物需要增加哪些五行、减少哪些。",
+            items: ["Deficient element identification", "Excess element moderation", "Balancing strategies"],
+            itemsCn: ["不足五行识别", "过旺五行调节", "平衡策略"]
+          },
+          {
+            title: "② Dietary Alignment",
+            titleCn: "② 饮食对齐",
+            desc: "Food choices that support your pet's elemental balance.",
+            descCn: "支持宠物五行平衡的食物选择。",
+            items: ["Warming vs cooling foods", "Elemental food categories", "Feeding timing"],
+            itemsCn: ["温性食物 vs 凉性食物", "五行食物分类", "喂食时间"]
+          },
+          {
+            title: "③ Lifestyle Optimization",
+            titleCn: "③ 生活方式优化",
+            desc: "Daily routines that align with your pet's natural energy.",
+            descCn: "与宠物自然能量对齐的日常作息。",
+            items: ["Optimal activity periods", "Rest and sleep quality", "Social interaction balance"],
+            itemsCn: ["最佳活动时段", "休息和睡眠质量", "社交互动平衡"]
+          }
+        ]
+      },
+      {
+        title: "2. Feng Shui: Environmental Enhancement",
+        titleCn: "二、风水：环境优化",
+        desc: "Feng Shui adjustments to your home create an environment where your pet can flourish.",
+        descCn: "家居风水调整创造一个让宠物茁壮成长的环境。",
+        focus: "Key adjustment areas:",
+        focusCn: "关键调整领域：",
+        items: ["Sleeping area optimization", "Energy flow improvement", "Elemental space alignment", "Pet-safe plant placement"],
+        itemsCn: ["睡眠区优化", "能量流改善", "空间五行对齐", "宠物安全植物摆放"]
+      },
+      {
+        title: "3. Tarot: Emotional Fulfillment Reading",
+        titleCn: "三、塔罗：情感满足解读",
+        desc: "Tarot reveals your pet's deeper emotional and spiritual needs.",
+        descCn: "塔罗揭示宠物更深层的情绪和精神需求。",
+        focus: "Key insight areas:",
+        focusCn: "关键洞察领域：",
+        items: ["Emotional state assessment", "Stimulation needs", "Connection quality", "Contentment indicators"],
+        itemsCn: ["情绪状态评估", "刺激需求", "连接质量", "满足度指标"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Transforming a Listless Cat into a Thriving Companion",
+    titleCn: "让无精打采的猫重获活力",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Ms. Zhou (born 1993, Gui-You year) had a four-year-old Siamese cat named Coco. Coco had no health issues but spent most days sleeping, showed little interest in toys, and had become increasingly withdrawn. Ms. Zhou felt Coco was not unhappy, but not truly alive either.",
+        textCn: "周女士（1993年生，癸酉年）养了一只四岁的暹罗猫叫Coco。Coco没有健康问题，但每天大部分时间都在睡觉，对玩具没兴趣，变得越来越孤僻。周女士觉得Coco不是不快乐，但也不是真正地活着。"
+      },
+      {
+        label: "BaZi Analysis",
+        labelCn: "八字分析",
+        text: "Coco's chart (from adoption date) revealed a Fire-dominant constitution in a strong Water period. Water controls Fire, which meant Coco's natural enthusiasm and playfulness were being energetically suppressed. The chart showed she needed Wood (which feeds Fire) and Earth (which provides stability) to counteract the Water influence.",
+        textCn: "Coco的命盘（通过领养日期排盘）显示火主导的五行体质正处于强水期。水克火，意味着Coco天生的热情和活泼被能量压制。盘显示她需要木（生火）和土（提供稳定）来抵消水的影响。"
+      },
+      {
+        label: "Feng Shui and Lifestyle Adjustments",
+        labelCn: "风水和生活方式调整",
+        text: "Following the guidance, Ms. Zhou moved Coco's bed to the southeast (Wood sector) and added an Earth-toned blanket. She introduced interactive play sessions during Fire hours (11am-1pm), added a small cat tree near a window for stimulation, and switched to a warming diet per the elemental recommendations.",
+        textCn: "按照指引，周女士把Coco的床移到了东南方（木 sector），加了一条土色毯子。她在火时（11点-13点）增加了互动游戏时间，在窗边加了一个小猫树提供刺激，并按照五行建议换成了温性饮食。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Within three weeks, Coco's transformation was remarkable. She became more playful, more affectionate, and more engaged with her environment. Ms. Zhou described it as 'watching a flower bloom'—Coco was not just existing anymore. She was truly living.",
+        textCn: "三周内，Coco的转变令人瞩目。她变得更爱玩、更亲人、更投入环境。周女士形容这就像\"看着一朵花绽放\"——Coco不再只是活着，而是在真正地生活。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Divination complements but does not replace veterinary care.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异。命理辅助但不替代兽医护理。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "BaZi elemental analysis reveals what your pet needs more of—specific elements, foods, and activities that support their natural constitution.",
+      "Feng Shui adjustments to your home environment can remove energy blockages that drain your pet's vitality.",
+      "True wellbeing combines physical health with emotional fulfillment—divination helps address both dimensions."
+    ],
+    itemsCn: [
+      "八字五行分析揭示宠物需要什么——支持其自然体质的特定五行、食物和活动。",
+      "家居风水调整可以消除消耗宠物活力的能量阻塞。",
+      "真正的健康结合身体健康和情感满足——命理帮助同时解决两个维度。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "how-is-my-pets-health", question: "How is my pet's health?", questionCn: "我的宠物健康状况如何？" },
+    { slug: "will-pet-live-long", question: "Will my pet live a long life?", questionCn: "我的宠物会长寿吗？" },
+    { slug: "worried-about-pet-behavior", question: "Should I worry about my pet's behavior?", questionCn: "我应该担心宠物的行为吗？" }
+  ],
+
+  cta: {
+    textLine1: "Your pet deserves more than survival—they deserve to thrive.",
+    textLine1Cn: "你的宠物值得的不只是生存——而是茁壮成长。",
+    textLine2: "If you want to understand your pet's unique needs and create a personalized wellbeing plan, our consultants can use BaZi and Feng Shui to guide you.",
+    textLine2Cn: "如果你想了解宠物的独特需求并制定个性化健康计划，我们的咨询师可以用八字和风水为你指引。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/pet-health/improve-pet-wellbeing",
+  publishedAt: "2026-10-21",
+  modifiedAt: "2026-10-21",
+  author: "Stellawei Editorial Team"
+};
+
+// ==================== 投资理财板块 ====================
+
+export const goodTimeToInvest = {
+  slug: "good-time-to-invest",
+  topicSlug: "investment",
+  question: "Is this a good time to invest?",
+  questionCn: "现在是投资的好时机吗？",
+  metaTitle: "Is This a Good Time to Invest? | StellaWei Knowledge Center",
+  metaDescription: "Timing matters in investing. Eastern and Western divination tools assess market energy, your personal financial cycles, and the optimal windows for investment decisions.",
+  metaTitleCn: "现在是投资的好时机吗？| Stellawei 知识中心",
+  metaDescriptionCn: "时机在投资中至关重要。东西方命理工具评估市场能量、你的个人财务周期和投资决策的最佳窗口。",
+  heroIntro: "Timing is everything in investing—but how do you know when the time is right? Market analysis gives you data, but data alone cannot capture the full picture. When your instincts and the numbers disagree, you need another lens. Eastern Qi Men Dun Jia and BaZi both offer clarity: is your energy aligned with the market right now?",
+  heroIntroCn: "时机是投资中的一切——但你怎么知道什么时候是对的？市场分析给你数据，但数据本身无法捕捉全貌。当直觉和数字不一致时，你需要另一个视角。东方奇门遁甲和八字都认同：看清你的能量是否与市场同步，比任何指标都重要。",
+
+  searchIntent: {
+    primary: [
+      "is now a good time to invest",
+      "best time to invest money",
+      "when should I invest",
+      "investment timing prediction"
+    ],
+    primaryCn: [
+      "现在是投资的好时机吗",
+      "最佳投资时机",
+      "我应该什么时候投资",
+      "投资时机预测"
+    ],
+    secondary: [
+      "qi men dun jia investment timing",
+      "bazi wealth cycle investing",
+      "six yao investment decision",
+      "market timing divination"
+    ],
+    secondaryCn: [
+      "奇门遁甲投资时机",
+      "八字财运周期投资",
+      "六爻投资决策",
+      "市场时机占卜"
+    ],
+    related: [
+      "market timing strategy",
+      "investment decision guidance",
+      "financial energy cycles",
+      "wealth accumulation timing"
+    ],
+    relatedCn: [
+      "市场时机策略",
+      "投资决策指导",
+      "财务能量周期",
+      "财富积累时机"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People wondering about investment timing often feel:",
+    questions: [
+      "The market looks good, but something is holding me back. Should I go in?",
+      "Everyone says now is the time—but how do I know it is right for me?",
+      "I missed the last rally. Is it too late to invest now?",
+      "The news is all negative. Is this actually a buying opportunity?",
+      "I have savings sitting idle. Am I losing money by not investing?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "纠结投资时机的人，常常感到：",
+    questions: [
+      "行情看起来不错，但总觉得哪里不对——该入场吗？",
+      "所有人都说现在是时候——但怎么知道适不适合我？",
+      "错过了上一波行情，现在进场还来得及吗？",
+      "新闻一片唱衰，这反而是买入的机会吗？",
+      "存款放着不动，不投资是不是在亏钱？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Assess Investment Timing",
+    headingCn: "东西方命理如何评估投资时机",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods assess investment timing through personal energy cycles and external conditions. Qi Men Dun Jia provides a snapshot of current market energy—whether conditions favor bold moves or cautious waiting. BaZi reveals your wealth cycle: whether you are in a period where financial risks are likely to pay off or where preservation is wiser. Six Yao gives a clear yes/no answer with supporting context for specific investment decisions.",
+    easternDescCn: "东方方法通过个人能量周期和外部条件评估投资时机。奇门遁甲提供当前市场能量的快照——条件适合大胆行动还是谨慎观望。八字揭示你的财运周期：你是处于财务风险可能得到回报的时期，还是应该以保守为主。六爻为具体投资决策提供明确的肯定/否定答案和支撑背景。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination, primarily Tarot, provides intuitive insight into investment decisions. Tarot can reveal hidden factors you might be missing, whether your emotional state is affecting your judgment, and what the likely outcome is if you proceed now versus waiting.",
+    westernDescCn: "西方命理，主要是塔罗，为投资决策提供直觉洞察。塔罗可以揭示你可能遗漏的隐藏因素、你的情绪状态是否影响了判断，以及现在行动和等待的可能结果。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. Qi Men Dun Jia: Market Energy Snapshot",
+        titleCn: "一、奇门遁甲：市场能量快照",
+        intro: "Qi Men Dun Jia reveals the current energetic conditions affecting investment decisions.",
+        introCn: "奇门遁甲揭示影响投资决策的当前能量状况。",
+        cards: [
+          {
+            title: "① Market Energy Reading",
+            titleCn: "① 市场能量解读",
+            desc: "The current flow of financial energy in your sector.",
+            descCn: "你所在领域的财务能量当前流向。",
+            items: ["Rising energy indicators", "Peak or decline signals", "Sector-specific flows"],
+            itemsCn: ["上升能量指标", "峰值或衰退信号", "特定行业流向"]
+          },
+          {
+            title: "② Personal Alignment",
+            titleCn: "② 个人对齐",
+            desc: "Whether your current energy aligns with market conditions.",
+            descCn: "你当前的能量是否与市场条件对齐。",
+            items: ["Energy match assessment", "Timing compatibility", "Readiness indicators"],
+            itemsCn: ["能量匹配评估", "时机兼容性", "准备度指标"]
+          },
+          {
+            title: "③ Action Windows",
+            titleCn: "③ 行动窗口",
+            desc: "The optimal times for entry, exit, or holding.",
+            descCn: "入场、退出或持有的最佳时机。",
+            items: ["Favorable entry windows", "Caution periods", "Holding patterns"],
+            itemsCn: ["有利入场窗口", "谨慎期", "持有模式"]
+          }
+        ]
+      },
+      {
+        title: "2. BaZi: Wealth Cycle Analysis",
+        titleCn: "二、八字：财运周期分析",
+        desc: "BaZi reveals whether your current life cycle supports financial risk-taking.",
+        descCn: "八字揭示你当前的生命周期是否支持承担财务风险。",
+        focus: "Key indicators:",
+        focusCn: "关键指标：",
+        items: ["Current wealth pillar strength", "Risk tolerance window", "Growth vs preservation phase", "Elemental market alignment"],
+        itemsCn: ["当前财运柱强度", "风险承受窗口", "增长 vs 保值阶段", "五行市场匹配"]
+      },
+      {
+        title: "3. Six Yao: Decision Clarity",
+        titleCn: "三、六爻：决策清晰度",
+        desc: "Six Yao provides a clear answer for specific investment decisions.",
+        descCn: "六爻为具体投资决策提供明确答案。",
+        focus: "Key indicators:",
+        focusCn: "关键指标：",
+        items: ["Go/no-go signal", "Supporting conditions", "Risk warnings", "Alternative timing"],
+        itemsCn: ["行动/观望信号", "支撑条件", "风险警告", "替代时机"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Navigating a Market Entry Decision",
+    titleCn: "市场入场决策导航",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Mr. Huang (born 1987, Ding-Mao year) had been watching the stock market for six months. Prices had been rising steadily, and his friends were making gains. But every time he was about to invest, something felt wrong. He could not tell if it was caution or missed opportunity.",
+        textCn: "黄先生（1987年生，丁卯年）观察股市已经六个月了。股价稳步上涨，朋友们都在赚钱。但每次他准备投资时，总觉得哪里不对劲。他分不清这是谨慎还是错过了机会。"
+      },
+      {
+        label: "Qi Men Dun Jia Analysis",
+        labelCn: "奇门遁甲分析",
+        text: "The Qi Men chart revealed a divided energy pattern: the market itself was in a rising phase, but Mr. Huang's personal energy was in a consolidation period. The chart showed that entering now would mean fighting against his own natural rhythm—a recipe for stress and poor decisions.",
+        textCn: "奇门盘显示分裂的能量模式：市场本身处于上升阶段，但黄先生的个人能量正处于整合期。盘显示现在入场意味着违背自己的自然节奏——这会导致压力和糟糕的决策。"
+      },
+      {
+        label: "BaZi Timing Guidance",
+        labelCn: "八字时机指引",
+        text: "His BaZi chart showed a major wealth cycle shift in five months, when a new Fire pillar would activate his dormant wealth potential. The analysis suggested waiting for this window, then making a significant but well-researched move.",
+        textCn: "他的八字盘显示五个月后将有一次重大的财运周期转变，届时新的火柱将激活他潜在的财富能量。分析建议等待这个窗口，然后做出重大但经过充分研究的行动。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Mr. Huang waited as advised. When his wealth window opened, he entered the market with confidence and clarity. The investments he made during his aligned window performed significantly better than the ones his friends had made earlier. He later said the wait taught him more about investing than any book.",
+        textCn: "黄先生按建议等待。当他的财富窗口打开时，他带着信心和清晰入场。他在对齐窗口期间做的投资表现明显好于朋友们早些时候的入场。后来他后来说，这段等待教会他的投资知识比任何书都多。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Investment decisions carry risk. Divination provides perspective but does not guarantee outcomes.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异。投资决策有风险。命理提供视角但不保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "Qi Men Dun Jia reveals current market energy and whether conditions favor bold moves or cautious waiting.",
+      "BaZi wealth cycle analysis shows whether your personal energy supports financial risk-taking right now.",
+      "The best investment timing combines market conditions with your personal energetic alignment—both matter equally."
+    ],
+    itemsCn: [
+      "奇门遁甲揭示当前市场能量和条件适合大胆行动还是谨慎观望。",
+      "八字财运周期分析显示你的个人能量现在是否支持承担财务风险。",
+      "最佳投资时机结合市场条件和你个人的能量对齐——两者同样重要。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "will-investment-profit", question: "Will my investment be profitable?", questionCn: "我的投资会有收益吗？" },
+    { slug: "investment-suits-fortune", question: "What investment suits my fortune?", questionCn: "什么投资适合我的财运？" },
+    { slug: "when-see-returns", question: "When will I see returns on my investment?", questionCn: "我什么时候能看到投资回报？" }
+  ],
+
+  cta: {
+    textLine1: "The right timing can make all the difference.",
+    textLine1Cn: "正确的时机能带来完全不同的结果。",
+    textLine2: "If you are wondering whether now is your moment to invest, our consultants can use Qi Men Dun Jia and BaZi to assess your personal investment window.",
+    textLine2Cn: "如果你想知道现在是否是你的投资时机，我们的咨询师可以用奇门遁甲和八字评估你的个人投资窗口。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/investment/good-time-to-invest",
+  publishedAt: "2026-10-21",
+  modifiedAt: "2026-10-21",
+  author: "Stellawei Editorial Team"
+};
+
+export const investmentSuitsFortune = {
+  slug: "investment-suits-fortune",
+  topicSlug: "investment",
+  question: "What investment suits my fortune?",
+  questionCn: "什么投资适合我的财运？",
+  metaTitle: "What Investment Suits My Fortune? | StellaWei Knowledge Center",
+  metaDescription: "Not all investments match every person's energy. Eastern and Western divination tools reveal which investment types align with your elemental profile and financial destiny.",
+  metaTitleCn: "什么投资适合我的财运？| Stellawei 知识中心",
+  metaDescriptionCn: "并非所有投资都适合每个人。东西方命理工具揭示哪些投资类型与你的五行画像和财务命运相匹配。",
+  heroIntro: "Not every investment is right for every person. What works brilliantly for your friend might drain your energy and your bank account. When the mismatch is not about knowledge but about compatibility, you need a different lens. Eastern BaZi and Zi Wei Dou Shu both reveal: what type of investment is your wealth actually designed for?",
+  heroIntroCn: "不是每种投资都适合每个人——对朋友赚大钱的项目，可能让你精疲力尽还亏钱。当问题不在知识而在匹配度时，你需要另一个视角。东方八字和紫微斗数都认同：你的财富，天生适合走哪条路？",
+
+  searchIntent: {
+    primary: [
+      "what investment suits me",
+      "best investment for my personality",
+      "investment type for my fortune",
+      "which investment matches me"
+    ],
+    primaryCn: [
+      "什么投资适合我",
+      "最适合我个性的投资",
+      "适合我财运的投资类型",
+      "哪种投资适合我"
+    ],
+    secondary: [
+      "bazi investment type",
+      "zi wei dou shu wealth palace",
+      "elemental investment matching",
+      "investment compatibility divination"
+    ],
+    secondaryCn: [
+      "八字投资类型",
+      "紫微斗数财帛宫",
+      "五行投资匹配",
+      "投资兼容性占卜"
+    ],
+    related: [
+      "personalized investment strategy",
+      "investment personality test",
+      "wealth building approach",
+      "financial planning by type"
+    ],
+    relatedCn: [
+      "个性化投资策略",
+      "投资性格测试",
+      "财富积累方式",
+      "按类型财务规划"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People seeking investment alignment often feel:",
+    questions: [
+      "My friend made a fortune in crypto, but when I tried, I lost money. Why?",
+      "I have tried stocks, funds, and property—but nothing seems to work for me.",
+      "Should I chase the hot trend or stick with what I know?",
+      "I want to invest, but I do not even know where to begin.",
+      "Is there such a thing as an investment that matches my personality?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "寻找投资方向的人，常常感到：",
+    questions: [
+      "朋友炒币赚翻了，我一跟就亏。为什么？",
+      "股票、基金、房产都试过——但好像没有一样适合我。",
+      "该追热点还是守住自己熟悉的领域？",
+      "我想投资，但根本不知道从哪里开始。",
+      "真的存在和自己“性格合得来”的投资方式吗？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Match Investments to Your Fortune",
+    headingCn: "东西方命理如何匹配投资与财运",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods match investment types to your elemental profile and destiny structure. BaZi reveals your wealth element—the specific element through which money flows most naturally to you. A strong Metal element suggests structured, rule-based investments like bonds or index funds. Strong Wood favors growth-oriented ventures and startup investments. Strong Water supports trading and flow-based income. Zi Wei Dou Shu's Wealth Palace shows your overall financial destiny pattern and suitable accumulation approaches.",
+    easternDescCn: "东方方法将投资类型与你的五行画像和命运结构匹配。八字揭示你的财星——金钱最自然流向你的特定五行。强金适合结构化、规则驱动的投资如债券或指数基金。强木适合成长型创业投资。强水支持交易和流动性收入。紫微斗数的财帛宫显示你的整体财务命运模式和适合的积累方式。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination, primarily Tarot, provides intuitive insight into your natural investment style. Tarot can reveal whether you are fundamentally a conservative builder or a bold risk-taker, whether you thrive with tangible assets or abstract instruments, and what your subconscious beliefs about money are blocking.",
+    westernDescCn: "西方命理，主要是塔罗，提供对你天然投资风格的直觉洞察。塔罗可以揭示你本质上是保守型建设者还是大胆的风险承担者、你在实体资产还是抽象工具上表现更好，以及你对金钱的潜意识信念在阻碍什么。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi: Wealth Element Identification",
+        titleCn: "一、八字：财星识别",
+        intro: "BaZi reveals the specific element through which wealth flows most naturally to you.",
+        introCn: "八字揭示金钱最自然流向你的特定五行。",
+        cards: [
+          {
+            title: "① Your Wealth Element",
+            titleCn: "① 你的财星",
+            desc: "The element that represents money in your chart.",
+            descCn: "你命盘中代表金钱的五行。",
+            items: ["Metal: structured investments", "Wood: growth ventures", "Water: trading and flow", "Fire: visibility-driven", "Earth: tangible assets"],
+            itemsCn: ["金：结构性投资", "木：成长型投资", "水：交易和流动性", "火：曝光驱动型", "土：实体资产"]
+          },
+          {
+            title: "② Suitable Investment Types",
+            titleCn: "② 适合的投资类型",
+            desc: "Which investment vehicles match your elemental profile.",
+            descCn: "哪些投资工具与你的五行画像匹配。",
+            items: ["Asset class alignment", "Risk profile matching", "Time horizon fit"],
+            itemsCn: ["资产类别对齐", "风险偏好匹配", "时间周期适合"]
+          },
+          {
+            title: "③ Avoidance Guidance",
+            titleCn: "③ 规避指引",
+            desc: "Which investment types are likely to conflict with your energy.",
+            descCn: "哪些投资类型可能与你的能量冲突。",
+            items: ["Elemental conflicts", "Energy drain patterns", "Stress triggers"],
+            itemsCn: ["五行冲突", "能量消耗模式", "压力触发因素"]
+          }
+        ]
+      },
+      {
+        title: "2. Zi Wei Dou Shu: Wealth Palace Analysis",
+        titleCn: "二、紫微斗数：财帛宫分析",
+        desc: "Zi Wei Dou Shu's Wealth Palace reveals your financial destiny pattern and natural accumulation style.",
+        descCn: "紫微斗数的财帛宫揭示你的财务命运模式和天然积累方式。",
+        focus: "Key indicators:",
+        focusCn: "关键指标：",
+        items: ["Wealth palace stars", "Accumulation vs trading destiny", "Passive income potential", "Financial partnership compatibility"],
+        itemsCn: ["财帛宫星曜", "积累型 vs 交易型命运", "被动收入潜力", "财务合作伙伴兼容性"]
+      },
+      {
+        title: "3. Tarot: Investment Style Reading",
+        titleCn: "三、塔罗：投资风格解读",
+        desc: "Tarot reveals your natural approach to money and investment.",
+        descCn: "塔罗揭示你对金钱和投资的天然态度。",
+        focus: "Key insight areas:",
+        focusCn: "关键洞察领域：",
+        items: ["Natural risk style", "Money belief patterns", "Intuitive strengths", "Shadow blocks"],
+        itemsCn: ["天然风险风格", "金钱信念模式", "直觉优势", "潜在阻碍"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Finding the Right Investment Path After Repeated Failures",
+    titleCn: "多次失败后找到正确的投资路径",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Ms. Xu (born 1991, Xin-Wei year) had tried three different investment approaches over four years: cryptocurrency trading, stock day-trading, and real estate crowdfunding. Each time, she lost money while watching others succeed. She began to wonder if she was simply bad at investing.",
+        textCn: "徐女士（1991年生，辛未年）四年内尝试了三种不同的投资方式：加密货币交易、股票日内交易和房产众筹。每次她都亏钱，而看着别人赚钱。她开始想自己是否根本不适合投资。"
+      },
+      {
+        label: "BaZi Analysis",
+        labelCn: "八字分析",
+        text: "Her chart revealed a strong Earth constitution with deep roots—she was fundamentally a builder, not a trader. Her wealth element was Fire (which creates Earth), suggesting that investments generating steady, tangible value suited her far better than speculative trading. The rapid in-and-out energy of day-trading directly conflicted with her stable, grounded nature.",
+        textCn: "她的命盘显示强土体质和深厚根基——她本质上是一个建设者，不是交易员。她的财星是火（火生土），表明创造稳定有形价值的投资远比投机交易更适合她。日内交易的快进快出能量与她稳定踏实的本性直接冲突。"
+      },
+      {
+        label: "Zi Wei Dou Shu Confirmation",
+        labelCn: "紫微斗数确认",
+        text: "Her Wealth Palace showed Tian Xiang (Seal Star)—a star associated with structured accumulation and long-term building, not rapid gains. The palace analysis confirmed that real estate, long-term dividend investments, and business equity were her natural wealth channels.",
+        textCn: "她的财帛宫显示天相星——一颗与结构化积累和长期建设相关的星曜，而非快速获利。宫位分析确认房产、长期分红投资和商业股权是她的天然财富渠道。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Ms. Xu shifted her approach to long-term, income-generating real estate investments and dividend-focused stock holdings. Within two years, her portfolio had grown steadily without the stress and anxiety of her trading days. More importantly, she finally felt at peace with her investments.",
+        textCn: "徐女士将方式转向长期、产生收入的房产投资和以分红为主的股票持有。两年内，她的投资组合稳步增长，没有交易时期的压力和焦虑。更重要的是，她终于对自己的投资感到安心。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Investment decisions carry risk. Past performance does not guarantee future results.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异。投资决策有风险。过往表现不保证未来结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "BaZi reveals your wealth element—the specific channel through which money flows most naturally to you.",
+      "Matching your investment type to your elemental profile reduces stress and improves outcomes.",
+      "What works for others may not work for you—compatibility matters more than trends."
+    ],
+    itemsCn: [
+      "八字揭示你的财星——金钱最自然流向你的特定渠道。",
+      "将投资类型与五行画像匹配可以减少压力并改善结果。",
+      "对别人有效的方式未必适合你——匹配度比趋势更重要。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "good-time-to-invest", question: "Is this a good time to invest?", questionCn: "现在是投资的好时机吗？" },
+    { slug: "invest-in-stocks", question: "Should I invest in stocks now?", questionCn: "我现在应该投资股票吗？" },
+    { slug: "stocks-or-real-estate", question: "Should I invest in stocks or real estate?", questionCn: "我应该投资股票还是房地产？" }
+  ],
+
+  cta: {
+    textLine1: "The right investment is not about what is hot—it is about what fits you.",
+    textLine1Cn: "正确的投资不在于什么是热点——而在于什么适合你。",
+    textLine2: "If you want to discover which investment type aligns with your unique fortune, our consultants can provide a detailed BaZi and Zi Wei Dou Shu analysis.",
+    textLine2Cn: "如果你想发现哪种投资类型与你独特的财运相匹配，我们的咨询师可以提供详细的八字和紫微斗数分析。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/investment/investment-suits-fortune",
+  publishedAt: "2026-10-21",
+  modifiedAt: "2026-10-21",
+  author: "Stellawei Editorial Team"
+};
+
+export const investInStocks = {
+  slug: "invest-in-stocks",
+  topicSlug: "investment",
+  question: "Should I invest in stocks now?",
+  questionCn: "我现在应该投资股票吗？",
+  metaTitle: "Should I Invest in Stocks Now? | StellaWei Knowledge Center",
+  metaDescription: "Considering the stock market? Eastern and Western divination tools assess whether stock investing aligns with your current energy, risk profile, and financial timing.",
+  metaTitleCn: "我现在应该投资股票吗？| Stellawei 知识中心",
+  metaDescriptionCn: "在考虑股市？东西方命理工具评估股票投资是否与你当前的能量、风险偏好和财务时机相匹配。",
+  heroIntro: "The stock market promises quick gains—but it also demands quick decisions and strong nerves. Before you jump in, you need to know more than market fundamentals. You need to know if stock investing matches who you are right now. Eastern Six Yao and Qi Men Dun Jia both help answer: is the stock market your arena, and is now your moment?",
+  heroIntroCn: "股市承诺快速回报——但它也要求快速决策和强大的神经。在跳进去之前，你需要了解的不只是市场基本面，还有股票投资是否匹配现在的你。东方六爻和奇门遁甲都认同：股市是不是你的战场，现在是不是你的时机？",
+
+  searchIntent: {
+    primary: [
+      "should I invest in stocks",
+      "is now a good time for stocks",
+      "stock market entry timing",
+      "should I buy stocks now"
+    ],
+    primaryCn: [
+      "我应该投资股票吗",
+      "现在是买股票的好时机吗",
+      "股市入场时机",
+      "我现在应该买股票吗"
+    ],
+    secondary: [
+      "six yao stock decision",
+      "qi men dun jia stock market",
+      "bazi stock trading suitability",
+      "stock investment divination"
+    ],
+    secondaryCn: [
+      "六爻股票决策",
+      "奇门遁甲股市",
+      "八字股票交易适合度",
+      "股票投资占卜"
+    ],
+    related: [
+      "stock market risk assessment",
+      "equity investment guidance",
+      "market volatility handling",
+      "portfolio entry strategy"
+    ],
+    relatedCn: [
+      "股市风险评估",
+      "股票投资指导",
+      "市场波动应对",
+      "投资组合入场策略"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People considering stock investment often feel:",
+    questions: [
+      "The market keeps hitting new highs. Am I missing the boat?",
+      "I tried stocks once and lost money. Should I try again?",
+      "My colleague tripled his money in stocks. Should I follow him in?",
+      "The market just crashed. Is now the perfect time to buy?",
+      "I have some savings—are stocks the right place to put them?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "考虑股票投资的人，常常感到：",
+    questions: [
+      "大盘一直在涨——我是不是错过了？",
+      "之前炒股亏过钱，还应不应该再试一次？",
+      "同事炒股赚了三倍。我该跟着他入场吗？",
+      "市场刚暴跌，现在是不是抄底的好时机？",
+      "手里有些存款——股票是放钱的好地方吗？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Assess Stock Investment",
+    headingCn: "东西方命理如何评估股票投资",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods assess stock investment through decision clarity and personal timing. Six Yao divination provides a direct answer on whether a specific stock investment is favorable, with supporting conditions and warnings. Qi Men Dun Jia reveals whether the current market energy supports stock investments and identifies optimal entry and exit windows. BaZi shows whether your elemental profile suits the fast-paced, volatile nature of stock trading.",
+    easternDescCn: "东方方法通过决策清晰度和个人时机评估股票投资。六爻占卜对特定股票投资是否有利提供直接答案，含支撑条件和警告。奇门遁甲揭示当前市场能量是否支持股票投资，并识别最佳入场和出场窗口。八字显示你的五行画像是否适合股票交易快节奏、高波动的特性。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination, primarily Tarot, provides insight into your emotional readiness for stock investing. Tarot can reveal whether you can handle the psychological pressure of market swings, whether fear or greed is driving your decision, and what the likely emotional outcome of investing now would be.",
+    westernDescCn: "西方命理，主要是塔罗，提供你对股票投资情绪准备度的洞察。塔罗可以揭示你能否承受市场波动的心理压力、是恐惧还是贪婪在驱动你的决定，以及现在投资可能带来的情绪结果。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. Six Yao: Stock Decision Reading",
+        titleCn: "一、六爻：股票决策解读",
+        intro: "Six Yao provides a clear answer for specific stock investment decisions.",
+        introCn: "六爻为特定股票投资决策提供明确答案。",
+        cards: [
+          {
+            title: "① Go/No-Go Signal",
+            titleCn: "① 行动/观望信号",
+            desc: "Whether the specific investment is favorable.",
+            descCn: "特定投资是否有利。",
+            items: ["Favorable hexagram patterns", "Warning signs", "Neutral/hold indicators"],
+            itemsCn: ["有利卦象模式", "警告信号", "中性/持有指标"]
+          },
+          {
+            title: "② Market Timing",
+            titleCn: "② 市场时机",
+            desc: "When to enter and when to stay out.",
+            descCn: "什么时候入场、什么时候观望。",
+            items: ["Entry window identification", "Exit signals", "Holding period guidance"],
+            itemsCn: ["入场窗口识别", "出场信号", "持有期指引"]
+          },
+          {
+            title: "③ Risk Factors",
+            titleCn: "③ 风险因素",
+            desc: "Specific risks associated with this investment.",
+            descCn: "与此次投资相关的特定风险。",
+            items: ["Primary risk sources", "Mitigation strategies", "Stop-loss guidance"],
+            itemsCn: ["主要风险来源", "缓解策略", "止损指引"]
+          }
+        ]
+      },
+      {
+        title: "2. Qi Men Dun Jia: Market Window Analysis",
+        titleCn: "二、奇门遁甲：市场窗口分析",
+        desc: "Qi Men Dun Jia identifies the optimal windows for stock market entry and exit.",
+        descCn: "奇门遁甲识别股市进出的最佳窗口。",
+        focus: "Key indicators:",
+        focusCn: "关键指标：",
+        items: ["Current market energy", "Entry window timing", "Exit signals", "Sector strength assessment"],
+        itemsCn: ["当前市场能量", "入场窗口时机", "出场信号", "行业强度评估"]
+      },
+      {
+        title: "3. BaZi: Trading Suitability Assessment",
+        titleCn: "三、八字：交易适合度评估",
+        desc: "BaZi reveals whether your constitution suits stock market investing.",
+        descCn: "八字揭示你的体质是否适合股市投资。",
+        focus: "Key indicators:",
+        focusCn: "关键指标：",
+        items: ["Risk tolerance profile", "Decision speed alignment", "Stress resilience", "Suitable trading style"],
+        itemsCn: ["风险承受画像", "决策速度对齐", "压力韧性", "适合的交易风格"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "A First-Time Investor's Stock Market Entry",
+    titleCn: "新手的股市入场之路",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Ms. Lin (born 1995, Yi-Hai year) had never invested in stocks. Her colleagues frequently discussed their gains, and she felt both curious and intimidated. She had saved some money but was unsure if stocks were right for someone with zero experience.",
+        textCn: "林女士（1995年生，乙亥年）从未投资过股票。同事们经常讨论收益，她既好奇又害怕。她存了一些钱，但不确定股票是否适合零经验的人。"
+      },
+      {
+        label: "Six Yao Reading",
+        labelCn: "六爻解读",
+        text: "The Six Yao reading showed a cautious but positive pattern: small-scale entry was favorable, but aggressive investment was not. The hexagram suggested starting with established, dividend-paying companies and avoiding speculative small-caps. The changing lines indicated a favorable window in the second month of the season.",
+        textCn: "六爻读数显示谨慎但积极的模式：小规模入场有利，但激进投资不可。卦象建议从成熟的、分红型公司开始，避免投机性小盘股。变爻显示当季第二个月是有利窗口。"
+      },
+      {
+        label: "BaZi Suitability Check",
+        labelCn: "八字适合度检查",
+        text: "Her chart showed a Water-dominant constitution with strong intuitive abilities but a tendency toward emotional decision-making. The analysis recommended a systematic, rule-based approach to counteract this: set entry and exit rules in advance, and follow them regardless of emotions.",
+        textCn: "她的命盘显示水主导的五行体质，直觉能力强但有情绪化决策倾向。分析建议用系统化、规则化的方法来抵消这一点：提前设定入场和出场规则，无论情绪如何都要遵守。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Ms. Lin started small with blue-chip dividend stocks as advised. She followed her pre-set rules religiously, avoiding the panic selling and FOMO buying that affected her colleagues. After one year, her returns were modest but steady—and she had developed genuine confidence in her investment approach.",
+        textCn: "林女士按建议从蓝筹股分红股小规模开始。她严格遵守预设规则，避免了影响同事们的恐慌性抛售和FOMO买入。一年后，她的回报不高但稳定——而且她对投资方法建立了真正的信心。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Stock investment carries risk. Past performance does not guarantee future results.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异。股票投资有风险。过往表现不保证未来结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "Six Yao divination provides clear go/no-go signals for specific stock investment decisions.",
+      "Qi Men Dun Jia identifies optimal market entry and exit windows for stock investing.",
+      "Your BaZi profile reveals whether the fast-paced stock market suits your nature—and how to compensate if it does not."
+    ],
+    itemsCn: [
+      "六爻占卜为特定股票投资决策提供明确的行动/观望信号。",
+      "奇门遁甲识别股票投资的最佳进出窗口。",
+      "你的八字画像揭示快节奏的股市是否适合你的本性——以及如何弥补如果不适合。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "good-time-to-invest", question: "Is this a good time to invest?", questionCn: "现在是投资的好时机吗？" },
+    { slug: "will-investment-profit", question: "Will my investment be profitable?", questionCn: "我的投资会有收益吗？" },
+    { slug: "stocks-or-real-estate", question: "Should I invest in stocks or real estate?", questionCn: "我应该投资股票还是房地产？" }
+  ],
+
+  cta: {
+    textLine1: "Stock investing is not for everyone—but it might be for you.",
+    textLine1Cn: "股票投资不适合所有人——但可能适合你。",
+    textLine2: "If you are considering stock market entry and want to know if now is your moment, our consultants can provide a detailed assessment using Six Yao and Qi Men Dun Jia.",
+    textLine2Cn: "如果你正在考虑进入股市并想知道现在是否是你的时机，我们的咨询师可以用六爻和奇门遁甲提供详细评估。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/investment/invest-in-stocks",
+  publishedAt: "2026-10-21",
+  modifiedAt: "2026-10-21",
+  author: "Stellawei Editorial Team"
+};
+
+export const willInvestmentProfit = {
+  slug: "will-investment-profit",
+  topicSlug: "investment",
+  question: "Will my investment be profitable?",
+  questionCn: "我的投资会有收益吗？",
+  metaTitle: "Will My Investment Be Profitable? | StellaWei Knowledge Center",
+  metaDescription: "Before committing your money, understand your investment's profit potential. Eastern and Western divination tools assess profitability prospects and risk-reward balance.",
+  metaTitleCn: "我的投资会有收益吗？| Stellawei 知识中心",
+  metaDescriptionCn: "在投入资金之前，了解你投资的盈利潜力。东西方命理工具评估收益前景和风险回报平衡。",
+  heroIntro: "You have done the research, run the numbers, and made your move. Now the hardest part begins: waiting. The question that haunts every investor is not whether they made a good decision—it is whether that decision will pay off. Eastern Six Yao and Qi Men Dun Jia both offer perspective: what is the likely outcome of your investment, and when will you know?",
+  heroIntroCn: "你做了调研、算了数字、下了注。现在最难的部分开始了：等待。东方六爻和奇门遁甲都认同：你的投资可能是什么结果，你什么时候会知道？",
+
+  searchIntent: {
+    primary: [
+      "will my investment be profitable",
+      "investment profit prediction",
+      "will I make money on my investment",
+      "investment return forecast"
+    ],
+    primaryCn: [
+      "我的投资会有收益吗",
+      "投资收益预测",
+      "我的投资能赚钱吗",
+      "投资回报预测"
+    ],
+    secondary: [
+      "six yao investment profit",
+      "qi men dun jia investment returns",
+      "bazi profit potential",
+      "investment outcome divination"
+    ],
+    secondaryCn: [
+      "六爻投资收益",
+      "奇门遁甲投资回报",
+      "八字盈利潜力",
+      "投资结果占卜"
+    ],
+    related: [
+      "investment risk reward",
+      "profit timeline prediction",
+      "investment performance outlook",
+      "financial return expectations"
+    ],
+    relatedCn: [
+      "投资风险回报",
+      "盈利时间线预测",
+      "投资业绩展望",
+      "财务回报预期"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "Investors awaiting returns often feel:",
+    questions: [
+      "I just invested a large sum. Did I make the right call?",
+      "My investment is down 15%. Should I cut my losses or hold on?",
+      "It has been six months and I have seen no returns. Is this normal?",
+      "Everyone said this was a sure thing—but nothing is guaranteed, right?",
+      "I am losing sleep over my investment. Is the stress worth it?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "等待投资回报的人，常常感到：",
+    questions: [
+      "刚投了一大笔钱——我的决定到底对不对？",
+      "投资已经跌了15%了。该割肉还是继续持有？",
+      "半年了还没有任何回报。这正常吗？",
+      "所有人都说这是稳赚的——但哪有稳赚的事？",
+      "我为投资睡不着觉。这种压力值得吗？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Assess Investment Profitability",
+    headingCn: "东西方命理如何评估投资收益",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods assess profitability through outcome prediction and timing analysis. Six Yao divination provides a direct profitability forecast for your specific investment, showing whether the current trend will continue, reverse, or plateau. Qi Men Dun Jia identifies profit windows—when returns are most likely to materialize—and reveals whether external conditions support or hinder your investment's growth.",
+    easternDescCn: "东方方法通过结果预测和时机分析评估收益。六爻占卜为你的特定投资提供直接的盈利预测，显示当前趋势会持续、逆转还是持平。奇门遁甲识别利润窗口——回报最可能实现的时间——并揭示外部条件支持还是阻碍你的投资增长。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination, primarily Tarot, provides insight into the unseen factors affecting your investment's performance. Tarot can reveal whether hidden risks are lurking, whether the people involved are trustworthy, and what you can do to improve the outcome from where you stand.",
+    westernDescCn: "西方命理，主要是塔罗，提供对影响投资表现的不可见因素的洞察。塔罗可以揭示是否有隐藏风险潜伏、涉及的人是否可信，以及从你现在的立场能做什么来改善结果。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. Six Yao: Profitability Forecast",
+        titleCn: "一、六爻：盈利预测",
+        intro: "Six Yao reveals the likely outcome of your specific investment.",
+        introCn: "六爻揭示你特定投资的可能结果。",
+        cards: [
+          {
+            title: "① Outcome Indicators",
+            titleCn: "① 结果指标",
+            desc: "What the hexagram says about your investment's trajectory.",
+            descCn: "卦象关于你投资轨迹的信息。",
+            items: ["Profit potential reading", "Loss risk assessment", "Break-even timeline"],
+            itemsCn: ["盈利潜力解读", "亏损风险评估", "盈亏平衡时间线"]
+          },
+          {
+            title: "② Trend Analysis",
+            titleCn: "② 趋势分析",
+            desc: "Whether current performance will continue, improve, or reverse.",
+            descCn: "当前表现会继续、改善还是逆转。",
+            items: ["Momentum indicators", "Reversal signals", "Stability patterns"],
+            itemsCn: ["动量指标", "逆转信号", "稳定模式"]
+          },
+          {
+            title: "③ Action Guidance",
+            titleCn: "③ 行动指引",
+            desc: "What you should do now to optimize the outcome.",
+            descCn: "你现在应该做什么来优化结果。",
+            items: ["Hold/exit/add signals", "Timing for action", "Risk management steps"],
+            itemsCn: ["持有/退出/加仓信号", "行动时机", "风险管理步骤"]
+          }
+        ]
+      },
+      {
+        title: "2. Qi Men Dun Jia: Profit Window Timing",
+        titleCn: "二、奇门遁甲：利润窗口时机",
+        desc: "Qi Men Dun Jia identifies when returns are most likely to materialize.",
+        descCn: "奇门遁甲识别回报最可能实现的时间。",
+        focus: "Key indicators:",
+        focusCn: "关键指标：",
+        items: ["Profit window timing", "Return magnitude potential", "External support factors", "Interference warnings"],
+        itemsCn: ["利润窗口时机", "回报幅度潜力", "外部支撑因素", "干扰警告"]
+      },
+      {
+        title: "3. BaZi: Wealth Pillar Support",
+        titleCn: "三、八字：财运柱支持",
+        desc: "BaZi reveals whether your current wealth cycle supports this investment's success.",
+        descCn: "八字揭示你当前的财运周期是否支持这项投资的成功。",
+        focus: "Key indicators:",
+        focusCn: "关键指标：",
+        items: ["Current pillar strength", "Investment-element match", "Support vs challenge period", "Optimal holding duration"],
+        itemsCn: ["当前柱强度", "投资五行匹配", "支持 vs 挑战期", "最佳持有期限"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Assessing a Stagnant Investment's True Potential",
+    titleCn: "评估停滞投资的真实潜力",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Mr. Sun (born 1983, Gui-Hai year) had invested in a private business equity deal eight months earlier. The business was operational but had not yet distributed any returns. The partner kept saying profits were 'coming soon,' but Mr. Sun was growing anxious. He needed to know: was this investment dead money, or was it just slow?",
+        textCn: "孙先生（1983年生，癸亥年）八个月前投资了一笔私营企业股权。企业在运营但还没有分配任何回报。合伙人一直说利润\"快来了\"，但孙先生越来越焦虑。他想知道：这笔钱是死了，只是慢？"
+      },
+      {
+        label: "Six Yao Analysis",
+        labelCn: "六爻分析",
+        text: "The Six Yao reading showed a 'delayed but present' pattern—the investment was viable, but the profitability timeline was much longer than expected. The hexagram indicated that the business was genuinely generating value, but distribution was being delayed by an external factor the partner was not disclosing.",
+        textCn: "六爻读数显示\"延迟但存在\"的模式——投资是可行的，但盈利时间线比预期长得多。卦象显示企业确实在创造价值，但分配被一个合伙人未披露的外部因素延迟。"
+      },
+      {
+        label: "Qi Men Dun Jia Assessment",
+        labelCn: "奇门遁甲评估",
+        text: "The Qi Men chart revealed a specific profit window four months ahead, in the autumn season. The chart also showed that the delay was caused by a regulatory processing issue—not business failure—and that the partner was not being dishonest, just cautious about sharing incomplete information.",
+        textCn: "奇门盘显示前方四个月、秋季有一个特定的利润窗口。盘还显示延迟是由监管审批问题导致的——不是经营失败——而且合伙人不是不诚实，只是对分享不完整信息持谨慎态度。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Mr. Sun waited through the summer. In the fourth month, as the chart predicted, the regulatory issue was resolved and the first distribution arrived—smaller than hoped but real. He later learned that the partner had been dealing with the regulatory matter for months and had not wanted to worry investors prematurely.",
+        textCn: "孙先生等过了夏天。正如盘所预测的，第四个月监管问题解决了，第一笔分红到账了——比希望的小但是真实的。后来他才知道合伙人几个月来一直在处理监管事务，只是不想过早让投资者担心。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Investment outcomes are uncertain. Divination provides perspective but does not guarantee results.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异。投资结果不确定。命理提供视角但不保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "Six Yao divination provides direct profitability forecasts with hold/exit/add guidance for your specific investment.",
+      "Qi Men Dun Jia identifies profit windows and reveals whether external conditions support your investment's growth.",
+      "Understanding your investment's true timeline reduces anxiety and prevents premature exit from potentially profitable positions."
+    ],
+    itemsCn: [
+      "六爻占卜为你特定投资提供直接的盈利预测和持有/退出/加仓指引。",
+      "奇门遁甲识别利润窗口，揭示外部条件是否支持你投资的增长。",
+      "了解投资的真实时间线可以减少焦虑，防止过早退出潜在有利的头寸。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "good-time-to-invest", question: "Is this a good time to invest?", questionCn: "现在是投资的好时机吗？" },
+    { slug: "when-see-returns", question: "When will I see returns on my investment?", questionCn: "我什么时候能看到投资回报？" },
+    { slug: "investment-suits-fortune", question: "What investment suits my fortune?", questionCn: "什么投资适合我的财运？" }
+  ],
+
+  cta: {
+    textLine1: "The waiting is the hardest part—but clarity helps.",
+    textLine1Cn: "等待是最难熬的部分——但清晰能帮助。",
+    textLine2: "If you are anxious about an existing investment and want to understand its true potential, our consultants can provide a detailed profitability assessment using Six Yao and Qi Men Dun Jia.",
+    textLine2Cn: "如果你对现有投资感到焦虑并希望了解其真实潜力，我们的咨询师可以用六爻和奇门遁甲提供详细的收益评估。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/investment/will-investment-profit",
+  publishedAt: "2026-10-21",
+  modifiedAt: "2026-10-21",
+  author: "Stellawei Editorial Team"
+};
+
+export const stocksOrRealEstate = {
+  slug: "stocks-or-real-estate",
+  topicSlug: "investment",
+  question: "Should I invest in stocks or real estate?",
+  questionCn: "我应该投资股票还是房地产？",
+  metaTitle: "Should I Invest in Stocks or Real Estate? | StellaWei Knowledge Center",
+  metaDescription: "Stocks or property? The right choice depends on your elemental profile, financial destiny, and current life cycle. Discover which path suits your fortune.",
+  metaTitleCn: "我应该投资股票还是房地产？| Stellawei 知识中心",
+  metaDescriptionCn: "股票还是房产？正确的选择取决于你的五行画像、财务命运和当前生命周期。发现哪条路适合你的财运。",
+  heroIntro: "Stocks or real estate—the question every investor faces. One offers liquidity and speed; the other offers stability and tangibility. The right answer is not about market trends. It is about which path aligns with who you are. Eastern BaZi and Zi Wei Dou Shu both reveal: is your wealth meant to flow or to grow roots?",
+  heroIntroCn: "股票还是房产——每个投资者都要面对的问题。一个提供流动性和速度，另一个提供稳定性和实体感。东方八字和紫微斗数都认同：正确的答案不在于市场趋势，而在于哪条路与你匹配。",
+
+  searchIntent: {
+    primary: [
+      "stocks or real estate",
+      "should I invest in property or stocks",
+      "real estate vs stock investment",
+      "which is better stocks or property"
+    ],
+    primaryCn: [
+      "股票还是房产",
+      "我应该投资房产还是股票",
+      "房产 vs 股票投资",
+      "股票和房产哪个更好"
+    ],
+    secondary: [
+      "bazi stocks vs property",
+      "zi wei dou shu property palace",
+      "elemental real estate matching",
+      "investment type destiny"
+    ],
+    secondaryCn: [
+      "八字股票 vs 房产",
+      "紫微斗数田宅宫",
+      "五行房产匹配",
+      "投资类型命运"
+    ],
+    related: [
+      "tangible vs intangible assets",
+      "investment portfolio allocation",
+      "property investment timing",
+      "equity vs property returns"
+    ],
+    relatedCn: [
+      "有形 vs 无形资产",
+      "投资组合配置",
+      "房产投资时机",
+      "股权 vs 房产回报"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People choosing between stocks and property often feel:",
+    questions: [
+      "Stocks feel too risky, but property feels too expensive. What is the middle ground?",
+      "My parents say property is safe, but my friends say stocks grow faster. Who is right?",
+      "I want something I can see and touch—but I also do not want to miss market gains.",
+      "Is it smarter to buy a small apartment or invest the same money in stocks?",
+      "I have limited capital. Should I put it all in one place or split it?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "在股票和房产之间纠结的人，常常感到：",
+    questions: [
+      "股票感觉太冒险，但房产又太贵。有没有中间路线？",
+      "爸妈说房产稳妥，朋友说股票涨得快。谁说的对？",
+      "我想要看得见摸得着的东西——但也不想错过行情。",
+      "同样的钱，买个小户型还是投股市，哪个更聪明？",
+      "资金有限。该集中投一处还是分散开来？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Guide the Stocks vs Real Estate Choice",
+    headingCn: "东西方命理如何指导股票与房产的选择",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods match asset types to your elemental nature. BaZi reveals whether your constitution favors flowing or fixed wealth. Strong Water or Metal elements favor liquid, tradeable assets like stocks. Strong Earth or Wood favor tangible, growth-oriented assets like real estate. Zi Wei Dou Shu's Property Palace (Tian Zhai Gong) specifically reveals your destiny with real estate—whether property investment is favored, neutral, or challenging for you.",
+    easternDescCn: "东方方法将资产类型与五行本性匹配。八字揭示你的体质偏向流动性财富还是固定性财富。强水或金偏向可交易的流动资产如股票。强土或木偏向有形、成长型资产如房产。紫微斗数的田宅宫专门揭示你与房产的缘分——房产投资对你是有利、中性还是挑战。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination, primarily Tarot, provides insight into your relationship with tangible versus intangible wealth. Tarot can reveal whether you need the psychological security of physical assets to invest confidently, or whether the abstract nature of stocks actually frees you from attachment-based decisions.",
+    westernDescCn: "西方命理，主要是塔罗，提供你对有形与无形财富关系的洞察。塔罗可以揭示你是否需要实体资产的心理安全感才能自信地投资，还是股票的抽象性质实际上让你免受基于依恋的决策影响。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi: Flow vs Root Wealth Analysis",
+        titleCn: "一、八字：流动 vs 扎根财富分析",
+        intro: "BaZi reveals whether your wealth energy favors liquid or fixed assets.",
+        introCn: "八字揭示你的财富能量偏向流动资产还是固定资产。",
+        cards: [
+          {
+            title: "① Flow Indicators",
+            titleCn: "① 流动指标",
+            desc: "Elements that favor liquid, tradeable investments.",
+            descCn: "偏向流动、可交易投资的五行。",
+            items: ["Water: trading and flow", "Metal: structured instruments", "Short-cycle wealth patterns"],
+            itemsCn: ["水：交易和流动性", "金：结构性工具", "短周期财富模式"]
+          },
+          {
+            title: "② Root Indicators",
+            titleCn: "② 扎根指标",
+            desc: "Elements that favor tangible, long-term assets.",
+            descCn: "偏向有形、长期资产的五行。",
+            items: ["Earth: property and land", "Wood: growth through building", "Long-cycle wealth patterns"],
+            itemsCn: ["土：房产和土地", "木：通过建设成长", "长周期财富模式"]
+          },
+          {
+            title: "③ Hybrid Approaches",
+            titleCn: "③ 混合策略",
+            desc: "How to combine both asset types based on your chart.",
+            descCn: "如何根据你的命盘组合两种资产类型。",
+            items: ["Primary-secondary allocation", "Rebalancing triggers", "Elemental diversification"],
+            itemsCn: ["主辅配置", "再平衡触发器", "五行多元化"]
+          }
+        ]
+      },
+      {
+        title: "2. Zi Wei Dou Shu: Property Palace Reading",
+        titleCn: "二、紫微斗数：田宅宫解读",
+        desc: "The Property Palace reveals your destiny with real estate investment.",
+        descCn: "田宅宫揭示你与房产投资的缘分。",
+        focus: "Key indicators:",
+        focusCn: "关键指标：",
+        items: ["Property palace star quality", "Real estate acquisition timing", "Property management aptitude", "Land vs building preference"],
+        itemsCn: ["田宅宫星曜质量", "房产获取时机", "房产管理天赋", "土地 vs 建筑偏好"]
+      },
+      {
+        title: "3. Tarot: Tangible vs Intuitive Investment Style",
+        titleCn: "三、塔罗：有形 vs 直觉投资风格",
+        desc: "Tarot reveals your psychological relationship with different asset types.",
+        descCn: "塔罗揭示你与不同资产类型的心理关系。",
+        focus: "Key insight areas:",
+        focusCn: "关键洞察领域：",
+        items: ["Security needs assessment", "Attachment to physical assets", "Abstract thinking comfort", "Decision confidence factors"],
+        itemsCn: ["安全感需求评估", "对实体资产的依恋", "抽象思维舒适度", "决策信心因素"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Choosing Between Property and Stocks with Limited Capital",
+    titleCn: "有限资金下在房产和股票之间做选择",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Mr. Zheng (born 1989, Ji-Si year) had accumulated enough savings for a down payment on a small apartment—or a substantial stock portfolio. His family urged property ('safe, tangible, always needed'), while his college friends urged stocks ('higher returns, more liquid'). He felt torn between security and growth.",
+        textCn: "郑先生（1989年生，己巳年）存够了首付买一个小户型——或者一个可观的股票组合。家人力劝买房（\"稳妥、有形、永远需要\"），大学朋友力劝买股票（\"回报更高、流动性更强\"）。他在安全和成长之间左右为难。"
+      },
+      {
+        label: "BaZi Analysis",
+        labelCn: "八字分析",
+        text: "His chart showed a strong Earth Day Master with significant Metal support—an unusually favorable combination for both asset types. However, the Earth element (which governs property) was currently in a growth phase, while the Metal element (which governs financial instruments) was in a consolidation phase. The analysis leaned toward property now, with a planned expansion into stocks later.",
+        textCn: "他的命盘显示强土日主和有大量金支持——一个对两种资产类型都异常有利的组合。然而，土元素（主管房产）正处于增长阶段，而金元素（主管金融工具）正处于整合阶段。分析建议现在先买房，计划以后扩展到股票。"
+      },
+      {
+        label: "Zi Wei Dou Shu Confirmation",
+        labelCn: "紫微斗数确认",
+        text: "His Property Palace contained Tian Ku (Heavenly Treasury)—a star strongly associated with property accumulation and long-term real estate success. The palace analysis confirmed that property was his primary wealth channel, with stocks serving as a secondary tool once his real estate foundation was established.",
+        textCn: "他的田宅宫包含天库星——一颗与房产积累和长期房产成功密切相关的星曜。宫位分析确认房产是他的主要财富渠道，股票在他建立房产基础后作为辅助工具。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Mr. Zheng purchased a small apartment in a developing area. Over two years, the property appreciated 30% while providing rental income. With the stable foundation in place, he began building a stock portfolio as the analysis had suggested. Both investments performed well—the property providing stability and the stocks providing growth.",
+        textCn: "郑先生在发展中的区域买了一套小公寓。两年内，房产升值了30%，同时提供租金收入。基础稳定后，他开始按照分析建议建立股票组合。两项投资都表现良好——房产提供稳定性，股票提供增长。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Investment decisions carry risk. Past performance does not guarantee future results.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异。投资决策有风险。过往表现不保证未来结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "BaZi reveals whether your wealth energy flows toward liquid assets (stocks) or rooted assets (real estate).",
+      "Zi Wei Dou Shu's Property Palace specifically indicates your destiny and aptitude for real estate investment.",
+      "The right choice often combines both—your chart can reveal the optimal sequence and allocation."
+    ],
+    itemsCn: [
+      "八字揭示你的财富能量流向流动资产（股票）还是扎根资产（房产）。",
+      "紫微斗数的田宅宫专门显示你与房产投资的缘分和天赋。",
+      "正确的选择往往是两者结合——你的命盘可以揭示最优顺序和配置。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "invest-in-stocks", question: "Should I invest in stocks now?", questionCn: "我现在应该投资股票吗？" },
+    { slug: "investment-suits-fortune", question: "What investment suits my fortune?", questionCn: "什么投资适合我的财运？" },
+    { slug: "when-see-returns", question: "When will I see returns on my investment?", questionCn: "我什么时候能看到投资回报？" }
+  ],
+
+  cta: {
+    textLine1: "Stocks or property—the answer is written in your chart.",
+    textLine1Cn: "股票还是房产——答案写在你的命盘里。",
+    textLine2: "If you are torn between investment types and want to know which path your fortune favors, our consultants can provide a detailed BaZi and Zi Wei Dou Shu analysis.",
+    textLine2Cn: "如果你在投资类型之间纠结并希望知道你的财运偏向哪条路，我们的咨询师可以提供详细的八字和紫微斗数分析。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/investment/stocks-or-real-estate",
+  publishedAt: "2026-10-21",
+  modifiedAt: "2026-10-21",
+  author: "Stellawei Editorial Team"
+};
+
+export const whenSeeReturns = {
+  slug: "when-see-returns",
+  topicSlug: "investment",
+  question: "When will I see returns on my investment?",
+  questionCn: "我什么时候能看到投资回报？",
+  metaTitle: "When Will I See Returns on My Investment? | StellaWei Knowledge Center",
+  metaDescription: "Impatient for returns? Eastern and Western divination tools predict your investment's profit timeline and identify the windows when gains are most likely to materialize.",
+  metaTitleCn: "我什么时候能看到投资回报？| Stellawei 知识中心",
+  metaDescriptionCn: "等回报等得不耐烦了？东西方命理工具预测你的投资利润时间线，识别收益最可能实现的时间窗口。",
+  heroIntro: "You made the investment. You did everything right. Now you check the numbers every day, and every day they tell you the same thing: not yet. Patience is a virtue, but it is also a question. When? Eastern Six Yao and Qi Men Dun Jia both help answer: what is your investment's true timeline, and when will you see real returns?",
+  heroIntroCn: "你投了钱，做了所有正确的事。现在你每天查数字，而数字每天都告诉你同一件事：还没到时候。东方六爻和奇门遁甲都认同：耐心不只是等待——知道什么时候，才是真正的优势。",
+
+  searchIntent: {
+    primary: [
+      "when will I see investment returns",
+      "investment return timeline",
+      "how long until my investment pays off",
+      "when will my investment make money"
+    ],
+    primaryCn: [
+      "我什么时候能看到投资回报",
+      "投资回报时间线",
+      "投资多久能回本",
+      "我的投资什么时候能赚钱"
+    ],
+    secondary: [
+      "six yao return timing",
+      "qi men dun jia profit window",
+      "bazi wealth timing prediction",
+      "investment timeline divination"
+    ],
+    secondaryCn: [
+      "六爻回报时机",
+      "奇门遁甲利润窗口",
+      "八字财运时间预测",
+      "投资时间线占卜"
+    ],
+    related: [
+      "investment patience strategy",
+      "profit realization timing",
+      "financial milestone prediction",
+      "wealth accumulation timeline"
+    ],
+    relatedCn: [
+      "投资耐心策略",
+      "利润实现时机",
+      "财务里程碑预测",
+      "财富积累时间线"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "Investors waiting for returns often feel:",
+    questions: [
+      "It has been a year. When am I going to see actual money?",
+      "My friend invested at the same time and already cashed out. Why am I still waiting?",
+      "The projections said six months. It has been ten. Should I be worried?",
+      "I need the money for a big expense next year. Will it be ready in time?",
+      "Is there anything I can do to speed up the returns?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "等待回报的投资者，常常感到：",
+    questions: [
+      "已经一年了。到底什么时候才能见到真钱？",
+      "朋友同时投的已经套现了。为什么我还在等？",
+      "预测说六个月，现在十个月了。该担心了吗？",
+      "明年有一大笔开支要用钱。到时候能拿回来吗？",
+      "有没有什么办法能加快回报的速度？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Predict Return Timing",
+    headingCn: "东西方命理如何预测回报时机",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods excel at timing prediction. Six Yao divination can pinpoint when returns are likely to materialize through 'Ying Qi' (response timing) analysis—the hexagram reveals not just whether returns will come, but when. Qi Men Dun Jia identifies specific profit windows with seasonal precision. BaZi reveals whether your current wealth cycle supports quick returns or requires patience, and when the next favorable period begins.",
+    easternDescCn: "东方方法擅长时机预测。六爻占卜可以通过\"应期\"分析精确定位回报可能实现的时间——卦象不仅揭示回报是否会来，还有什么时候来。奇门遁甲以季节精度识别特定的利润窗口。八字揭示你当前的财运周期支持快速回报还是需要耐心，以及下一个有利时期何时开始。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination, primarily Tarot, provides insight into the pacing of your investment journey. Tarot can reveal whether delays are temporary obstacles or signs of deeper issues, what factors are slowing the process, and whether acceleration is possible or if patience is truly the best strategy.",
+    westernDescCn: "西方命理，主要是塔罗，提供对投资旅程节奏的洞察。塔罗可以揭示延迟是暂时障碍还是更深层次问题的信号、什么因素在拖慢进程，以及加速是否可能还是耐心确实是最好的策略。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. Six Yao: Ying Qi (Response Timing) Analysis",
+        titleCn: "一、六爻：应期分析",
+        intro: "Six Yao's Ying Qi analysis predicts when your investment returns will materialize.",
+        introCn: "六爻的应期分析预测你的投资回报何时实现。",
+        cards: [
+          {
+            title: "① Return Timeline",
+            titleCn: "① 回报时间线",
+            desc: "When the hexagram indicates returns will arrive.",
+            descCn: "卦象显示回报何时到来。",
+            items: ["Near-term indicators", "Seasonal windows", "Long-cycle patterns"],
+            itemsCn: ["近期指标", "季节性窗口", "长周期模式"]
+          },
+          {
+            title: "② Acceleration Factors",
+            titleCn: "② 加速因素",
+            desc: "What conditions could speed up the timeline.",
+            descCn: "什么条件可以加快时间线。",
+            items: ["Active intervention points", "External catalysts", "Optimal action timing"],
+            itemsCn: ["主动干预点", "外部催化剂", "最佳行动时机"]
+          },
+          {
+            title: "③ Delay Warnings",
+            titleCn: "③ 延迟警告",
+            desc: "What could slow down or block returns.",
+            descCn: "什么可能减慢或阻碍回报。",
+            items: ["Obstacle identification", "Risk mitigation", "Patience requirements"],
+            itemsCn: ["障碍识别", "风险缓解", "耐心要求"]
+          }
+        ]
+      },
+      {
+        title: "2. Qi Men Dun Jia: Profit Window Identification",
+        titleCn: "二、奇门遁甲：利润窗口识别",
+        desc: "Qi Men Dun Jia identifies specific time windows when returns are most likely to materialize.",
+        descCn: "奇门遁甲识别回报最可能实现的特定时间窗口。",
+        focus: "Key indicators:",
+        focusCn: "关键指标：",
+        items: ["Monthly profit windows", "Seasonal strength patterns", "Optimal realization timing", "External condition forecasts"],
+        itemsCn: ["月度利润窗口", "季节性强度模式", "最佳兑现时机", "外部条件预测"]
+      },
+      {
+        title: "3. BaZi: Wealth Cycle Pacing",
+        titleCn: "三、八字：财运周期节奏",
+        desc: "BaZi reveals whether your current wealth cycle supports quick or gradual returns.",
+        descCn: "八字揭示你当前的财运周期支持快速还是渐进的回报。",
+        focus: "Key indicators:",
+        focusCn: "关键指标：",
+        items: ["Current wealth pillar pace", "Fast vs slow return profile", "Next favorable period", "Patience vs action guidance"],
+        itemsCn: ["当前财运柱节奏", "快速 vs 慢速回报画像", "下一个有利时期", "耐心 vs 行动指引"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Predicting Returns on a Long-Term Investment",
+    titleCn: "预测长期投资的回报时机",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Ms. Qian (born 1986, Bing-Yin year) had invested in a five-year vineyard partnership. The projections showed returns starting in year three, but she was now in year two with nothing to show. She had a major life event planned for year four and needed to know: would the returns come in time?",
+        textCn: "钱女士（1986年生，丙寅年）投资了一个五年期葡萄园合伙项目。预测显示第三年开始回报，但她现在第二年了一切尚无。她第四年有一个重大人生计划，需要知道：回报能按时到来吗？"
+      },
+      {
+        label: "Six Yao Ying Qi Analysis",
+        labelCn: "六爻应期分析",
+        text: "The Six Yao reading showed that returns would begin in the third year as projected, but the first distribution would be smaller than expected. The Ying Qi analysis pinpointed the eighth month of the third year as the first return window, with the larger distribution arriving in the second half of year four.",
+        textCn: "六爻读数显示回报将按预期在第三年开始，但第一笔分红会比预期小。应期分析精确定位第三年的第八个月为第一个回报窗口，较大的分红在第四年下半年到来。"
+      },
+      {
+        label: "Qi Men Dun Jia Window Confirmation",
+        labelCn: "奇门遁甲窗口确认",
+        text: "The Qi Men chart confirmed the timing and added nuance: the autumn season of year three would bring the first returns, but a more significant profit window opened in the late summer of year four. The chart suggested that her year-four life event could be funded, but she should plan for the later window rather than the earlier one.",
+        textCn: "奇门盘确认了时机并增加了细微差别：第三年的秋季将带来第一笔回报，但更重要的利润窗口在第四年夏末开启。盘建议她第四年的人生计划可以获得资金，但应该按较晚的窗口做计划而不是较早的。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "The first distribution arrived in the eighth month of year three—modest but real, exactly as predicted. The larger distribution came in the late summer of year four, two months before her planned event. The precision of the timing allowed her to plan with confidence rather than anxiety.",
+        textCn: "第一笔分红在第三年第八个月到账——不大但真实，与预测完全一致。较大的分红在第四年夏末到来，比她计划的事件早两个月。时机的精确性让她能够自信而不是焦虑地做计划。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Investment outcomes are uncertain. Divination provides perspective but does not guarantee results.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异。投资结果不确定。命理提供视角但不保证结果。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "Six Yao Ying Qi analysis can predict not just whether returns will come, but when they are most likely to arrive.",
+      "Qi Men Dun Jia identifies specific profit windows with seasonal precision, helping you plan major financial decisions.",
+      "Understanding your investment's true timeline allows you to plan with confidence instead of checking numbers anxiously every day."
+    ],
+    itemsCn: [
+      "六爻应期分析不仅能预测回报是否会来，还能预测最可能什么时候到来。",
+      "奇门遁甲以季节精度识别特定利润窗口，帮助你规划重大财务决策。",
+      "了解投资的真实时间线让你能够自信地做计划，而不是每天焦虑地查数字。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "will-investment-profit", question: "Will my investment be profitable?", questionCn: "我的投资会有收益吗？" },
+    { slug: "good-time-to-invest", question: "Is this a good time to invest?", questionCn: "现在是投资的好时机吗？" },
+    { slug: "stocks-or-real-estate", question: "Should I invest in stocks or real estate?", questionCn: "我应该投资股票还是房地产？" }
+  ],
+
+  cta: {
+    textLine1: "Knowing when is just as important as knowing what.",
+    textLine1Cn: "知道什么时候和知道做什么同样重要。",
+    textLine2: "If you are waiting for returns and want to understand your investment's true timeline, our consultants can provide a detailed timing analysis using Six Yao and Qi Men Dun Jia.",
+    textLine2Cn: "如果你正在等待回报并希望了解投资的真实时间线，我们的咨询师可以用六爻和奇门遁甲提供详细的时机分析。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/investment/when-see-returns",
+  publishedAt: "2026-10-21",
+  modifiedAt: "2026-10-21",
+  author: "Stellawei Editorial Team"
+};
