@@ -9534,8 +9534,8 @@ export const howIsMyPetsHealth = {
   metaDescription: "Worried about your pet's health? Eastern and Western divination tools assess your pet's energy patterns, identify potential imbalances, and guide proactive care decisions.",
   metaTitleCn: "我的宠物健康状况如何？| Stellawei 知识中心",
   metaDescriptionCn: "担心宠物的健康？东西方命理工具评估宠物的能量模式，识别潜在失衡，并指导主动护理决策。",
-  heroIntro: "Your pet cannot tell you when something feels off. They rely entirely on your observation and intuition. Maybe your dog is sleeping more than usual, or your cat has been grooming less, or your bird seems quieter than normal. You want to know: is my pet okay? Eastern and Western divination tools can help assess your pet's current health energy. BaZi analysis of your pet's birth or adoption chart reveals elemental imbalances that may affect their wellbeing, while Qi Men Dun Jia provides a snapshot of their current energetic state. Combined with veterinary care, these insights help you understand your pet's health from a holistic perspective.",
-  heroIntroCn: "宠物无法告诉你它们哪里不舒服。它们完全依赖你的观察和直觉。也许你的狗睡得比平时多，或者你的猫梳理毛发少了，或者你的鸟看起来比平时安静。你想知道：我的宠物还好吗？东西方命理工具可以帮助评估宠物当前的健康能量。通过宠物的出生或领养命盘进行八字分析，揭示可能影响它们福祉的五行失衡；奇门遁甲则提供它们当前能量状态的快照。结合兽医护理，这些洞察帮助你从整体角度理解宠物的健康。",
+  heroIntro: "Your pet is more than a companion—it is a family member whose health touches every part of your daily life. When something feels off, the problem might not be your imagination. It might be a real signal your pet is sending. Eastern BaZi and Western Tarot both offer ways to assess: what is your pet's body really telling you right now?",
+  heroIntroCn: "宠物不只是陪伴——它是家庭成员，它的健康牵动着你每一根神经。当你觉得它\"有点不对劲\"时，问题可能不是错觉，而是它真的在向你发出信号。东方八字和西方塔罗都认同：看懂宠物的身体，需要的不只是眼睛。",
 
   searchIntent: {
     primary: [
@@ -9577,25 +9577,23 @@ export const howIsMyPetsHealth = {
   },
 
   whyPeopleAsk: {
-    intro: "Pet owners concerned about health are often asking:",
+    intro: "Pet owners concerned about health often feel:",
     questions: [
-      "My cat has been sleeping more than usual. Is something wrong?",
-      "My dog is not eating as much as before. Should I be concerned?",
-      "My pet seems less energetic lately. Is this just aging or a health issue?",
-      "My bird's feathers look dull. Does that indicate poor health?",
-      "My pet is drinking a lot more water than usual. What does that mean?",
-      "I just feel like something is off with my pet, but I cannot pinpoint it."
+      "My cat has been sleeping much more than usual—is something wrong?",
+      "My dog's appetite has dropped noticeably. Is he telling me something?",
+      "My pet seems less energetic lately. Is this aging or a health issue?",
+      "My bird's feathers have gone dull. Does that mean poor health?",
+      "I can't pinpoint it, but something just feels different about my pet."
     ]
   },
   whyPeopleAskCn: {
-    intro: "担心宠物健康的铲屎官，常常在问：",
+    intro: "担心宠物健康的铲屎官，常常感到：",
     questions: [
-      "我的猫最近睡得比平时多。有什么问题吗？",
-      "我的狗吃得比以前少了。我应该担心吗？",
-      "我的宠物最近精力不太旺盛。这是正常衰老还是健康问题？",
-      "我的鸟羽毛看起来很暗淡。这表明健康不好吗？",
-      "我的宠物喝水比平时多很多。这意味着什么？",
-      "我只是感觉宠物有点不对劲，但说不上来具体是什么。"
+      "我的猫最近睡得特别多——是不是身体出了问题？",
+      "狗狗食欲明显下降，它是不是哪里不舒服？",
+      "宠物突然不爱动了，是老了还是生病了？",
+      "鸟儿的羽毛变得暗淡无光，这意味着什么？",
+      "说不上来哪里不对，但就是觉得它跟平时不一样。"
     ]
   },
 
@@ -9753,8 +9751,8 @@ export const willPetRecover = {
   metaDescription: "Facing a pet's illness is heartbreaking. Eastern and Western divination tools assess recovery probability, optimal treatment timing, and your pet's healing potential.",
   metaTitleCn: "我的宠物会从疾病中康复吗？| Stellawei 知识中心",
   metaDescriptionCn: "面对宠物疾病令人心碎。东西方命理工具评估康复概率、最佳治疗时机和宠物的康复潜力。",
-  heroIntro: "The diagnosis hit you hard. Your beloved companion is sick, and you are facing the hardest question a pet owner can ask: will they recover? You are doing everything the vet recommends, but you need something more—a sense of the bigger picture. Is your pet's body fighting effectively? Is this illness a passing storm or a longer journey? What can you do to support their healing? Eastern and Western divination tools can help assess recovery prospects. Six Yao divination provides clear indicators of healing potential, Qi Men Dun Jia identifies optimal treatment windows, and BaZi reveals whether your pet's current life cycle supports recovery.",
-  heroIntroCn: "诊断结果让你很沉重。你心爱的伙伴生病了，你正面临铲屎官最难的问题：它们会康复吗？你在做兽医建议的一切，但你需要更多——一个更大的图景。你宠物的身体在有效抗争吗？这场疾病是暂时的风暴还是更长的旅程？你能做什么来支持它们康复？东西方命理工具可以帮助评估康复前景。六爻占卜提供康复潜力的明确指标，奇门遁甲识别最佳治疗窗口，八字揭示宠物当前的生命周期是否支持康复。",
+  heroIntro: "Illness is more than a medical challenge—it is an emotional storm for the entire family. When your beloved companion is sick, the question keeps you up at night: will they recover? Eastern Six Yao and Qi Men Dun Jia both offer clarity: what direction is your pet's body actually heading, and what can you do to help?",
+  heroIntroCn: "疾病不只是身体的考验——它是对整个家庭的挑战。当你陪着生病的宠物，心里反复问\"它会好起来吗\"时，答案可能不只在化验单上。东方六爻和奇门遁甲都认同：看清康复的方向，需要的不只是医学数据。",
 
   searchIntent: {
     primary: [
@@ -9796,25 +9794,23 @@ export const willPetRecover = {
   },
 
   whyPeopleAsk: {
-    intro: "Pet owners facing illness are often asking:",
+    intro: "Pet owners facing illness often feel:",
     questions: [
-      "My dog was diagnosed with a serious illness. What are the real chances of recovery?",
-      "My cat has been sick for weeks. Should I keep hoping or prepare for the worst?",
-      "The vet says treatment could work but is not certain. How do I decide what to do?",
-      "My pet is old and sick. Is recovery even possible at their age?",
-      "I want to do everything possible, but I do not want my pet to suffer. What is the right path?",
-      "Are there signs that my pet's body is fighting the illness effectively?"
+      "My dog was diagnosed with a serious illness—what are the real chances he'll make it?",
+      "My cat has been sick for weeks. Should I keep hoping or start preparing?",
+      "The vet says treatment might work but can't guarantee it. How do I choose?",
+      "He's already old and sick. Is recovery even possible at his age?",
+      "I want to do everything possible—but I don't want him to suffer. What's right?"
     ]
   },
   whyPeopleAskCn: {
-    intro: "面对宠物疾病的铲屎官，常常在问：",
+    intro: "面对宠物疾病的铲屎官，常常感到：",
     questions: [
-      "我的狗被诊断出严重疾病。康复的真正几率有多大？",
-      "我的猫已经病了几周。我应该继续抱有希望还是做最坏的打算？",
-      "兽医说治疗可能有效但不确定。我该怎么决定？",
-      "我的宠物年纪大了又生病。在它们的年龄康复还有可能吗？",
-      "我想尽一切可能，但不想让宠物受苦。正确的道路是什么？",
-      "有没有迹象表明我的身体在有效对抗疾病？"
+      "我的狗被确诊了重病，它到底能不能好？",
+      "猫已经病了好几周了——我该继续等还是做最坏的打算？",
+      "医生说治疗有希望但不保证，我该怎么选？",
+      "它年纪已经大了，这个病还治得好吗？",
+      "我想尽全力，但更不想让它受罪。怎么办？"
     ]
   },
 
@@ -9972,8 +9968,8 @@ export const worriedAboutPetBehavior = {
   metaDescription: "Sudden behavior changes in pets can signal health issues, emotional stress, or environmental imbalance. Learn how divination tools help identify root causes and solutions.",
   metaTitleCn: "我应该担心宠物的行为吗？| Stellawei 知识中心",
   metaDescriptionCn: "宠物的突然行为变化可能预示健康问题、情绪压力或环境失衡。了解命理工具如何帮助识别根本原因和解决方案。",
-  heroIntro: "Your calm, loving pet has suddenly become aggressive. Or your social dog now hides when visitors arrive. Maybe your cat, who always used the litter box, has started having accidents. Behavior changes in pets are never random—they are communication. The question is: what is your pet trying to tell you? Is this a health issue requiring veterinary attention? Emotional stress from a household change? Or an environmental imbalance in your home's energy? Eastern and Western divination tools can help identify the root cause. Qi Men Dun Jia reveals behavioral energy patterns, Feng Shui analysis uncovers environmental stressors, and Tarot provides intuitive insight into your pet's emotional state.",
-  heroIntroCn: "你平静可爱的宠物突然变得具有攻击性。或者你社交的狗现在在访客到来时躲起来。也许你的猫总是在猫砂盆里方便，现在开始随地大小便。宠物的行为变化从来不是随机的——它们是一种沟通。问题是：你的宠物想告诉你什么？这是需要兽医关注的健康问题？家庭变化带来的情绪压力？还是家居能量的环境失衡？东西方命理工具可以帮助识别根本原因。奇门遁甲揭示行为能量模式，风水分析发现环境压力源，塔罗提供对宠物情绪状态的直觉洞察。",
+  heroIntro: "Behavior changes are never just bad habits—they are your pet's way of communicating. When a calm companion suddenly becomes aggressive or withdrawn, the problem might not be disobedience. It might be something deeper. Eastern Qi Men Dun Jia and Feng Shui analysis both help uncover: what is your pet actually trying to tell you?",
+  heroIntroCn: "行为变化不只是坏习惯——它是宠物在用身体语言和你沟通。当它突然变得暴躁、躲藏、或者对着空气狂吠时，问题可能不是\"学坏了\"，而是有更深的原因。东方奇门遁甲和风水分析都认同：每个异常行为的背后，都藏着一个等待被听懂的信号。",
 
   searchIntent: {
     primary: [
@@ -10015,25 +10011,23 @@ export const worriedAboutPetBehavior = {
   },
 
   whyPeopleAsk: {
-    intro: "Pet owners noticing behavior changes are often asking:",
+    intro: "Pet owners noticing behavior changes often feel:",
     questions: [
-      "My cat suddenly started scratching furniture aggressively. What is going on?",
-      "My dog has been barking excessively at nothing. Should I be worried?",
-      "My pet used to be social but now hides all the time. What changed?",
-      "My normally gentle pet snapped at me. Is this a health issue or a behavior issue?",
-      "My pet keeps going to the same spot in the house and staring at nothing. Why?",
-      "We moved recently and my pet's behavior completely changed. Is this stress?"
+      "My cat suddenly started attacking the furniture—what is going on?",
+      "My dog barks at nothing for hours. Should I be worried?",
+      "She used to love people, but now she hides all the time. What changed?",
+      "My gentle pet snapped at me today. Is this medical or behavioral?",
+      "We just moved, and his behavior completely changed. Is it the stress?"
     ]
   },
   whyPeopleAskCn: {
-    intro: "注意到宠物行为变化的铲屎官，常常在问：",
+    intro: "注意到宠物行为变化的铲屎官，常常感到：",
     questions: [
-      "我的猫突然开始猛烈抓家具。发生了什么？",
-      "我的狗一直对着什么都没有的地方狂吠。我应该担心吗？",
-      "我的宠物以前很社交，现在总是躲起来。什么变了？",
-      "我通常温和的宠物对我龇牙了。这是健康问题还是行为问题？",
-      "我的宠物一直去家里同一个地方盯着什么都没有的地方看。为什么？",
-      "我们最近搬家了，宠物的行为完全变了。这是压力吗？"
+      "我的猫突然开始疯狂抓家具——它到底怎么了？",
+      "狗狗没日没夜地叫，可外面明明什么都没有。",
+      "它以前很亲人，现在总是躲着我，是不是生病了？",
+      "温顺的猫突然对我哈气，这是身体问题还是情绪问题？",
+      "搬家之后它完全变了，是压力太大了吗？"
     ]
   },
 
@@ -10191,8 +10185,8 @@ export const bestTimeNewPet = {
   metaDescription: "Timing matters when bringing a new pet home. Eastern divination reveals your pet compatibility window, optimal adoption timing, and the best energetic match for your household.",
   metaTitleCn: "什么时候养新宠物最好？| Stellawei 知识中心",
   metaDescriptionCn: "带新宠物回家的时机很重要。东方命理揭示你的宠物缘分窗口、最佳领养时机以及最适合你家庭的能量匹配。",
-  heroIntro: "You feel ready to welcome a new furry family member. But when? Adopting during the wrong life phase can lead to challenges for both you and your pet. The right timing creates a harmonious bond from day one. Eastern divination offers powerful tools for this decision. BaZi compatibility analysis between you and your potential pet reveals whether your energies support each other. Qi Men Dun Jia identifies the optimal adoption window. And Feng Shui guidance ensures your home is energetically prepared to welcome its newest resident.",
-  heroIntroCn: "你准备好欢迎新的毛茸茸家庭成员了。但什么时候？在错误的生命阶段领养可能给你和宠物都带来挑战。正确的时机从第一天起就创造和谐的纽带。东方命理为这个决定提供了强大的工具。你和你潜在宠物之间的八字兼容性分析揭示你们的能量是否互相支持。奇门遁甲识别最佳领养窗口。风水指引确保你的家已经做好了迎接最新成员的能量准备。",
+  heroIntro: "Adopting a pet is more than a decision—it is two lives meeting at the right moment. When you feel ready to welcome a new companion, timing matters more than you might think. Eastern BaZi and Qi Men Dun Jia both help reveal: when is your energy truly aligned to bring a pet home?",
+  heroIntroCn: "领养不只是一时冲动——它是一个生命与另一个生命的能量交汇。当你觉得\"是时候养一只宠物了\"，问题可能不是\"要不要养\"，而是\"什么时候养、养什么样的\"。东方八字和奇门遁甲都认同：对的时机，能让两个生命从一开始就彼此成就。",
 
   searchIntent: {
     primary: [
@@ -10234,25 +10228,23 @@ export const bestTimeNewPet = {
   },
 
   whyPeopleAsk: {
-    intro: "People considering a new pet are often asking:",
+    intro: "People considering a new pet often feel:",
     questions: [
-      "I want to get a dog, but I am not sure if now is the right time. How do I know?",
-      "My last pet passed away recently. When is it okay to get a new one?",
-      "I work long hours. Is my schedule compatible with having a pet?",
-      "Should I get a puppy/kitten or an older pet? What suits me better?",
-      "My partner and I disagree on when to get a pet. How do we decide?",
-      "I have had bad luck with pets in the past. Is there a compatibility issue?"
+      "I really want a dog—but how do I know if now is the right time?",
+      "My last pet just passed away. When is it okay to love again?",
+      "I work long hours. Can I really give a pet the life it deserves?",
+      "Puppy or adult dog—which one actually suits my lifestyle?",
+      "I've had bad luck with pets before. Is it me? Is it timing?"
     ]
   },
   whyPeopleAskCn: {
-    intro: "考虑养新宠物的人，常常在问：",
+    intro: "考虑养新宠物的人，常常感到：",
     questions: [
-      "我想养一只狗，但不确定现在是否是正确的时机。我怎么知道？",
-      "我的上一只宠物最近去世了。什么时候可以养新的？",
-      "我的工作时间很长。我的日程适合养宠物吗？",
-      "我应该养幼犬/幼猫还是成年宠物？什么更适合我？",
-      "我和伴侣对什么时候养宠物有分歧。我们如何决定？",
-      "我过去养宠物运气不好。是否存在兼容性问题？"
+      "我想养狗很久了，但总觉得时机不对。",
+      "上一只刚走，这么快养新的，是不是对不起它？",
+      "工作这么忙，我真的有时间照顾好它吗？",
+      "幼犬和成年犬，哪一种更适合我？",
+      "之前养过两次都出了状况——是不是我跟宠物缘分不够？"
     ]
   },
 
@@ -10410,8 +10402,8 @@ export const willPetLiveLong = {
   metaDescription: "Wondering about your pet's lifespan? BaZi vitality analysis and Qi Men Dun Jia health windows reveal your pet's longevity potential and key care periods for maximum wellbeing.",
   metaTitleCn: "我的宠物会长寿吗？| Stellawei 知识中心",
   metaDescriptionCn: "想知道宠物的寿命？八字活力分析和奇门遁甲健康窗口揭示宠物的长寿潜力和关键护理期。",
-  heroIntro: "You look at your beloved companion and wonder: how much time do we have together? It is the question every pet owner eventually faces. Whether your pet is young and healthy or entering their senior years, understanding their longevity potential helps you make the most of every moment. Eastern divination offers unique insights into pet longevity. BaZi vitality analysis reveals your pet's constitutional life force strength, while Qi Men Dun Jia identifies critical health windows—periods when extra care makes the biggest difference. These insights help you plan proactively for your pet's long-term wellbeing.",
-  heroIntroCn: "你看着你心爱的伙伴想：我们还有多少时间在一起？这是每个铲屎官最终都要面对的问题。无论你的宠物年轻健康还是进入老年期，了解它们的长寿潜力帮助你充分利用每一刻。东方命理提供对宠物寿命的独特洞察。八字活力分析揭示宠物体质生命力强度，奇门遁甲识别关键健康窗口——额外护理产生最大影响的时期。这些洞察帮助你主动规划宠物的长期福祉。",
+  heroIntro: "Lifespan is more than a number—it is the sum of every day you get to spend together. When your companion starts to slow down and you catch yourself wondering how much time is left, that worry comes from love. Eastern BaZi and Qi Men Dun Jia both offer ways to understand: where is your pet's vitality now, and how can you protect it?",
+  heroIntroCn: "寿命不只是数字——它是你们还能一起创造的每一天。当你看着它渐渐变慢，开始担心\"我们还有多少时间\"时，这种担心本身就是爱。东方八字和奇门遁甲都认同：了解宠物的生命力走向，才能守护好你们共同的时光。",
 
   searchIntent: {
     primary: [
@@ -10453,25 +10445,23 @@ export const willPetLiveLong = {
   },
 
   whyPeopleAsk: {
-    intro: "Pet owners thinking about longevity are often asking:",
+    intro: "Pet owners thinking about longevity often feel:",
     questions: [
-      "My dog is already eight years old. How much longer might he live?",
-      "My cat seems very healthy. Does that mean she will live a long life?",
-      "I have a breed with known health issues. Should I worry about lifespan?",
-      "My pet is showing signs of aging. How do I help them age gracefully?",
-      "Are there specific years when my pet needs extra health attention?",
-      "I want to do everything possible to help my pet live a long, happy life. Where do I start?"
+      "My dog is already eight—how many more years might we have together?",
+      "My cat seems perfectly healthy. Does that mean she'll live a long life?",
+      "His breed has known health issues. Should I be worried about his lifespan?",
+      "She's showing signs of aging. How do I help her age gracefully?",
+      "I want to do everything possible—where do I even start?"
     ]
   },
   whyPeopleAskCn: {
-    intro: "思考宠物寿命的铲屎官，常常在问：",
+    intro: "思考宠物寿命的铲屎官，常常感到：",
     questions: [
-      "我的狗已经八岁了。他还能活多久？",
-      "我的猫看起来很健康。这意味着她会长寿吗？",
-      "我养的是一个有已知健康问题的品种。我应该担心寿命吗？",
-      "我的宠物正在显现衰老迹象。我该如何帮助他们优雅地老去？",
-      "有没有特定的年份我的宠物需要额外的健康关注？",
-      "我想尽一切可能帮助我的宠物过上长寿快乐的生活。从哪里开始？"
+      "我的狗已经八岁了，它还能陪我多久？",
+      "猫看起来很健康——这意味着它能长寿吗？",
+      "这个品种有遗传病，我该担心它的寿命吗？",
+      "它开始出现衰老的迹象了，我该怎么帮它？",
+      "有没有什么办法能让它活得更久、更好？"
     ]
   },
 
