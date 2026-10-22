@@ -431,6 +431,8 @@ import {
   bestTimeNewPet,
   willPetLiveLong,
   improvePetWellbeing,
+  happyMarriage,
+  marryNowOrWait,
   goodTimeToInvest,
   investmentSuitsFortune,
   investInStocks,
@@ -496,6 +498,8 @@ export const knowledgeArticles: Record<string, KnowledgeArticle> = {
   [willInvestmentProfit.slug]: willInvestmentProfit,
   [stocksOrRealEstate.slug]: stocksOrRealEstate,
   [whenSeeReturns.slug]: whenSeeReturns,
+  [happyMarriage.slug]: happyMarriage,
+  [marryNowOrWait.slug]: marryNowOrWait,
 };
 
 export function getArticleBySlug(slug: string): KnowledgeArticle | undefined {

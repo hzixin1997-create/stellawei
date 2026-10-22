@@ -6859,8 +6859,8 @@ export const willMarriageGoSmoothly = {
   metaDescription: "Worried about your marriage prospects? Eastern and Western divination tools analyze compatibility, timing, and potential challenges to help you understand what lies ahead.",
   metaTitleCn: "我的婚姻会顺利吗？| Stellawei 知识中心",
   metaDescriptionCn: "担心婚姻前景？东西方命理工具分析配对度、时机和潜在挑战，帮助你了解前方有什么。",
-  heroIntro: "Marriage is one of life's biggest commitments. Before saying yes, many people wonder whether their union will stand the test of time. Will you grow together or apart? Will external pressures tear you down, or will your bond deepen with each challenge? Eastern and Western divination tools approach this differently—Eastern methods analyze birth-chart compatibility, elemental harmony, and luck-cycle timing to assess long-term stability, while Tarot reveals hidden emotional dynamics and subconscious fears that may shape your marriage's future.",
-  heroIntroCn: "婚姻是人生中最大的承诺之一。在答应之前，许多人想知道他们的结合是否能经受住时间的考验。你们会一起成长还是渐行渐远？外部压力会撕裂你们，还是你们的纽带会在每次挑战中加深？东西方命理工具提供了不同的视角——东方方法通过命盘配对、五行和谐和运势周期来分析长期稳定性，而塔罗则揭示可能塑造婚姻未来的隐藏情绪动态和潜意识恐惧。",
+  heroIntro: "Marriage is more than a ceremony—it is a promise to grow together through whatever comes. When you wonder if your marriage will go smoothly, you are really asking if your bond is strong enough to bend without breaking. Eastern BaZi and Western Tarot both offer insight: what challenges lie ahead, and can you face them together?",
+  heroIntroCn: "婚姻不只是一场仪式——它是一份无论发生什么都要一起成长的承诺。当你想知道婚姻是否会顺利时，你真正在问的是你们的纽带是否足够坚韧。东方八字和西方塔罗都认同：看清前方有什么挑战，才能知道你们能不能一起面对。",
 
   searchIntent: {
     primary: [
@@ -6902,25 +6902,23 @@ export const willMarriageGoSmoothly = {
   },
 
   whyPeopleAsk: {
-    intro: "People wondering about marriage smoothness are often asking:",
+    intro: "People wondering about marriage stability often feel:",
     questions: [
-      "We love each other but come from very different backgrounds. Will that be a problem?",
-      "My parents had a difficult marriage. Does that mean mine will be too?",
-      "We fight occasionally. Is that normal, or a sign of deeper issues?",
-      "I have a successful career but worry about balancing work and marriage. Can I do both?",
-      "My partner and I have different values about money and family. Will that destroy us?",
-      "We are engaged but I keep having doubts. Is that normal pre-wedding nerves or something more?"
+      "We love each other but come from very different backgrounds. Will that work?",
+      "My parents had a terrible marriage—does that mean mine will too?",
+      "We argue about the same things over and over. Is that normal?",
+      "We want different things in life. Can a marriage survive that?",
+      "I have doubts but we are already engaged. Is this just nerves?"
     ]
   },
   whyPeopleAskCn: {
-    intro: "担心婚姻是否顺利的人，常常在问：",
+    intro: "担心婚姻是否顺利的人，常常感到：",
     questions: [
-      "我们彼此相爱但来自非常不同的背景。这会是个问题吗？",
-      "我父母的婚姻很困难。这意味着我的也会吗？",
-      "我们偶尔会吵架。这是正常的，还是深层问题的信号？",
-      "我事业成功但担心平衡工作和婚姻。我能兼顾两者吗？",
-      "我和伴侣在金钱和家庭方面有不同的价值观。这会毁掉我们吗？",
-      "我们已经订婚但我一直有疑虑。这是正常的婚前紧张，还是更严重的问题？"
+      "我们彼此相爱但来自完全不同的家庭。这能行吗？",
+      "父母的婚姻很不幸——我的也会重蹈覆辙吗？",
+      "我们总是为同样的事吵架。这正常吗？",
+      "我们想要的生活完全不同。婚姻能撑住吗？",
+      "已经订婚了但心里总有疑虑。只是婚前紧张吗？"
     ]
   },
 
@@ -7528,8 +7526,8 @@ export const bestTimeToMarry = {
   metaDescription: "Trying to figure out the right age or life stage to get married? Eastern and Western divination tools help you understand when you are truly ready for this commitment.",
   metaTitleCn: "什么时候结婚最好？| Stellawei 知识中心",
   metaDescriptionCn: "试图弄清楚结婚的合适年龄或人生阶段？东西方命理工具帮助你了解何时真正为这一承诺做好准备。",
-  heroIntro: "There is no universal right age to marry. Some people are ready at twenty-five. Others are not ready until forty. The question is not when society thinks you should marry, but when you are truly ready. Eastern and Western divination tools approach this differently—Eastern methods analyze your birth chart to identify life stages when partnership energy is strongest, while Tarot helps you understand your emotional maturity and whether you are prepared for the depth of commitment that marriage requires.",
-  heroIntroCn: "没有普遍正确的结婚年龄。有些人二十五岁就准备好了。有些人四十岁才准备好。问题不是社会认为你应该什么时候结婚，而是你什么时候真正准备好了。东西方命理工具提供了不同的视角——东方方法通过命盘分析识别伴侣能量最强的生命阶段，而塔罗则帮助你理解情绪成熟度，以及你是否为婚姻所需的承诺深度做好了准备。",
+  heroIntro: "Timing is more than a date on the calendar—it is about being truly ready when the moment arrives. When you wonder about the best time to marry, you are really asking if your life is aligned for this commitment. Eastern BaZi and Western Tarot both offer guidance: when is your energy most ready for marriage?",
+  heroIntroCn: "时机不只是日历上的一个日期——而是当那一刻到来时你是否真正准备好了。当你想知道最佳结婚时机时，你真正在问的是你的生活是否已经为这份承诺对齐。东方八字和西方塔罗都认同：你的能量什么时候最适合走进婚姻？",
 
   searchIntent: {
     primary: [
@@ -7571,25 +7569,23 @@ export const bestTimeToMarry = {
   },
 
   whyPeopleAsk: {
-    intro: "People wondering about the best time to marry are often asking:",
+    intro: "People wondering about the best time to marry often feel:",
     questions: [
       "All my friends are married. Am I falling behind?",
       "I am in my thirties and still single. Have I missed my window?",
-      "My parents married young and want me to do the same. Is that right for me?",
-      "I am focused on my career. Will waiting hurt my chances of finding a partner?",
       "I feel ready but my partner does not. Should I wait or move on?",
-      "I have been with my partner for years. Are we waiting too long?"
+      "We have been together for years. Are we waiting too long?",
+      "My family keeps pushing. But I do not want to settle. What do I do?"
     ]
   },
   whyPeopleAskCn: {
-    intro: "想知道最佳结婚时机的人，常常在问：",
+    intro: "想知道最佳结婚时机的人，常常感到：",
     questions: [
-      "我所有的朋友都结婚了。我落后了吗？",
-      "我三十多岁了还单身。我错过窗口期了吗？",
-      "我父母年轻时结婚，希望我也这样。这适合我吗？",
-      "我专注于事业。等待会损害我找到伴侣的机会吗？",
-      "我感觉准备好了但伴侣没有。我应该等还是离开？",
-      "我和伴侣在一起很多年了。我们等得太久了吗？"
+      "所有朋友都结婚了——我是不是落后了？",
+      "三十多岁了还单身。是不是已经错过了？",
+      "我感觉准备好了但伴侣没有。该等还是该走？",
+      "在一起很多年了，是不是拖太久了？",
+      "家人天天催，但我不想将就。怎么办？"
     ]
   },
 
@@ -7751,8 +7747,8 @@ export const areWeCompatibleMarriage = {
   metaDescription: "Wondering if you and your partner are truly compatible for marriage? Eastern and Western divination tools analyze your elemental harmony, communication styles, and long-term alignment.",
   metaTitleCn: "我们适合结婚吗？| Stellawei 知识中心",
   metaDescriptionCn: "想知道你和伴侣是否真的适合结婚？东西方命理工具分析你们的五行和谐、沟通风格和长期对齐度。",
-  heroIntro: "Love is not enough to make a marriage work. Compatibility matters. How you handle conflict, manage money, raise children, and support each other's dreams—these practical dynamics determine whether a marriage thrives or fails. Eastern and Western divination tools approach compatibility differently—Eastern methods analyze birth-chart alignment to reveal elemental harmony, communication patterns, and values compatibility, while Tarot helps you understand the emotional undercurrents and subconscious dynamics that shape your partnership.",
-  heroIntroCn: "爱不足以让婚姻运转。配对度很重要。你如何处理冲突、管理金钱、抚养孩子、支持彼此的梦想——这些实际动态决定婚姻是繁荣还是失败。东西方命理工具对配对度提供了不同的视角——东方方法通过命盘对齐分析揭示五行和谐、沟通模式和价值观兼容性，而塔罗则帮助你理解塑造伴侣关系的暗流情绪和潜意识动态。",
+  heroIntro: "Love is not enough—it is compatibility that carries a marriage through the years. When you wonder if you are truly compatible, you are asking if your differences will complement or destroy. Eastern BaZi and Western Tarot both reveal: where do you naturally align, and where will you need to work?",
+  heroIntroCn: "光有爱是不够的——真正能撑住婚姻的是兼容性。当你想知道是否真的适合彼此时，你在问的是差异会互补还是会撕裂。东方八字和西方塔罗都认同：你们天然契合在哪里，又需要在哪里努力？",
 
   searchIntent: {
     primary: [
@@ -7794,25 +7790,23 @@ export const areWeCompatibleMarriage = {
   },
 
   whyPeopleAsk: {
-    intro: "People wondering about marriage compatibility are often asking:",
+    intro: "People wondering about marriage compatibility often feel:",
     questions: [
-      "We love each other but argue constantly. Are we compatible?",
-      "My partner and I have very different personalities. Can opposites really attract long-term?",
-      "We agree on big things but fight about small things. Is that a bad sign?",
-      "My family thinks we are not compatible. Should I trust their judgment?",
-      "We have different communication styles. Will that destroy our marriage?",
-      "Our values about money and family are different. Can we make it work?"
+      "We love each other but argue constantly. Are we really compatible?",
+      "Our personalities are completely different—can opposites last?",
+      "We agree on big things but fight about small ones. Bad sign?",
+      "My family thinks we are wrong for each other. Should I listen?",
+      "Our money and family values are different. Can we make it work?"
     ]
   },
   whyPeopleAskCn: {
-    intro: "想知道婚姻配对度的人，常常在问：",
+    intro: "想知道婚姻匹配度的人，常常感到：",
     questions: [
-      "我们彼此相爱但经常争吵。我们合适吗？",
-      "我和伴侣性格非常不同。异性真的能长期相吸吗？",
-      "我们在大事上意见一致但在小事上争吵。这是坏征兆吗？",
-      "我家人认为我们不合适。我该信任他们的判断吗？",
-      "我们有不同的沟通方式。这会毁掉我们的婚姻吗？",
-      "我们在金钱和家庭方面的价值观不同。我们能成功吗？"
+      "我们很相爱但总是吵架。真的合适吗？",
+      "性格完全不同——差异能长久地互相吸引吗？",
+      "大事上合拍但小事总吵。这是坏兆头吗？",
+      "家人觉得我们不合适。该听他们的吗？",
+      "金钱观和家庭观不同。能走下去吗？"
     ]
   },
 
@@ -7974,8 +7968,8 @@ export const howToImproveMarriage = {
   metaDescription: "Looking to strengthen your marriage? Eastern and Western divination tools offer insights into communication patterns, emotional dynamics, and practical steps to deepen your connection.",
   metaTitleCn: "如何改善我的婚姻？| Stellawei 知识中心",
   metaDescriptionCn: "想要加强婚姻？东西方命理工具提供沟通模式、情绪动态和加深连接的实用步骤的洞察。",
-  heroIntro: "Every marriage goes through seasons. Some are bright and flourishing. Others feel cold and distant. If you are in a season where things feel off, know that this is not the end— it is an invitation to grow. Eastern and Western divination tools approach marriage improvement differently—Eastern methods analyze your birth charts to identify communication blocks, elemental imbalances, and timing cycles that may be affecting your relationship, while Tarot helps you understand the emotional undercurrents and subconscious patterns that need healing.",
-  heroIntroCn: "每段婚姻都经历季节。有些是明亮和繁荣的。其他感觉寒冷和疏远。如果你处于一个感觉不对劲的季节，要知道这不是结束——而是成长的邀请。东西方命理工具对婚姻改善提供了不同的视角——东方方法通过命盘分析识别沟通障碍、五行失衡和可能影响关系的运势周期，而塔罗则帮助你理解需要治愈的暗流情绪和潜意识模式。",
+  heroIntro: "Every marriage goes through seasons—some warm, some cold. When you are in a season that feels wrong, it is not the end but a call to grow. Eastern BaZi and Western Tarot both help reveal: what is really causing the distance, and how do you find your way back?",
+  heroIntroCn: "每段婚姻都有季节——有些温暖，有些寒冷。当你处于感觉不对劲的季节时，这不是终点而是成长的召唤。东方八字和西方塔罗都认同：真正造成距离的原因是什么，你们又该如何找回彼此？",
 
   searchIntent: {
     primary: [
@@ -8017,25 +8011,23 @@ export const howToImproveMarriage = {
   },
 
   whyPeopleAsk: {
-    intro: "People looking to improve their marriage are often asking:",
+    intro: "People looking to improve their marriage often feel:",
     questions: [
       "We used to be so close but now feel like roommates. How do we reconnect?",
-      "We argue about the same things over and over. How do we break the cycle?",
+      "We argue about the same things over and over. How do we break it?",
       "The spark is gone. Can we get it back?",
-      "My partner and I have grown apart. Is it too late to find common ground?",
-      "We are both stressed and taking it out on each other. How do we stop?",
+      "We have grown apart. Is it too late to find our way back?",
       "I love my partner but I am not in love anymore. Can we fix this?"
     ]
   },
   whyPeopleAskCn: {
-    intro: "想要改善婚姻的人，常常在问：",
+    intro: "想要改善婚姻的人，常常感到：",
     questions: [
-      "我们曾经很亲密但现在感觉像室友。我们如何重新连接？",
-      "我们一遍又一遍地为同样的事情争吵。我们如何打破循环？",
-      "火花消失了。我们能找回来吗？",
-      "我和伴侣渐行渐远。找到共同点还来得及吗？",
-      "我们都很有压力，互相发泄。我们如何停止？",
-      "我爱我的伴侣但不再恋爱了。我们能修复吗？"
+      "曾经那么亲密，现在却像室友。怎么重新连接？",
+      "同样的事吵了一遍又一遍。怎么打破循环？",
+      "火花消失了。还能找回来吗？",
+      "两个人越来越远了。还来得及吗？",
+      "都爱对方但不再\"相爱\"。能修复吗？"
     ]
   },
 
@@ -12130,5 +12122,431 @@ export const whenSeeReturns = {
   canonicalUrl: "https://stellawei.org/knowledge/investment/when-see-returns",
   publishedAt: "2026-10-21",
   modifiedAt: "2026-10-21",
+  author: "Stellawei Editorial Team"
+};
+
+// ==================== 婚姻板块 · 新增 2 篇 ====================
+
+export const happyMarriage = {
+  slug: "happy-marriage",
+  topicSlug: "marriage",
+  question: "Will I have a happy marriage?",
+  questionCn: "我会拥有幸福的婚姻吗？",
+  metaTitle: "Will I Have a Happy Marriage? | StellaWei Knowledge Center",
+  metaDescription: "Everyone dreams of a happy marriage—but what does your chart say? Eastern and Western divination tools reveal your marriage happiness potential and how to nurture it.",
+  metaTitleCn: "我会拥有幸福的婚姻吗？| Stellawei 知识中心",
+  metaDescriptionCn: "每个人都梦想幸福的婚姻——但你的命盘怎么说？东西方命理工具揭示你的婚姻幸福潜力和如何培养它。",
+  heroIntro: "Happiness is not a guarantee—it is a garden that needs tending. When you wonder if your marriage will be happy, you are really asking if you have what it takes to create joy together. Eastern BaZi and Western Tarot both offer insight: what seeds of happiness are already planted in your union, and how do you help them grow?",
+  heroIntroCn: "幸福不是保证——它是一座需要照料的花园。当你想知道婚姻是否会幸福时，你真正在问的是你们是否有能力一起创造快乐。东方八字和西方塔罗都认同：你们的结合中已经种下了哪些幸福的种子，又该如何帮助它们生长？",
+
+  searchIntent: {
+    primary: [
+      "will I have a happy marriage",
+      "marriage happiness prediction",
+      "how to have a happy marriage",
+      "marriage fulfillment forecast"
+    ],
+    primaryCn: [
+      "我会拥有幸福的婚姻吗",
+      "婚姻幸福预测",
+      "如何拥有幸福婚姻",
+      "婚姻满足度预测"
+    ],
+    secondary: [
+      "bazi marriage happiness",
+      "tarot marriage fulfillment",
+      "marriage destiny reading",
+      "happy marriage indicators"
+    ],
+    secondaryCn: [
+      "八字婚姻幸福",
+      "塔罗婚姻满足",
+      "婚姻命运解读",
+      "幸福婚姻指标"
+    ],
+    related: [
+      "marriage satisfaction factors",
+      "relationship happiness tips",
+      "marriage quality improvement",
+      "long-term relationship fulfillment"
+    ],
+    relatedCn: [
+      "婚姻满意因素",
+      "关系幸福建议",
+      "婚姻质量提升",
+      "长期关系满足感"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People wondering about marriage happiness often feel:",
+    questions: [
+      "My parents had a terrible marriage. Does that mean mine will be too?",
+      "We love each other, but is love enough to make a marriage happy?",
+      "My partner and I want different things in life. Can we still be happy?",
+      "I have been hurt before. How do I know this marriage will be different?",
+      "What does a truly happy marriage even look like?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "担心婚姻幸福的人，常常感到：",
+    questions: [
+      "父母的婚姻很不幸——我的也会这样吗？",
+      "我们彼此相爱，但爱足够让婚姻幸福吗？",
+      "我和伴侣想要的生活不一样。还能幸福吗？",
+      "我受过伤。怎么知道这段婚姻会不一样？",
+      "真正幸福的婚姻到底是什么样的？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Assess Marriage Happiness",
+    headingCn: "东西方命理如何评估婚姻幸福",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods assess marriage happiness through chart compatibility and timing. BaZi compatibility analysis reveals the natural harmony between partners—how their elements interact, whether they support or challenge each other, and what areas of the relationship need conscious attention. The analysis also identifies happiness-friendly periods when the relationship naturally flourishes and challenging periods that require extra care.",
+    easternDescCn: "东方方法通过命盘兼容性和时机评估婚姻幸福。八字兼容性分析揭示伴侣之间的天然和谐——他们的五行如何互动、是互相支持还是互相挑战、以及关系哪些领域需要有意识地关注。分析还识别关系自然繁荣的幸福友好期和需要额外照顾的挑战期。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination, primarily Tarot, provides insight into the emotional and spiritual dimensions of marital happiness. Tarot can reveal whether both partners are emotionally present, what unspoken needs are waiting to be met, and what the relationship needs most right now to deepen its joy.",
+    westernDescCn: "西方命理，主要是塔罗，提供对婚姻幸福情绪和精神维度的洞察。塔罗可以揭示双方是否在情感上投入、哪些未说出口的需求等待被满足，以及此刻关系最需要什么来加深快乐。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi: Marriage Happiness Indicators",
+        titleCn: "一、八字：婚姻幸福指标",
+        intro: "BaZi compatibility analysis reveals the happiness potential between partners.",
+        introCn: "八字兼容性分析揭示伴侣之间的幸福潜力。",
+        cards: [
+          {
+            title: "① Elemental Harmony",
+            titleCn: "① 五行和谐",
+            desc: "How your elements interact with your partner's.",
+            descCn: "你的五行与伴侣的如何互动。",
+            items: ["Complementary element patterns", "Supportive cycles", "Challenge areas"],
+            itemsCn: ["互补五行模式", "相生循环", "挑战领域"]
+          },
+          {
+            title: "② Day Master Relationship",
+            titleCn: "② 日主关系",
+            desc: "The core dynamic between your essential energies.",
+            descCn: "你们本质能量之间的核心动态。",
+            items: ["Supportive dynamics", "Growth-oriented tension", "Balance assessment"],
+            itemsCn: ["支持型动态", "成长型张力", "平衡评估"]
+          },
+          {
+            title: "③ Happiness Periods",
+            titleCn: "③ 幸福期",
+            desc: "When the relationship naturally flourishes.",
+            descCn: "关系自然繁荣的时期。",
+            items: ["Favorable luck pillars", "Annual harmony windows", "Growth cycles"],
+            itemsCn: ["有利大运", "年度和谐窗口", "成长周期"]
+          }
+        ]
+      },
+      {
+        title: "2. Tarot: Emotional Connection Reading",
+        titleCn: "二、塔罗：情感连接解读",
+        desc: "Tarot reveals the emotional currents that shape your marital happiness.",
+        descCn: "塔罗揭示塑造你婚姻幸福的情绪暗流。",
+        focus: "Key insight areas:",
+        focusCn: "关键洞察领域：",
+        items: ["Emotional presence levels", "Unmet needs identification", "Joy blockers", "Connection depth"],
+        itemsCn: ["情感投入水平", "未满足需求识别", "快乐阻碍", "连接深度"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Discovering the Foundation for Lasting Marital Happiness",
+    titleCn: "发现持久婚姻幸福的基础",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Mr. and Mrs. Deng (he born 1988, Wu-Chen year; she born 1990, Geng-Wu year) had been married for three years. They loved each other but felt something was missing. The relationship was functional but not joyful. They wondered if this was just what marriage was, or if they could build something better.",
+        textCn: "邓先生和邓太太（他1988年生，戊辰年；她1990年生，庚午年）结婚三年了。他们彼此相爱但总觉得缺少什么。关系还行但不够快乐。他们想知道婚姻就是这样，还是可以建造更好的东西。"
+      },
+      {
+        label: "BaZi Compatibility Analysis",
+        labelCn: "八字兼容性分析",
+        text: "Their charts showed excellent fundamental compatibility: his Earth Day Master was generated by her Fire, creating a natural support dynamic. However, her strong Metal element (which drains Earth) meant she sometimes unintentionally depleted his energy through excessive criticism. The analysis identified this as the primary blocker of their happiness.",
+        textCn: "他们的命盘显示了极好的基本兼容性：他的土日主由她的火所生，创造了天然的support动态。然而，她强金元素（泄土）意味着她有时通过过度批评无意中消耗他的能量。分析将此识别为他们幸福的主要阻碍。"
+      },
+      {
+        label: "Tarot Emotional Reading",
+        labelCn: "塔罗情绪解读",
+        text: "The Tarot revealed that both partners had unmet emotional needs. He needed more appreciation and recognition; she needed more emotional depth and vulnerability. Neither was expressing these needs, creating a silent cycle of unfulfillment that neither could articulate.",
+        textCn: "塔罗揭示双方都有未满足的情绪需求。他需要更多欣赏和认可；她需要更多情感深度和脆弱性。双方都没有表达这些需求，创造了一个谁也无法言说的无声不满足循环。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "With clear awareness of their dynamic, they made simple but powerful changes: she practiced appreciation daily, and he made space for deeper conversations. Within two months, they both reported feeling happier and more connected than ever before. The marriage did not need fixing—it needed understanding.",
+        textCn: "在清楚了解自己的动态后，他们做出了简单而有力的改变：她每天练习欣赏，他为更深的对话创造空间。两个月内，双方都报告感觉比以往任何时候都更快乐、更连接。婚姻不需要修复——它需要的是理解。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Marriage happiness requires ongoing effort from both partners.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异。婚姻幸福需要双方持续的努力。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "BaZi compatibility analysis reveals the natural happiness potential in your marriage and the areas that need conscious attention.",
+      "Marriage happiness is not just about compatibility—it is about understanding and meeting each other's needs.",
+      "Even compatible couples face challenges; knowing your patterns helps you navigate them together."
+    ],
+    itemsCn: [
+      "八字兼容性分析揭示你婚姻中天然的幸福潜力和需要有意识关注的领域。",
+      "婚姻幸福不只是兼容性——它关乎理解并满足彼此的需求。",
+      "即使般配的情侣也会面临挑战；了解你们的模式帮助你们一起度过。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "will-marriage-go-smoothly", question: "Will my marriage go smoothly?", questionCn: "我的婚姻会顺利吗？" },
+    { slug: "are-we-compatible-marriage", question: "Are we compatible for marriage?", questionCn: "我们适合结婚吗？" },
+    { slug: "how-to-improve-marriage", question: "How can I improve my marriage?", questionCn: "如何改善我的婚姻？" }
+  ],
+
+  cta: {
+    textLine1: "Happiness in marriage is not found—it is built.",
+    textLine1Cn: "婚姻中的幸福不是找到的——而是建造的。",
+    textLine2: "If you want to understand your marriage's happiness potential and how to nurture it, our consultants can provide a detailed compatibility and emotional needs analysis.",
+    textLine2Cn: "如果你想了解你婚姻的幸福潜力和如何培养它，我们的咨询师可以提供详细的兼容性和情感需求分析。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/marriage/happy-marriage",
+  publishedAt: "2026-10-22",
+  modifiedAt: "2026-10-22",
+  author: "Stellawei Editorial Team"
+};
+
+export const marryNowOrWait = {
+  slug: "marry-now-or-wait",
+  topicSlug: "marriage",
+  question: "Should I get married now or wait?",
+  questionCn: "我现在应该结婚还是等待？",
+  metaTitle: "Should I Get Married Now or Wait? | StellaWei Knowledge Center",
+  metaDescription: "Facing the marriage timing dilemma? Eastern and Western divination tools help you decide whether to take the leap now or wait for a better moment.",
+  metaTitleCn: "我现在应该结婚还是等待？| Stellawei 知识中心",
+  metaDescriptionCn: "面临婚姻时机的两难？东西方命理工具帮助你决定是现在迈出这一步，还是等待更好的时机。",
+  heroIntro: "The question of when to marry can feel like standing at the edge of a cliff—behind you is the familiar present, ahead is the unknown depth of commitment. When your heart says now but your mind says wait, you need more than advice. Eastern BaZi and Qi Men Dun Jia both offer perspective: is your energy aligned for marriage right now, or is patience the wiser path?",
+  heroIntroCn: "什么时候结婚的问题就像站在悬崖边上——身后是熟悉的舒适，前方是未知的深度。当你的心说\"现在\"但理智说\"再等等\"时，你需要的不仅是建议。东方八字和奇门遁甲都认同：看清你的能量现在是否适合承诺，比任何人的意见都重要。",
+
+  searchIntent: {
+    primary: [
+      "should I get married now or wait",
+      "marriage timing decision",
+      "is now the right time to marry",
+      "when to get married"
+    ],
+    primaryCn: [
+      "我现在应该结婚还是等待",
+      "婚姻时机决定",
+      "现在是结婚的合适时机吗",
+      "什么时候结婚"
+    ],
+    secondary: [
+      "bazi marriage timing",
+      "qi men dun jia marriage decision",
+      "marriage readiness divination",
+      "commitment timing analysis"
+    ],
+    secondaryCn: [
+      "八字婚姻时机",
+      "奇门遁甲婚姻决策",
+      "婚姻准备度占卜",
+      "承诺时机分析"
+    ],
+    related: [
+      "marriage readiness signs",
+      "relationship milestone timing",
+      "commitment decision guidance",
+      "wedding planning timing"
+    ],
+    relatedCn: [
+      "婚姻准备度信号",
+      "关系里程碑时机",
+      "承诺决策指导",
+      "婚礼策划时机"
+    ]
+  },
+
+  whyPeopleAsk: {
+    intro: "People facing the marriage timing dilemma often feel:",
+    questions: [
+      "We have been together for years. Are we waiting too long?",
+      "Everything feels rushed. Should we slow down before committing?",
+      "My partner wants to marry now, but I am not sure. What do I do?",
+      "We are happy as we are. Why change things with marriage?",
+      "Is there ever a perfect time, or do you just have to leap?"
+    ]
+  },
+  whyPeopleAskCn: {
+    intro: "面临结婚时机两难的人，常常感到：",
+    questions: [
+      "我们在一起好几年了。是不是等太久了？",
+      "一切都感觉太赶了。该在承诺之前放慢脚步吗？",
+      "伴侣想现在结婚，但我不确定。怎么办？",
+      "我们现在这样挺好的。为什么要用婚姻改变？",
+      "到底有没有完美的时机，还是只能咬牙跳下去？"
+    ]
+  },
+
+  eastWest: {
+    heading: "How Eastern and Western Divination Guide Marriage Timing",
+    headingCn: "东西方命理如何指导婚姻时机",
+    easternTitle: "Eastern Divination",
+    easternTitleCn: "东方命理",
+    easternDesc: "Eastern methods assess marriage timing through personal cycles and compatibility windows. BaZi reveals whether your current life phase supports major commitment—some years naturally favor partnership while others favor individual growth. Qi Men Dun Jia provides a clear snapshot of current conditions: whether the energetic environment supports marriage decisions now or suggests waiting for a more aligned window.",
+    easternDescCn: "东方方法通过个人周期和兼容性窗口评估婚姻时机。八字揭示你当前的生命阶段是否支持重大承诺——有些年份天然偏向伴侣关系，另一些偏向个人成长。奇门遁甲提供当前条件的清晰快照：能量环境现在是否支持婚姻决定，还是建议等待更对齐的窗口。",
+    westernTitle: "Western Divination",
+    westernTitleCn: "西方命理",
+    westernDesc: "Western divination, primarily Tarot, provides insight into your emotional readiness for marriage. Tarot can reveal whether your hesitation comes from genuine incompatibility or from fear that needs addressing. It can also show what you might gain or lose by marrying now versus waiting.",
+    westernDescCn: "西方命理，主要是塔罗，提供你对婚姻情绪准备度的洞察。塔罗可以揭示你的犹豫来自真正的不兼容还是需要面对的恐惧。它还可以显示现在结婚和等待分别可能得到或失去什么。"
+  },
+
+  methods: {
+    heading: "Specific Methods",
+    headingCn: "具体方法",
+    sections: [
+      {
+        title: "1. BaZi: Life Phase Assessment",
+        titleCn: "一、八字：生命阶段评估",
+        intro: "BaZi reveals whether your current life phase supports marriage commitment.",
+        introCn: "八字揭示你当前的生命阶段是否支持婚姻承诺。",
+        cards: [
+          {
+            title: "① Current Pillar Analysis",
+            titleCn: "① 当前大运分析",
+            desc: "What your current decade pillar says about partnership.",
+            descCn: "你当前十年大运关于伴侣关系的信息。",
+            items: ["Partnership-favorable pillars", "Individual growth periods", "Transition indicators"],
+            itemsCn: ["利伴侣关系的大运", "个人成长期", "过渡期指标"]
+          },
+          {
+            title: "② Spouse Palace Condition",
+            titleCn: "② 配偶宫状态",
+            desc: "The state of your marriage palace in the current period.",
+            descCn: "你当前婚姻宫的状态。",
+            items: ["Spouse star strength", "Palace stability", "Activation timing"],
+            itemsCn: ["配偶星强度", "宫位稳定性", "激活时机"]
+          },
+          {
+            title: "③ Optimal Timing Windows",
+            titleCn: "③ 最佳时机窗口",
+            desc: "When your chart indicates marriage is most supported.",
+            descCn: "你的命盘显示婚姻最受支持的时机。",
+            items: ["Favorable years", "Months to consider", "Periods to avoid"],
+            itemsCn: ["有利年份", "可考虑月份", "应避免时期"]
+          }
+        ]
+      },
+      {
+        title: "2. Qi Men Dun Jia: Now vs Later",
+        titleCn: "二、奇门遁甲：现在还是以后",
+        desc: "Qi Men Dun Jia provides a clear snapshot of whether current conditions support marriage decisions.",
+        descCn: "奇门遁甲提供当前条件是否支持婚姻决定的清晰快照。",
+        focus: "Key indicators:",
+        focusCn: "关键指标：",
+        items: ["Current marriage energy", "Optimal decision window", "Waiting period benefits", "Rushing risks"],
+        itemsCn: ["当前婚姻能量", "最佳决策窗口", "等待期收益", "仓促风险"]
+      },
+      {
+        title: "3. Tarot: Emotional Readiness",
+        titleCn: "三、塔罗：情绪准备度",
+        desc: "Tarot reveals whether your hesitation is wisdom or fear.",
+        descCn: "塔罗揭示你的犹豫是智慧还是恐惧。",
+        focus: "Key insight areas:",
+        focusCn: "关键洞察领域：",
+        items: ["Fear vs intuition", "Readiness assessment", "Loss/gain analysis", "Trust indicators"],
+        itemsCn: ["恐惧 vs 直觉", "准备度评估", "得失分析", "信任指标"]
+      }
+    ]
+  },
+
+  caseStudy: {
+    title: "Resolving the 'Now or Never' Marriage Pressure",
+    titleCn: "化解\"现在或永不\"的婚姻压力",
+    sections: [
+      {
+        label: "Background",
+        labelCn: "基本情况",
+        text: "Ms. Ma (born 1992, Ren-Shen year) and her boyfriend had been together for five years. He was eager to marry; she was hesitant. At 30, she felt social pressure from family and friends who kept asking when the wedding was. She loved him but could not tell if her hesitation was a warning sign or just cold feet.",
+        textCn: "马女士（1992年生，壬申年）和男友在一起五年了。他急于结婚；她犹豫不决。30岁的她感到来自家人朋友的社交压力，不断被问婚礼什么时候办。她爱他，但分不清犹豫是警告信号还是只是婚前紧张。"
+      },
+      {
+        label: "BaZi Timing Analysis",
+        labelCn: "八字时机分析",
+        text: "Her chart revealed that she was in the final year of a personal growth pillar—a period where the universe was asking her to develop independence and self-knowledge before fully merging with another. Her spouse palace showed strong activation in the coming year, suggesting that waiting just one year would place the marriage in a much more supportive energetic window.",
+        textCn: "她的命盘显示她正处于个人成长大运的最后一年——宇宙在要求她在与另一个人完全融合之前发展独立和自我认知。她的配偶宫显示来年强烈激活，表明仅等一年就会将婚姻置于一个更有支持力的能量窗口。"
+      },
+      {
+        label: "Qi Men Dun Jia Decision Snapshot",
+        labelCn: "奇门遁甲决策快照",
+        text: "The Qi Men chart showed that marrying now would work, but marrying in the coming year would be significantly more harmonious. The chart indicated that the relationship itself was solid and ready, but her personal energy needed a few more months to reach its commitment-ready state.",
+        textCn: "奇门盘显示现在结婚也行，但来年结婚会更和谐得多。盘表明关系本身已经足够稳固和准备就绪，但她个人的能量还需要几个月才能达到承诺就绪状态。"
+      },
+      {
+        label: "Outcome",
+        labelCn: "实际结果",
+        text: "Ms. Ma shared the analysis with her boyfriend, who was understanding. They agreed to marry the following spring. During the waiting period, she pursued a personal project she had been putting off, which gave her a sense of completion and readiness. Their wedding the next spring felt not rushed but perfectly timed. Both describe their marriage as the best decision they ever made.",
+        textCn: "马女士与男友分享了分析结果，他很理解。他们同意来年春天结婚。在等待期间，她追求了一直搁置的个人项目，这给了她完成感和准备感。来年春天的婚礼感觉不仓促而是时机完美。双方形容他们的婚姻是他们做过最好的决定。"
+      }
+    ],
+    disclaimer: "Case is anonymized. Results vary by individual. Marriage timing is a personal decision that should feel right for both partners.",
+    disclaimerCn: "案例已匿名化处理。结果因人而异。婚姻时机是应让双方都感觉合适的个人决定。"
+  },
+
+  keyTakeaways: {
+    items: [
+      "BaZi reveals whether your current life phase supports marriage or if waiting would place the union in a more favorable window.",
+      "Qi Men Dun Jia provides a clear snapshot of whether now or later offers better conditions for marriage success.",
+      "Hesitation is not always a warning sign—sometimes it is your inner wisdom asking for the right timing."
+    ],
+    itemsCn: [
+      "八字揭示你当前的生命阶段是否支持婚姻，还是等待会让婚姻处于更有利的窗口。",
+      "奇门遁甲提供现在还是以后为婚姻成功提供更好条件的清晰快照。",
+      "犹豫不总是警告信号——有时它是你的内在智慧在要求正确的时机。"
+    ]
+  },
+
+  relatedQuestions: [
+    { slug: "best-time-to-marry", question: "When is the best time to get married?", questionCn: "什么时候结婚最好？" },
+    { slug: "will-marriage-go-smoothly", question: "Will my marriage go smoothly?", questionCn: "我的婚姻会顺利吗？" },
+    { slug: "are-we-compatible-marriage", question: "Are we compatible for marriage?", questionCn: "我们适合结婚吗？" }
+  ],
+
+  cta: {
+    textLine1: "The right timing makes all the difference in marriage.",
+    textLine1Cn: "正确的时机让婚姻完全不同。",
+    textLine2: "If you are facing the now-or-wait dilemma, our consultants can use BaZi and Qi Men Dun Jia to help you find your optimal marriage window.",
+    textLine2Cn: "如果你面临\"现在还是等待\"的两难，我们的咨询师可以用八字和奇门遁甲帮你找到最佳婚姻窗口。",
+    button: "Book a Consultation",
+    buttonCn: "预约咨询",
+    link: "/booking"
+  },
+
+  eeat: {
+    reviewedBy: "Reviewed by StellaWei Editorial Team",
+    reviewedByCn: "由 Stellawei 编辑团队审阅"
+  },
+
+  canonicalUrl: "https://stellawei.org/knowledge/marriage/marry-now-or-wait",
+  publishedAt: "2026-10-22",
+  modifiedAt: "2026-10-22",
   author: "Stellawei Editorial Team"
 };
